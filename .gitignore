@@ -1,0 +1,8 @@
+# Local Claude Code settings (not needed on GitHub)
+.claude/
+
+# OS junk files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store

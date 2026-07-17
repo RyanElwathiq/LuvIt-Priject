@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scroll Sequence — Local Preview (responsive dual-source)</title>
+<style>
+  /* ---- Preview page chrome (NOT part of the Elementor drop-in) ------------
+     Scaffolding so you can scroll INTO the pinned sequence and verify the
+     seamless turquoise hand-off. Resize the window across 1024px (or use
+     DevTools device mode) to see the portrait <-> widescreen switch. -------- */
+  :root { --seq-bg: #298D94; }                       /* mobile teal (default) */
+  @media (min-width: 1024px) { :root { --seq-bg: #0B9198; } } /* desktop teal */
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  body {
+    font: 400 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #111; background: #fff;
+  }
+
+  .demo-intro {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    gap: 12px; padding: 24px;
+    background: linear-gradient(180deg, #0b0b0c 0%, #16323a 100%); color: #fff;
+  }
+  .demo-intro h1 { font-size: clamp(28px, 6vw, 56px); margin: 0; letter-spacing: -.02em; }
+  .demo-intro p  { margin: 0; opacity: .7; }
+  .demo-intro .badge {
+    margin-top: 6px; font-size: 13px; opacity: .85; padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,.25); border-radius: 999px;
+  }
+  .demo-intro .cue { margin-top: 14px; font-size: 13px; opacity: .6; animation: bob 1.6s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(6px); } }
+
+  /* Outro — SAME responsive turquoise the frames blend into. If the seam is
+     invisible at both widths, it's working. */
+  .demo-outro {
+    background-color: var(--seq-bg); color: #fff;
+    padding: 14vh 24px 24vh; text-align: center;
+  }
+  .demo-outro h2 { font-size: clamp(24px, 5vw, 40px); margin: 0 0 10px; }
+  .demo-outro p  { max-width: 46ch; margin: 0 auto; opacity: .9; }
+  .demo-outro code { background: rgba(255,255,255,.15); padding: 1px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+  <section class="demo-intro">
+    <h1>Local preview</h1>
+    <p>Scroll down to run the sequence.</p>
+    <div class="badge" data-which>detecting…</div>
+    <div class="cue">▼ scroll</div>
+  </section>
+
+
+  <!-- ======================================================================
+       THE ELEMENTOR DROP-IN (identical logic to scroll-sequence.html, with the
+       two `base` URLs pointing at the local ./frames/ and ./frames-desktop/).
+       ====================================================================== -->
+  <section id="hero-seq" class="hero-seq" aria-label="Scroll animation">
+    <div class="hero-seq__pin">
+      <canvas class="hero-seq__canvas"></canvas>
+      <div class="hero-seq__loader" data-loader>
+        <div class="hero-seq__spinner" aria-hidden="true"></div>
+        <div class="hero-seq__pct" data-pct>0%</div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    #hero-seq { --seq-bg: #298D94; background-color: var(--seq-bg); overflow-x: clip; margin: 0; padding: 0; }
+    #hero-seq .hero-seq__pin { position: relative; width: 100%; height: 100vh; height: 100svh; overflow: hidden; background-color: var(--seq-bg); }
+    #hero-seq .hero-seq__canvas { display: block; width: 100%; height: 100%; will-change: contents; }
+    #hero-seq .hero-seq__loader {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      background-color: var(--seq-bg); color: #fff;
+      font: 600 15px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      text-align: center; transition: opacity .5s ease;
+    }
+    #hero-seq .hero-seq__loader.is-hidden { opacity: 0; pointer-events: none; }
+    #hero-seq .hero-seq__spinner { width: 34px; height: 34px; border: 3px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: hero-seq-spin .8s linear infinite; }
+    #hero-seq .hero-seq__pct { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+    @keyframes hero-seq-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { #hero-seq .hero-seq__spinner { animation: none; } }
+  </style>
+
+  <script>
+  (function () {
+    "use strict";
+
+    // ---- CONFIG (local preview) ----
+    var VARIANTS = {
+      mobile:  { base: "./frames/",         bg: "#298D94" }, // 3:4 portrait, 1080px
+      desktop: { base: "./frames-desktop/", bg: "#0B9198" }  // 16:9 wide,    1920px
+    };
+    var DESKTOP_MIN_WIDTH  = 1024;
+    var SCROLL_DISTANCE_VH = 4;
+    var SCRUB_SMOOTHING    = 0.5;
+    var MAX_DPR            = 2;
+    // COVER crop bias: FOCUS_X=0.5 centres the horizontal crop; FOCUS_Y=1 crops
+    // off the TOP so the center-bottom (products) always stays visible.
+    var FOCUS_X = 0.5;
+    var FOCUS_Y = 1.0;
+    var GSAP_URL = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js";
+    var ST_URL   = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js";
+    var ROOT_ID  = "hero-seq";
+
+    // Preview-only: append ?rtl to the URL to check right-to-left behaviour.
+    if (location.search.indexOf("rtl") !== -1) document.documentElement.setAttribute("dir", "rtl");
+
+    // Preview-only: little badge that shows which set is active.
+    var whichEl = document.querySelector("[data-which]");
+    function updateBadge() {
+      if (whichEl) whichEl.textContent =
+        (activeKey === "desktop" ? "desktop · 16:9 · frames-desktop/" : "mobile · 3:4 · frames/") +
+        "  (" + window.innerWidth + "px)";
+    }
+
+    var root   = document.getElementById(ROOT_ID);
+    if (!root) return;
+    var pin    = root.querySelector(".hero-seq__pin");
+    var canvas = root.querySelector(".hero-seq__canvas");
+    var loader = root.querySelector("[data-loader]");
+    var pctEl  = root.querySelector("[data-pct]");
+    var ctx    = canvas.getContext("2d");
+
+    var cache = {}, activeKey = null, dpr = 1, state = { p: 0 }, lastDrawn = -1, ScrollTriggerRef = null;
+
+    function pickKey() { return window.innerWidth >= DESKTOP_MIN_WIDTH ? "desktop" : "mobile"; }
+
+    function render() {
+      var v = cache[activeKey];
+      var cw = pin.clientWidth, ch = pin.clientHeight;
+      var bg = VARIANTS[activeKey].bg;
+      if (!v || !v.loaded || !v.count) { ctx.fillStyle = bg; ctx.fillRect(0, 0, cw, ch); return; }
+      var i = Math.max(0, Math.min(v.count - 1, Math.round(state.p * (v.count - 1))));
+      if (i === lastDrawn) return;
+      lastDrawn = i;
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, cw, ch); // subpixel safety net
+      var img = v.images[i];
+      if (!img || !img.naturalWidth) return;
+      // COVER: fill both axes (no side bars); crop centred-x, off the top (keep bottom).
+      var scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      var dw = img.naturalWidth * scale;
+      var dh = img.naturalHeight * scale;
+      ctx.drawImage(img, (cw - dw) * FOCUS_X, (ch - dh) * FOCUS_Y, dw, dh);
+    }
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+      var cw = pin.clientWidth, ch = pin.clientHeight;
+      canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
+      canvas.style.width = cw + "px"; canvas.style.height = ch + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      lastDrawn = -1; render();
+    }
+
+    function ensureVariant(key) {
+      var v = cache[key];
+      if (v && v.promise) return v.promise;
+      v = cache[key] = { images: [], count: 0, loaded: false, promise: null };
+      var base = VARIANTS[key].base;
+      v.promise = fetch(base + "manifest.json", { cache: "force-cache" })
+        .then(function (r) { if (!r.ok) throw new Error(key + " manifest.json HTTP " + r.status); return r.json(); })
+        .then(function (manifest) {
+          var frames = manifest.frames || [];
+          v.count = frames.length; v.images = new Array(v.count);
+          var loaded = 0;
+          function bump() { loaded++; if (key === activeKey && pctEl) pctEl.textContent = Math.round((loaded / v.count) * 100) + "%"; }
+          var jobs = frames.map(function (f, idx) {
+            return new Promise(function (resolve) {
+              var img = new Image(); img.decoding = "async"; img.src = base + f.file; v.images[idx] = img;
+              var done = function () { bump(); resolve(); };
+              if (img.decode) { img.decode().then(done).catch(function () { img.onload = done; img.onerror = done; }); }
+              else { img.onload = done; img.onerror = done; }
+            });
+          });
+          return Promise.all(jobs);
+        })
+        .then(function () { v.loaded = true; });
+      return v.promise;
+    }
+
+    function switchTo(key) {
+      activeKey = key;
+      root.style.setProperty("--seq-bg", VARIANTS[key].bg);
+      updateBadge();
+      var v = cache[key];
+      if (!v || !v.loaded) { if (loader) loader.classList.remove("is-hidden"); if (pctEl) pctEl.textContent = "0%"; }
+      ensureVariant(key).then(function () {
+        if (activeKey !== key) return;
+        if (loader) loader.classList.add("is-hidden");
+        lastDrawn = -1; resize();
+        if (ScrollTriggerRef) ScrollTriggerRef.refresh();
+      });
+    }
+
+    function loadScript(src) {
+      return new Promise(function (resolve, reject) {
+        var ex = document.querySelector('script[src="' + src + '"]');
+        if (ex) { if (ex.dataset.loaded) return resolve(); ex.addEventListener("load", resolve); ex.addEventListener("error", reject); return; }
+        var s = document.createElement("script"); s.src = src; s.async = false;
+        s.onload = function () { s.dataset.loaded = "1"; resolve(); }; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    function ensureGSAP() {
+      if (window.gsap && window.ScrollTrigger) return Promise.resolve();
+      return loadScript(GSAP_URL).then(function () { return loadScript(ST_URL); });
+    }
+
+    function startAnimation() {
+      var gsap = window.gsap; ScrollTriggerRef = window.ScrollTrigger;
+      gsap.registerPlugin(ScrollTriggerRef);
+      resize(); render();
+      gsap.to(state, {
+        p: 1, ease: "none",
+        scrollTrigger: {
+          trigger: root, start: "top top",
+          end: function () { return "+=" + (window.innerHeight * SCROLL_DISTANCE_VH); },
+          pin: pin, pinSpacing: true, scrub: SCRUB_SMOOTHING,
+          anticipatePin: 1, invalidateOnRefresh: true, onUpdate: render
+        }
+      });
+      ScrollTriggerRef.addEventListener("refreshInit", resize);
+      var t;
+      window.addEventListener("resize", function () {
+        clearTimeout(t);
+        t = setTimeout(function () {
+          var want = pickKey();
+          if (want !== activeKey) { switchTo(want); }
+          else { updateBadge(); resize(); if (ScrollTriggerRef) ScrollTriggerRef.refresh(); }
+        }, 150);
+      });
+      if (loader) loader.classList.add("is-hidden");
+    }
+
+    function staticFallback() {
+      var v = cache[activeKey]; if (v && v.count) state.p = 1;
+      resize(); render();
+      if (loader) loader.classList.add("is-hidden");
+      window.addEventListener("resize", function () { var want = pickKey(); if (want !== activeKey) switchTo(want); else { updateBadge(); resize(); } });
+    }
+
+    // Boot
+    activeKey = pickKey();
+    root.style.setProperty("--seq-bg", VARIANTS[activeKey].bg);
+    updateBadge();
+    ensureVariant(activeKey).then(ensureGSAP).then(startAnimation)
+      .catch(function (err) {
+        console.error("[hero-seq] " + (err && err.message ? err.message : err));
+        var v = cache[activeKey];
+        if (v && v.loaded && v.images[0]) staticFallback();
+        else if (pctEl) pctEl.textContent = "Couldn’t load frames — is the local server running?";
+      });
+  })();
+  </script>
+
+
+  <section class="demo-outro">
+    <h2>Seamless hand-off ✔</h2>
+    <p>This section uses the active turquoise — <code>#298D94</code> on mobile,
+       <code>#0B9198</code> on desktop (switching at 1024px) — the exact colours
+       sampled from each set's last frame. If you can't tell where the canvas
+       ends and this begins at either width, the blend is working.</p>
+  </section>
+
+</body>
+</html>

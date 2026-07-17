@@ -1,0 +1,400 @@
+<!--
+  ============================================================================
+  APPLE-STYLE SCROLL SEQUENCE  —  drop-in for an Elementor "HTML" widget
+  Responsive dual-source version: portrait frames on phones, widescreen on desktop
+  ============================================================================
+  What it does:
+    • Picks a frame set by viewport width:
+        – narrow screens  -> ./frames/          (3:4 portrait,  1080px)
+        – wide screens    -> ./frames-desktop/   (16:9 wide,     1920px)
+    • Fetches that set's manifest.json, preloads its WebP frames (with a % loader)
+    • Pins a full-viewport <canvas> and scrubs through the frames on scroll
+    • Fully responsive + mobile-first, RTL-friendly, HiDPI-crisp
+    • Mobile-first data: a phone ONLY downloads the light portrait set; the heavy
+      desktop set is fetched lazily, and only if the viewport crosses the
+      desktop breakpoint (e.g. someone resizes a browser window).
+    • Each frame set ends on its own turquoise, so the section background is
+      switched to match the active set. That keeps the hand-off to the page
+      below seamless on every screen size.
+
+  ---------------------------------------------------------------------------
+  SETUP:
+    1. Upload BOTH folders (all *.webp + manifest.json each) somewhere on your
+       site, then set the two `base` URLs in the VARIANTS config below.
+       (FTP to /wp-content/uploads/… is easiest; the Media Library renames
+        files and won't keep numbered sets together.)
+    2. Set THIS section's background — done for you in JS — and set the section
+       directly BELOW it to match. Because the active turquoise changes with
+       the breakpoint, give that next section the same responsive colour with
+       this CSS (paste into Elementor > that section > Advanced > Custom CSS,
+       or your theme's Additional CSS). Keep the 1024px in sync with
+       DESKTOP_MIN_WIDTH below:
+
+         selector { background-color: #298D94; }                       // mobile teal
+         @media (min-width: 1024px) { selector { background-color: #0B9198; } } // desktop teal
+  ---------------------------------------------------------------------------
+-->
+
+<!-- ===== MARKUP =====
+     Namespaced under #hero-seq so it can't collide with other widgets. If you
+     paste this twice on one page, change every "hero-seq" to a unique value. -->
+<section id="hero-seq" class="hero-seq" aria-label="Scroll animation">
+  <div class="hero-seq__pin">
+    <canvas class="hero-seq__canvas"></canvas>
+    <!-- Loader overlay: shown on first load AND while a new set loads after a
+         breakpoint switch; fades out when the active set is ready. -->
+    <div class="hero-seq__loader" data-loader>
+      <div class="hero-seq__spinner" aria-hidden="true"></div>
+      <div class="hero-seq__pct" data-pct>0%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STYLES ===== -->
+<style>
+  #hero-seq {
+    /* Default = mobile teal, used for the very first paint before JS runs.
+       JS overwrites this variable to match the active frame set. */
+    --seq-bg: #298D94;
+    background-color: var(--seq-bg);
+    overflow-x: clip;          /* never let the pinned canvas cause sideways scroll */
+    margin: 0; padding: 0;
+  }
+
+  /* The pinned stage — exactly one viewport tall. 100svh dodges the mobile
+     URL-bar jump; 100vh is the fallback line for older browsers. */
+  #hero-seq .hero-seq__pin {
+    position: relative; width: 100%;
+    height: 100vh; height: 100svh;
+    overflow: hidden;
+    background-color: var(--seq-bg);
+  }
+
+  #hero-seq .hero-seq__canvas {
+    display: block; width: 100%; height: 100%;
+    will-change: contents;     /* repaints every scroll tick */
+  }
+
+  /* ---- Loader ---- */
+  #hero-seq .hero-seq__loader {
+    position: absolute; inset: 0;               /* logical shorthand: RTL-safe */
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px;
+    background-color: var(--seq-bg); color: #fff;
+    font: 600 15px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    text-align: center; transition: opacity .5s ease;
+  }
+  #hero-seq .hero-seq__loader.is-hidden { opacity: 0; pointer-events: none; }
+  #hero-seq .hero-seq__spinner {
+    width: 34px; height: 34px;
+    border: 3px solid rgba(255,255,255,.35); border-top-color: #fff;
+    border-radius: 50%; animation: hero-seq-spin .8s linear infinite;
+  }
+  #hero-seq .hero-seq__pct { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+  @keyframes hero-seq-spin { to { transform: rotate(360deg); } }
+
+  /* Respect reduced-motion: kill the spinner (the scrub itself is user-driven). */
+  @media (prefers-reduced-motion: reduce) {
+    #hero-seq .hero-seq__spinner { animation: none; }
+  }
+</style>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================================
+     CONFIG — the things you may want to tweak
+     ========================================================================= */
+
+  // The two frame sets. `base` MUST end with a slash and contain that set's
+  // *.webp files + manifest.json. `bg` is the turquoise sampled from the bottom
+  // edge of that set's LAST frame — the section background is set to it so the
+  // blend into the page below stays seamless.
+  var VARIANTS = {
+    mobile:  { base: "./frames/",         bg: "#298D94" }, // 3:4 portrait, 1080px
+    desktop: { base: "./frames-desktop/", bg: "#0B9198" }  // 16:9 wide,    1920px
+  };
+
+  // Viewport width (CSS px) at/above which the DESKTOP set is used. Below it,
+  // the MOBILE set is used. Keep this in sync with the media query you add to
+  // the section below the sequence (see SETUP note above).
+  var DESKTOP_MIN_WIDTH = 1024;
+
+  // How much scrolling plays the whole sequence, in multiples of viewport height.
+  var SCROLL_DISTANCE_VH = 4;
+
+  // Scrub smoothing in seconds (0 = locked to scrollbar; 0.4–0.8 = Apple-style lag).
+  var SCRUB_SMOOTHING = 0.5;
+
+  // Cap device-pixel-ratio for crisp-but-efficient rendering on 3x phones.
+  var MAX_DPR = 2;
+
+  // COVER crop bias (0..1). The frames fill the whole viewport (no side bars);
+  // whatever overflows is cropped, and these decide FROM WHERE:
+  //   FOCUS_X = 0.5 -> horizontal crop is even on both sides (centred)
+  //   FOCUS_Y = 1.0 -> vertical crop is taken entirely off the TOP, so the
+  //                    BOTTOM stays fully visible. This protects the products
+  //                    (center-bottom of the final frame) and keeps the
+  //                    turquoise bottom edge flush for the seamless blend.
+  // Lower FOCUS_Y toward 0.5 only if you'd rather center the vertical crop.
+  var FOCUS_X = 0.5;
+  var FOCUS_Y = 1.0;
+
+  var GSAP_URL = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js";
+  var ST_URL   = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js";
+  var ROOT_ID  = "hero-seq";
+
+  /* =========================================================================
+     DOM wiring
+     ========================================================================= */
+  var root   = document.getElementById(ROOT_ID);
+  if (!root) return;
+  var pin    = root.querySelector(".hero-seq__pin");
+  var canvas = root.querySelector(".hero-seq__canvas");
+  var loader = root.querySelector("[data-loader]");
+  var pctEl  = root.querySelector("[data-pct]");
+  var ctx    = canvas.getContext("2d");
+
+  // Per-variant runtime cache: key -> { images[], count, loaded, promise }
+  var cache = {};
+  var activeKey = null;
+  var dpr = 1;
+  var state = { p: 0 };   // scroll progress 0..1, decoupled from frame count
+  var lastDrawn = -1;
+  var ScrollTriggerRef = null;
+
+  // Which set does the current viewport want? (width-based, per requirement.)
+  function pickKey() {
+    return window.innerWidth >= DESKTOP_MIN_WIDTH ? "desktop" : "mobile";
+  }
+
+  /* =========================================================================
+     Rendering — COVER fit.
+     The frame is scaled to fill the ENTIRE viewport (both width and height) so
+     there are never any turquoise side bars; whatever overflows is cropped.
+     The horizontal crop is centred (FOCUS_X) and the vertical crop is taken off
+     the TOP (FOCUS_Y = 1), so the center-bottom — the products in the final
+     frame — is always kept, and the turquoise bottom edge stays flush for a
+     seamless blend. Centring is symmetric => identical under LTR and RTL.
+     ========================================================================= */
+  function render() {
+    var v = cache[activeKey];
+    var cw = pin.clientWidth, ch = pin.clientHeight;
+    var bg = VARIANTS[activeKey].bg;
+
+    // Not ready yet (first load / mid-switch): just show the turquoise base.
+    if (!v || !v.loaded || !v.count) {
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, cw, ch);
+      return;
+    }
+
+    // Map scroll progress -> frame index. If the index hasn't changed, leave the
+    // canvas exactly as it is (don't clear it). lastDrawn is reset to -1 on any
+    // resize/variant switch, so those always force a fresh draw below.
+    var i = Math.max(0, Math.min(v.count - 1, Math.round(state.p * (v.count - 1))));
+    if (i === lastDrawn) return;
+    lastDrawn = i;
+
+    var img = v.images[i];
+    if (!img || !img.naturalWidth) return;
+
+    // COVER: scale so the frame covers both axes (>= viewport on each). Because
+    // we use max(), both dw >= cw and dh >= ch, so the canvas is fully painted
+    // by the image — the fill below is just a subpixel-rounding safety net.
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, cw, ch);
+
+    var scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    var dw = img.naturalWidth * scale;
+    var dh = img.naturalHeight * scale;
+    var dx = (cw - dw) * FOCUS_X;   // <= 0: centred horizontal crop
+    var dy = (ch - dh) * FOCUS_Y;   // <= 0: crop off the top, keep the bottom
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  // Size the backing store for crisp HiDPI output, then repaint.
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+    var cw = pin.clientWidth, ch = pin.clientHeight;
+    canvas.width = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+    canvas.style.width = cw + "px";
+    canvas.style.height = ch + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // work in CSS px hereafter
+    lastDrawn = -1;
+    render();
+  }
+
+  /* =========================================================================
+     Loading a variant (manifest -> preload frames). Cached so each set loads
+     at most once; the desktop set is only fetched if/when it's actually needed.
+     ========================================================================= */
+  function ensureVariant(key) {
+    var v = cache[key];
+    if (v && v.promise) return v.promise;
+
+    v = cache[key] = { images: [], count: 0, loaded: false, promise: null };
+    var base = VARIANTS[key].base;
+
+    v.promise = fetch(base + "manifest.json", { cache: "force-cache" })
+      .then(function (r) {
+        if (!r.ok) throw new Error(key + " manifest.json HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (manifest) {
+        var frames = manifest.frames || [];
+        v.count = frames.length;
+        v.images = new Array(v.count);
+
+        var loaded = 0;
+        function bump() {
+          loaded++;
+          // Only reflect progress if THIS set is the one we're waiting on.
+          if (key === activeKey && pctEl) {
+            pctEl.textContent = Math.round((loaded / v.count) * 100) + "%";
+          }
+        }
+        var jobs = frames.map(function (f, idx) {
+          return new Promise(function (resolve) {
+            var img = new Image();
+            img.decoding = "async";
+            img.src = base + f.file;
+            v.images[idx] = img;
+            var done = function () { bump(); resolve(); };
+            if (img.decode) {
+              img.decode().then(done).catch(function () { img.onload = done; img.onerror = done; });
+            } else { img.onload = done; img.onerror = done; }
+          });
+        });
+        return Promise.all(jobs);
+      })
+      .then(function () { v.loaded = true; });
+
+    return v.promise;
+  }
+
+  /* =========================================================================
+     Switching sets when the viewport crosses the breakpoint
+     ========================================================================= */
+  function switchTo(key) {
+    activeKey = key;
+    // Match the section background to the new set's turquoise (drives the CSS
+    // var used by the pin/next section, and the canvas fill safety net).
+    root.style.setProperty("--seq-bg", VARIANTS[key].bg);
+
+    var v = cache[key];
+    if (!v || !v.loaded) {
+      // Show the loader while the newly-needed set downloads.
+      if (loader) loader.classList.remove("is-hidden");
+      if (pctEl) pctEl.textContent = "0%";
+    }
+    ensureVariant(key).then(function () {
+      if (activeKey !== key) return;         // viewport moved again mid-load
+      if (loader) loader.classList.add("is-hidden");
+      lastDrawn = -1;
+      resize();
+      if (ScrollTriggerRef) ScrollTriggerRef.refresh();
+    });
+  }
+
+  /* =========================================================================
+     GSAP loader (only if not already present)
+     ========================================================================= */
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var ex = document.querySelector('script[src="' + src + '"]');
+      if (ex) { if (ex.dataset.loaded) return resolve(); ex.addEventListener("load", resolve); ex.addEventListener("error", reject); return; }
+      var s = document.createElement("script");
+      s.src = src; s.async = false;          // preserve order (ST depends on gsap)
+      s.onload = function () { s.dataset.loaded = "1"; resolve(); };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+  function ensureGSAP() {
+    if (window.gsap && window.ScrollTrigger) return Promise.resolve();
+    return loadScript(GSAP_URL).then(function () { return loadScript(ST_URL); });
+  }
+
+  /* =========================================================================
+     Start the scroll animation (once the first set + GSAP are ready)
+     ========================================================================= */
+  function startAnimation() {
+    var gsap = window.gsap;
+    ScrollTriggerRef = window.ScrollTrigger;
+    gsap.registerPlugin(ScrollTriggerRef);
+
+    resize();
+    render();
+
+    // Tween scroll progress 0 -> 1 (frame count is applied at render time, so
+    // switching between sets of different lengths would still work).
+    gsap.to(state, {
+      p: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: root,
+        start: "top top",
+        end: function () { return "+=" + (window.innerHeight * SCROLL_DISTANCE_VH); },
+        pin: pin, pinSpacing: true,
+        scrub: SCRUB_SMOOTHING,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: render
+      }
+    });
+
+    ScrollTriggerRef.addEventListener("refreshInit", resize);
+
+    // Resize / rotation: switch sets if the breakpoint was crossed, else just
+    // re-measure. A tiny debounce avoids thrashing during drag-resize.
+    var t;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(function () {
+        var want = pickKey();
+        if (want !== activeKey) {
+          switchTo(want);
+        } else {
+          resize();
+          if (ScrollTriggerRef) ScrollTriggerRef.refresh();
+        }
+      }, 150);
+    });
+
+    if (loader) loader.classList.add("is-hidden");
+  }
+
+  // Fallback if GSAP can't load: show the last frame (its turquoise still
+  // blends into the page) so nothing looks broken.
+  function staticFallback() {
+    var v = cache[activeKey];
+    if (v && v.count) state.p = 1;
+    resize(); render();
+    if (loader) loader.classList.add("is-hidden");
+    window.addEventListener("resize", function () {
+      var want = pickKey();
+      if (want !== activeKey) switchTo(want); else resize();
+    });
+  }
+
+  /* =========================================================================
+     Boot: choose the set for this viewport, load it, then start.
+     ========================================================================= */
+  activeKey = pickKey();
+  root.style.setProperty("--seq-bg", VARIANTS[activeKey].bg);
+
+  ensureVariant(activeKey)
+    .then(ensureGSAP)
+    .then(startAnimation)
+    .catch(function (err) {
+      console.error("[hero-seq] " + (err && err.message ? err.message : err));
+      var v = cache[activeKey];
+      if (v && v.loaded && v.images[0]) staticFallback();
+      else if (pctEl) pctEl.textContent = "Couldn’t load sequence — check the base URLs";
+    });
+})();
+</script>
