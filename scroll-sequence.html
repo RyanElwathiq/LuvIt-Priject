@@ -52,13 +52,29 @@
 
 <!-- ===== STYLES ===== -->
 <style>
+  /* Stop the full-bleed section (100vw) from producing a sideways scrollbar.
+     overflow-x only — the vertical scroll (and GSAP pinning) is untouched. */
+  html, body { overflow-x: hidden; }
+
   #hero-seq {
     /* Default = mobile teal, used for the very first paint before JS runs.
        JS overwrites this variable to match the active frame set. */
     --seq-bg: #298D94;
     background-color: var(--seq-bg);
+
+    /* ---- FULL-BLEED breakout ----
+       Elementor normally wraps this widget in a centred, max-width container
+       with side padding. These rules make the section span the ENTIRE viewport
+       width (100vw), escaping that container so there are NO turquoise side
+       gaps. calc(50% - 50vw) gives equal negative margins on both sides, so it
+       behaves identically in LTR and RTL. */
+    position: relative;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: 0;
     overflow-x: clip;          /* never let the pinned canvas cause sideways scroll */
-    margin: 0; padding: 0;
   }
 
   /* The pinned stage — exactly one viewport tall. 100svh dodges the mobile
@@ -113,8 +129,10 @@
   // edge of that set's LAST frame — the section background is set to it so the
   // blend into the page below stays seamless.
   var VARIANTS = {
-    mobile:  { base: "./frames/",         bg: "#298D94" }, // 3:4 portrait, 1080px
-    desktop: { base: "./frames-desktop/", bg: "#0B9198" }  // 16:9 wide,    1920px
+    // LIVE URLs on plasmajo.com. `base` MUST end with a slash; the code fetches
+    // `base + "manifest.json"` and `base + <frame file>` from these paths.
+    mobile:  { base: "https://plasmajo.com/wp-content/uploads/hero-seq/extracted/frames/",         bg: "#298D94" }, // 3:4 portrait, 1080px
+    desktop: { base: "https://plasmajo.com/wp-content/uploads/hero-seq/extracted/frames-desktop/", bg: "#0B9198" }  // 16:9 wide,    1920px
   };
 
   // Viewport width (CSS px) at/above which the DESKTOP set is used. Below it,
@@ -141,6 +159,16 @@
   // Lower FOCUS_Y toward 0.5 only if you'd rather center the vertical crop.
   var FOCUS_X = 0.5;
   var FOCUS_Y = 1.0;
+
+  // COVER_ZOOM — extra magnification applied ON TOP of the cover fit. 1.0 = pure
+  // cover (no extra zoom). Values > 1 scale every frame up and crop the outer
+  // edges inward, which trims the open-water margins that read as turquoise
+  // "bars" mid-scroll. The crop is centred horizontally (FOCUS_X) and taken off
+  // the TOP (FOCUS_Y), so the center-bottom products stay in view.
+  //   TO FINE-TUNE: change ONLY this number. Higher = more crop (fewer bars, but
+  //   the outer products in the final frame get clipped more). Try 1.10 / 1.12 /
+  //   1.15. 1.12 is a subtle starting point that keeps product labels readable.
+  var COVER_ZOOM = 1.12;
 
   var GSAP_URL = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js";
   var ST_URL   = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js";
@@ -207,7 +235,7 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, cw, ch);
 
-    var scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    var scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * COVER_ZOOM;
     var dw = img.naturalWidth * scale;
     var dh = img.naturalHeight * scale;
     var dx = (cw - dw) * FOCUS_X;   // <= 0: centred horizontal crop
