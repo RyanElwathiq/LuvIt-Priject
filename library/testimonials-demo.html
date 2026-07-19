@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUVIT — Testimonials (Liquid Glass v1)</title>
+<link rel="stylesheet" href="tokens.css">
+
+<!--
+  ============================================================================
+  >>> HOW TO ADD YOUR REAL TESTIMONIALS <<<
+  ============================================================================
+  Each testimonial is ONE <article class="luvit-testimonial"> inside the stack.
+  Copy the block, change the marked parts, and add ONE dot per card.
+
+  MARKED:   >> REAL PHOTO <<   >> REAL QUOTE <<   >> REAL NAME <<
+
+  THREE RULES:
+   1. Add ONE <button class="luvit-testimonials__dot"> per card. If the number
+      of dots doesn't match the number of cards, the dots go out of sync.
+   2. Avatar photos: square crop, ~200x200px, WebP. They render at 84px, so
+      anything bigger is wasted download.
+   3. Keep quotes to roughly 25 words. The card is a fixed height so every
+      card in the stack lines up — a much longer quote will overflow it.
+      Need longer? Raise --tst-h in tokens.css (it applies to all cards).
+
+  NO PHOTO? Delete the <img> line. The card still works.
+  ============================================================================
+-->
+<style>
+  body { margin:0; }
+  .demo-sec { padding: var(--space-9) var(--space-5); }
+  @media (min-width: 700px) { .demo-sec { padding: var(--space-9) var(--space-7); } }
+  .demo-wrap { max-width: var(--container-max); margin-inline: auto; }
+  .demo-light { background: var(--color-canvas); }
+  .demo-dark {
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(76,197,218,.28), rgba(76,197,218,0) 60%),
+      linear-gradient(180deg, #0C333C 0%, #124D5A 55%, #0B9198 100%);
+    color:#fff;
+  }
+  h2 { font-size: var(--text-h2); margin:0 0 var(--space-2); text-align:center; }
+  .demo-note { font-size: var(--text-body-sm); color: var(--color-ink-soft);
+    margin:0 auto var(--space-7); max-width:56ch; text-align:center; }
+  .demo-dark h2, .demo-dark .demo-note { color:#fff; }
+</style>
+</head>
+<body>
+
+<section class="demo-sec demo-light">
+  <div class="demo-wrap">
+    <h2>آراء عميلاتنا</h2>
+    <p class="demo-note">
+      اسحبي البطاقة الأمامية يمينًا أو يسارًا، أو استخدمي الأزرار والنقاط.
+      يعمل أيضًا بأسهم لوحة المفاتيح.
+    </p>
+
+    <div class="luvit-testimonials">
+      <div class="luvit-testimonials__stack">
+
+        <!-- ===== CARD 1 ===== -->
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <!-- >> REAL PHOTO << -->
+          <img class="luvit-testimonial__avatar" alt="صورة رنا" loading="lazy" decoding="async"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='200' height='200' fill='url(%23a)'/><circle cx='100' cy='78' r='34' fill='rgb(255,255,255)' opacity='.9'/><path d='M40 200c0-36 27-58 60-58s60 22 60 58z' fill='rgb(255,255,255)' opacity='.9'/></svg>">
+          <div class="luvit-testimonial__stars" aria-label="5 من 5">★★★★★</div>
+          <!-- >> REAL QUOTE << -->
+          <p class="luvit-testimonial__quote">
+            بشرتي كانت جافة جدًا وبعد أسبوعين من الروتين صار ملمسها أنعم بكثير.
+            أفضل شي إنه ما سبب لي أي تهيّج.
+          </p>
+          <!-- >> REAL NAME << -->
+          <p class="luvit-testimonial__author">رنا خ.</p>
+          <p class="luvit-testimonial__role">عمّان</p>
+        </article>
+
+        <!-- ===== CARD 2 ===== -->
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <img class="luvit-testimonial__avatar" alt="صورة ليان" loading="lazy" decoding="async"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='b' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='200' height='200' fill='url(%23b)'/><circle cx='100' cy='78' r='34' fill='rgb(255,255,255)' opacity='.92'/><path d='M40 200c0-36 27-58 60-58s60 22 60 58z' fill='rgb(255,255,255)' opacity='.92'/></svg>">
+          <div class="luvit-testimonial__stars" aria-label="5 من 5">★★★★★</div>
+          <p class="luvit-testimonial__quote">
+            طلبت وواصلني خلال يومين والدفع عند الاستلام سهّل الموضوع كثير.
+            السيروم صار أساسي عندي.
+          </p>
+          <p class="luvit-testimonial__author">ليان م.</p>
+          <p class="luvit-testimonial__role">إربد</p>
+        </article>
+
+        <!-- ===== CARD 3 ===== -->
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <img class="luvit-testimonial__avatar" alt="صورة سلمى" loading="lazy" decoding="async"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='c' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='200' height='200' fill='url(%23c)'/><circle cx='100' cy='78' r='34' fill='rgb(255,255,255)' opacity='.88'/><path d='M40 200c0-36 27-58 60-58s60 22 60 58z' fill='rgb(255,255,255)' opacity='.88'/></svg>">
+          <div class="luvit-testimonial__stars" aria-label="4 من 5">★★★★☆</div>
+          <p class="luvit-testimonial__quote">
+            المنظف لطيف جدًا وما بيشد البشرة بعد الغسيل.
+            بحب إنه الرغوة خفيفة وريحته هادئة.
+          </p>
+          <p class="luvit-testimonial__author">سلمى ع.</p>
+          <p class="luvit-testimonial__role">الزرقاء</p>
+        </article>
+
+        <!-- ===== CARD 4 ===== -->
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <img class="luvit-testimonial__avatar" alt="صورة دانا" loading="lazy" decoding="async"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='d' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(240,252,254)'/><stop offset='1' stop-color='rgb(116,214,231)'/></linearGradient></defs><rect width='200' height='200' fill='url(%23d)'/><circle cx='100' cy='78' r='34' fill='rgb(255,255,255)' opacity='.9'/><path d='M40 200c0-36 27-58 60-58s60 22 60 58z' fill='rgb(255,255,255)' opacity='.9'/></svg>">
+          <div class="luvit-testimonial__stars" aria-label="5 من 5">★★★★★</div>
+          <p class="luvit-testimonial__quote">
+            استخدمت الروتين الكامل لشهر والفرق واضح بالصور.
+            التغليف كمان مرتب وحلو كهدية.
+          </p>
+          <p class="luvit-testimonial__author">دانا ر.</p>
+          <p class="luvit-testimonial__role">العقبة</p>
+        </article>
+
+      </div>
+
+      <!-- Controls: ONE dot per card -->
+      <div class="luvit-testimonials__controls">
+        <button class="luvit-testimonials__btn" type="button" data-tst-prev aria-label="الرأي السابق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+
+        <div class="luvit-testimonials__dots" role="tablist" aria-label="اختيار الرأي">
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 1"></button>
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 2"></button>
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 3"></button>
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 4"></button>
+        </div>
+
+        <button class="luvit-testimonials__btn" type="button" data-tst-next aria-label="الرأي التالي">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Announces the current card to screen readers -->
+      <p class="luvit-sr-only" data-tst-live aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ON DARK WATER ===== -->
+<section class="demo-sec demo-dark">
+  <div class="demo-wrap">
+    <h2>على خلفية مائية</h2>
+    <p class="demo-note">أضيفي <code>luvit-testimonials--on-dark</code> لتفتيح الأزرار والنقاط.</p>
+
+    <div class="luvit-testimonials luvit-testimonials--on-dark">
+      <div class="luvit-testimonials__stack">
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <div class="luvit-testimonial__stars" aria-label="5 من 5">★★★★★</div>
+          <p class="luvit-testimonial__quote">بشرتي صارت أنعم خلال أسبوعين، وما سبب لي أي تهيّج.</p>
+          <p class="luvit-testimonial__author">رنا خ.</p>
+        </article>
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <div class="luvit-testimonial__stars" aria-label="5 من 5">★★★★★</div>
+          <p class="luvit-testimonial__quote">وصل خلال يومين والدفع عند الاستلام سهّل كل شي.</p>
+          <p class="luvit-testimonial__author">ليان م.</p>
+        </article>
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <div class="luvit-testimonial__stars" aria-label="4 من 5">★★★★☆</div>
+          <p class="luvit-testimonial__quote">المنظف لطيف جدًا وما بيشد البشرة بعد الغسيل.</p>
+          <p class="luvit-testimonial__author">سلمى ع.</p>
+        </article>
+      </div>
+
+      <div class="luvit-testimonials__controls">
+        <button class="luvit-testimonials__btn" type="button" data-tst-prev aria-label="الرأي السابق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="luvit-testimonials__dots" role="tablist" aria-label="اختيار الرأي">
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 1"></button>
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 2"></button>
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 3"></button>
+        </div>
+        <button class="luvit-testimonials__btn" type="button" data-tst-next aria-label="الرأي التالي">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+      </div>
+      <p class="luvit-sr-only" data-tst-live aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="motion.js"></script>
+</body>
+</html>

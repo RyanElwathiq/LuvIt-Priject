@@ -1603,3 +1603,847 @@ body.luvit-locked { overflow: hidden; }
   .luvit-drawer__link { transition: none; }
   .luvit-nav__drop.is-moving { transform: translateX(var(--drop-x, 0)); }
 }
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 4: FORMS  ("The Vessel")
+   --------------------------------------------------------------------------
+   An input is a vessel that fills with water. On focus a wavy aqua waterline
+   rises along the bottom edge — the SAME wave used by the card waterline and
+   the drawer, so forms belong to the same system.
+
+   RULES BAKED IN (these came from the UX guidelines, not from taste):
+     · font-size is 16px on controls. Below 16px, iOS Safari ZOOMS the whole
+       page every time a field is focused. This is the single most common
+       mobile form bug and it is invisible on desktop. Do not lower it.
+     · Labels are always VISIBLE. Placeholder-as-label is explicitly a fail.
+     · Errors use icon + text + colour, never colour alone, and are announced
+       via role="alert".
+     · Controls are 52px tall — comfortably past the 44px touch minimum.
+     · Focus rings are visible; never removed without a replacement.
+
+   See also the WooCommerce / CartFlows compatibility layer at the end of this
+   section: those plugins render their own markup, so the same look is mapped
+   onto their selectors.
+   ========================================================================== */
+
+:root {
+  --field-h:            52px;
+  --field-fs:           16px;   /* DO NOT go below 16px — iOS zoom */
+  --field-radius:       var(--radius-md);
+  --field-pad-x:        16px;
+  --field-bg:           #FFFFFF;
+  --field-bg-soft:      var(--color-mist);
+  /* Deliberately DARKER than --color-line. The page canvas (#FAFCFD) and a
+     white field are almost the same value, so a faint border left each input
+     with no edge of its own — two side-by-side fields read as one merged box.
+     This border is what gives each field its own boundary, and it also
+     satisfies the "inputs must look interactive" rule. */
+  --field-border:       #C7D7DD;
+  --field-border-hover: var(--aqua-300);
+  --field-border-focus: var(--aqua-500);
+  --field-placeholder:  var(--color-ink-faint);
+  --field-waterline-h:  14px;
+
+  /* VERTICAL RHYTHM — the two numbers must stay clearly different.
+     A label has to sit closer to ITS OWN input than fields sit to each other,
+     otherwise the eye groups the label with the field above it (proximity).
+     6px vs 24px reads correctly; 8px vs 24px was too close to call. */
+  --field-gap:    6px;                /* label -> its control -> its message */
+  --field-stack:  var(--space-5);     /* field -> next field  (24px)         */
+
+  /* Switch geometry — travel is derived, so changing the size can never
+     knock the drop out of the track again. */
+  --switch-w:      58px;
+  --switch-h:      32px;
+  --switch-drop:   26px;
+  --switch-travel: calc(var(--switch-w) - var(--switch-drop) - 6px);
+}
+
+/* --------------------------------------------------------------------------
+   FIELD WRAPPER — label + control + hint/error
+   -------------------------------------------------------------------------- */
+.luvit-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--field-gap);
+  margin-bottom: var(--field-stack);
+  /* CRITICAL — do not remove.
+     Grid/flex children default to min-width:auto, so they refuse to shrink
+     below their content's intrinsic width. An <input> carries a built-in
+     default width (~170-180px), so a two-field row demands ~360px and
+     OVERFLOWS its column instead of shrinking — spilling over whatever sits
+     beside it. width:100% cannot fix that, because the floor is min-width.
+     This one line is what keeps side-by-side fields inside their column. */
+  min-width: 0;
+}
+/* A field inside a side-by-side row must NOT also carry its own bottom
+   margin — the row's gap already spaces them. v1 applied both, which made
+   the rhythm jump wherever two fields sat together. */
+.luvit-form__row .luvit-field { margin-bottom: 0; }
+.luvit-field:last-child { margin-bottom: 0; }
+.luvit-field__label {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.luvit-field__req { color: var(--fuchsia-500); margin-inline-start: 2px; }
+.luvit-field__hint {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-faint);
+  margin: 0;
+}
+
+/* Error: icon + text + colour (never colour alone). */
+.luvit-field__error {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  color: var(--color-error-fg);
+}
+.luvit-field__error::before {
+  content: "!";
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-error-fg);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.luvit-field.is-invalid .luvit-field__error { display: flex; }
+
+.luvit-field__success {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--text-body-sm);
+  color: var(--color-success-fg);
+}
+.luvit-field__success::before { content: "✓"; font-weight: 700; }
+.luvit-field.is-valid .luvit-field__success { display: flex; }
+
+/* --------------------------------------------------------------------------
+   THE CONTROL — the vessel
+   -------------------------------------------------------------------------- */
+.luvit-field__control { position: relative; }
+
+.luvit-input,
+.luvit-textarea,
+.luvit-select {
+  width: 100%;
+  min-width: 0;               /* see the note on .luvit-field above */
+  max-width: 100%;
+  min-height: var(--field-h);
+  padding: 14px var(--field-pad-x);
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background-color: var(--field-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--field-fs);          /* 16px — see note above */
+  line-height: 1.4;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition:
+    border-color var(--duration-instant) var(--ease-out-soft),
+    box-shadow var(--duration-instant) var(--ease-out-soft),
+    background-color var(--duration-instant) var(--ease-out-soft);
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+.luvit-textarea { min-height: 120px; resize: vertical; }
+
+.luvit-input::placeholder,
+.luvit-textarea::placeholder { color: var(--field-placeholder); }
+
+.luvit-input:hover,
+.luvit-textarea:hover,
+.luvit-select:hover { border-color: var(--field-border-hover); }
+
+.luvit-input:focus,
+.luvit-textarea:focus,
+.luvit-select:focus {
+  outline: none;
+  border-color: var(--field-border-focus);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 3px var(--color-ring);
+}
+
+/* THE SIGNATURE — a wavy waterline rises along the bottom edge on focus. */
+.luvit-field__control::after {
+  content: "";
+  position: absolute;
+  left: 1.5px;
+  right: 1.5px;
+  bottom: 1.5px;
+  height: var(--field-waterline-h);
+  pointer-events: none;
+  border-radius: 0 0 calc(var(--field-radius) - 1px) calc(var(--field-radius) - 1px);
+  background: linear-gradient(180deg,
+    rgba(120, 215, 235, 0.30) 0%, rgba(41, 169, 192, 0.55) 100%);
+  -webkit-mask-image: var(--card-wave);
+          mask-image: var(--card-wave);
+  -webkit-mask-size: 120px 100%;
+          mask-size: 120px 100%;
+  -webkit-mask-repeat: repeat-x;
+          mask-repeat: repeat-x;
+  transform: translateY(100%);
+  opacity: 0;
+  transition:
+    transform 320ms var(--ease-out-soft),
+    opacity 320ms var(--ease-out-soft);
+}
+.luvit-field__control:focus-within::after { transform: translateY(0); opacity: 1; }
+
+/* Validation states */
+.luvit-field.is-invalid .luvit-input,
+.luvit-field.is-invalid .luvit-textarea,
+.luvit-field.is-invalid .luvit-select {
+  border-color: var(--color-error-fg);
+  background-color: var(--color-error-bg);
+}
+.luvit-field.is-invalid .luvit-field__control::after {
+  background: linear-gradient(180deg,
+    rgba(178, 75, 60, 0.28) 0%, rgba(178, 75, 60, 0.5) 100%);
+}
+.luvit-field.is-valid .luvit-input,
+.luvit-field.is-valid .luvit-textarea,
+.luvit-field.is-valid .luvit-select { border-color: var(--color-success-fg); }
+
+.luvit-input:disabled,
+.luvit-textarea:disabled,
+.luvit-select:disabled {
+  background-color: var(--field-bg-soft);
+  color: var(--color-ink-faint);
+  cursor: not-allowed;
+}
+
+/* ---- Select: custom arrow, RTL-aware side ---- */
+.luvit-select {
+  padding-inline-end: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%231E869C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 12px 8px;
+  background-position: right 16px center;
+}
+[dir="rtl"] .luvit-select { background-position: left 16px center; }
+
+/* ---- Input with a leading unit/prefix (e.g. phone country code) ---- */
+.luvit-field__control--prefix .luvit-input { padding-inline-start: 62px; }
+.luvit-field__prefix {
+  position: absolute;
+  inset-inline-start: 1.5px;
+  top: 1.5px;
+  bottom: 1.5px;
+  display: flex;
+  align-items: center;
+  padding-inline: 14px;
+  border-radius: var(--field-radius) 0 0 var(--field-radius);
+  color: var(--color-ink-soft);
+  font-family: var(--font-latin);
+  font-size: var(--field-fs);
+  pointer-events: none;
+  direction: ltr;
+}
+[dir="rtl"] .luvit-field__prefix { border-radius: 0 var(--field-radius) var(--field-radius) 0; }
+
+/* Phone numbers read LTR even inside Arabic copy. */
+.luvit-input[type="tel"],
+.luvit-input[inputmode="numeric"] { direction: ltr; text-align: start; }
+[dir="rtl"] .luvit-input[type="tel"],
+[dir="rtl"] .luvit-input[inputmode="numeric"] { text-align: right; }
+
+/* --------------------------------------------------------------------------
+   CHECKBOX + RADIO — the vessel fills with water
+   Native inputs kept (free accessibility + keyboard), visually replaced.
+   -------------------------------------------------------------------------- */
+.luvit-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 6px 0;
+  cursor: pointer;
+  font-size: var(--field-fs);
+  color: var(--color-ink);
+}
+/* Consecutive choices had no separation at all — their 44px rows simply
+   butted together, so a list of options read as one dense block. */
+.luvit-check + .luvit-check,
+.luvit-switch + .luvit-switch,
+.luvit-check + .luvit-switch,
+.luvit-switch + .luvit-check { margin-top: var(--space-2); }
+
+/* Space a group of choices from whatever follows it. */
+.luvit-check:last-of-type,
+.luvit-switch:last-of-type { margin-bottom: var(--space-2); }
+.luvit-check input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.luvit-check__box {
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  border: 1.5px solid var(--field-border);
+  border-radius: 8px;
+  background: var(--field-bg);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+  overflow: hidden;
+  transition: border-color 180ms var(--ease-out-soft);
+}
+.luvit-check--radio .luvit-check__box { border-radius: 50%; }
+
+/* The water that fills it — scales up from the centre like a droplet landing. */
+.luvit-check__box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  transform: scale(0);
+  transition: transform 260ms var(--nav-spring);
+}
+/* The tick surfaces after the water. */
+.luvit-check__box::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 8.5px;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg) scale(0);
+  transform-origin: center;
+  transition: transform 200ms var(--ease-out-soft) 80ms;
+}
+.luvit-check--radio .luvit-check__box::after {
+  top: 50%; left: 50%;
+  width: 8px; height: 8px;
+  margin: -4px 0 0 -4px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  transform: scale(0);
+}
+.luvit-check input:checked ~ .luvit-check__box { border-color: var(--aqua-600); }
+.luvit-check input:checked ~ .luvit-check__box::before { transform: scale(1); }
+.luvit-check input:checked ~ .luvit-check__box::after { transform: rotate(45deg) scale(1); }
+.luvit-check--radio input:checked ~ .luvit-check__box::after { transform: scale(1); }
+.luvit-check input:focus-visible ~ .luvit-check__box {
+  box-shadow: 0 0 0 3px var(--color-ring);
+}
+.luvit-check input:disabled ~ .luvit-check__box { background: var(--field-bg-soft); opacity: .6; }
+
+/* --------------------------------------------------------------------------
+   SWITCH — the droplet slides and MERGES into place
+   The gooey-toggle idea, without the SVG filter: two shapes, one squashing
+   as it travels, which reads as liquid at a fraction of the cost.
+   -------------------------------------------------------------------------- */
+.luvit-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  cursor: pointer;
+  font-size: var(--field-fs);
+  color: var(--color-ink);
+}
+.luvit-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.luvit-switch__track {
+  position: relative;
+  flex: none;
+  width: var(--switch-w);
+  height: var(--switch-h);
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+  box-shadow: inset 0 1px 3px rgba(12, 51, 60, 0.18);
+  transition: background-color 300ms var(--ease-out-soft);
+}
+.luvit-switch input:checked ~ .luvit-switch__track {
+  background-image: linear-gradient(180deg, var(--btn-fill-top), var(--btn-fill-bottom));
+}
+/* The drop is anchored to the OFF side and travels to the ON side.
+   In LTR that means: parked left, travels right.
+   In RTL it must be MIRRORED: parked right, travels left. v1 kept the drop
+   anchored physically left in RTL and then translated it -26px, which pushed
+   it to -23px — outside the track, on top of the label text. */
+.luvit-switch__drop {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: auto;
+  width: var(--switch-drop);
+  height: var(--switch-drop);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(12, 51, 60, 0.28), inset 0 1px 0 rgba(255,255,255,.9);
+  transition:
+    transform 380ms var(--nav-spring),
+    width 380ms var(--nav-spring);
+}
+[dir="rtl"] .luvit-switch__drop { left: auto; right: 3px; }
+
+.luvit-switch input:checked ~ .luvit-switch__track .luvit-switch__drop {
+  transform: translateX(var(--switch-travel));
+}
+[dir="rtl"] .luvit-switch input:checked ~ .luvit-switch__track .luvit-switch__drop {
+  transform: translateX(calc(var(--switch-travel) * -1));
+}
+/* Stretch while travelling — the "merge" read. It grows from the anchored
+   edge, so it still can't overflow the track on either side. */
+.luvit-switch:active .luvit-switch__drop { width: calc(var(--switch-drop) + 8px); }
+.luvit-switch input:focus-visible ~ .luvit-switch__track {
+  box-shadow: 0 0 0 3px var(--color-ring);
+}
+
+/* --------------------------------------------------------------------------
+   OPTION CARDS — big tappable choices (skin-type quiz)
+   -------------------------------------------------------------------------- */
+.luvit-optiongrid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+}
+.luvit-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 104px;
+  padding: var(--space-4);
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background: var(--field-bg);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color 200ms var(--ease-out-soft),
+    transform 200ms var(--ease-out-soft),
+    box-shadow 200ms var(--ease-out-soft);
+}
+.luvit-option input { position: absolute; opacity: 0; width: 0; height: 0; }
+.luvit-option__icon { font-size: 26px; line-height: 1; }
+.luvit-option__label { font-weight: 600; font-size: var(--text-body-sm); }
+
+/* Water rises from the bottom when chosen. */
+.luvit-option::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(180deg,
+    rgba(120, 215, 235, 0.16) 0%, rgba(41, 169, 192, 0.26) 100%);
+  transform: translateY(100%);
+  transition: transform 320ms var(--ease-out-soft);
+}
+.luvit-option { isolation: isolate; }
+.luvit-option:has(input:checked) {
+  border-color: var(--aqua-500);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), var(--shadow-md);
+}
+.luvit-option:has(input:checked)::after { transform: translateY(0); }
+.luvit-option:has(input:focus-visible) { box-shadow: 0 0 0 3px var(--color-ring); }
+.luvit-option:active { transform: scale(0.98); }
+
+/* Fallback for browsers without :has() — JS adds .is-checked instead. */
+.luvit-option.is-checked { border-color: var(--aqua-500); }
+.luvit-option.is-checked::after { transform: translateY(0); }
+
+/* --------------------------------------------------------------------------
+   FORM LAYOUT + SUBMIT STATE
+   -------------------------------------------------------------------------- */
+.luvit-form { max-width: 560px; }
+
+/* The row spaces its own children, and spaces itself from what follows —
+   so the rhythm stays identical whether a field is full-width or paired. */
+.luvit-form__row {
+  display: grid;
+  /* Same 24px as the vertical rhythm, so paired fields are separated exactly
+     as much as stacked ones — one uniform grid instead of two spacings. */
+  gap: var(--field-stack);
+  grid-template-columns: minmax(0, 1fr);
+  margin-bottom: var(--field-stack);
+}
+/* Belt and braces: nothing inside a row may set its own minimum width. */
+.luvit-form__row > * { min-width: 0; }
+.luvit-form { min-width: 0; }
+.luvit-fieldset { min-width: 0; }
+.luvit-form__row:last-child { margin-bottom: 0; }
+@media (min-width: 640px) {
+  .luvit-form__row--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.luvit-fieldset { border: 0; padding: 0; margin: 0 0 var(--space-6); }
+.luvit-fieldset__legend {
+  padding: 0;
+  margin-bottom: var(--space-3);
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+/* Submit feedback: loading state on our existing button. */
+.luvit-btn.is-loading { pointer-events: none; opacity: .85; }
+.luvit-btn.is-loading::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  margin-inline-start: 8px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: hero-seq-spin .7s linear infinite;
+  opacity: 1;
+  position: static;
+  transform: none;
+}
+.luvit-form__status {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-body-sm);
+}
+.luvit-form__status.is-success {
+  display: flex;
+  background: var(--color-success-bg);
+  color: var(--color-success-fg);
+}
+.luvit-form__status.is-error {
+  display: flex;
+  background: var(--color-error-bg);
+  color: var(--color-error-fg);
+}
+
+/* Forms placed on dark water sections. */
+.luvit-form--on-dark .luvit-field__label,
+.luvit-form--on-dark .luvit-fieldset__legend,
+.luvit-form--on-dark .luvit-check,
+.luvit-form--on-dark .luvit-switch { color: #fff; }
+.luvit-form--on-dark .luvit-field__hint { color: rgba(255,255,255,.72); }
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-field__control::after,
+  .luvit-check__box::before,
+  .luvit-check__box::after,
+  .luvit-switch__drop,
+  .luvit-option::after { transition: none; }
+}
+
+/* ==========================================================================
+   COMPATIBILITY LAYER — WooCommerce + CartFlows
+   --------------------------------------------------------------------------
+   Those plugins render their OWN form markup, so our .luvit-input class never
+   lands on their fields. This maps the same look onto the selectors they
+   actually output, so funnels and checkout match the rest of the site.
+
+   If a field still looks unstyled, inspect it and add its selector here —
+   that is the intended way to extend this block.
+   ========================================================================== */
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row textarea,
+.woocommerce form .form-row select,
+.wcf-embed-checkout-form input[type="text"],
+.wcf-embed-checkout-form input[type="email"],
+.wcf-embed-checkout-form input[type="tel"],
+.wcf-embed-checkout-form textarea,
+.wcf-embed-checkout-form select,
+.cartflows-container input[type="text"],
+.cartflows-container input[type="email"],
+.cartflows-container input[type="tel"],
+.cartflows-container select {
+  width: 100%;
+  min-height: var(--field-h);
+  padding: 14px var(--field-pad-x);
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background-color: var(--field-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--field-fs);          /* keeps iOS from zooming on their fields too */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: border-color var(--duration-instant) var(--ease-out-soft),
+              box-shadow var(--duration-instant) var(--ease-out-soft);
+}
+.woocommerce form .form-row input.input-text:focus,
+.woocommerce form .form-row textarea:focus,
+.woocommerce form .form-row select:focus,
+.wcf-embed-checkout-form input:focus,
+.wcf-embed-checkout-form textarea:focus,
+.wcf-embed-checkout-form select:focus,
+.cartflows-container input:focus,
+.cartflows-container select:focus {
+  outline: none;
+  border-color: var(--field-border-focus);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 3px var(--color-ring);
+}
+.woocommerce form .form-row label,
+.wcf-embed-checkout-form label,
+.cartflows-container label {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+/* Their validation states, mapped to our colours. */
+.woocommerce form .form-row.woocommerce-invalid input.input-text,
+.woocommerce form .form-row.woocommerce-invalid select {
+  border-color: var(--color-error-fg);
+  background-color: var(--color-error-bg);
+}
+.woocommerce form .form-row.woocommerce-validated input.input-text {
+  border-color: var(--color-success-fg);
+}
+/* Their buttons adopt our primary button. */
+.woocommerce button.button.alt,
+.woocommerce #place_order,
+.wcf-embed-checkout-form button[type="submit"],
+.cartflows-container button[type="submit"] {
+  min-height: var(--btn-min-height);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-image:
+    linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body);
+  box-shadow: var(--btn-shadow),
+              inset 0 1px 0 var(--btn-sheen-top),
+              inset 0 -1px 0 var(--btn-bezel-bottom);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 5: TESTIMONIALS  ("The Drift")
+   --------------------------------------------------------------------------
+   A stack of cards you can swipe away, like something floating past you in
+   water. Adapted from the framer-motion draggable stack, with two things that
+   reference did not have and that we cannot ship without:
+
+     1. KEYBOARD + BUTTON CONTROLS. A drag-only carousel is unusable for
+        anyone on a keyboard, and invisible to screen readers. Dragging is the
+        delight; the buttons are the actual interface.
+     2. RTL MIRRORING. The reference fans the cards to the right and advances
+        on drag-left. In Arabic both must mirror, or the stack fans off the
+        wrong edge and the gesture fights the reading direction.
+
+   Also: SOLID cards, not frosted. The reference uses backdrop-blur, but three
+   overlapping blurred cards would eat most of our glass budget in one
+   component. Add .luvit-testimonial--glass only if it sits alone on a page.
+   ========================================================================== */
+
+:root {
+  --tst-w:         330px;   /* card width  */
+  --tst-h:         430px;   /* card height */
+  --tst-fan-x:     26%;     /* sideways offset per step back  */
+  --tst-fan-rot:   6deg;    /* rotation per step back         */
+  --tst-duration:  350ms;
+}
+
+.luvit-testimonials {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+/* The stack is as wide as the card PLUS the fan, so the back cards have
+   somewhere to sit without overflowing the section. */
+.luvit-testimonials__stack {
+  position: relative;
+  width: min(100%, calc(var(--tst-w) + (var(--tst-w) * 0.52)));
+  height: var(--tst-h);
+  touch-action: pan-y;      /* let the page scroll vertically while we drag */
+}
+
+.luvit-testimonial {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--tst-w);
+  max-width: 100%;
+  height: var(--tst-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  text-align: center;
+
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
+  box-shadow: var(--card-shadow-hover), inset 0 1px 0 var(--card-sheen-top);
+
+  transform-origin: 50% 100%;   /* rotate about the base, like a floating card */
+  will-change: transform;
+  transition: transform var(--tst-duration) var(--ease-out-soft),
+              opacity var(--tst-duration) var(--ease-out-soft);
+}
+
+/* While the front card is being dragged we drive it from JS every frame, so
+   the transition must be off or it fights the pointer. */
+.luvit-testimonial.is-dragging { transition: none; }
+
+.luvit-testimonial--front { cursor: grab; }
+.luvit-testimonial--front:active { cursor: grabbing; }
+
+/* Cards behind the front one must not be reachable by tab or pointer. */
+.luvit-testimonial[aria-hidden="true"] { pointer-events: none; }
+
+/* Optional frosted variant — see the glass budget note above. */
+.luvit-testimonial--glass {
+  background: var(--glass-bg-strong);
+  border-color: var(--glass-border);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+          backdrop-filter: blur(var(--glass-blur));
+}
+
+/* ---- Card contents ---- */
+.luvit-testimonial__avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-mist);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 14px rgba(12, 51, 60, 0.18);
+  pointer-events: none;      /* never let the image start a native drag */
+}
+.luvit-testimonial__stars {
+  display: flex;
+  gap: 3px;
+  color: var(--aqua-500);
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+.luvit-testimonial__quote {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+}
+.luvit-testimonial__author {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.luvit-testimonial__role {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-faint);
+}
+
+/* A quiet quote mark behind the text, in pale aqua — kept subtle so it never
+   competes with the words. */
+.luvit-testimonial__mark {
+  position: absolute;
+  top: var(--space-4);
+  inset-inline-start: var(--space-5);
+  font-size: 46px;
+  line-height: 1;
+  color: var(--aqua-100);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- Controls ---- */
+.luvit-testimonials__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.luvit-testimonials__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid var(--aqua-300);
+  border-radius: 50%;
+  background: var(--color-paper);
+  color: var(--aqua-700);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--duration-instant) var(--ease-out-soft),
+              transform var(--duration-instant) var(--ease-out-soft);
+}
+.luvit-testimonials__btn:hover { background: var(--aqua-50); }
+.luvit-testimonials__btn:active { transform: scale(0.94); }
+.luvit-testimonials__btn svg { width: 20px; height: 20px; }
+
+.luvit-testimonials__dots { display: flex; gap: 8px; }
+.luvit-testimonials__dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--aqua-200);
+  cursor: pointer;
+  transition: background-color 200ms var(--ease-out-soft),
+              transform 200ms var(--ease-out-soft);
+}
+.luvit-testimonials__dot[aria-selected="true"] {
+  background: var(--aqua-500);
+  transform: scale(1.35);
+}
+
+/* Screen-reader-only live region announcing which card is showing. */
+.luvit-sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* On dark water sections. */
+.luvit-testimonials--on-dark .luvit-testimonials__btn {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.45);
+  color: #fff;
+}
+.luvit-testimonials--on-dark .luvit-testimonials__btn:hover { background: rgba(255,255,255,.22); }
+.luvit-testimonials--on-dark .luvit-testimonials__dot { background: rgba(255,255,255,.35); }
+.luvit-testimonials--on-dark .luvit-testimonials__dot[aria-selected="true"] { background: #fff; }
+
+@media (max-width: 480px) {
+  :root { --tst-w: 280px; --tst-h: 420px; --tst-fan-x: 18%; --tst-fan-rot: 4deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-testimonial { transition: none; }
+}

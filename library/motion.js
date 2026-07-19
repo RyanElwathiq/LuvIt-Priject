@@ -708,3 +708,335 @@ window.LUVIT.nav = {
   heroGuard: luvitNavHeroGuard,
   theme:     luvitNavTheme
 };
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 4: FORMS
+   --------------------------------------------------------------------------
+   Validation runs on BLUR, per the UX guidance: validating on every keystroke
+   nags while the user is still typing; validating only on submit tells them
+   too late. Once a field has been marked invalid it re-checks as they type,
+   so the error clears the moment it's fixed.
+
+   We use the browser's native constraint validation to DETECT problems
+   (checkValidity + the validity flags), because it honours type="email",
+   required, minlength and pattern without us re-implementing any of it.
+
+   But we write the MESSAGES ourselves, in Arabic. The browser's own
+   validationMessage is translated into the BROWSER's language, not the page's
+   — so an Arabic site viewed in an English-language browser shows
+   "Please include an '@' in the email address", which is wrong for this
+   audience. luvitErrorMessage() below maps each validity flag to Arabic
+   wording, and a data-error attribute on the field overrides it.
+   ========================================================================== */
+
+/* Arabic message per failure type. Override per field with data-error="...". */
+function luvitErrorMessage(control) {
+  var custom = control.getAttribute('data-error');
+  if (custom) return custom;
+
+  var v = control.validity;
+  if (!v) return 'هذا الحقل مطلوب';
+
+  if (v.valueMissing) {
+    if (control.type === 'checkbox' || control.type === 'radio') return 'الرجاء الاختيار';
+    if (control.tagName === 'SELECT') return 'الرجاء الاختيار من القائمة';
+    return 'هذا الحقل مطلوب';
+  }
+  if (v.typeMismatch) {
+    if (control.type === 'email') return 'الرجاء إدخال بريد إلكتروني صحيح';
+    if (control.type === 'url')   return 'الرجاء إدخال رابط صحيح';
+    return 'القيمة غير صحيحة';
+  }
+  if (v.patternMismatch) {
+    if (control.type === 'tel') return 'الرجاء إدخال رقم هاتف صحيح';
+    return 'الصيغة غير صحيحة';
+  }
+  if (v.tooShort)  return 'النص قصير جدًا — الحد الأدنى ' + control.minLength + ' حرفًا';
+  if (v.tooLong)   return 'النص طويل جدًا';
+  if (v.rangeUnderflow) return 'القيمة أقل من المسموح';
+  if (v.rangeOverflow)  return 'القيمة أكبر من المسموح';
+  if (v.stepMismatch)   return 'القيمة غير مسموحة';
+  if (v.badInput)       return 'القيمة غير صحيحة';
+  return 'القيمة غير صحيحة';
+}
+
+function luvitFieldOf(control) {
+  return control.closest ? control.closest('.luvit-field') : null;
+}
+
+function luvitSetFieldState(control, valid, message) {
+  var field = luvitFieldOf(control);
+  if (!field) return;
+
+  field.classList.toggle('is-invalid', !valid);
+  field.classList.toggle('is-valid', valid && control.value !== '');
+  control.setAttribute('aria-invalid', valid ? 'false' : 'true');
+
+  var err = field.querySelector('.luvit-field__error');
+  if (!err) return;
+
+  /* role="alert" makes screen readers announce it — a flagged High rule. */
+  if (!err.hasAttribute('role')) err.setAttribute('role', 'alert');
+  if (!valid) {
+    err.textContent = message || luvitErrorMessage(control);
+    if (!err.id) err.id = 'luvit-err-' + Math.round(performance.now()) + '-' + (control.name || 'f');
+    control.setAttribute('aria-describedby', err.id);
+  }
+}
+
+function luvitValidateControl(control) {
+  if (control.disabled || control.type === 'hidden') return true;
+  var ok = typeof control.checkValidity === 'function' ? control.checkValidity() : true;
+  /* Our Arabic wording, NOT control.validationMessage (browser-language). */
+  luvitSetFieldState(control, ok, ok ? '' : luvitErrorMessage(control));
+  return ok;
+}
+
+function luvitFormInit(form) {
+  form = typeof form === 'string' ? document.querySelector(form) : form;
+  if (!form || form.dataset.luvitForm === 'bound') return;
+  form.dataset.luvitForm = 'bound';
+
+  var controls = Array.prototype.slice.call(
+    form.querySelectorAll('.luvit-input, .luvit-textarea, .luvit-select')
+  );
+
+  controls.forEach(function (c) {
+    c.addEventListener('blur', function () { luvitValidateControl(c); });
+    /* Only re-check while typing AFTER it has already failed once. */
+    c.addEventListener('input', function () {
+      var f = luvitFieldOf(c);
+      if (f && f.classList.contains('is-invalid')) luvitValidateControl(c);
+    });
+  });
+
+  form.addEventListener('submit', function (e) {
+    var firstBad = null;
+    controls.forEach(function (c) {
+      if (!luvitValidateControl(c) && !firstBad) firstBad = c;
+    });
+    if (firstBad) {
+      e.preventDefault();
+      firstBad.focus();
+      firstBad.scrollIntoView({ block: 'center', behavior: LUVIT_REDUCED ? 'auto' : 'smooth' });
+      return;
+    }
+    /* Valid: show the loading state (flagged rule — never a silent submit). */
+    var btn = form.querySelector('button[type="submit"], .luvit-btn[type="submit"]');
+    if (btn) {
+      btn.classList.add('is-loading');
+      btn.setAttribute('aria-busy', 'true');
+    }
+  });
+
+  return { validate: function () { return controls.every(luvitValidateControl); } };
+}
+
+/* :has() fallback for the option cards — older browsers get .is-checked. */
+function luvitOptionCards(scope) {
+  scope = scope || document;
+  var opts = scope.querySelectorAll('.luvit-option input');
+  if (!opts.length) return;
+
+  function sync(input) {
+    var card = input.closest('.luvit-option');
+    if (!card) return;
+    if (input.type === 'radio' && input.name) {
+      document.querySelectorAll('input[name="' + input.name + '"]').forEach(function (o) {
+        var c = o.closest('.luvit-option');
+        if (c) c.classList.toggle('is-checked', o.checked);
+      });
+    } else {
+      card.classList.toggle('is-checked', input.checked);
+    }
+  }
+
+  Array.prototype.forEach.call(opts, function (input) {
+    input.addEventListener('change', function () { sync(input); });
+    sync(input);
+  });
+}
+
+/* Report the form's outcome without a page reload (AJAX submits etc.). */
+function luvitFormStatus(form, kind, message) {
+  form = typeof form === 'string' ? document.querySelector(form) : form;
+  if (!form) return;
+  var box = form.querySelector('.luvit-form__status');
+  var btn = form.querySelector('button[type="submit"], .luvit-btn[type="submit"]');
+  if (btn) { btn.classList.remove('is-loading'); btn.removeAttribute('aria-busy'); }
+  if (!box) return;
+  box.classList.remove('is-success', 'is-error');
+  box.classList.add(kind === 'error' ? 'is-error' : 'is-success');
+  box.setAttribute('role', 'status');
+  box.textContent = message || '';
+}
+
+function luvitFormsInit() {
+  document.querySelectorAll('.luvit-form').forEach(luvitFormInit);
+  luvitOptionCards();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitFormsInit);
+} else {
+  luvitFormsInit();
+}
+
+window.LUVIT.form = {
+  init:     luvitFormInit,
+  initAll:  luvitFormsInit,
+  validate: luvitValidateControl,
+  status:   luvitFormStatus,
+  optionCards: luvitOptionCards
+};
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 5: TESTIMONIALS  ("The Drift")
+   --------------------------------------------------------------------------
+   A swipeable stack of cards. Dragging is the delight; the buttons, dots and
+   keyboard are the actual interface — a drag-only carousel is unusable for
+   keyboard and screen-reader users, which is why the reference implementation
+   could not ship as-is.
+
+   RTL: the stack fans toward the trailing edge and "next" follows the reading
+   direction, both mirrored off LUVIT_RTL.
+
+   Performance: only the front card is driven per frame while dragging, and
+   only transform/opacity are touched.
+   ========================================================================== */
+
+var LUVIT_TST_THRESHOLD = 110;   /* px of drag needed to advance */
+
+function luvitTestimonials(root) {
+  root = typeof root === 'string' ? document.querySelector(root) : root;
+  if (!root || root.dataset.luvitTst === 'bound') return;
+
+  var stack = root.querySelector('.luvit-testimonials__stack');
+  if (!stack) return;
+
+  var cards = Array.prototype.slice.call(stack.querySelectorAll('.luvit-testimonial'));
+  if (cards.length < 2) return;
+  root.dataset.luvitTst = 'bound';
+
+  var dir = LUVIT_RTL ? -1 : 1;    /* fan direction: right in LTR, left in RTL */
+  var index = 0;                   /* which card is at the front */
+  var dots = Array.prototype.slice.call(root.querySelectorAll('.luvit-testimonials__dot'));
+  var live = root.querySelector('[data-tst-live]');
+
+  /* ---- Rendering: position every card by its distance from the front ---- */
+  function render(skipTransition) {
+    cards.forEach(function (card, i) {
+      var pos = (i - index + cards.length) % cards.length;   /* 0 = front */
+      var isFront = pos === 0;
+
+      if (skipTransition) card.classList.add('is-dragging');
+
+      if (pos > 2) {
+        /* Hidden behind the stack — parked, not painted. */
+        card.style.transform = 'translateX(' + (dir * 52) + '%) rotate(' + (dir * 9) + 'deg)';
+        card.style.opacity = '0';
+        card.style.zIndex = '0';
+      } else {
+        var x = dir * pos * parseFloat(getComputedStyle(root).getPropertyValue('--tst-fan-x') || 26);
+        var rot = (pos - 1) * parseFloat(getComputedStyle(root).getPropertyValue('--tst-fan-rot') || 6);
+        card.style.transform = 'translateX(' + x + '%) rotate(' + (dir * rot) + 'deg)';
+        card.style.opacity = '1';
+        card.style.zIndex = String(10 - pos);
+      }
+
+      card.classList.toggle('luvit-testimonial--front', isFront);
+      card.setAttribute('aria-hidden', isFront ? 'false' : 'true');
+      /* Only the front card's links/buttons are reachable by keyboard. */
+      card.querySelectorAll('a, button').forEach(function (el) {
+        if (el.closest('.luvit-testimonials__controls')) return;
+        el.tabIndex = isFront ? 0 : -1;
+      });
+
+      if (skipTransition) {
+        void card.offsetWidth;                 /* flush, then re-enable */
+        card.classList.remove('is-dragging');
+      }
+    });
+
+    dots.forEach(function (d, i) {
+      d.setAttribute('aria-selected', i === index ? 'true' : 'false');
+    });
+    if (live) live.textContent = 'رأي ' + (index + 1) + ' من ' + cards.length;
+  }
+
+  function go(step) {
+    index = (index + step + cards.length) % cards.length;
+    render();
+  }
+
+  /* ---- Drag (pointer events: mouse + touch + pen in one path) ---- */
+  var startX = 0, dragging = false, current = null;
+
+  stack.addEventListener('pointerdown', function (e) {
+    var card = e.target.closest('.luvit-testimonial');
+    if (!card || !card.classList.contains('luvit-testimonial--front')) return;
+    if (LUVIT_REDUCED) return;              /* buttons still work */
+    dragging = true;
+    current = card;
+    startX = e.clientX;
+    card.classList.add('is-dragging');
+    card.setPointerCapture && card.setPointerCapture(e.pointerId);
+  });
+
+  stack.addEventListener('pointermove', function (e) {
+    if (!dragging || !current) return;
+    var dx = e.clientX - startX;
+    /* Follow the finger, with a little tilt — like a card slipping in water. */
+    current.style.transform =
+      'translateX(calc(' + dx + 'px)) rotate(' + (dx * 0.04) + 'deg)';
+    current.style.opacity = String(Math.max(0.35, 1 - Math.abs(dx) / 420));
+  });
+
+  function endDrag(e) {
+    if (!dragging || !current) return;
+    var dx = (e.clientX || startX) - startX;
+    current.classList.remove('is-dragging');
+    dragging = false;
+
+    if (Math.abs(dx) > LUVIT_TST_THRESHOLD) {
+      /* Dragging against the reading direction goes forward. */
+      go(dx * dir < 0 ? 1 : -1);
+    } else {
+      render();                              /* snap back */
+    }
+    current = null;
+  }
+  stack.addEventListener('pointerup', endDrag);
+  stack.addEventListener('pointercancel', endDrag);
+  stack.addEventListener('pointerleave', endDrag);
+
+  /* ---- Buttons ---- */
+  var next = root.querySelector('[data-tst-next]');
+  var prev = root.querySelector('[data-tst-prev]');
+  if (next) next.addEventListener('click', function () { go(1); });
+  if (prev) prev.addEventListener('click', function () { go(-1); });
+  dots.forEach(function (d, i) {
+    d.addEventListener('click', function () { index = i; render(); });
+  });
+
+  /* ---- Keyboard: arrows move the stack when it has focus ---- */
+  root.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { go(LUVIT_RTL ? -1 : 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { go(LUVIT_RTL ? 1 : -1); e.preventDefault(); }
+  });
+
+  render(true);
+  return { next: function () { go(1); }, prev: function () { go(-1); } };
+}
+
+function luvitTestimonialsInit() {
+  document.querySelectorAll('.luvit-testimonials').forEach(luvitTestimonials);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitTestimonialsInit);
+} else {
+  luvitTestimonialsInit();
+}
+
+window.LUVIT.testimonials = { init: luvitTestimonials, initAll: luvitTestimonialsInit };

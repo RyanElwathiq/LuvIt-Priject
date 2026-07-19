@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUVIT — Forms (Liquid Glass v1)</title>
+<link rel="stylesheet" href="tokens.css">
+
+<!--
+  ============================================================================
+  >>> HOW TO USE THESE FORMS <<<
+  ============================================================================
+  EVERY field follows the same shape. Copy this block and change the parts
+  marked with  >> CHANGE <<  :
+
+    <div class="luvit-field">
+      <label class="luvit-field__label" for="UNIQUE_ID">        >> CHANGE <<
+        الاسم <span class="luvit-field__req">*</span>
+      </label>
+      <div class="luvit-field__control">
+        <input class="luvit-input" id="UNIQUE_ID" name="NAME"   >> CHANGE <<
+               type="text" autocomplete="name" required>
+      </div>
+      <p class="luvit-field__hint">نص مساعد اختياري</p>
+      <p class="luvit-field__error"></p>   <!-- leave EMPTY: filled by JS -->
+    </div>
+
+  FOUR RULES THAT MATTER (they are not decoration):
+   1. `for` on the label MUST match `id` on the input. Without it the label
+      isn't connected and screen readers can't announce the field.
+   2. Keep <p class="luvit-field__error"></p> empty — motion.js writes the
+      browser's own Arabic error message into it and announces it.
+   3. Use the right `type` / `inputmode` so phones show the right keyboard:
+        email -> type="email"        phone -> type="tel" inputmode="numeric"
+   4. Add `autocomplete` (name, email, tel, street-address...) so the
+      browser can autofill. Do NOT set autocomplete="off".
+
+  NEVER lower the input font-size below 16px: iOS Safari zooms the whole page
+  when you focus a smaller field. It's set once in tokens.css (--field-fs).
+  ============================================================================
+-->
+<style>
+  body { margin:0; background: var(--color-canvas); }
+  /* The 20px --container-gutter left the right-hand column (the form, in RTL)
+     jammed against the viewport edge. Give the page real side margins. */
+  .demo-sec { padding: var(--space-8) var(--space-5); }
+  @media (min-width: 700px)  { .demo-sec { padding: var(--space-8) var(--space-7); } }
+  @media (min-width: 1150px) { .demo-sec { padding: var(--space-9) var(--space-8); } }
+  .demo-wrap { max-width: var(--container-max); margin-inline: auto; }
+  .demo-dark {
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(76,197,218,.28), rgba(76,197,218,0) 60%),
+      linear-gradient(180deg, #0C333C 0%, #124D5A 55%, #0B9198 100%);
+    color:#fff;
+  }
+  h2 { font-size: var(--text-h3); margin:0 0 var(--space-2); }
+  .demo-note { font-size: var(--text-body-sm); color: var(--color-ink-soft);
+    margin:0 0 var(--space-6); max-width:62ch; }
+  .demo-dark h2, .demo-dark .demo-note { color:#fff; }
+  /* Two columns only when there is genuinely room for two forms side by side.
+     At 900px each column was ~400px, which squeezed both. 1150px + a wider
+     gutter gives each side real breathing room. */
+  .demo-grid { display:grid; gap:var(--space-9); }
+  @media (min-width: 1150px) {
+    .demo-grid { grid-template-columns: 1fr 1fr; gap: var(--space-10); }
+  }
+  .demo-grid > * { min-width: 0; }
+</style>
+</head>
+<body>
+
+<section class="demo-sec">
+  <div class="demo-wrap">
+    <h2>النماذج — Forms</h2>
+    <p class="demo-note">
+      جرّبي: اتركي حقلًا مطلوبًا فارغًا ثم انتقلي منه (Tab) — تظهر رسالة الخطأ
+      بأيقونة ونص، لا بلون فقط. عند التركيز على أي حقل يرتفع «خط الماء» المموّج أسفله.
+    </p>
+
+    <div class="demo-grid">
+
+      <!-- ============ CONTACT FORM ============ -->
+      <form class="luvit-form" novalidate>
+        <fieldset class="luvit-fieldset">
+          <legend class="luvit-fieldset__legend">تواصلي معنا</legend>
+
+          <div class="luvit-form__row luvit-form__row--2">
+            <div class="luvit-field">
+              <label class="luvit-field__label" for="f-name">
+                الاسم <span class="luvit-field__req" aria-hidden="true">*</span>
+              </label>
+              <div class="luvit-field__control">
+                <input class="luvit-input" id="f-name" name="name" type="text"
+                       autocomplete="name" required placeholder="مثال: سارة">
+              </div>
+              <p class="luvit-field__error"></p>
+            </div>
+
+            <div class="luvit-field">
+              <label class="luvit-field__label" for="f-email">
+                البريد الإلكتروني <span class="luvit-field__req" aria-hidden="true">*</span>
+              </label>
+              <div class="luvit-field__control">
+                <input class="luvit-input" id="f-email" name="email" type="email"
+                       autocomplete="email" required placeholder="name@example.com">
+              </div>
+              <p class="luvit-field__error"></p>
+            </div>
+          </div>
+
+          <!-- Phone: numeric keypad on mobile, LTR digits inside Arabic -->
+          <div class="luvit-field">
+            <label class="luvit-field__label" for="f-phone">
+              رقم الهاتف <span class="luvit-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="luvit-field__control luvit-field__control--prefix">
+              <span class="luvit-field__prefix">+962</span>
+              <input class="luvit-input" id="f-phone" name="phone" type="tel"
+                     inputmode="numeric" autocomplete="tel" required
+                     pattern="[0-9]{9,10}" placeholder="7XXXXXXXX">
+            </div>
+            <p class="luvit-field__hint">٩ أرقام بعد مفتاح الدولة</p>
+            <p class="luvit-field__error"></p>
+          </div>
+
+          <div class="luvit-field">
+            <label class="luvit-field__label" for="f-topic">الموضوع</label>
+            <div class="luvit-field__control">
+              <select class="luvit-select" id="f-topic" name="topic">
+                <option value="">اختاري…</option>
+                <option>استفسار عن منتج</option>
+                <option>حالة الطلب</option>
+                <option>الشحن والتوصيل</option>
+                <option>أخرى</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="luvit-field">
+            <label class="luvit-field__label" for="f-msg">
+              رسالتك <span class="luvit-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="luvit-field__control">
+              <textarea class="luvit-textarea" id="f-msg" name="message"
+                        required minlength="10" placeholder="كيف نقدر نساعدك؟"></textarea>
+            </div>
+            <p class="luvit-field__error"></p>
+          </div>
+
+          <label class="luvit-check">
+            <input type="checkbox" name="news">
+            <span class="luvit-check__box" aria-hidden="true"></span>
+            <span>أرغب باستلام العروض والنصائح عبر البريد</span>
+          </label>
+
+          <button class="luvit-btn" type="submit" style="margin-top:var(--space-5)">إرسال</button>
+          <p class="luvit-form__status"></p>
+        </fieldset>
+      </form>
+
+      <!-- ============ CHOICE CONTROLS ============ -->
+      <div>
+        <form class="luvit-form" novalidate>
+          <fieldset class="luvit-fieldset">
+            <legend class="luvit-fieldset__legend">الاختيارات</legend>
+
+            <p class="luvit-field__label" style="margin-bottom:var(--space-2)">نوع البشرة (radio)</p>
+            <label class="luvit-check luvit-check--radio">
+              <input type="radio" name="skin" value="oily" checked>
+              <span class="luvit-check__box" aria-hidden="true"></span><span>دهنية</span>
+            </label>
+            <label class="luvit-check luvit-check--radio">
+              <input type="radio" name="skin" value="dry">
+              <span class="luvit-check__box" aria-hidden="true"></span><span>جافة</span>
+            </label>
+            <label class="luvit-check luvit-check--radio">
+              <input type="radio" name="skin" value="combo">
+              <span class="luvit-check__box" aria-hidden="true"></span><span>مختلطة</span>
+            </label>
+
+            <p class="luvit-field__label" style="margin:var(--space-5) 0 var(--space-2)">التفضيلات (checkbox)</p>
+            <label class="luvit-check">
+              <input type="checkbox" checked>
+              <span class="luvit-check__box" aria-hidden="true"></span><span>خالٍ من العطور</span>
+            </label>
+            <label class="luvit-check">
+              <input type="checkbox">
+              <span class="luvit-check__box" aria-hidden="true"></span><span>مناسب للبشرة الحسّاسة</span>
+            </label>
+
+            <p class="luvit-field__label" style="margin:var(--space-5) 0 var(--space-2)">مفتاح (switch)</p>
+            <label class="luvit-switch">
+              <input type="checkbox" checked>
+              <span class="luvit-switch__track" aria-hidden="true"><span class="luvit-switch__drop"></span></span>
+              <span>تفعيل الدفع عند الاستلام</span>
+            </label>
+          </fieldset>
+        </form>
+
+        <!-- ============ OPTION CARDS (quiz) ============ -->
+        <h2 style="font-size:var(--text-h4); margin-top:var(--space-7)">بطاقات الاختيار — للاختبار</h2>
+        <p class="demo-note">أهداف كبيرة سهلة اللمس؛ الماء يرتفع داخل البطاقة المختارة.</p>
+        <div class="luvit-optiongrid">
+          <label class="luvit-option">
+            <input type="radio" name="goal" value="hydration" checked>
+            <span class="luvit-option__icon" aria-hidden="true">💧</span>
+            <span class="luvit-option__label">ترطيب</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="goal" value="glow">
+            <span class="luvit-option__icon" aria-hidden="true">✦</span>
+            <span class="luvit-option__label">إشراقة</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="goal" value="acne">
+            <span class="luvit-option__icon" aria-hidden="true">◇</span>
+            <span class="luvit-option__label">حبوب</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="goal" value="calm">
+            <span class="luvit-option__icon" aria-hidden="true">✿</span>
+            <span class="luvit-option__label">تهدئة</span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ON DARK WATER (newsletter / funnel style) ============ -->
+<section class="demo-sec demo-dark">
+  <div class="demo-wrap">
+    <h2>نموذج على خلفية مائية</h2>
+    <p class="demo-note">أضيفي <code>luvit-form--on-dark</code> لتفتيح التسميات.</p>
+
+    <form class="luvit-form luvit-form--on-dark" novalidate>
+      <div class="luvit-form__row luvit-form__row--2">
+        <div class="luvit-field">
+          <label class="luvit-field__label" for="n-email">بريدك الإلكتروني</label>
+          <div class="luvit-field__control">
+            <input class="luvit-input" id="n-email" name="email" type="email"
+                   autocomplete="email" required placeholder="name@example.com">
+          </div>
+          <p class="luvit-field__error"></p>
+        </div>
+        <div class="luvit-field">
+          <label class="luvit-field__label" for="n-name">اسمك</label>
+          <div class="luvit-field__control">
+            <input class="luvit-input" id="n-name" name="name" type="text" autocomplete="given-name">
+          </div>
+          <p class="luvit-field__error"></p>
+        </div>
+      </div>
+      <button class="luvit-btn luvit-btn--arrow" type="submit">اشتركي الآن</button>
+      <p class="luvit-form__status"></p>
+    </form>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="motion.js"></script>
+
+<!-- DEMO ONLY: fake a successful submit so you can see the loading -> success
+     flow without a server. On the real site, remove this. -->
+<script>
+  document.querySelectorAll('.luvit-form').forEach(function (f) {
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      /* motion.js has already validated by now and flagged any bad fields.
+         Bail out here too, otherwise an invalid form would still "succeed". */
+      if (f.querySelector('.luvit-field.is-invalid')) return;
+      setTimeout(function () {
+        LUVIT.form.status(f, 'success', 'تم الإرسال بنجاح — سنتواصل معك قريبًا.');
+      }, 1200);
+    });
+  });
+</script>
+</body>
+</html>
