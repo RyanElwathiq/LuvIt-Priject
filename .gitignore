@@ -6,3 +6,8 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 .DS_Store
+
+# Upload bundles — temporary zips made for uploading frames to WordPress.
+# The frames themselves are already tracked, so these are disposable.
+hero-seq.zip.zip
+*.zip

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUVIT — Button (Liquid Glass v1)</title>
+
+<!-- The REAL project files, so this demo tests exactly what ships. -->
+<link rel="stylesheet" href="tokens.css">
+
+<style>
+  /* ---- demo page chrome only (NOT part of the component) ---- */
+  body { margin: 0; }
+  .demo-sec { padding: var(--space-8) var(--container-gutter); }
+
+  .demo-light { background: var(--color-canvas); }
+
+  /* Dark "underwater" band — same teal family as the hero hand-off. */
+  .demo-dark {
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(76,197,218,.28), rgba(76,197,218,0) 60%),
+      linear-gradient(180deg, #0C333C 0%, #124D5A 55%, #0B9198 100%);
+    color: #fff;
+  }
+  .demo-dark h2, .demo-dark .demo-note { color: #fff; }
+
+  .demo-wrap { max-width: var(--container-max); margin-inline: auto; }
+  .demo-row {
+    display: flex; flex-wrap: wrap; gap: var(--space-4);
+    align-items: center; margin-bottom: var(--space-6);
+  }
+  h2 { font-size: var(--text-h3); margin: 0 0 var(--space-2); }
+  .demo-note {
+    font-size: var(--text-body-sm); color: var(--color-ink-soft);
+    margin: 0 0 var(--space-5); max-width: 60ch;
+  }
+  .demo-label {
+    font-family: var(--font-latin); font-size: var(--text-caption);
+    letter-spacing: var(--tracking-caption); text-transform: uppercase;
+    opacity: .65; width: 100%; margin-bottom: calc(var(--space-2) * -1);
+  }
+  .demo-hint {
+    font-size: var(--text-body-sm); opacity: .8;
+    border-top: 1px solid var(--color-line); padding-top: var(--space-4);
+  }
+  .demo-dark .demo-hint { border-color: rgba(255,255,255,.25); }
+</style>
+</head>
+<body>
+
+<!-- ===================== LIGHT BACKGROUND ===================== -->
+<section class="demo-sec demo-light">
+  <div class="demo-wrap">
+    <h2>على خلفية فاتحة — Light background</h2>
+    <p class="demo-note">
+      الزر الأساسي مملوء بتدرّج «الماء العميق» مع لمعة سطح خفيفة.
+      مرّري الماوس فوقه على الكمبيوتر لترى الارتفاع والوميض،
+      واضغطي في أي مكان داخل الزر لترى فقاعة الضغط تنطلق من نقطة اللمس.
+    </p>
+
+    <div class="demo-row">
+      <span class="demo-label">Primary</span>
+      <a href="#" class="luvit-btn">تسوّقي الآن</a>
+      <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+      <a href="#" class="luvit-btn luvit-btn--arrow">اكتشفي روتينك</a>
+      <button type="button" class="luvit-btn" disabled>غير متاح</button>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-label">Ghost</span>
+      <a href="#" class="luvit-btn luvit-btn--ghost">تعرّفي علينا</a>
+      <button type="button" class="luvit-btn luvit-btn--ghost">كل المنتجات</button>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-label">Pair — primary leads, ghost supports</span>
+      <a href="#" class="luvit-btn luvit-btn--arrow">ابدئي الآن</a>
+      <a href="#" class="luvit-btn luvit-btn--ghost">المزيد</a>
+    </div>
+
+    <p class="demo-hint">
+      ✓ تباين النص الأبيض على الزر ≈ 6:1 (يتجاوز معيار WCAG AA)&nbsp; ·&nbsp;
+      ✓ ارتفاع 48px (أكبر من الحد الأدنى 44px للمس)&nbsp; ·&nbsp;
+      ✓ الحركة على transform/opacity فقط
+    </p>
+  </div>
+</section>
+
+<!-- ===================== DARK / UNDERWATER BACKGROUND ===================== -->
+<section class="demo-sec demo-dark">
+  <div class="demo-wrap">
+    <h2>على خلفية مائية داكنة — Dark water background</h2>
+    <p class="demo-note">
+      نفس الأزرار فوق خلفية الهيرو. لاحظي أن النسخة الشبحية تستخدم
+      <code>luvit-btn--on-dark</code> لتبقى واضحة على الماء الداكن.
+    </p>
+
+    <div class="demo-row">
+      <span class="demo-label">Primary</span>
+      <a href="#" class="luvit-btn">تسوّقي الآن</a>
+      <a href="#" class="luvit-btn luvit-btn--arrow">اكتشفي روتينك</a>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-label">Ghost on dark</span>
+      <a href="#" class="luvit-btn luvit-btn--ghost luvit-btn--on-dark">تعرّفي علينا</a>
+      <a href="#" class="luvit-btn luvit-btn--ghost luvit-btn--on-dark">كل المنتجات</a>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-label">Ghost (light variant) — for comparison only</span>
+      <a href="#" class="luvit-btn luvit-btn--ghost">نسخة فاتحة</a>
+    </div>
+
+    <p class="demo-hint">
+      جرّبي الضغط في زوايا مختلفة من الزر — الفقاعة تنطلق دائمًا من نقطة اللمس.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== LTR CHECK ===================== -->
+<section class="demo-sec demo-light" dir="ltr" lang="en">
+  <div class="demo-wrap">
+    <h2>LTR check — arrow &amp; sweep flip direction</h2>
+    <p class="demo-note">
+      Same components in left-to-right. The arrow points right and the light
+      sweep travels the other way, so the system reads correctly in both
+      directions.
+    </p>
+    <div class="demo-row">
+      <a href="#" class="luvit-btn">Shop now</a>
+      <a href="#" class="luvit-btn luvit-btn--arrow">Discover your routine</a>
+      <a href="#" class="luvit-btn luvit-btn--ghost">About us</a>
+    </div>
+  </div>
+</section>
+
+<!-- GSAP must load BEFORE motion.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="motion.js"></script>
+</body>
+</html>

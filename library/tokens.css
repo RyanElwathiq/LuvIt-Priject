@@ -1,0 +1,525 @@
+/* ==========================================================================
+   LUVIT Jordan — Design Tokens  (v2)
+   Soft Clinical Luxury — advisory skincare, RTL Arabic-first
+   Brand turquoise: #4CC5DA (logo) · Primary UI: #29A9C0
+
+   v2 additions:
+   - Glassmorphism tokens + .luvit-glass (matches brand's glass-circle look)
+   - Water gradient background helper (.luvit-water-bg)
+   - Ready utility classes: buttons, cards, badges (usable from Elementor)
+   - Accessibility: focus-visible ring, ::selection, reduced-motion
+   - Skeleton shimmer for loading states
+   Paste the whole file into WPCode → CSS Snippet → Site Wide Header.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Jost:wght@400;500;600&display=swap');
+
+:root {
+  /* ---- Color · Neutrals (cool, subtly blue — matches aqua brand) ---- */
+  --color-paper:      #FFFFFF;
+  --color-canvas:     #FAFCFD;
+  --color-mist:       #F2F7F9;
+  --color-ink:        #1A2529;
+  --color-ink-soft:   #47555B;
+  --color-ink-faint:  #869399;
+  --color-line:       #E1E9EC;
+  --color-line-soft:  #EDF2F4;
+
+  /* ---- Color · Aqua (brand core — built around logo #4CC5DA) ---- */
+  --aqua-50:  #EAFAFD;
+  --aqua-100: #D0F3F9;
+  --aqua-200: #A6E7F1;
+  --aqua-300: #74D6E7;
+  --aqua-400: #4CC5DA;  /* exact logo turquoise */
+  --aqua-500: #29A9C0;  /* primary (buttons, links) */
+  --aqua-600: #1E869C;  /* primary hover / active */
+  --aqua-700: #196B7D;
+  --aqua-800: #124D5A;
+  --aqua-900: #0C333C;
+
+  /* ---- Hero scroll-sequence hand-off (sampled from the underwater video's
+     last frame bottom edge — used as background-color on the hero section AND
+     the section directly below it, so the video blends seamlessly into the page.
+     Two values because the mobile (portrait) and desktop (widescreen) sequences
+     end on slightly different water tones. ---- */
+  --seq-blend-mobile:  #298D94;
+  --seq-blend-desktop: #0B9198;
+
+  --color-primary:       var(--aqua-500);
+  --color-primary-hover: var(--aqua-600);
+  --color-on-primary:    #FFFFFF;
+  --color-ring:          rgba(41, 169, 192, 0.35);
+
+  /* ---- Color · Fuchsia accent (from brand social designs)
+     ONLY for a single highlight word or a secondary CTA. Never a surface. ---- */
+  --fuchsia-400: #E14A9B;
+  --fuchsia-500: #D02D86;
+  --fuchsia-600: #B01F6E;
+
+  /* ---- Color · Soft category tints (quiz badges, skin-type tags) ---- */
+  --tint-oily-bg:      var(--aqua-100);
+  --tint-oily-fg:      var(--aqua-700);
+  --tint-dry-bg:       #F6EDE3;
+  --tint-dry-fg:       #A9825A;
+  --tint-combo-bg:     #EEF3E7;
+  --tint-combo-fg:     #6E8256;
+  --tint-sensitive-bg: #F7ECEC;
+  --tint-sensitive-fg: #B17272;
+
+  /* ---- Color · Semantic (muted, never harsh) ---- */
+  --color-success-bg: #EAF5EF;
+  --color-success-fg: #3F8F72;
+  --color-error-bg:   #FBEDEA;
+  --color-error-fg:   #B24B3C;
+  --color-info-bg:    var(--aqua-50);
+  --color-info-fg:    var(--aqua-600);
+
+  /* ---- Glass (brand's glass-circle aesthetic) ---- */
+  --glass-bg:     rgba(255, 255, 255, 0.45);
+  --glass-bg-strong: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-blur:   14px;
+  --glass-shadow: 0 12px 32px rgba(12, 51, 60, 0.10);
+
+  /* ---- Typography ---- */
+  --font-heading: 'El Messiri', 'Segoe UI', Tahoma, sans-serif;
+  --font-body:    'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  --font-latin:   'Jost', 'Segoe UI', sans-serif;
+
+  --text-display: clamp(2.25rem, 1.6rem + 3vw, 4rem);
+  --text-h1:      clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem);
+  --text-h2:      clamp(1.5rem, 1.3rem + 1vw, 2.125rem);
+  --text-h3:      clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-h4:      1.125rem;
+  --text-body-lg: 1.125rem;
+  --text-body:    1rem;
+  --text-body-sm: 0.875rem;
+  --text-caption: 0.75rem;
+
+  --leading-heading: 1.25;
+  --leading-body:    1.7;
+  --tracking-caption: 0.06em; /* Latin captions only — never on Arabic */
+
+  /* ---- Spacing · 4px grid ---- */
+  --space-1: 0.25rem;  --space-2: 0.5rem;  --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.5rem;  --space-6: 2rem;
+  --space-7: 3rem;     --space-8: 4rem;    --space-9: 6rem;
+  --space-10: 8rem;    --space-11: 10rem;
+
+  --container-max: 1200px;
+  --container-gutter: 20px;
+
+  /* ---- Radius ---- */
+  --radius-sm:   8px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-pill: 999px;
+
+  /* ---- Shadow · soft, aqua-tinted ---- */
+  --shadow-sm: 0 1px 2px rgba(12, 51, 60, 0.04);
+  --shadow-md: 0 8px 24px rgba(12, 51, 60, 0.08);
+  --shadow-lg: 0 24px 48px rgba(12, 51, 60, 0.12);
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out-soft: cubic-bezier(0.16, 0.4, 0.3, 1);
+  --duration-instant: 180ms;
+  --duration-reveal: 450ms;
+}
+
+/* ---- Base RTL setup ---- */
+html { direction: rtl; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--color-ink);
+  background: var(--color-paper);
+}
+
+h1, h2, h3, h4, .luvit-heading {
+  font-family: var(--font-heading);
+  line-height: var(--leading-heading);
+  font-weight: 700;
+  text-wrap: balance;
+  color: var(--color-ink);
+}
+
+.luvit-eyebrow {
+  font-family: var(--font-latin);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--aqua-600);
+}
+
+/* ==========================================================================
+   v2 — Utility classes (add these class names in Elementor → Advanced → CSS Classes)
+   ========================================================================== */
+
+/* Primary pill button */
+.luvit-btn {
+  display: inline-block;
+  background: var(--color-primary);
+  color: var(--color-on-primary) !important;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body);
+  padding: 14px 32px;
+  border-radius: var(--radius-pill);
+  border: 0;
+  cursor: pointer;
+  transition: background var(--duration-instant) var(--ease-out-soft),
+              transform var(--duration-instant) var(--ease-out-soft),
+              box-shadow var(--duration-instant) var(--ease-out-soft);
+  box-shadow: var(--shadow-sm);
+}
+.luvit-btn:hover  { background: var(--color-primary-hover); box-shadow: var(--shadow-md); }
+.luvit-btn:active { transform: scale(0.97); }
+
+/* Ghost / secondary button */
+.luvit-btn--ghost {
+  background: transparent;
+  color: var(--aqua-600) !important;
+  border: 1.5px solid var(--aqua-300);
+  box-shadow: none;
+}
+.luvit-btn--ghost:hover { background: var(--aqua-50); border-color: var(--aqua-400); }
+
+/* Card surface */
+.luvit-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--duration-instant) var(--ease-out-soft),
+              box-shadow var(--duration-instant) var(--ease-out-soft);
+}
+.luvit-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+/* Glass panel — the brand's glass-circle look */
+.luvit-glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Water gradient section background */
+.luvit-water-bg {
+  background: linear-gradient(180deg, #EAF6FC 0%, #D6EDF7 45%, #C2E3F2 100%);
+}
+
+/* Skin-type badge */
+.luvit-badge {
+  display: inline-block;
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--aqua-100);
+  color: var(--aqua-700);
+}
+
+/* Price (always LTR inside RTL text) */
+.luvit-price {
+  font-family: var(--font-latin);
+  font-weight: 600;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Skeleton shimmer for loading states */
+.luvit-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-mist);
+  border-radius: var(--radius-sm);
+}
+.luvit-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+  animation: luvit-shimmer 1.4s infinite;
+}
+@keyframes luvit-shimmer { to { transform: translateX(-100%); } }
+
+/* ---- Accessibility ---- */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-ring);
+  border-radius: var(--radius-sm);
+}
+::selection { background: var(--aqua-200); color: var(--aqua-900); }
+
+/* Respect reduced motion everywhere */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  LUVIT component library
+   --------------------------------------------------------------------------
+   COMPONENT 1: THE BUTTON.
+
+   Design principle — SOLID FIRST. The button is readable, high-contrast and
+   fast BEFORE any effect is added. The "wet glass" look is a reward layered
+   on top, built only from plain CSS gradients + inset shadows:
+     · NO backdrop-filter, NO SVG filters, NO WebGL  -> stays fast on phones
+     · every animation runs on transform / opacity   -> compositor thread only
+     · min-height 48px                               -> clears the 44px rule
+     · hover gated behind (hover: hover)             -> never sticks on touch
+
+   ACCESSIBILITY: the earlier white-on-#29A9C0 fill measured 2.8:1 and failed
+   WCAG AA (needs 4.5:1). The deep-water gradient below (aqua-600 -> aqua-800)
+   puts white text at roughly 6:1.
+
+   This section deliberately comes LAST so it supersedes the basic .luvit-btn
+   rules defined earlier in this file (nothing above was deleted).
+   ========================================================================== */
+
+:root {
+  /* ---- Primary fill: "deep water" ---- */
+  --btn-fill-top:          var(--aqua-600);   /* #1E869C */
+  --btn-fill-bottom:       var(--aqua-800);   /* #124D5A */
+  --btn-fill-top-hover:    var(--aqua-700);
+  --btn-fill-bottom-hover: var(--aqua-900);
+
+  /* ---- Wet surface: "meniscus" highlight + depth bezel ---- */
+  --btn-gloss:        rgba(255, 255, 255, 0.16); /* soft gloss, upper half   */
+  --btn-sheen-top:    rgba(255, 255, 255, 0.45); /* hairline on the top edge */
+  --btn-bezel-bottom: rgba(0, 0, 0, 0.20);       /* depth line at the bottom */
+  --btn-sweep:        rgba(255, 255, 255, 0.30); /* hover light sweep        */
+
+  /* ---- Shadows (aqua-tinted, so buttons feel lit from the water) ---- */
+  --btn-shadow:       0 4px 14px rgba(12, 51, 60, 0.18);
+  --btn-shadow-hover: 0 10px 26px rgba(12, 51, 60, 0.26);
+
+  /* ---- Sizing (mobile-first, touch-safe) ---- */
+  --btn-min-height: 48px;
+  --btn-pad-y: 14px;
+  --btn-pad-x: 32px;
+  --btn-gap: 10px;
+
+  /* ---- Ghost-on-dark (hero / underwater sections) ---- */
+  --btn-ghost-dark-fg:     #FFFFFF;
+  --btn-ghost-dark-border: rgba(255, 255, 255, 0.55);
+  --btn-ghost-dark-hover:  rgba(255, 255, 255, 0.14);
+}
+
+/* --------------------------------------------------------------------------
+   PRIMARY  —  .luvit-btn
+   Two stacked background layers: gloss over the deep-water fill. Using
+   background layers (instead of a pseudo-element) frees ::before for the
+   light sweep and ::after for the optional arrow.
+   -------------------------------------------------------------------------- */
+.luvit-btn {
+  position: relative;
+  isolation: isolate;          /* keeps the sweep/bubble layers inside */
+  overflow: hidden;            /* clips sweep + bubble to the pill shape */
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+
+  min-height: var(--btn-min-height);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  border: 0;
+  border-radius: var(--radius-pill);
+
+  background-color: var(--btn-fill-top);       /* fallback if gradients fail */
+  background-image:
+    linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+
+  color: #FFFFFF !important;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+
+  box-shadow:
+    var(--btn-shadow),
+    inset 0 1px 0 var(--btn-sheen-top),
+    inset 0 -1px 0 var(--btn-bezel-bottom);
+
+  transition:
+    transform var(--duration-instant) var(--ease-out-soft),
+    box-shadow var(--duration-instant) var(--ease-out-soft),
+    background-color var(--duration-instant) var(--ease-out-soft);
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Light sweep layer — parked off-screen, animated only on hover. */
+.luvit-btn::before {
+  content: "";
+  position: absolute;
+  z-index: -1;                 /* behind the label, above the fill */
+  top: -50%;
+  bottom: -50%;
+  inset-inline-start: -60%;
+  width: 45%;
+  background: linear-gradient(100deg,
+    rgba(255,255,255,0) 0%, var(--btn-sweep) 50%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- Hover: desktop pointers only (never sticks on touch screens) ---- */
+@media (hover: hover) and (pointer: fine) {
+  .luvit-btn:hover {
+    transform: translateY(-2px);
+    background-image:
+      linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255,255,255,0) 55%),
+      linear-gradient(180deg, var(--btn-fill-top-hover) 0%, var(--btn-fill-bottom-hover) 100%);
+    box-shadow:
+      var(--btn-shadow-hover),
+      inset 0 1px 0 var(--btn-sheen-top),
+      inset 0 -1px 0 var(--btn-bezel-bottom);
+  }
+  .luvit-btn:hover::before {
+    animation: luvit-btn-sweep 620ms var(--ease-out) 1;
+  }
+}
+
+@keyframes luvit-btn-sweep {
+  0%   { opacity: 0; transform: translateX(0)    skewX(-18deg); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(340%) skewX(-18deg); }
+}
+/* RTL: sweep travels the other way so it follows the reading direction. */
+[dir="rtl"] .luvit-btn::before { inset-inline-start: auto; inset-inline-end: -60%; }
+[dir="rtl"] .luvit-btn:hover::before { animation-name: luvit-btn-sweep-rtl; }
+@keyframes luvit-btn-sweep-rtl {
+  0%   { opacity: 0; transform: translateX(0)     skewX(18deg); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-340%) skewX(18deg); }
+}
+
+/* ---- Press (all devices) ---- */
+.luvit-btn:active { transform: translateY(-1px) scale(0.97); }
+
+/* ---- Disabled ---- */
+.luvit-btn[disabled],
+.luvit-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--btn-shadow);
+}
+
+/* --------------------------------------------------------------------------
+   ARROW variant (opt-in)  —  .luvit-btn.luvit-btn--arrow
+   Space is reserved up-front so nothing shifts on hover (no layout animation).
+   RTL-aware: the arrow points LEFT in Arabic, RIGHT in LTR.
+   -------------------------------------------------------------------------- */
+.luvit-btn--arrow { padding-inline-end: calc(var(--btn-pad-x) + 20px); }
+
+.luvit-btn--arrow::after {
+  content: "←";                        /* RTL / Arabic default */
+  position: absolute;
+  z-index: -1;
+  inset-inline-end: 18px;
+  top: 50%;
+  margin-top: -0.62em;
+  font-size: 1.05em;
+  line-height: 1.2;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity var(--duration-instant) var(--ease-out-soft),
+    transform var(--duration-instant) var(--ease-out-soft);
+  pointer-events: none;
+}
+[dir="ltr"] .luvit-btn--arrow::after { content: "→"; transform: translateX(-6px); }
+
+@media (hover: hover) and (pointer: fine) {
+  .luvit-btn--arrow:hover::after { opacity: 1; transform: translateX(0); }
+}
+
+/* --------------------------------------------------------------------------
+   GHOST  —  .luvit-btn.luvit-btn--ghost
+   Calm and quiet. No sweep, no gloss, a much softer bubble. It must never
+   compete with the primary button.
+   Text uses aqua-700 (#196B7D) which is ~6.2:1 on white.
+   -------------------------------------------------------------------------- */
+.luvit-btn--ghost {
+  background-color: transparent;
+  background-image: none;
+  color: var(--aqua-700) !important;
+  border: 1.5px solid var(--aqua-300);
+  box-shadow: none;
+}
+.luvit-btn--ghost::before { display: none; }   /* no light sweep */
+
+@media (hover: hover) and (pointer: fine) {
+  .luvit-btn--ghost:hover {
+    background-image: none;
+    background-color: var(--aqua-50);
+    border-color: var(--aqua-400);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+}
+.luvit-btn--ghost:active { transform: scale(0.98); }
+
+/* Ghost placed on a dark / underwater background (hero, sequence hand-off). */
+.luvit-btn--ghost.luvit-btn--on-dark {
+  color: var(--btn-ghost-dark-fg) !important;
+  border-color: var(--btn-ghost-dark-border);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-btn--ghost.luvit-btn--on-dark:hover {
+    background-color: var(--btn-ghost-dark-hover);
+    border-color: #FFFFFF;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   BUBBLE-POP press ripple — the element is created by motion.js
+   (LUVIT.bubblePress). z-index:-1 keeps it under the label; the button's
+   isolation + overflow:hidden keep it inside the pill.
+   -------------------------------------------------------------------------- */
+.luvit-bubble {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  background: radial-gradient(circle at 32% 30%,
+    rgba(255,255,255,0.95) 0%,
+    rgba(255,255,255,0.38) 42%,
+    rgba(76,197,218,0.16) 70%,
+    rgba(76,197,218,0) 72%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
+}
+/* On the ghost button the bubble is aqua-tinted and much fainter. */
+.luvit-btn--ghost .luvit-bubble {
+  background: radial-gradient(circle at 32% 30%,
+    rgba(76,197,218,0.55) 0%,
+    rgba(76,197,218,0.22) 45%,
+    rgba(76,197,218,0) 72%);
+  box-shadow: inset 0 0 0 1px rgba(76,197,218,0.35);
+}
+
+/* Reduced motion: keep colour feedback, drop every effect. */
+@media (prefers-reduced-motion: reduce) {
+  .luvit-btn:hover  { transform: none; }
+  .luvit-btn:active { transform: none; }
+  .luvit-btn::before, .luvit-btn::after { display: none; }
+}
