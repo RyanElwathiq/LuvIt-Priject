@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUVIT — Navigation (Liquid Glass v1)</title>
+<link rel="stylesheet" href="tokens.css">
+
+<!--
+  ============================================================================
+  >>> WHERE TO SWAP IN YOUR REAL LINKS <<<
+  ============================================================================
+  Every link below is marked with:        <!-- >> LINK << -- >
+
+  Each one needs TWO edits:
+     1. href="#"          ->  href="/shop"        (your real page URL)
+     2. the Arabic label  ->  your real wording
+
+  The SAME link list appears in THREE places, and they must stay in sync:
+     A. TOP BAR      (desktop only, the pill with the sliding droplet)
+     B. BOTTOM DOCK  (mobile only, max 5 items — UX guidance caps it there)
+     C. DRAWER       (mobile, holds everything, including the overflow)
+
+  WHICH LINKS GO WHERE:
+     · Put your 4 most important destinations in the DOCK (thumb-reachable).
+     · Put EVERYTHING in the DRAWER.
+     · Put 5-6 in the TOP BAR (more than that and the pill gets too wide).
+
+  MARKING THE CURRENT PAGE:
+     Add aria-current="page" to the link for the page you're on — in all
+     three places. That drives the droplet's resting position, the dock's
+     highlight, and screen-reader announcements. Only ONE link per list.
+
+  CART:
+     The cart lives in the corner as an icon in .luvit-nav__actions, with a
+     count bubble. To set the number from WooCommerce, update the element:
+         document.querySelector('#luvit-cart-count').textContent = 3;
+     Hide it when empty by adding the `hidden` attribute.
+  ============================================================================
+-->
+<style>
+  /* ---- demo page chrome only (NOT part of the component) ---- */
+  body { margin: 0; }
+  .demo-hero {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(76,197,218,.35), rgba(76,197,218,0) 60%),
+      linear-gradient(180deg, #0C333C 0%, #124D5A 55%, #0B9198 100%);
+    color: #fff; text-align: center; padding: var(--space-6);
+  }
+  .demo-hero h1 { font-size: var(--text-display); margin: 0 0 var(--space-4); }
+  .demo-hero p { max-width: 46ch; margin-inline: auto; opacity: .9; }
+  .demo-body { background: var(--color-canvas); padding: var(--space-9) var(--container-gutter); }
+  .demo-wrap { max-width: var(--container-max); margin-inline: auto; }
+  .demo-body h2 { font-size: var(--text-h3); margin: 0 0 var(--space-3); }
+  .demo-body p { color: var(--color-ink-soft); max-width: 62ch; }
+  .demo-note { background: var(--aqua-50); border: 1px solid var(--aqua-200);
+    border-radius: var(--radius-md); padding: var(--space-5); margin-top: var(--space-6); }
+</style>
+</head>
+<body class="luvit-dock-offset">
+
+<!-- Accessibility: lets keyboard users jump past the nav (High priority rule) -->
+<a class="luvit-skip" href="#main">تخطّي إلى المحتوى</a>
+
+<!-- ===================== A. TOP BAR ===================== -->
+<header class="luvit-nav" id="luvit-nav">
+  <div class="luvit-nav__bar">
+
+    <!-- The droplet lives on the BAR (not inside the link list) so it can
+         travel to the cart and any other icon button too. -->
+    <span class="luvit-nav__drop" aria-hidden="true"></span>
+
+    <!-- >> LINK << brand / logo -->
+    <a class="luvit-nav__brand" href="#">Luv it!</a>
+
+    <nav class="luvit-nav__links" aria-label="التنقل الرئيسي">
+      <!-- >> LINK << --><a class="luvit-nav__link" href="#" aria-current="page">الرئيسية</a>
+      <!-- >> LINK << --><a class="luvit-nav__link" href="#">المتجر</a>
+      <!-- >> LINK << --><a class="luvit-nav__link" href="#">الروتين</a>
+      <!-- >> LINK << --><a class="luvit-nav__link" href="#">العروض</a>
+      <!-- >> LINK << --><a class="luvit-nav__link" href="#">من نحن</a>
+    </nav>
+
+    <div class="luvit-nav__actions">
+      <!-- >> LINK << cart -->
+      <a class="luvit-nav__icon-btn" href="#" aria-label="سلة التسوّق">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="luvit-nav__count" id="luvit-cart-count">2</span>
+      </a>
+
+      <!-- Mobile only: opens the drawer -->
+      <button class="luvit-nav__icon-btn luvit-nav__toggle" type="button"
+              aria-label="فتح القائمة" aria-expanded="false" aria-controls="luvit-drawer">
+        <span class="luvit-nav__burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- ===================== C. DRAWER (mobile) ===================== -->
+<div class="luvit-drawer" id="luvit-drawer" role="dialog" aria-modal="true"
+     aria-label="قائمة التنقل" aria-hidden="true">
+  <div class="luvit-drawer__water" aria-hidden="true"></div>
+
+  <!-- NO separate close button here on purpose: the menu button in the pill
+       above has already morphed into an X and closes the drawer. One control,
+       and it stays correctly aligned inside the pill. -->
+
+  <nav class="luvit-drawer__panel" aria-label="قائمة الجوال">
+    <!-- >> LINK << --><a class="luvit-drawer__link" href="#" aria-current="page">الرئيسية</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link" href="#">المتجر</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link" href="#">الروتين</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link" href="#">العروض</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link" href="#">اختبار نوع البشرة</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link" href="#">من نحن</a>
+
+    <div class="luvit-drawer__sep" role="presentation"></div>
+
+    <!-- Secondary / smaller links -->
+    <!-- >> LINK << --><a class="luvit-drawer__link luvit-drawer__small" href="#">حسابي</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link luvit-drawer__small" href="#">تتبّع طلبي</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link luvit-drawer__small" href="#">الشحن والتوصيل</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link luvit-drawer__small" href="#">الأسئلة الشائعة</a>
+    <!-- >> LINK << --><a class="luvit-drawer__link luvit-drawer__small" href="#">تواصلي معنا</a>
+  </nav>
+</div>
+
+<!-- ===================== B. BOTTOM DOCK (mobile) ===================== -->
+<nav class="luvit-dock" aria-label="التنقل السريع">
+  <!-- >> LINK << -->
+  <a class="luvit-dock__item" href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>
+    </svg>
+    <span>الرئيسية</span>
+  </a>
+
+  <!-- >> LINK << -->
+  <a class="luvit-dock__item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/>
+    </svg>
+    <span>المتجر</span>
+  </a>
+
+  <!-- >> LINK << -->
+  <a class="luvit-dock__item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/>
+    </svg>
+    <span>الروتين</span>
+  </a>
+
+  <!-- >> LINK << -->
+  <a class="luvit-dock__item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+      <path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/>
+    </svg>
+    <span>السلة</span>
+  </a>
+</nav>
+
+<!-- ===================== PAGE CONTENT ===================== -->
+<main id="main">
+  <!-- ============================================================
+       >> IMPORTANT << Tag EVERY section with data-nav-bg.
+          data-nav-bg="dark"   = dark background -> bar goes white
+          data-nav-bg="light"  = light background -> bar goes dark
+       Without it the bar assumes dark, and white text on a white
+       section is invisible.
+       ============================================================ -->
+  <section class="demo-hero" id="hero-seq" data-nav-bg="dark">
+    <div>
+      <h1>الماء يعرف بشرتك</h1>
+      <p>مرّري الماوس فوق روابط القائمة على الكمبيوتر لترى قطرة الماء تنزلق بينها.
+         صغّري النافذة لأقل من 1024px لترى الرصيف السفلي وقائمة الماء المتصاعدة.</p>
+    </div>
+  </section>
+
+  <section class="demo-body" data-nav-bg="light">
+    <div class="demo-wrap">
+      <h2>محتوى الصفحة</h2>
+      <p>لاحظي أن الشريط يفقد ضبابية الزجاج فوق الهيرو (لحماية الأداء)
+         ثم يستعيدها هنا.</p>
+
+      <div class="demo-note">
+        <strong>للتجربة:</strong>
+        <ul>
+          <li>على الكمبيوتر: مرّري بين الروابط — القطرة تنزلق وتنضغط قليلًا أثناء الحركة.</li>
+          <li>اضغطي Tab بلوحة المفاتيح — القطرة تتبع التركيز أيضًا.</li>
+          <li>صغّري النافذة تحت 1024px: يظهر الرصيف السفلي وزر القائمة.</li>
+          <li>افتحي القائمة — الماء يرتفع ليملأ الشاشة، ثم تظهر الروابط تباعًا.</li>
+          <li>اضغطي Escape لإغلاقها، ولاحظي عودة التركيز إلى زر القائمة.</li>
+        </ul>
+      </div>
+
+      <p style="margin-top:var(--space-7)">مرّري للأسفل لترى الشريط يتبدّل بين الفاتح والداكن…</p>
+      <div style="height:60vh"></div>
+    </div>
+  </section>
+
+  <!-- Back to a DARK water section — the bar should turn white again -->
+  <section class="demo-hero" data-nav-bg="dark" style="min-height:80vh">
+    <div>
+      <h1 style="font-size:var(--text-h1)">قسم مائي داكن</h1>
+      <p>الشريط عاد أبيض تلقائيًا لأن هذا القسم معلّم <code>data-nav-bg="dark"</code>.</p>
+    </div>
+  </section>
+
+  <!-- And light again -->
+  <section class="demo-body" data-nav-bg="light" style="min-height:80vh">
+    <div class="demo-wrap">
+      <h2>قسم فاتح مرّة أخرى</h2>
+      <p>والشريط عاد داكنًا. هكذا سيتصرّف على الصفحة الحقيقية مهما تبدّلت الأقسام.</p>
+    </div>
+  </section>
+</main>
+
+<!-- GSAP must load BEFORE motion.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="motion.js"></script>
+
+<!-- DEMO ONLY: placeholder links would jump to the top. Does NOT ship. -->
+<script>
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="#"]');
+    if (a) e.preventDefault();
+  });
+</script>
+</body>
+</html>

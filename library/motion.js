@@ -409,3 +409,302 @@ document.addEventListener('keydown', function (e) {
 
 /* Extend the public namespace (defined above) rather than replacing it. */
 window.LUVIT.bubblePress = luvitBubblePress;
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 3: NAVIGATION
+   --------------------------------------------------------------------------
+   Three behaviours:
+     1. luvitNavDroplet()  the water bead that slides between desktop links
+     2. luvitNavDrawer()   the mobile drawer (water rises to fill the screen)
+     3. luvitNavHero()     turns the blur off while the hero is pinned
+
+   Performance notes:
+     · The droplet is positioned with transform (compositor). It is absolutely
+       positioned, so changing its width can't reflow the rest of the bar.
+     · Measurements use physical offsets (rect.left - barRect.left), which is
+       why this works unchanged in RTL as well as LTR.
+     · Hero detection uses IntersectionObserver, not a scroll listener, so
+       nothing runs on every scroll frame.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Droplet indicator
+   -------------------------------------------------------------------------- */
+function luvitNavDroplet(root) {
+  root = root || document.querySelector('.luvit-nav');
+  if (!root) return;
+
+  var bar  = root.querySelector('.luvit-nav__bar');
+  var drop = root.querySelector('.luvit-nav__drop');
+  if (!bar || !drop) return;
+
+  /* The bead travels the WHOLE pill, not just the link list — so the cart (and
+     any other icon button) is a target too. Anything you want it to visit just
+     needs one of these classes. */
+  var TARGETS = '.luvit-nav__link, .luvit-nav__icon-btn';
+
+  function visibleTargets() {
+    return Array.prototype.slice.call(bar.querySelectorAll(TARGETS))
+      .filter(function (el) { return el.offsetParent !== null; });
+  }
+
+  var links = Array.prototype.slice.call(bar.querySelectorAll('.luvit-nav__link'));
+  if (!links.length) return;
+
+  var active = links.filter(function (l) { return l.hasAttribute('aria-current'); })[0] || links[0];
+  var settleTimer = null;
+
+  function moveTo(el) {
+    if (!el) return;
+    var b = bar.getBoundingClientRect();
+    var r = el.getBoundingClientRect();
+
+    /* Physical offsets from the bar's top-left. Because both rects are
+       physical, this is correct in RTL and LTR alike — but it REQUIRES the
+       droplet to be anchored with `left: 0; top: 0` in CSS, never with
+       inset-inline-start (which flips to the right edge in Arabic). */
+    var x = r.left - b.left;
+    var y = r.top - b.top;
+
+    /* Match the target's SHAPE as well as its position: a pill over a text
+       link, a circle over the round cart button. */
+    drop.style.setProperty('--drop-x', x + 'px');
+    drop.style.setProperty('--drop-y', y + 'px');
+    drop.style.width = r.width + 'px';
+    drop.style.height = r.height + 'px';
+
+    if (LUVIT_REDUCED) return;
+
+    /* Squash while travelling, then settle — this is what makes it read as a
+       bead of water rather than a box sliding sideways. */
+    drop.classList.add('is-moving');
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(function () {
+      drop.classList.remove('is-moving');
+    }, 180);
+  }
+
+  /* Delegated, so targets added later (a wishlist icon, a search button) are
+     picked up without re-initialising anything. */
+  bar.addEventListener('pointerover', function (e) {
+    var t = e.target.closest && e.target.closest(TARGETS);
+    if (t && bar.contains(t)) moveTo(t);
+  });
+  bar.addEventListener('focusin', function (e) {
+    var t = e.target.closest && e.target.closest(TARGETS);
+    if (t && bar.contains(t)) moveTo(t);
+  });
+
+  links.forEach(function (l) {
+    l.addEventListener('click', function () {
+      links.forEach(function (x) { x.removeAttribute('aria-current'); });
+      l.setAttribute('aria-current', 'page');
+      active = l;
+    });
+  });
+
+  /* Pointer leaves the whole pill -> the bead flows back to the current page. */
+  bar.addEventListener('pointerleave', function () { moveTo(active); });
+  bar.addEventListener('focusout', function (e) {
+    if (!bar.contains(e.relatedTarget)) moveTo(active);
+  });
+
+  /* Initial placement + keep it correct on resize / font load. */
+  requestAnimationFrame(function () { moveTo(active); });
+  window.addEventListener('load', function () { moveTo(active); });
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () { moveTo(active); }, 120);
+  });
+
+  return { move: moveTo };
+}
+
+/* --------------------------------------------------------------------------
+   2. Mobile drawer — open/close, focus trap, Escape, scroll lock
+   -------------------------------------------------------------------------- */
+function luvitNavDrawer(opts) {
+  opts = opts || {};
+  var drawer = document.querySelector(opts.drawer || '.luvit-drawer');
+  var toggle = document.querySelector(opts.toggle || '.luvit-nav__toggle');
+  if (!drawer || !toggle) return;
+
+  var closeBtn = drawer.querySelector('.luvit-drawer__close');   /* optional */
+  var lastFocused = null;
+
+  /* The toggle lives OUTSIDE the drawer but acts as its close button (it has
+     morphed into an X), so it must be part of the focus trap — otherwise a
+     keyboard user could tab to the close control and get thrown out of the
+     trap, or worse, never reach it. */
+  function focusables() {
+    var list = Array.prototype.slice.call(drawer.querySelectorAll('a, button'));
+    if (closeBtn) list = list.filter(function (el) { return el !== closeBtn; }).concat(closeBtn);
+    list.unshift(toggle);
+    return list.filter(function (el) { return el && el.offsetParent !== null; });
+  }
+
+  function stagger(open) {
+    /* Links surface one after another once the water is up. */
+    var items = drawer.querySelectorAll('.luvit-drawer__link');
+    Array.prototype.forEach.call(items, function (el, i) {
+      el.style.transitionDelay = open && !LUVIT_REDUCED ? (160 + i * 45) + 'ms' : '0ms';
+    });
+  }
+
+  function open() {
+    lastFocused = document.activeElement;
+    stagger(true);
+    drawer.classList.add('is-open');
+    drawer.removeAttribute('aria-hidden');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('luvit-locked');
+    /* Move focus into the drawer so keyboard users aren't left behind it. */
+    setTimeout(function () {
+      var first = drawer.querySelector('.luvit-drawer__link');
+      (first || closeBtn || toggle).focus();
+    }, 60);
+  }
+
+  function close() {
+    stagger(false);
+    drawer.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden', 'true');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('luvit-locked');
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  function isOpen() { return drawer.classList.contains('is-open'); }
+
+  toggle.addEventListener('click', function () { isOpen() ? close() : open(); });
+  if (closeBtn) closeBtn.addEventListener('click', close);
+
+  /* Tapping a link navigates — close so it isn't still open on return. */
+  drawer.querySelectorAll('.luvit-drawer__link').forEach(function (l) {
+    l.addEventListener('click', close);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!isOpen()) return;
+
+    if (e.key === 'Escape') { close(); return; }
+
+    /* Focus trap: keep Tab inside the drawer (plus its close control). */
+    if (e.key !== 'Tab') return;
+    var f = focusables();
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  /* Never leave the drawer open when we cross to the desktop layout. */
+  var mq = window.matchMedia('(min-width: 1024px)');
+  var onChange = function (e) { if (e.matches && isOpen()) close(); };
+  if (mq.addEventListener) mq.addEventListener('change', onChange);
+  else if (mq.addListener) mq.addListener(onChange);
+
+  close();   /* start closed, with the correct aria state */
+  return { open: open, close: close, isOpen: isOpen };
+}
+
+/* --------------------------------------------------------------------------
+   3. Hero blur guard — drop backdrop-filter while the hero is on screen.
+   Uses IntersectionObserver so nothing runs per scroll frame.
+   -------------------------------------------------------------------------- */
+function luvitNavHeroGuard(heroSelector) {
+  var nav = document.querySelector('.luvit-nav');
+  var hero = document.querySelector(heroSelector || '#hero-seq');
+  if (!nav || !hero || !('IntersectionObserver' in window)) return;
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      nav.classList.toggle('is-over-hero', en.isIntersecting);
+    });
+  }, { threshold: 0 });
+
+  io.observe(hero);
+  return io;
+}
+
+/* --------------------------------------------------------------------------
+   4. Adaptive theme — re-colour the bar for whatever section is behind it.
+
+   Mark every section:  <section data-nav-bg="dark">  or  data-nav-bg="light"
+   Anything unmarked counts as dark, so existing pages keep working.
+
+   How it works: a 1px detection band is placed exactly at the bar's centre
+   line, and each marked section is observed against it. Whichever section is
+   crossing that line is the one physically behind the bar. Uses
+   IntersectionObserver, so nothing runs per scroll frame.
+   -------------------------------------------------------------------------- */
+function luvitNavTheme() {
+  var nav = document.querySelector('.luvit-nav');
+  var bar = nav && nav.querySelector('.luvit-nav__bar');
+  if (!nav || !bar || !('IntersectionObserver' in window)) return;
+
+  var sections = document.querySelectorAll('[data-nav-bg]');
+  if (!sections.length) return;
+
+  var io = null;
+
+  function apply(mode) {
+    nav.classList.toggle('is-on-light', mode === 'light');
+    nav.classList.toggle('is-on-dark', mode !== 'light');
+  }
+
+  function build() {
+    if (io) io.disconnect();
+
+    var r = bar.getBoundingClientRect();
+    var line = Math.round(r.top + r.height / 2);   /* bar's centre line */
+    var below = Math.max(0, window.innerHeight - line - 1);
+
+    io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) apply(en.target.getAttribute('data-nav-bg'));
+      });
+    }, {
+      rootMargin: '-' + line + 'px 0px -' + below + 'px 0px',
+      threshold: 0
+    });
+
+    Array.prototype.forEach.call(sections, function (s) { io.observe(s); });
+  }
+
+  build();
+
+  /* The centre line moves if the viewport resizes, so rebuild the band. */
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(build, 150);
+  });
+
+  return { refresh: build };
+}
+
+/* --------------------------------------------------------------------------
+   Boot the navigation (safe to call twice; each piece no-ops if absent)
+   -------------------------------------------------------------------------- */
+function luvitNavInit() {
+  luvitNavDroplet();
+  luvitNavDrawer();
+  luvitNavHeroGuard();
+  luvitNavTheme();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitNavInit);
+} else {
+  luvitNavInit();
+}
+
+window.LUVIT.nav = {
+  init:      luvitNavInit,
+  droplet:   luvitNavDroplet,
+  drawer:    luvitNavDrawer,
+  heroGuard: luvitNavHeroGuard,
+  theme:     luvitNavTheme
+};

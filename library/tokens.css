@@ -1071,3 +1071,535 @@ h1, h2, h3, h4, .luvit-heading {
   .luvit-card:focus-within { transform: none; }
   .luvit-card:hover .luvit-card__media img { transform: none; }
 }
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 3: NAVIGATION  ("The Water Pill")
+   --------------------------------------------------------------------------
+   Three coordinated pieces:
+     1. TOP BAR   — a floating glass pill. Desktop shows the links + the
+                    sliding water DROPLET indicator. Mobile shows brand,
+                    cart and the menu button.
+     2. BOTTOM DOCK (mobile) — 4 thumb-reachable destinations. The UX data
+                    caps a dock at 5 items; we use 4 + cart.
+     3. DRAWER (mobile) — everything that doesn't fit the dock. It opens by
+                    the WATER LEVEL RISING, using the same wave mask as the
+                    card waterline, so the menu literally fills with water.
+
+   GLASS, THE CHEAP WAY — borrowed from the macOS liquid-glass reference but
+   keeping only the free half. This pair of inset shadows fakes the refracted
+   edge of glass at zero cost:
+        inset 2px 2px 0 -2px rgba(255,255,255,.7)   <- bright top-left edge
+        inset 0 0 3px 1px  rgba(255,255,255,.5)     <- rim glow
+   We deliberately SKIP their `filter: url(#glass)` displacement map, which is
+   the expensive half.
+
+   ⚠ BLUR BUDGET: a navbar is on screen permanently and sits over scrolling
+   content, so backdrop-filter here costs far more than on a card. Two things
+   keep it affordable, and both must stay:
+     · the bar is a COMPACT PILL, not a full-width header — blur cost scales
+       with the blurred AREA, so the pill blurs a fraction of the screen;
+     · blur is switched OFF while the hero sequence is pinned (.is-over-hero),
+       so we never re-blur during a 120-frame scrub.
+   ========================================================================== */
+
+:root {
+  /* ---- Bar ---- */
+  --nav-h:          58px;
+  --nav-gap:        4px;
+  --nav-inset:      14px;   /* distance from the top of the viewport */
+  --nav-radius:     var(--radius-pill);
+
+  /* ---- Glass ---- */
+  --nav-glass-bg:      rgba(255, 255, 255, 0.14);
+  --nav-glass-bg-solid: rgba(10, 46, 55, 0.88);  /* when blur is unavailable */
+  --nav-glass-border:  rgba(255, 255, 255, 0.38);
+  --nav-blur:          12px;                     /* modest on purpose */
+  --nav-bezel:
+    inset 2px 2px 0 -2px rgba(255, 255, 255, 0.70),
+    inset 0 0 3px 1px rgba(255, 255, 255, 0.45);
+  --nav-shadow:        0 18px 40px -22px rgba(4, 30, 36, 0.75);
+
+  /* ---- Text ---- */
+  --nav-fg:         rgba(255, 255, 255, 0.86);
+  --nav-fg-strong:  #FFFFFF;
+
+  /* ---- Droplet indicator ---- */
+  --nav-drop-bg:    rgba(255, 255, 255, 0.26);
+  --nav-drop-border: rgba(255, 255, 255, 0.55);
+  /* Spring curve: overshoots slightly, which is what makes it read as a bead
+     of water settling rather than a box sliding. */
+  --nav-spring:     cubic-bezier(.34, 1.56, .5, 1);
+  --nav-spring-ms:  460ms;
+
+  /* ---- Dock (mobile) ---- */
+  --dock-h:         62px;
+  --dock-bg:        rgba(10, 46, 55, 0.92);
+
+  /* ---- Drawer (mobile) ---- */
+  --drawer-ms:      520ms;
+}
+
+/* Skip link — flagged High priority in the accessibility guidelines. */
+.luvit-skip {
+  position: absolute;
+  inset-inline-start: -9999px;
+  top: 0;
+  z-index: 200;
+  padding: 12px 20px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: var(--aqua-700);
+  color: #fff;
+  font-weight: 600;
+}
+.luvit-skip:focus { inset-inline-start: 0; }
+
+/* --------------------------------------------------------------------------
+   1. TOP BAR
+   -------------------------------------------------------------------------- */
+/* NOTE: the bar sits ABOVE the drawer (drawer is z-index 150) on purpose.
+   When the drawer opens, the pill stays visible and its menu button has
+   already morphed into an X — so that single control both opens and closes.
+   A second close button in the drawer's corner would sit outside the pill
+   and read as a stray, misaligned X. */
+.luvit-nav {
+  position: fixed;
+  z-index: 160;
+  top: var(--nav-inset);
+  inset-inline: 0;
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--container-gutter);
+  pointer-events: none;              /* only the pill itself is interactive */
+}
+
+.luvit-nav__bar {
+  pointer-events: auto;
+  position: relative;            /* the droplet is measured against this */
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: min(980px, 100%);
+  min-height: var(--nav-h);
+  padding: 8px 8px 8px 18px;
+  border-radius: var(--nav-radius);
+  background-color: var(--nav-glass-bg);
+  border: 1px solid var(--nav-glass-border);
+  box-shadow: var(--nav-bezel), var(--nav-shadow);
+  -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(170%);
+          backdrop-filter: blur(var(--nav-blur)) saturate(170%);
+  color: var(--nav-fg);
+  transition:
+    background-color var(--duration-instant) var(--ease-out-soft),
+    min-height var(--duration-instant) var(--ease-out-soft);
+}
+
+/* Over the pinned hero: no blur (see BLUR BUDGET above). */
+.luvit-nav.is-over-hero .luvit-nav__bar {
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  background-color: rgba(255, 255, 255, 0.10);
+}
+
+/* If the browser can't frost, fall back to a solid bar so text stays legible. */
+@supports not ((-webkit-backdrop-filter: blur(2px)) or (backdrop-filter: blur(2px))) {
+  .luvit-nav__bar { background-color: var(--nav-glass-bg-solid); }
+}
+
+/* --------------------------------------------------------------------------
+   ADAPTIVE THEME — the bar re-colours itself for the section behind it.
+   --------------------------------------------------------------------------
+   The default styling above assumes DARK water behind the bar (white text on
+   translucent white glass). Over a light section that is invisible: white on
+   white. So every section declares what it is:
+
+       <section data-nav-bg="dark">   ... hero, water sections
+       <section data-nav-bg="light">  ... normal page content
+
+   motion.js watches which section is crossing the bar's centre line and adds
+   .is-on-light / .is-on-dark accordingly. Sections with no attribute are
+   treated as dark, which keeps the original behaviour.
+   -------------------------------------------------------------------------- */
+.luvit-nav__bar,
+.luvit-nav__brand,
+.luvit-nav__link,
+.luvit-nav__icon-btn {
+  transition:
+    color 260ms var(--ease-out-soft),
+    background-color 260ms var(--ease-out-soft),
+    border-color 260ms var(--ease-out-soft),
+    box-shadow 260ms var(--ease-out-soft);
+}
+
+.luvit-nav.is-on-light .luvit-nav__bar {
+  background-color: rgba(255, 255, 255, 0.72);
+  border-color: rgba(12, 51, 60, 0.10);
+  color: var(--color-ink-soft);
+  /* The white inset bezel is invisible on a light panel — use a soft dark
+     rim instead so the glass still has an edge. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.90),
+    inset 0 0 0 1px rgba(12, 51, 60, 0.05),
+    0 14px 30px -18px rgba(12, 51, 60, 0.45);
+}
+.luvit-nav.is-on-light .luvit-nav__brand { color: var(--color-ink); }
+.luvit-nav.is-on-light .luvit-nav__link  { color: var(--color-ink-soft); }
+.luvit-nav.is-on-light .luvit-nav__link:hover,
+.luvit-nav.is-on-light .luvit-nav__link[aria-current] { color: var(--color-ink); }
+.luvit-nav.is-on-light .luvit-nav__icon-btn { color: var(--color-ink); }
+
+/* The bead becomes tinted water on a light bar instead of white-on-white. */
+.luvit-nav.is-on-light .luvit-nav__drop {
+  background: rgba(41, 169, 192, 0.16);
+  border-color: rgba(41, 169, 192, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.luvit-nav__brand {
+  flex: none;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--nav-fg-strong);
+  text-decoration: none;
+  letter-spacing: .01em;
+}
+
+/* ---- Desktop links + droplet ---- */
+/* Content sits ABOVE the droplet (which is z-index 0 on the bar). */
+.luvit-nav__links,
+.luvit-nav__actions,
+.luvit-nav__brand { position: relative; z-index: 1; }
+
+.luvit-nav__links {
+  display: none;                     /* mobile-first: hidden until desktop */
+  align-items: center;
+  gap: var(--nav-gap);
+  margin-inline-start: auto;
+}
+
+.luvit-nav__drop {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  /* PHYSICAL anchoring on purpose — NOT inset-inline-start.
+     The JS measures a physical offset (rect.left - barRect.left), so the
+     droplet must be anchored to the physical LEFT in both LTR and RTL.
+     Using inset-inline-start here anchors it RIGHT in Arabic, and the
+     left-based offset then pushes it further right — which parks the bead
+     in empty space. `right: auto` makes sure nothing re-introduces that. */
+  left: 0;
+  right: auto;
+  height: 40px;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: var(--nav-drop-bg);
+  border: 1px solid var(--nav-drop-border);
+  box-shadow: var(--nav-bezel);
+  pointer-events: none;
+  opacity: 0;
+  /* Transform is driven ENTIRELY from the --drop-x variable so the .is-moving
+     rule below can still change scaleY. (Setting transform inline from JS
+     would override the class and the squash would never fire.) */
+  transform: translate(var(--drop-x, 0px), var(--drop-y, 0px)) scaleY(1);
+  transition:
+    transform var(--nav-spring-ms) var(--nav-spring),
+    width var(--nav-spring-ms) var(--nav-spring),
+    height var(--nav-spring-ms) var(--nav-spring),
+    opacity 200ms var(--ease-out-soft);
+}
+/* Squash while travelling — a bead of water flattening as it moves. */
+.luvit-nav__drop.is-moving {
+  transform: translate(var(--drop-x, 0px), var(--drop-y, 0px)) scaleY(0.82);
+}
+
+/* On desktop the droplet IS the hover feedback for the icon buttons, so their
+   own hover fill is dropped to avoid two highlights stacking up. */
+@media (min-width: 1024px) {
+  .luvit-nav__icon-btn { background: transparent; }
+  .luvit-nav__icon-btn:hover { background: transparent; }
+}
+
+.luvit-nav__link {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  color: var(--nav-fg);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 200ms var(--ease-out-soft);
+}
+.luvit-nav__link:hover,
+.luvit-nav__link[aria-current] { color: var(--nav-fg-strong); }
+
+/* ---- Actions (cart + menu button) ---- */
+.luvit-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+.luvit-nav__links ~ .luvit-nav__actions { margin-inline-start: 0; }
+
+.luvit-nav__icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;                       /* 44px minimum touch target */
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: var(--nav-bezel);
+  color: var(--nav-fg-strong);
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--duration-instant) var(--ease-out-soft),
+              transform var(--duration-instant) var(--ease-out-soft);
+}
+.luvit-nav__icon-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.luvit-nav__icon-btn:active { transform: scale(0.94); }
+.luvit-nav__icon-btn svg { width: 21px; height: 21px; }
+
+/* Cart count bubble — a little water bead. */
+.luvit-nav__count {
+  position: absolute;
+  top: -2px;
+  inset-inline-end: -2px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--fuchsia-500);
+  color: #fff;
+  font-family: var(--font-latin);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+.luvit-nav__count[hidden] { display: none; }
+
+/* Hamburger: three bars that morph into an X. */
+.luvit-nav__toggle { display: inline-flex; }
+.luvit-nav__burger { position: relative; width: 18px; height: 12px; }
+.luvit-nav__burger span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 300ms var(--ease-out-soft), opacity 200ms;
+}
+.luvit-nav__burger span:nth-child(1) { top: 0; }
+.luvit-nav__burger span:nth-child(2) { top: 5px; }
+.luvit-nav__burger span:nth-child(3) { top: 10px; }
+[aria-expanded="true"] .luvit-nav__burger span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+[aria-expanded="true"] .luvit-nav__burger span:nth-child(2) { opacity: 0; }
+[aria-expanded="true"] .luvit-nav__burger span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* ---- Desktop breakpoint: show links, hide mobile-only pieces ---- */
+@media (min-width: 1024px) {
+  .luvit-nav__links  { display: flex; }
+  .luvit-nav__drop   { opacity: 1; }
+  .luvit-nav__toggle { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   2. BOTTOM DOCK (mobile only)
+   -------------------------------------------------------------------------- */
+.luvit-dock {
+  position: fixed;
+  z-index: 100;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  min-height: var(--dock-h);
+  /* Respect the iPhone home-indicator area. */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background-color: var(--dock-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 -8px 24px rgba(4, 30, 36, 0.35);
+  -webkit-backdrop-filter: blur(var(--nav-blur));
+          backdrop-filter: blur(var(--nav-blur));
+}
+@media (min-width: 1024px) { .luvit-dock { display: none; } }
+
+.luvit-dock__item {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: var(--dock-h);
+  padding: 6px 4px;
+  color: rgba(255, 255, 255, 0.68);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 200ms var(--ease-out-soft);
+}
+.luvit-dock__item svg { width: 22px; height: 22px; }
+.luvit-dock__item[aria-current] { color: #fff; }
+
+/* Active item sits on a little rise of water. */
+.luvit-dock__item[aria-current]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 46px;
+  height: 3px;
+  margin-left: -23px;
+  border-radius: 0 0 var(--radius-pill) var(--radius-pill);
+  background: linear-gradient(90deg,
+    rgba(76,197,218,0), var(--aqua-400), rgba(76,197,218,0));
+}
+.luvit-dock__item:active { color: #fff; }
+
+/* --------------------------------------------------------------------------
+   3. DRAWER (mobile) — the water rises to fill the screen
+   -------------------------------------------------------------------------- */
+.luvit-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Top padding clears the floating pill, which stays visible above. */
+  padding:
+    calc(var(--nav-h) + var(--nav-inset) * 2 + var(--space-5))
+    var(--space-6)
+    calc(var(--dock-h) + var(--space-7));
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 260ms var(--ease-out-soft), visibility 0s linear 260ms;
+}
+.luvit-drawer.is-open {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 260ms var(--ease-out-soft), visibility 0s;
+}
+
+/* The water itself: parked below the screen, rises when opened. The wave mask
+   is the SAME shape used by the card waterline. */
+/* The body of water: SOLID. No mask here.
+   (v1 masked this whole element at 160px x 100%. Because 100% is the full
+   screen height and the wave SVG uses preserveAspectRatio='none', a 44px
+   ripple got stretched to ~800px — giant scallops across the screen.) */
+.luvit-drawer__water {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(180deg,
+    rgba(41, 169, 192, 0.97) 0%,
+    rgba(18, 77, 90, 0.99) 55%,
+    rgba(12, 51, 60, 1) 100%);
+  transform: translateY(100%);
+  transition: transform var(--drawer-ms) var(--ease-out-soft);
+}
+
+/* The wavy SURFACE only — a short strip riding on top of the body as it
+   rises. Fixed 44px height, so the wave keeps its natural proportions. */
+.luvit-drawer__water::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 44px;
+  transform: translateY(-99%);      /* -99% avoids a hairline seam */
+  background: rgba(41, 169, 192, 0.97);
+  -webkit-mask-image: var(--card-wave);
+          mask-image: var(--card-wave);
+  -webkit-mask-size: 180px 100%;
+          mask-size: 180px 100%;
+  -webkit-mask-repeat: repeat-x;
+          mask-repeat: repeat-x;
+}
+.luvit-drawer.is-open .luvit-drawer__water { transform: translateY(0); }
+
+.luvit-drawer__panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  overflow-y: auto;
+}
+
+.luvit-drawer__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  text-decoration: none;
+  /* Each link surfaces after the water, one by one. */
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 320ms var(--ease-out-soft), transform 320ms var(--ease-out-soft);
+}
+.luvit-drawer.is-open .luvit-drawer__link { opacity: 1; transform: translateY(0); }
+.luvit-drawer__link:active { background: rgba(255, 255, 255, 0.12); }
+.luvit-drawer__link[aria-current] { background: rgba(255, 255, 255, 0.16); }
+
+.luvit-drawer__close {
+  position: absolute;
+  z-index: 2;
+  top: var(--space-5);
+  inset-inline-end: var(--space-5);
+}
+
+/* Divider inside the drawer for secondary links. */
+.luvit-drawer__sep {
+  height: 1px;
+  margin: var(--space-4) var(--space-4);
+  background: rgba(255, 255, 255, 0.22);
+}
+.luvit-drawer__small {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 500;
+  min-height: 44px;
+  opacity: .9;
+}
+
+/* When the drawer is open the page behind must not scroll. */
+body.luvit-locked { overflow: hidden; }
+
+/* Sticky-nav compensation: the guidelines call out that a fixed bar must not
+   cover content. Put this on the page wrapper. */
+.luvit-nav-offset { padding-top: calc(var(--nav-h) + var(--nav-inset) * 2); }
+@media (max-width: 1023px) {
+  .luvit-dock-offset { padding-bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Reduced motion: everything still works, nothing slides. */
+@media (prefers-reduced-motion: reduce) {
+  .luvit-nav__drop,
+  .luvit-drawer__water,
+  .luvit-drawer__link { transition: none; }
+  .luvit-nav__drop.is-moving { transform: translateX(var(--drop-x, 0)); }
+}
