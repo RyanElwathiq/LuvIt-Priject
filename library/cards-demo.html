@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUVIT — Product Card (Liquid Glass v1)</title>
+
+<!-- The REAL project files, so this demo tests exactly what ships. -->
+<link rel="stylesheet" href="tokens.css">
+
+<style>
+  /* ---- demo page chrome only (NOT part of the component) ---- */
+  body { margin: 0; }
+  .demo-sec { padding: var(--space-8) var(--container-gutter); }
+  .demo-light { background: var(--color-canvas); }
+  .demo-dark {
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(76,197,218,.28), rgba(76,197,218,0) 60%),
+      linear-gradient(180deg, #0C333C 0%, #124D5A 55%, #0B9198 100%);
+    color: #fff;
+  }
+  .demo-dark h2, .demo-dark .demo-note, .demo-dark .demo-hint { color: #fff; }
+  .demo-wrap { max-width: var(--container-max); margin-inline: auto; }
+  h2 { font-size: var(--text-h3); margin: 0 0 var(--space-2); }
+  .demo-note {
+    font-size: var(--text-body-sm); color: var(--color-ink-soft);
+    margin: 0 0 var(--space-6); max-width: 62ch;
+  }
+  .demo-hint {
+    font-size: var(--text-body-sm); opacity: .8; margin-top: var(--space-6);
+    border-top: 1px solid var(--color-line); padding-top: var(--space-4);
+  }
+  .demo-dark .demo-hint { border-color: rgba(255,255,255,.25); }
+</style>
+</head>
+<body>
+
+<!--
+  ============================================================================
+  >>> WHERE TO PUT THE REAL PRODUCT PHOTOS <<<
+  ============================================================================
+  Every card below has ONE line marked with:
+
+        <!-- ===== REAL PHOTO GOES HERE ===== -- >
+
+  Replace that whole <img ...> tag with your real one. The placeholders are
+  drawings (inline SVG) so this file works offline — they are NOT assets you
+  need to keep.
+
+  COPY THIS SHAPE EXACTLY:
+
+      <img src="https://plasmajo.com/wp-content/uploads/2026/07/cleanser.webp"
+           alt="منظف هيدرا الرغوي بعبوة شفافة"
+           loading="lazy" decoding="async">
+
+  THE FOUR PARTS, AND WHY EACH MATTERS:
+   1. src  — upload to the WordPress Media Library, then copy its URL.
+   2. alt  — describe the product in Arabic, for blind visitors AND for Google.
+             Never leave it empty, never write "image" or "product".
+   3. loading="lazy"    — photos below the screen only download when needed.
+   4. decoding="async"  — the photo never blocks the page from drawing.
+
+  PHOTO SPECS (important):
+   · SHAPE: crop to 4:5 (portrait, e.g. 800 x 1000px). The frame is locked to
+     that ratio, so anything else gets cropped from the centre. Crop them
+     yourself so you choose what stays in view, rather than letting CSS decide.
+   · FORMAT: WebP. Roughly half the size of JPEG at the same quality.
+   · SIZE: ~800px wide is plenty; the card is never larger than ~400px on
+     screen. A 3000px photo just makes phones download 10x more than needed.
+   · BACKGROUND: the waterline sits at the BOTTOM of the photo, so keep the
+     bottom of the frame reasonably clean — don't put the product's label
+     right at the very bottom edge or the water will cross it.
+
+  TO CHANGE THE PHOTO SHAPE for every card at once, edit --card-media-ratio
+  in tokens.css (see the TUNING PANEL there).
+  ============================================================================
+-->
+
+<!-- ===================== LIGHT BACKGROUND ===================== -->
+<section class="demo-sec demo-light">
+  <div class="demo-wrap">
+    <h2>بطاقة المنتج — على خلفية فاتحة</h2>
+    <p class="demo-note">
+      البطاقة كلها قابلة للنقر. مرّري الماوس فوقها على الكمبيوتر: ترتفع البطاقة قليلًا،
+      تتنفّس الصورة، ويرتفع «خط الماء» أسفل الصورة — وهي حركتنا المميّزة.
+      زر «أضيفي إلى السلة» يبقى قابلًا للنقر بشكل مستقل.
+    </p>
+
+    <div class="luvit-card-grid">
+
+      <!-- 1 — with badge -->
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge">جديد</span>
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="منظف هيدرا الرغوي بعبوة شفافة"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><rect x='152' y='150' width='96' height='250' rx='20' fill='rgb(255,255,255)' opacity='.94'/><rect x='180' y='108' width='40' height='50' rx='11' fill='rgb(255,255,255)'/><rect x='166' y='250' width='68' height='58' rx='7' fill='rgb(41,169,192)' opacity='.22'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Cleanser</p>
+          <h3 class="luvit-card__title">
+            <a class="luvit-card__link" href="#">منظف هيدرا اللطيف</a>
+          </h3>
+          <p class="luvit-card__text">رغوة ناعمة تنظّف دون أن تجفّف — لكل أنواع البشرة.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">12.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 — sale price -->
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge luvit-card__badge--accent">خصم</span>
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="سيروم فيتامين سي بعبوة عنبرية"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><rect x='158' y='170' width='84' height='230' rx='16' fill='rgb(166,101,42)' opacity='.85'/><rect x='176' y='104' width='48' height='70' rx='12' fill='rgb(255,255,255)'/><rect x='166' y='260' width='68' height='56' rx='6' fill='rgb(255,255,255)' opacity='.85'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Serum</p>
+          <h3 class="luvit-card__title">
+            <a class="luvit-card__link" href="#">سيروم فيتامين سي</a>
+          </h3>
+          <p class="luvit-card__text">إشراقة يومية مع نياسيناميد وحمض الهيالورونيك.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><del>28.00</del> 22.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="تونر مرطّب بعبوة زرقاء"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(116,214,231)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><rect x='156' y='140' width='88' height='260' rx='14' fill='rgb(255,255,255)' opacity='.9'/><rect x='156' y='300' width='88' height='100' rx='14' fill='rgb(41,120,192)' opacity='.35'/><rect x='180' y='100' width='40' height='46' rx='10' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Toner</p>
+          <h3 class="luvit-card__title">
+            <a class="luvit-card__link" href="#">تونر الترطيب العميق</a>
+          </h3>
+          <p class="luvit-card__text">يوازن البشرة ويهيّئها لامتصاص السيروم.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">15.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4 — long title, to prove the footers still line up -->
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="كريم مرطّب في أنبوب أبيض"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><path d='M168 150 h64 v240 a12 12 0 0 1 -12 12 h-40 a12 12 0 0 1 -12 -12 z' fill='rgb(255,255,255)' opacity='.94'/><rect x='176' y='120' width='48' height='34' rx='8' fill='rgb(255,255,255)'/><rect x='172' y='250' width='56' height='46' rx='6' fill='rgb(41,169,192)' opacity='.28'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Moisturizer</p>
+          <h3 class="luvit-card__title">
+            <a class="luvit-card__link" href="#">كريم الترطيب المكثّف بالسيراميد والبانثينول</a>
+          </h3>
+          <p class="luvit-card__text">ترطيب يدوم ٢٤ ساعة بقوام خفيف غير دهني.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">18.50 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="demo-hint">
+      ✓ نسبة الصورة مثبّتة (لا تقفز الصفحة أثناء التحميل)&nbsp; ·&nbsp;
+      ✓ البطاقة كلها رابط واحد (آمن لقارئ الشاشة)&nbsp; ·&nbsp;
+      ✓ صفرٌ من الجافاسكربت الجديد&nbsp; ·&nbsp;
+      ✓ عمودان على الجوال، ٣ على التابلت، ٤ على الكمبيوتر
+    </p>
+  </div>
+</section>
+
+<!-- ===================== DARK / UNDERWATER BACKGROUND ===================== -->
+<section class="demo-sec demo-dark">
+  <div class="demo-wrap">
+    <h2>على خلفية مائية داكنة</h2>
+    <p class="demo-note">
+      نفس البطاقة مع <code>luvit-card--on-dark</code>: يبقى السطح أبيض لأقصى وضوح،
+      لكن الظل يتحوّل إلى توهّج مائي ناعم لتبدو البطاقة داخل الماء لا فوقه.
+    </p>
+
+    <div class="luvit-card-grid">
+      <article class="luvit-card luvit-card--product luvit-card--on-dark">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge">جديد</span>
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="منظف هيدرا الرغوي"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><rect x='152' y='150' width='96' height='250' rx='20' fill='rgb(255,255,255)' opacity='.94'/><rect x='180' y='108' width='40' height='50' rx='11' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">منظف هيدرا اللطيف</a></h3>
+          <p class="luvit-card__text">رغوة ناعمة تنظّف دون أن تجفّف.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">12.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product luvit-card--on-dark">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="سيروم فيتامين سي"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><rect x='158' y='170' width='84' height='230' rx='16' fill='rgb(166,101,42)' opacity='.85'/><rect x='176' y='104' width='48' height='70' rx='12' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">سيروم فيتامين سي</a></h3>
+          <p class="luvit-card__text">إشراقة يومية مع نياسيناميد.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">22.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product luvit-card--on-dark">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="تونر مرطّب"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(116,214,231)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><rect x='156' y='140' width='88' height='260' rx='14' fill='rgb(255,255,255)' opacity='.9'/><rect x='156' y='300' width='88' height='100' rx='14' fill='rgb(41,120,192)' opacity='.35'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">تونر الترطيب العميق</a></h3>
+          <p class="luvit-card__text">يوازن البشرة ويهيّئها للسيروم.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">15.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product luvit-card--on-dark">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="كريم مرطّب"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><path d='M168 150 h64 v240 a12 12 0 0 1 -12 12 h-40 a12 12 0 0 1 -12 -12 z' fill='rgb(255,255,255)' opacity='.94'/><rect x='176' y='120' width='48' height='34' rx='8' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">كريم الترطيب المكثّف</a></h3>
+          <p class="luvit-card__text">ترطيب يدوم ٢٤ ساعة.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">18.50 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ROUTINE TEASER CARDS ===================== -->
+<section class="demo-sec demo-light">
+  <div class="demo-wrap">
+    <h2>بطاقات الروتين — Routine teasers</h2>
+    <p class="demo-note">
+      نسخة أعرض (16:9) برقم الخطوة ورابط نصّي هادئ بدل الزر الممتلئ،
+      حتى لا تنافس بطاقات المنتجات. السهم يتحرّك عند المرور على البطاقة كلها.
+    </p>
+
+    <div class="luvit-card-grid luvit-card-grid--wide">
+
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="روتين الصباح: منظف وتونر وواقي شمس"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(116,214,231)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23g)'/><rect x='230' y='120' width='60' height='170' rx='14' fill='rgb(255,255,255)' opacity='.94'/><rect x='300' y='150' width='52' height='140' rx='12' fill='rgb(255,255,255)' opacity='.88'/><rect x='362' y='135' width='56' height='155' rx='13' fill='rgb(255,255,255)' opacity='.82'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">1</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Morning</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">روتين الصباح</a></h3>
+          <p class="luvit-card__text">ثلاث خطوات سريعة توقظ البشرة وتحميها طوال اليوم.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__more">اكتشفي الروتين</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="روتين المساء: منظف وسيروم وكريم ليلي"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(30,134,156)'/><stop offset='1' stop-color='rgb(12,51,60)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23g)'/><rect x='245' y='130' width='58' height='160' rx='13' fill='rgb(255,255,255)' opacity='.9'/><rect x='315' y='115' width='54' height='175' rx='13' fill='rgb(166,101,42)' opacity='.85'/><rect x='380' y='150' width='50' height='140' rx='12' fill='rgb(255,255,255)' opacity='.8'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">2</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Evening</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">روتين المساء</a></h3>
+          <p class="luvit-card__text">تنظيف عميق وترطيب مكثّف بينما تستعيد البشرة توازنها.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__more">اكتشفي الروتين</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="روتين أسبوعي: ماسك وتقشير لطيف"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23g)'/><circle cx='320' cy='190' r='78' fill='rgb(255,255,255)' opacity='.55'/><rect x='292' y='140' width='56' height='150' rx='13' fill='rgb(255,255,255)' opacity='.92'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">3</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Weekly</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">العناية الأسبوعية</a></h3>
+          <p class="luvit-card__text">تقشير لطيف وماسك مرطّب مرّة واحدة كل أسبوع.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__more">اكتشفي الروتين</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <p class="demo-hint">
+      ملاحظة: رابط «اكتشفي الروتين» ليس رابطًا منفصلًا — البطاقة كلها هي الرابط،
+      لذا يبقى للقارئ الآلي رابط واحد فقط.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== FEATURE CARDS ===================== -->
+<section class="demo-sec demo-light">
+  <div class="demo-wrap">
+    <h2>بطاقات المميّزات — Feature cards</h2>
+    <p class="demo-note">
+      بلا صور. لا يوجد إطار صورة، لذا انتقل «خط الماء» إلى أسفل البطاقة نفسها:
+      البطاقة غارقة قليلًا، ويرتفع الماء عند المرور أو الضغط. نفس الحركة، نفس العائلة.
+    </p>
+
+    <div class="luvit-card-grid luvit-card-grid--wide">
+
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">◇</span>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">مكوّنات آمنة</a></h3>
+          <p class="luvit-card__text">تركيبات خالية من العطور القاسية، مناسبة للبشرة الحسّاسة.</p>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">✿</span>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">مختبرة سريريًا</a></h3>
+          <p class="luvit-card__text">كل منتج يمرّ باختبارات جلدية قبل أن يصل إليكِ.</p>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">✦</span>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">الدفع عند الاستلام</a></h3>
+          <p class="luvit-card__text">ادفعي عند وصول الطلب إلى بابك في كل أنحاء الأردن.</p>
+        </div>
+      </article>
+
+    </div>
+    <p class="demo-hint">
+      الأيقونات هنا رموز نصّية للتجربة فقط — استبدليها بأيقونات SVG حقيقية لاحقًا.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== GLASS CARDS (on dark water) ===================== -->
+<section class="demo-sec demo-dark">
+  <div class="demo-wrap">
+    <h2>البطاقة الزجاجية — Glass on dark water</h2>
+    <p class="demo-note">
+      لوح زجاجي مثلج فوق الماء الداكن. النص داكن عن قصد: الزجاج يفتّح ما خلفه،
+      فيصبح النص الداكن أوضح من الأبيض.
+      <strong>تنبيه أداء:</strong> لا تستخدمي أكثر من ٣–٤ بطاقات زجاجية على الشاشة،
+      ولا تضعيها فوق الهيرو المتحرّك.
+    </p>
+
+    <div class="luvit-card-grid luvit-card-grid--wide">
+
+      <article class="luvit-card luvit-card--feature luvit-card--glass">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">◇</span>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">مكوّنات آمنة</a></h3>
+          <p class="luvit-card__text">تركيبات خالية من العطور القاسية.</p>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--feature luvit-card--glass">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">✦</span>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">الدفع عند الاستلام</a></h3>
+          <p class="luvit-card__text">ادفعي عند وصول الطلب إلى بابك.</p>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--routine luvit-card--glass">
+        <div class="luvit-card__media">
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async"
+               alt="روتين الصباح"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(116,214,231)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23g)'/><rect x='250' y='120' width='58' height='170' rx='14' fill='rgb(255,255,255)' opacity='.94'/><rect x='320' y='150' width='52' height='140' rx='12' fill='rgb(255,255,255)' opacity='.88'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">1</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Morning</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">روتين الصباح</a></h3>
+          <p class="luvit-card__text">ثلاث خطوات توقظ البشرة.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__more">اكتشفي الروتين</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <p class="demo-hint">
+      للشبكات الكاملة من المنتجات استخدمي <code>luvit-card--on-dark</code> الصلبة —
+      تبدو قريبة جدًا ولا تكلّف شيئًا في الأداء.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== LTR CHECK ===================== -->
+<section class="demo-sec demo-light" dir="ltr" lang="en">
+  <div class="demo-wrap">
+    <h2>LTR check</h2>
+    <p class="demo-note">Badge corner and text alignment flip automatically (logical properties).</p>
+    <div class="luvit-card-grid">
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge">New</span>
+          <!-- ===== REAL PHOTO GOES HERE (replace this whole img tag) ===== -->
+          <img loading="lazy" decoding="async" alt="Hydra gel cleanser bottle"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23g)'/><rect x='152' y='150' width='96' height='250' rx='20' fill='rgb(255,255,255)' opacity='.94'/><rect x='180' y='108' width='40' height='50' rx='11' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Cleanser</p>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">Hydra Gentle Cleanser</a></h3>
+          <p class="luvit-card__text">A soft foam that cleanses without stripping.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">12.00 JOD</span>
+            <button type="button" class="luvit-btn">Add to cart</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- GSAP must load BEFORE motion.js (needed for the button's bubble-pop) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="motion.js"></script>
+
+<!-- DEMO ONLY: the links here are placeholders (href="#"), which would jump
+     the page to the top. On the real site they point at real product pages,
+     so this script does NOT ship. -->
+<script>
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="#"]');
+    if (a) e.preventDefault();
+  });
+</script>
+</body>
+</html>

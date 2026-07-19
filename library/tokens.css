@@ -523,3 +523,551 @@ h1, h2, h3, h4, .luvit-heading {
   .luvit-btn:active { transform: none; }
   .luvit-btn::before, .luvit-btn::after { display: none; }
 }
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 2: THE CARD  (product variant)
+   --------------------------------------------------------------------------
+   Same principle as the button: SOLID FIRST. A card must be readable and must
+   never make the page jump while images load; the water look is layered on
+   after that is true.
+
+   Deliberately NOT copied from the reference libraries:
+     · 3D tilt on hover      -> needs a mousemove handler per card
+     · cursor-following glow -> same cost, multiplied by every card in a grid
+   Both feel expensive on a phone showing 6 product cards. We get depth from
+   static CSS instead, so a card grid costs essentially nothing.
+
+   ZERO new JavaScript. Scroll reveals reuse what motion.js already has:
+     <div class="luvit-card-grid" data-luvit="stagger">   (or LUVIT.batchReveal)
+
+   OUR SIGNATURE: the "waterline" — a thin aqua band at the base of the image
+   that RISES a few pixels on hover, like the water level shifting as you lean
+   in. That is our gesture in place of everyone else's tilt.
+   ========================================================================== */
+
+/* ==========================================================================
+   >>> TUNING PANEL — CHANGE THESE NUMBERS, NOTHING ELSE <<<
+   --------------------------------------------------------------------------
+   Everything about how the card looks and moves is controlled by the tokens
+   in the :root block directly below. You never need to touch the rules
+   further down. Find the token name, change the number, save, clear the
+   LiteSpeed cache, hard-refresh (Ctrl+F5).
+
+   WANT THE WATER TO...                 CHANGE THIS TOKEN        TRY
+   ---------------------------------------------------------------------------
+   show more/less before you touch it   --card-waterline-rest    8px .. 22px
+   be a deeper body of water            --card-waterline-h       32px .. 60px
+   have bigger / choppier waves         --card-wave  (see note A)
+   drift faster / slower                see note B (the 7s value)
+   not move at all                      see note C
+
+   WANT THE CARD TO...                  CHANGE THIS TOKEN        TRY
+   ---------------------------------------------------------------------------
+   zoom the photo more on hover         --card-media-zoom        1.00 .. 1.10
+   rise more/less on hover              see note D (the -4px)
+   react faster / slower                --card-duration          150ms .. 400ms
+   change photo shape (tall/wide)       --card-media-ratio       4/5, 1/1, 16/9
+   have rounder / sharper corners       --card-radius
+   sit lighter / heavier on the page    --card-shadow, --card-shadow-hover
+
+   NOTE A — WAVE SHAPE. In --card-wave, the path is: M0,11 Q35,1 70,11 T140,11
+     · the "1" is the wave CREST height   -> smaller number = TALLER waves
+     · the "11" values are the rest level -> raise both to sink the surface
+     · the "140" is one wave cycle's width -> smaller = more, tighter waves
+       (if you change 140 here, change the two "140px" mask-size values too)
+   NOTE B — DRIFT SPEED. Search "luvit-water-drift 7s" (2 places). Bigger
+     number = slower drift. Keep both the same.
+   NOTE C — STOP THE DRIFT. Delete the two "animation: luvit-water-drift..."
+     lines. The wave shape stays; it just won't move.
+   NOTE D — HOVER LIFT. Search "translateY(-4px)" and change the 4.
+
+   PERFORMANCE RULE: the drift animation must stay inside the :hover / :active
+   rules. If you move it so it always runs, every card on the page repaints
+   continuously and the site gets slower — exactly what we agreed to avoid.
+   ========================================================================== */
+
+:root {
+  /* ---- Card surface ---- */
+  --card-radius:       var(--radius-md);
+  --card-pad:          var(--space-5);
+  --card-bg:           var(--color-paper);
+  --card-border:       var(--color-line-soft);
+  --card-sheen-top:    rgba(255, 255, 255, 0.75); /* meniscus, matches button */
+  --card-shadow:       0 2px 10px rgba(12, 51, 60, 0.07);
+  --card-shadow-hover: 0 16px 34px rgba(12, 51, 60, 0.16);
+
+  /* ---- Media frame ---- */
+  --card-media-ratio:  4 / 5;                     /* locked -> no layout jump */
+  --card-media-bg:     var(--color-mist);         /* placeholder while loading */
+  --card-media-zoom:   1.04;
+
+  /* ---- Waterline (signature) ----
+     -h    = full height of the water body when it has risen
+     -rest = how much water shows before you interact
+     -wave = the SVG that gives the surface its UNDULATING edge. A straight
+             edge reads as a UI divider; a wave reads as water. One tiny
+             inline SVG used as a mask — no filters, no images to download. */
+  --card-waterline-h:    44px;
+  --card-waterline-rest: 15px;
+  --card-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 44' preserveAspectRatio='none'%3E%3Cpath d='M0,11 Q35,1 70,11 T140,11 L140,44 L0,44 Z' fill='%23fff'/%3E%3C/svg%3E");
+
+  /* ---- Motion: calmer than the button, per the motion spec ---- */
+  --card-duration:     250ms;
+  --card-media-duration: 450ms;
+}
+
+/* --------------------------------------------------------------------------
+   BASE CARD  —  .luvit-card
+   -------------------------------------------------------------------------- */
+.luvit-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;                 /* clips image zoom + waterline to radius */
+
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow), inset 0 1px 0 var(--card-sheen-top);
+
+  transition:
+    transform var(--card-duration) var(--ease-out-soft),
+    box-shadow var(--card-duration) var(--ease-out-soft);
+}
+
+/* ---- Media frame: ratio is LOCKED so images can't push the page around ---- */
+.luvit-card__media {
+  position: relative;
+  aspect-ratio: var(--card-media-ratio);
+  background: var(--card-media-bg);
+  overflow: hidden;
+}
+.luvit-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--card-media-duration) var(--ease-out-soft);
+}
+
+/* Light through water — a static highlight. No mousemove, no cost. */
+.luvit-card__media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(120% 80% at 18% 0%,
+    rgba(255,255,255,0.38) 0%, rgba(255,255,255,0) 55%);
+}
+
+/* THE WATERLINE — a bright crest (the water's surface) sitting on a deeper
+   body of water, which RISES when you hover or press.
+
+   Why it's built from two contrasting parts: the product photos are aqua, so
+   an aqua-only line disappears into them (that was the v1 bug). The white
+   CREST reads against aqua imagery; the dark-teal BODY reads against pale or
+   white imagery. Together it stays visible on any photo. */
+.luvit-card__media::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--card-waterline-h);
+  pointer-events: none;
+
+  /* SHAPE — the mask cuts an undulating top edge out of this band, so the
+     surface is a wave instead of a ruled line. This is the whole difference
+     between "water" and "a divider". */
+  -webkit-mask-image: var(--card-wave);
+          mask-image: var(--card-wave);
+  -webkit-mask-size: 140px 100%;
+          mask-size: 140px 100%;
+  -webkit-mask-repeat: repeat-x;
+          mask-repeat: repeat-x;
+  -webkit-mask-position: 0 0;
+          mask-position: 0 0;
+
+  /* COLOUR — a bright crest in the first ~3px (which now follows the wave,
+     not a straight line), then translucent water. Kept deliberately see-
+     through so the product stays visible THROUGH it: submerged, not covered. */
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.80) 0px,
+    rgba(255, 255, 255, 0.30) 3px,
+    rgba(120, 215, 235, 0.26) 11px,
+    rgba(18, 77, 90, 0.42) 100%);
+
+  transform: translateY(calc(100% - var(--card-waterline-rest)));
+  transition: transform var(--card-duration) var(--ease-out-soft);
+}
+
+/* Gentle drift, so the surface is alive rather than a frozen shape.
+   Runs ONLY while hovered/pressed — never idling on a grid of cards, so it
+   costs nothing when you're just scrolling. */
+@keyframes luvit-water-drift {
+  from { -webkit-mask-position: 0 0;      mask-position: 0 0; }
+  to   { -webkit-mask-position: -140px 0; mask-position: -140px 0; }
+}
+
+/* ---- Badge (جديد / خصم) — RTL-safe corner ---- */
+.luvit-card__badge {
+  position: absolute;
+  z-index: 3;
+  top: var(--space-3);
+  inset-inline-start: var(--space-3);
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--aqua-100);
+  color: var(--aqua-700);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+.luvit-card__badge--accent { background: var(--fuchsia-500); color: #fff; }
+
+/* ---- Body ---- */
+.luvit-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--card-pad);
+  flex: 1;                          /* footers line up across a row */
+}
+.luvit-card__eyebrow {
+  font-family: var(--font-latin);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--aqua-600);
+}
+.luvit-card__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  line-height: var(--leading-heading);
+  color: var(--color-ink);
+  margin: 0;
+}
+.luvit-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+.luvit-card__text {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-soft);
+  margin: 0;
+}
+.luvit-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: auto;                 /* pin to the bottom of the card */
+  padding-top: var(--space-2);
+}
+.luvit-card__price {
+  font-family: var(--font-latin);
+  font-size: var(--text-body-lg);
+  font-weight: 600;
+  color: var(--color-ink);
+  direction: ltr;                   /* price stays LTR inside RTL copy */
+  unicode-bidi: isolate;
+}
+.luvit-card__price del {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-faint);
+  margin-inline-end: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   WHOLE-CARD CLICKABLE ("stretched link")
+   One real link (the title) is stretched over the whole card, so there is
+   still exactly ONE link for screen readers — no duplicate/nested links.
+   Anything that must stay separately clickable sits above it via z-index 4.
+   -------------------------------------------------------------------------- */
+.luvit-card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+/* Buttons stay clickable in their own right (e.g. add-to-cart vs open product) */
+.luvit-card .luvit-btn { position: relative; z-index: 4; }
+
+/* --------------------------------------------------------------------------
+   HOVER — desktop pointers only. :focus-within gives keyboard users the same
+   feedback, which is the part most card designs forget.
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .luvit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover), inset 0 1px 0 var(--card-sheen-top);
+  }
+  .luvit-card:hover .luvit-card__media img { transform: scale(var(--card-media-zoom)); }
+  .luvit-card:hover .luvit-card__media::after {
+    transform: translateY(0);
+    animation: luvit-water-drift 7s linear infinite;
+  }
+}
+
+/* PRESS — this is the one that matters most for us: most visitors are on
+   phones, where :hover never fires. Pressing the card raises the water too,
+   so the signature gesture actually exists on mobile. */
+.luvit-card:active .luvit-card__media::after {
+  transform: translateY(0);
+  animation: luvit-water-drift 7s linear infinite;
+}
+.luvit-card:active .luvit-card__media img { transform: scale(var(--card-media-zoom)); }
+
+/* Keyboard users get the same feedback — the part most card designs forget. */
+.luvit-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover), inset 0 1px 0 var(--card-sheen-top);
+}
+.luvit-card:focus-within .luvit-card__media::after { transform: translateY(0); }
+
+/* --------------------------------------------------------------------------
+   PRODUCT variant  —  .luvit-card--product
+   -------------------------------------------------------------------------- */
+.luvit-card--product { --card-media-ratio: 4 / 5; }
+.luvit-card--product .luvit-card__footer { padding-top: var(--space-3); }
+/* Full-width button inside a narrow product card reads better on mobile. */
+.luvit-card--product .luvit-btn { flex: 1 1 auto; }
+
+/* --------------------------------------------------------------------------
+   ROUTINE TEASER variant  —  .luvit-card--routine
+   Wider 16:9 photo, a step number, and a quieter action (ghost / arrow) so a
+   row of routine cards never fights the product cards for attention.
+   Use inside .luvit-card-grid--wide (1 / 2 / 3 columns).
+   -------------------------------------------------------------------------- */
+.luvit-card--routine { --card-media-ratio: 16 / 9; }
+
+/* Header row: step chip sits beside the eyebrow. */
+.luvit-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Step number — a small water-filled disc, same gradient family as the button
+   so the system still reads as one language. */
+.luvit-card__step {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  color: #FFFFFF;
+  font-family: var(--font-latin);
+  font-weight: 600;
+  font-size: var(--text-body-sm);
+  line-height: 1;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--btn-sheen-top);
+}
+
+/* The routine card's action is text-led, not a big filled button. */
+.luvit-card--routine .luvit-card__footer { justify-content: flex-start; }
+
+/* Arrow link — RTL-aware, and it animates from the CARD's hover, so hovering
+   anywhere on the card moves it (the whole card is the target). */
+.luvit-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  font-size: var(--text-body-sm);
+  color: var(--aqua-700);
+  text-decoration: none;
+}
+.luvit-card__more::after {
+  content: "←";                       /* RTL / Arabic default */
+  display: inline-block;
+  transition: transform var(--card-duration) var(--ease-out-soft);
+}
+[dir="ltr"] .luvit-card__more::after { content: "→"; }
+
+@media (hover: hover) and (pointer: fine) {
+  .luvit-card:hover .luvit-card__more::after { transform: translateX(-4px); }
+  [dir="ltr"] .luvit-card:hover .luvit-card__more::after { transform: translateX(4px); }
+}
+.luvit-card:active .luvit-card__more::after { transform: translateX(-4px); }
+[dir="ltr"] .luvit-card:active .luvit-card__more::after { transform: translateX(4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-card__more::after { transition: none; transform: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   FEATURE variant  —  .luvit-card--feature
+   No photo. For "what makes us different": an icon, a title, a line of copy.
+   The lightest card of the set.
+
+   Because there is no photo, there is no photo-waterline — so the water
+   signature moves to the BOTTOM OF THE CARD ITSELF: the card sits partly
+   submerged, and the level rises when you hover or press it. Same wave, same
+   gesture, so it still belongs to the family.
+   -------------------------------------------------------------------------- */
+.luvit-card--feature .luvit-card__body {
+  position: relative;
+  z-index: 1;                       /* keep text above the water */
+  gap: var(--space-3);
+  padding-block: var(--space-6);
+}
+
+/* Icon sits in a droplet of deep water — same gradient as the button. */
+.luvit-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  color: #FFFFFF;
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--btn-sheen-top);
+  transition: transform var(--card-duration) var(--ease-out-soft);
+}
+
+/* The card's own waterline, along its bottom edge. */
+.luvit-card--feature::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--card-waterline-h);
+  pointer-events: none;
+  -webkit-mask-image: var(--card-wave);
+          mask-image: var(--card-wave);
+  -webkit-mask-size: 140px 100%;
+          mask-size: 140px 100%;
+  -webkit-mask-repeat: repeat-x;
+          mask-repeat: repeat-x;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.70) 0px,
+    rgba(120, 215, 235, 0.20) 10px,
+    rgba(41, 169, 192, 0.26) 100%);
+  transform: translateY(calc(100% - var(--card-waterline-rest)));
+  transition: transform var(--card-duration) var(--ease-out-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .luvit-card--feature:hover::after {
+    transform: translateY(0);
+    animation: luvit-water-drift 7s linear infinite;
+  }
+  .luvit-card--feature:hover .luvit-card__icon { transform: scale(1.06); }
+}
+.luvit-card--feature:active::after {
+  transform: translateY(0);
+  animation: luvit-water-drift 7s linear infinite;
+}
+
+/* --------------------------------------------------------------------------
+   GLASS variant  —  .luvit-card--glass
+   A frosted panel for placing ON the dark underwater sections.
+
+   ⚠ PERFORMANCE — READ BEFORE USING:
+   backdrop-filter is the single most expensive thing in this whole library.
+   The browser has to re-blur whatever sits behind the card on every frame.
+   RULE OF THUMB: no more than 3-4 glass cards visible on screen at once, and
+   never over the scrolling hero sequence (the blur would be recomputed for
+   every frame of the animation). For a full product grid use the solid
+   .luvit-card--on-dark instead — it looks close and costs nothing.
+
+   Text stays DARK on purpose: the frosted panel lightens whatever is behind
+   it, so dark ink lands around 5.4:1 there. White text would fail.
+   -------------------------------------------------------------------------- */
+.luvit-card--glass {
+  background-color: var(--glass-bg);
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 60%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.80);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.25);
+          backdrop-filter: blur(var(--glass-blur)) saturate(1.25);
+}
+.luvit-card--glass .luvit-card__title { color: var(--color-ink); }
+.luvit-card--glass .luvit-card__text  { color: var(--color-ink-soft); }
+.luvit-card--glass .luvit-card__price { color: var(--color-ink); }
+.luvit-card--glass .luvit-card__eyebrow { color: var(--aqua-800); }
+
+@media (hover: hover) and (pointer: fine) {
+  .luvit-card--glass:hover {
+    background-color: var(--glass-bg-strong);
+    box-shadow: 0 20px 44px rgba(4, 30, 36, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+}
+
+/* Fallback: if the browser can't frost, use a more opaque panel so the text
+   never ends up floating unreadably over the water. */
+@supports not ((-webkit-backdrop-filter: blur(2px)) or (backdrop-filter: blur(2px))) {
+  .luvit-card--glass { background-color: rgba(255, 255, 255, 0.86); }
+}
+
+/* Reduced motion: feature/glass cards keep colour, drop movement. */
+@media (prefers-reduced-motion: reduce) {
+  .luvit-card--feature:hover .luvit-card__icon { transform: none; }
+  .luvit-card--feature::after { transition: none; }
+}
+
+/* --------------------------------------------------------------------------
+   GRID  —  .luvit-card-grid
+   Mobile-first: 2 up on phones (right for skincare), 3 on tablet, 4 on desktop.
+   -------------------------------------------------------------------------- */
+.luvit-card-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 700px) {
+  .luvit-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+}
+@media (min-width: 1000px) {
+  .luvit-card-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+/* Fewer, wider columns — for routine/feature cards later. */
+.luvit-card-grid--wide { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 700px)  { .luvit-card-grid--wide { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .luvit-card-grid--wide { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Very small phones: one column so the title/price never crush. */
+@media (max-width: 359px) {
+  .luvit-card-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   ON DARK WATER  —  .luvit-card--on-dark
+   Keeps the solid white surface (max readability) but swaps the shadow for a
+   soft aqua glow so it sits in the water instead of on top of it.
+   -------------------------------------------------------------------------- */
+.luvit-card--on-dark {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 10px 30px rgba(4, 30, 36, 0.45), inset 0 1px 0 var(--card-sheen-top);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-card--on-dark:hover {
+    box-shadow: 0 20px 44px rgba(4, 30, 36, 0.55), inset 0 1px 0 var(--card-sheen-top);
+  }
+}
+
+/* Reduced motion: no lift, no zoom, no waterline rise. */
+@media (prefers-reduced-motion: reduce) {
+  .luvit-card:hover,
+  .luvit-card:focus-within { transform: none; }
+  .luvit-card:hover .luvit-card__media img { transform: none; }
+}
