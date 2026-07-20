@@ -2265,13 +2265,18 @@ body.luvit-locked { overflow: hidden; }
   --tst-fan-x:     26%;     /* sideways offset per step back  */
   --tst-fan-rot:   6deg;    /* rotation per step back         */
   --tst-duration:  350ms;
+  /* Distance from the bottom of the stack down to the arrows/dots.
+     Needs to clear both the tilted cards' bottom corners AND their soft
+     drop-shadow, which extends ~50px further than the card edge itself.
+     Raise this if the controls ever feel crowded by the stack. */
+  --tst-controls-gap: var(--space-8);
 }
 
 .luvit-testimonials {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-6);
+  gap: var(--tst-controls-gap);
 }
 
 /* The stack is as wide as the card PLUS the fan, so the back cards have
@@ -2281,6 +2286,10 @@ body.luvit-locked { overflow: hidden; }
   width: min(100%, calc(var(--tst-w) + (var(--tst-w) * 0.52)));
   height: var(--tst-h);
   touch-action: pan-y;      /* let the page scroll vertically while we drag */
+  /* Rotating about the base swings the bottom CORNERS below the container
+     (~17px at 6deg on a 330px card), and the card's drop-shadow reaches
+     further still. Reserve room on top of --tst-controls-gap. */
+  margin-bottom: var(--space-5);
 }
 
 .luvit-testimonial {
@@ -2378,7 +2387,13 @@ body.luvit-locked { overflow: hidden; }
 }
 
 /* ---- Controls ---- */
+/* The cards are absolutely positioned with z-index 8-10. Positioned elements
+   paint above static ones no matter what the document order says, so without
+   its own stacking position this row sits UNDERNEATH the stack and the arrows
+   disappear behind the front card. */
 .luvit-testimonials__controls {
+  position: relative;
+  z-index: 20;
   display: flex;
   align-items: center;
   gap: var(--space-4);
