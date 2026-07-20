@@ -11,3 +11,6 @@ Desktop.ini
 # The frames themselves are already tracked, so these are disposable.
 hero-seq.zip.zip
 *.zip
+
+# Exported chat/account data - private, never publish
+Chat's/

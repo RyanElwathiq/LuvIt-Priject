@@ -1139,6 +1139,15 @@ h1, h2, h3, h4, .luvit-heading {
   --drawer-ms:      520ms;
 }
 
+/* WordPress admin bar: it is position:fixed at the top of the viewport, so it
+   sits ON TOP of our fixed nav and clips the pill. WordPress adds .admin-bar
+   to <body> only for logged-in users, so this shifts the nav down just for
+   them — visitors are unaffected. (WP uses 32px, and 46px below 783px wide.) */
+.admin-bar .luvit-nav { top: calc(var(--nav-inset) + 32px); }
+@media screen and (max-width: 782px) {
+  .admin-bar .luvit-nav { top: calc(var(--nav-inset) + 46px); }
+}
+
 /* Skip link — flagged High priority in the accessibility guidelines. */
 .luvit-skip {
   position: absolute;
