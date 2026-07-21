@@ -1,3 +1,70 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUVIT — Hero Chapters Preview (DEV ONLY)</title>
+<link rel="stylesheet" href="../library/tokens.css">
+
+<!--
+  ==========================================================================
+  DEV PREVIEW — NOT FOR PRODUCTION
+  ==========================================================================
+  GENERATED from scroll-sequence.html. The code below is the real drop-in,
+  with ONE difference: the frame base URLs point at the LOCAL frames/ and
+  frames-desktop/ folders instead of plasmajo.com.
+
+  WHY: the browser blocks a cross-origin fetch() of manifest.json from a
+  local page, and the live server sends no CORS headers. Local frames are
+  same-origin, so they load - and they are the identical images.
+
+  >>> THIS PAGE MUST BE SERVED OVER HTTP, NOT OPENED AS A FILE <<<
+  Chrome also blocks fetch() of file:// URLs. From D:\luvit\hero-sequence run:
+
+        npx serve .
+
+  then open the http://localhost:... address it prints.
+
+  If you edit scroll-sequence.html, REGENERATE this file rather than editing
+  it, so the two cannot drift apart.
+  ==========================================================================
+-->
+<style>
+  body { margin: 0; background: #0C333C; }
+  #dev-bar {
+    position: fixed; z-index: 9999; left: 12px; bottom: 12px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    padding: 10px 12px; border-radius: 12px;
+    background: rgba(8,20,26,.92); border: 1px solid rgba(255,255,255,.18);
+    color: #fff; direction: ltr;
+    font: 12px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+    box-shadow: 0 10px 30px rgba(0,0,0,.45);
+  }
+  #dev-bar b { font-weight: 700; color: #4CC5DA; }
+  #dev-bar .sep { width: 1px; height: 20px; background: rgba(255,255,255,.2); }
+  #dev-bar button {
+    padding: 5px 9px; border-radius: 7px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,.28);
+    background: rgba(255,255,255,.08); color: #fff; font: inherit;
+  }
+  #dev-bar button:hover { background: rgba(255,255,255,.2); }
+  #dev-bar .tag { padding: 3px 8px; border-radius: 6px; background: #29A9C0; font-weight: 700; }
+  #dev-bar .tag.mob { background: #D02D86; }
+  .after-hero {
+    min-height: 90vh; padding: 60px 24px;
+    background: #298D94; color: #fff; text-align: center;
+    font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  }
+  @media (min-width: 1024px) { .after-hero { background: #0B9198; } }
+</style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="../library/motion.js"></script>
+
+<!-- ============ BEGIN: generated from scroll-sequence.html (local frames) ============ -->
 <!--
   ============================================================================
   LUVIT — HERO SCROLL SEQUENCE + STORY CHAPTERS
@@ -338,7 +405,7 @@
     { inline: 72, block: 46, align: "right",  width: 470 }, // 2 — products entering centre-left
     { inline: 74, block: 48, align: "right",  width: 500 }, // 3 — products centre-left
     { inline: 73, block: 50, align: "right",  width: 500 }, // 4 — products centre-left
-    { inline: 50, block: 34, align: "center", width: 620 }  // 5 — products fill the width. 34 sits it just above centre; RAISE to move DOWN, lower to move UP
+    { inline: 50, block: 26, align: "center", width: 620 }  // 5 — products fill the width: sit ABOVE them
   ];
 
   /* -------------------------------------------------------------------------
@@ -476,8 +543,8 @@
      ========================================================================= */
 
   var VARIANTS = {
-    mobile:  { base: "https://plasmajo.com/wp-content/uploads/hero-seq/extracted/frames/",         bg: "#298D94" },
-    desktop: { base: "https://plasmajo.com/wp-content/uploads/hero-seq/extracted/frames-desktop/", bg: "#0B9198" }
+    mobile:  { base: "frames/",         bg: "#298D94" },
+    desktop: { base: "frames-desktop/", bg: "#0B9198" }
   };
 
   var DESKTOP_MIN_WIDTH = 1024;   // also decides which STORY layout is used
@@ -848,3 +915,59 @@
   };
 })();
 </script>
+<!-- ============ END: generated from scroll-sequence.html ============ -->
+
+<section class="after-hero" id="routine">
+  <h2>قسم الروتين</h2>
+  <p>هذا القسم موجود فقط لتجربة التمرير بعد الهيرو — وللتأكد أن اللون يندمج مع آخر إطار.</p>
+</section>
+
+<div id="dev-bar">
+  <span>variant <span class="tag" id="dv-variant">—</span></span>
+  <span class="sep"></span>
+  <span>progress <b id="dv-prog">0%</b></span>
+  <span class="sep"></span>
+  <span>chapter <b id="dv-ch">—</b></span>
+  <span class="sep"></span>
+  <span>jump</span>
+  <button data-jump="0">0%</button>
+  <button data-jump="0.2">20%</button>
+  <button data-jump="0.4">40%</button>
+  <button data-jump="0.6">60%</button>
+  <button data-jump="0.8">80%</button>
+  <button data-jump="1">100%</button>
+</div>
+
+<script>
+(function () {
+  var vEl = document.getElementById('dv-variant');
+  var pEl = document.getElementById('dv-prog');
+  var cEl = document.getElementById('dv-ch');
+  var hero = document.getElementById('hero-seq');
+  var SCROLL_DISTANCE_VH = 4;   /* matches the drop-in */
+
+  function tick() {
+    var a = window.__LUVIT_HERO__;
+    if (a) {
+      var desktop = a.isDesktopStory();
+      vEl.textContent = desktop ? 'DESKTOP' : 'MOBILE';
+      vEl.className = 'tag' + (desktop ? '' : ' mob');
+      pEl.textContent = Math.round(a.state.p * 100) + '%';
+      var ch = a.activeChapter();
+      cEl.textContent = ch < 0 ? '—' : (ch + 1);
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  document.querySelectorAll('#dev-bar button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var p = parseFloat(b.dataset.jump);
+      var top = hero.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + p * window.innerHeight * SCROLL_DISTANCE_VH, behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+</body>
+</html>

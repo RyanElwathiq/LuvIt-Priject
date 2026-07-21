@@ -1040,3 +1040,102 @@ if (document.readyState === 'loading') {
 }
 
 window.LUVIT.testimonials = { init: luvitTestimonials, initAll: luvitTestimonialsInit };
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 9: ACCORDION (enhancement only)
+   --------------------------------------------------------------------------
+   The accordion is built on native <details>/<summary>, so it already works
+   with zero JavaScript — keyboard, screen readers and open/close state all
+   come free. This adds ONE optional behaviour: opening a question closes the
+   others, so the list never becomes a wall of text.
+
+   Opt in per group:   <div class="luvit-acc" data-acc-single>
+   Leave the attribute off and several can stay open at once.
+   ========================================================================== */
+function luvitAccordion(scope) {
+  scope = scope || document;
+  var groups = scope.querySelectorAll('.luvit-acc[data-acc-single]');
+
+  Array.prototype.forEach.call(groups, function (group) {
+    if (group.dataset.luvitAcc === 'bound') return;
+    group.dataset.luvitAcc = 'bound';
+
+    var items = Array.prototype.slice.call(group.querySelectorAll('.luvit-acc__item'));
+    items.forEach(function (item) {
+      item.addEventListener('toggle', function () {
+        if (!item.open) return;
+        items.forEach(function (other) {
+          if (other !== item) other.open = false;
+        });
+      });
+    });
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function () { luvitAccordion(); });
+} else {
+  luvitAccordion();
+}
+
+window.LUVIT.accordion = { init: luvitAccordion };
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 13: BEFORE / AFTER SLIDER
+   --------------------------------------------------------------------------
+   The control is a real <input type="range">, so keyboard and screen-reader
+   support come free. This just mirrors its value into a CSS variable, which
+   drives the clip-path and the divider position — no layout, no reflow.
+   ========================================================================== */
+function luvitCompare(scope) {
+  scope = scope || document;
+  var boxes = scope.querySelectorAll('.luvit-compare');
+
+  Array.prototype.forEach.call(boxes, function (box) {
+    if (box.dataset.luvitCmp === 'bound') return;
+    box.dataset.luvitCmp = 'bound';
+
+    var range = box.querySelector('.luvit-compare__range');
+    if (!range) return;
+
+    function apply() {
+      box.style.setProperty('--cmp', range.value + '%');
+    }
+    range.addEventListener('input', apply);
+    apply();
+  });
+}
+
+/* ==========================================================================
+   Scroll-reveal helpers used by the assembled pages
+   --------------------------------------------------------------------------
+   luvitAutoInit() already handles [data-luvit] elements. These two just wire
+   up things that were built long ago and never actually used on a page:
+   the brand bubble field, and the count-up numbers.
+   ========================================================================== */
+
+/* <div class="luvit-deep" data-luvit-bubbles="12"> -> a drifting bubble field */
+function luvitAutoBubbles(scope) {
+  scope = scope || document;
+  if (LUVIT_REDUCED) return;
+  scope.querySelectorAll('[data-luvit-bubbles]').forEach(function (el) {
+    if (el.dataset.luvitBubbled === 'yes') return;
+    el.dataset.luvitBubbled = 'yes';
+    var n = parseInt(el.getAttribute('data-luvit-bubbles'), 10) || 10;
+    luvitBubbles(el, n);
+  });
+}
+
+function luvitPageEnhance() {
+  luvitCompare();
+  luvitAutoBubbles();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitPageEnhance);
+} else {
+  luvitPageEnhance();
+}
+
+window.LUVIT.compare = { init: luvitCompare };
+window.LUVIT.autoBubbles = luvitAutoBubbles;

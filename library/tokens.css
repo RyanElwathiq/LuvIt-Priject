@@ -2471,3 +2471,713 @@ body.luvit-locked { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .luvit-testimonial { transition: none; }
 }
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 6: WAVE DIVIDER
+   --------------------------------------------------------------------------
+   The seam between two sections, as a water surface instead of a straight
+   line. Set --wave-fill to the colour of the section BELOW it.
+
+     <div class="luvit-wave" style="--wave-fill:#FFFFFF"> ...svg... </div>
+
+   In Elementor you can also use the built-in Shape Divider; this exists so
+   custom HTML sections can carry the same wave.
+
+   ⚠ IF YOU ADD .luvit-wave--drift, THE PATH MUST TILE. Two rules:
+     1. viewBox is 0 0 2880 70 — TWO identical wave cycles side by side.
+        The second half must repeat the first half's control points, each
+        x shifted by +1440.
+     2. The path must START and END at the SAME y, and pass through that
+        same y at x=1440. e.g. M0,34 ... 1440,34 ... 2880,34
+     Break either rule and the wave visibly JUMPS every time it loops.
+   ========================================================================== */
+.luvit-wave {
+  display: block;
+  line-height: 0;               /* kills the inline-svg gap */
+  color: var(--wave-fill, #FFFFFF);
+  margin: 0;
+  pointer-events: none;
+  /* The drifting variant makes the svg twice as wide as this box, so the
+     overflow MUST be clipped or it spills into the page and can force a
+     horizontal scrollbar. */
+  overflow: hidden;
+}
+.luvit-wave svg { display: block; width: 100%; height: var(--wave-h, 70px); }
+.luvit-wave--flip svg { transform: scaleY(-1); }
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 7: TRUST BAR
+   --------------------------------------------------------------------------
+   The reassurance strip right after the hero: delivery, cash on delivery,
+   authenticity. On a COD store this answers the buyer's first three doubts
+   before she has to ask.
+   ========================================================================== */
+.luvit-trust {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));   /* 2-up on phones */
+  padding: var(--space-6) 0;
+}
+@media (min-width: 760px) {
+  .luvit-trust { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-5); }
+}
+
+.luvit-trust__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.luvit-trust__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  color: #fff;
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--btn-sheen-top);
+}
+.luvit-trust__icon svg { width: 24px; height: 24px; }
+.luvit-trust__title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.luvit-trust__note {
+  margin: 0;
+  font-size: var(--text-caption);
+  color: var(--color-ink-faint);
+}
+/* On a dark water section */
+.luvit-trust--on-dark .luvit-trust__title { color: #fff; }
+.luvit-trust--on-dark .luvit-trust__note  { color: rgba(255,255,255,.75); }
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 8: STEPS  ("كيف تطلبي")
+   --------------------------------------------------------------------------
+   Numbered steps with a water-line connecting them. Critical for COD, where
+   the buyer needs to know exactly what happens after she taps the button.
+   ========================================================================== */
+.luvit-steps {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: minmax(0, 1fr);
+  counter-reset: luvit-step;
+}
+@media (min-width: 860px) {
+  .luvit-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-5); }
+}
+
+.luvit-step {
+  position: relative;
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  min-width: 0;
+}
+@media (min-width: 860px) {
+  .luvit-step { flex-direction: column; align-items: center; text-align: center; gap: var(--space-3); }
+  /* The water line that joins the steps — hidden on the last one. */
+  .luvit-step::after {
+    content: "";
+    position: absolute;
+    top: 26px;
+    inset-inline-start: calc(50% + 34px);
+    width: calc(100% - 68px);
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg,
+      rgba(76,197,218,.55) 0%, rgba(76,197,218,.18) 100%);
+  }
+  .luvit-step:last-child::after { display: none; }
+}
+
+.luvit-step__num {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  color: #fff;
+  font-family: var(--font-latin);
+  font-weight: 700;
+  font-size: var(--text-body-lg);
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--btn-sheen-top);
+}
+.luvit-step__body { min-width: 0; }
+.luvit-step__title {
+  margin: 0 0 4px;
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.luvit-step__text {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-soft);
+}
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 9: ACCORDION  (الأسئلة الشائعة)
+   --------------------------------------------------------------------------
+   Built on native <details>/<summary>, which gives keyboard support, screen
+   reader semantics and open/close state for free — no JS required for the
+   basics. The open/close height animation uses the CSS grid 0fr->1fr trick,
+   so nothing animates layout the expensive way.
+   ========================================================================== */
+.luvit-acc { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.luvit-acc__item {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), var(--shadow-sm);
+  overflow: hidden;
+  transition: border-color var(--duration-instant) var(--ease-out-soft),
+              box-shadow var(--duration-instant) var(--ease-out-soft);
+}
+.luvit-acc__item[open] {
+  border-color: var(--aqua-300);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), var(--shadow-md);
+}
+
+.luvit-acc__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 60px;                 /* comfortably past the 44px rule */
+  padding: var(--space-4) var(--space-5);
+  cursor: pointer;
+  list-style: none;                 /* hide the default triangle */
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+}
+.luvit-acc__q::-webkit-details-marker { display: none; }
+.luvit-acc__q:focus-visible { box-shadow: inset 0 0 0 3px var(--color-ring); }
+
+/* A water droplet that rotates into a minus when open. */
+.luvit-acc__sign {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--aqua-50);
+  border: 1px solid var(--aqua-200);
+  transition: background-color 200ms var(--ease-out-soft),
+              transform 260ms var(--ease-out-soft);
+}
+.luvit-acc__sign::before,
+.luvit-acc__sign::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 12px; height: 2px;
+  margin: -1px 0 0 -6px;
+  border-radius: 2px;
+  background: var(--aqua-700);
+  transition: transform 260ms var(--ease-out-soft), opacity 200ms;
+}
+.luvit-acc__sign::after { transform: rotate(90deg); }
+.luvit-acc__item[open] .luvit-acc__sign {
+  background: var(--aqua-500);
+  transform: rotate(180deg);
+}
+.luvit-acc__item[open] .luvit-acc__sign::before,
+.luvit-acc__item[open] .luvit-acc__sign::after { background: #fff; }
+.luvit-acc__item[open] .luvit-acc__sign::after { transform: rotate(0deg); opacity: 0; }
+
+/* The answer. grid-template-rows animates without touching layout height
+   the expensive way, and needs no JS to measure anything. */
+.luvit-acc__a {
+  display: grid;
+  grid-template-rows: 1fr;
+  padding: 0 var(--space-5) var(--space-5);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
+  color: var(--color-ink-soft);
+}
+.luvit-acc__a > * { min-height: 0; margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-acc__sign, .luvit-acc__sign::before, .luvit-acc__sign::after { transition: none; }
+}
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 10: FOOTER
+   --------------------------------------------------------------------------
+   The deep water at the bottom of the page — the darkest point of the whole
+   site, closing the journey that started in the dark hero.
+   ========================================================================== */
+.luvit-footer {
+  position: relative;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(76,197,218,.18), rgba(76,197,218,0) 62%),
+    linear-gradient(180deg, #124D5A 0%, #0C333C 60%, #08262E 100%);
+  color: rgba(255,255,255,.82);
+  padding: var(--space-9) var(--container-gutter) var(--space-6);
+}
+.luvit-footer__inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: grid;
+  gap: var(--space-7);
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 760px) {
+  .luvit-footer__inner { grid-template-columns: 1.4fr 1fr 1fr; gap: var(--space-6); }
+}
+
+.luvit-footer__brand {
+  font-family: var(--font-heading);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 var(--space-3);
+}
+.luvit-footer__tag {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
+  max-width: 42ch;
+}
+.luvit-footer__h {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  color: #fff;
+}
+.luvit-footer__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.luvit-footer__list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  color: rgba(255,255,255,.80);
+  text-decoration: none;
+  font-size: var(--text-body-sm);
+  transition: color var(--duration-instant) var(--ease-out-soft);
+}
+.luvit-footer__list a:hover { color: #fff; }
+
+.luvit-footer__social { display: flex; gap: var(--space-3); margin-top: var(--space-4); }
+.luvit-footer__social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255,255,255,.10);
+  box-shadow: var(--nav-bezel);
+  transition: background-color var(--duration-instant) var(--ease-out-soft),
+              transform var(--duration-instant) var(--ease-out-soft);
+}
+.luvit-footer__social a:hover { background: rgba(255,255,255,.22); }
+.luvit-footer__social a:active { transform: scale(0.94); }
+.luvit-footer__social svg { width: 20px; height: 20px; }
+
+.luvit-footer__bar {
+  max-width: var(--container-max);
+  margin: var(--space-7) auto 0;
+  padding-top: var(--space-5);
+  border-top: 1px solid rgba(255,255,255,.16);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-caption);
+  color: rgba(255,255,255,.62);
+}
+.luvit-footer__pay {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,.10);
+  color: #fff;
+  font-size: var(--text-caption);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   SECTION HELPERS — used by the assembled HOME page
+   ========================================================================== */
+.luvit-section { padding: var(--space-9) var(--container-gutter); }
+.luvit-section__inner { max-width: var(--container-max); margin-inline: auto; }
+.luvit-section--tight { padding-block: var(--space-7); }
+
+.luvit-section__head { text-align: center; margin-bottom: var(--space-7); }
+.luvit-section__eyebrow {
+  font-family: var(--font-latin);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--aqua-600);
+  margin: 0 0 var(--space-2);
+}
+.luvit-section__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+.luvit-section__sub {
+  margin: 0 auto;
+  max-width: 56ch;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--color-ink-soft);
+}
+/* Same heads on a dark water section */
+.luvit-section--dark .luvit-section__title { color: #fff; }
+.luvit-section--dark .luvit-section__sub   { color: rgba(255,255,255,.82); }
+.luvit-section--dark .luvit-section__eyebrow { color: var(--aqua-200); }
+
+/* The closing call to action, sitting in deep water. */
+.luvit-cta {
+  position: relative;
+  text-align: center;
+  padding: var(--space-9) var(--container-gutter);
+  background:
+    radial-gradient(120% 90% at 50% 10%, rgba(76,197,218,.30), rgba(76,197,218,0) 62%),
+    linear-gradient(180deg, #0B9198 0%, #124D5A 100%);
+  color: #fff;
+}
+.luvit-cta__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-h1);
+  font-weight: 700;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+.luvit-cta__sub {
+  margin: 0 auto var(--space-6);
+  max-width: 48ch;
+  font-size: var(--text-body-lg);
+  line-height: var(--leading-body);
+  color: rgba(255,255,255,.88);
+}
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 11: LIVING DEEP WATER  (.luvit-deep)
+   --------------------------------------------------------------------------
+   A dark section that BREATHES. A flat gradient reads as dead space; real
+   water always has light moving through it.
+
+   Three layers, all on transform/opacity only so they stay on the compositor:
+     1. two slow caustic blooms drifting past each other
+     2. angled light rays sliding across
+     3. (optional) a bubble field added by motion.js: LUVIT.bubbles(el, 12)
+
+   Cycles are deliberately LONG (26-40s) and offsets small. If you can watch
+   it and consciously see it moving, it is too fast — this should register as
+   "alive" rather than "animated".
+   ========================================================================== */
+.luvit-deep {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #08262E 0%, #0C333C 32%, #124D5A 72%, #0B9198 100%);
+}
+
+/* Caustic bloom A — the wide, slow one. */
+.luvit-deep::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 46% at 28% 30%, rgba(76,197,218,.30), rgba(76,197,218,0) 70%),
+    radial-gradient(30% 38% at 74% 62%, rgba(120,215,235,.22), rgba(120,215,235,0) 72%);
+  animation: luvit-caustic-a 34s ease-in-out infinite alternate;
+  will-change: transform;
+}
+/* Caustic bloom B — smaller, drifting the other way. */
+.luvit-deep::after {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(26% 34% at 62% 22%, rgba(166,231,241,.20), rgba(166,231,241,0) 74%),
+    radial-gradient(34% 30% at 20% 78%, rgba(41,169,192,.26), rgba(41,169,192,0) 72%);
+  animation: luvit-caustic-b 44s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes luvit-caustic-a {
+  from { transform: translate3d(-3%, -2%, 0) scale(1.00); }
+  to   { transform: translate3d( 4%,  3%, 0) scale(1.12); }
+}
+@keyframes luvit-caustic-b {
+  from { transform: translate3d( 3%,  2%, 0) scale(1.08); }
+  to   { transform: translate3d(-4%, -3%, 0) scale(1.00); }
+}
+
+/* Light rays — sunlight reaching down through the water. */
+.luvit-deep__rays {
+  position: absolute;
+  inset: -40% -20%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .5;
+  background: repeating-linear-gradient(
+    100deg,
+    rgba(255,255,255,0)    0px,
+    rgba(255,255,255,.055) 60px,
+    rgba(255,255,255,0)    140px,
+    rgba(255,255,255,0)    240px);
+  animation: luvit-rays 40s linear infinite;
+  will-change: transform;
+}
+@keyframes luvit-rays {
+  from { transform: translate3d(-6%, 0, 0) rotate(0.001deg); }
+  to   { transform: translate3d( 6%, 0, 0) rotate(0.001deg); }
+}
+
+/* Content must sit above the water layers. */
+.luvit-deep > * { position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-deep::before,
+  .luvit-deep::after,
+  .luvit-deep__rays { animation: none; }
+}
+
+/* Waves can drift too — the seam should never look frozen. */
+/* The svg carries TWO identical wave cycles across its viewBox, and slides by
+   exactly one of them — so the loop is seamless.
+
+   min-width is the important line. The base rule above sets width:100%, and
+   if that ever wins the cascade the svg slides half its own body out of view
+   and leaves a hard-edged GAP on the trailing side showing the container
+   colour underneath. min-width can't be undone by a width declaration, so it
+   guarantees the svg is always wide enough to cover the box at every point
+   of the animation. Do not remove it. */
+.luvit-wave--drift svg {
+  width: 200%;
+  min-width: 200%;
+  animation: luvit-wave-slide 28s linear infinite;
+  will-change: transform;
+}
+@keyframes luvit-wave-slide {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Still needs min-width reset, or the svg stays double-width while parked. */
+  .luvit-wave--drift svg { animation: none; width: 100%; min-width: 100%; }
+}
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 12: INGREDIENT TRANSPARENCY  (.luvit-ing)
+   --------------------------------------------------------------------------
+   The brand promise is "مكوّنات واضحة ونِسَب مكتوبة". This component PROVES
+   that instead of claiming it — the strongest trust asset on the page.
+
+   NOTE ON HONESTY: there are deliberately NO percentage BARS here. Active
+   ingredients sit at 2-5%, so any bar would either look negligible or have
+   to be scaled up — which quietly misrepresents the dose. The number is the
+   truth, so the number is what we show, large and plain.
+   ========================================================================== */
+.luvit-ing {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 720px) {
+  .luvit-ing { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+}
+
+.luvit-ing__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+  border: 1px solid var(--color-line-soft);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), var(--shadow-sm);
+  min-width: 0;
+}
+.luvit-ing__pct {
+  flex: none;
+  min-width: 74px;
+  font-family: var(--font-latin);
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--aqua-600);
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: center;
+}
+.luvit-ing__body { min-width: 0; }
+.luvit-ing__name {
+  margin: 0 0 4px;
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.luvit-ing__note {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
+  color: var(--color-ink-soft);
+}
+
+/* On dark water */
+.luvit-ing--on-dark .luvit-ing__row {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.18);
+  box-shadow: var(--nav-bezel);
+}
+.luvit-ing--on-dark .luvit-ing__name { color: #fff; }
+.luvit-ing--on-dark .luvit-ing__note { color: rgba(255,255,255,.78); }
+.luvit-ing--on-dark .luvit-ing__pct  { color: var(--aqua-200); }
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 13: BEFORE / AFTER  (.luvit-compare)
+   --------------------------------------------------------------------------
+   Drag the handle to wipe between two photos. In skincare this is the single
+   most persuasive proof there is — far stronger than any claim.
+
+   Accessibility: the handle is a real <input type="range">, so it works with
+   keyboard arrows and screen readers for free. Dragging is the delight; the
+   slider is the actual control.
+   ========================================================================== */
+.luvit-compare {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  margin-inline: auto;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--card-shadow-hover), inset 0 1px 0 var(--card-sheen-top);
+  background: var(--color-mist);
+  touch-action: pan-y;
+}
+.luvit-compare img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+/* The "after" image is revealed by clipping from the inline-start edge. */
+.luvit-compare__after {
+  clip-path: inset(0 0 0 var(--cmp, 50%));
+}
+[dir="rtl"] .luvit-compare__after {
+  clip-path: inset(0 var(--cmp, 50%) 0 0);
+}
+
+.luvit-compare__label {
+  position: absolute;
+  top: var(--space-3);
+  z-index: 3;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(3,24,30,.55);
+  color: #fff;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  pointer-events: none;
+}
+.luvit-compare__label--before { inset-inline-start: var(--space-3); }
+.luvit-compare__label--after  { inset-inline-end: var(--space-3); }
+
+/* The divider line + grip */
+.luvit-compare__line {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--cmp, 50%);
+  z-index: 3;
+  width: 2px;
+  margin-left: -1px;
+  background: rgba(255,255,255,.9);
+  box-shadow: 0 0 12px rgba(3,24,30,.45);
+  pointer-events: none;
+}
+.luvit-compare__grip {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 46px; height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 4px 14px rgba(3,24,30,.35);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--aqua-700);
+  font-size: 15px;
+}
+/* The real control, laid transparently over the whole image. */
+.luvit-compare__range {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background: transparent;
+}
+.luvit-compare__range:focus-visible ~ .luvit-compare__line {
+  box-shadow: 0 0 0 3px var(--color-ring), 0 0 12px rgba(3,24,30,.45);
+}
+
+/* ==========================================================================
+   LIQUID GLASS v1  —  COMPONENT 14: QUIZ TEASER  (.luvit-quiz)
+   --------------------------------------------------------------------------
+   One question, right on the page. Asking is a much lower barrier than
+   "go and take a quiz", and it pulls the visitor into the routine journey.
+   Reuses the option cards from the forms component.
+   ========================================================================== */
+.luvit-quiz {
+  max-width: 720px;
+  margin-inline: auto;
+  text-align: center;
+}
+.luvit-quiz__q {
+  margin: 0 0 var(--space-5);
+  font-family: var(--font-heading);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.luvit-quiz--on-dark .luvit-quiz__q { color: #fff; }
+.luvit-quiz__foot { margin-top: var(--space-6); }
+.luvit-quiz__hint {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-faint);
+}
+.luvit-quiz--on-dark .luvit-quiz__hint { color: rgba(255,255,255,.7); }

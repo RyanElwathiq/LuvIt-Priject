@@ -1,0 +1,1628 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUVIT Jordan — بشرتك بدها حب</title>
+<link rel="stylesheet" href="tokens.css">
+
+<!--
+  ============================================================================
+  LUVIT — FULL HOME PAGE  (working build, not a mock-up)
+  ============================================================================
+  Everything on this page is live:
+    · the Water Pill navigation (bar + mobile dock + water drawer)
+    · the REAL pinned scroll-frame hero with the 5 story chapters
+    · every component from the library, with its real behaviour
+
+  Frames load from ../hero-sequence/frames/ so it runs locally.
+  MUST BE SERVED OVER HTTP (the browser blocks fetch() on file:// URLs):
+
+        node serve.js "D:\luvit" 4322
+        http://localhost:4322/library/home-preview.html
+
+  When we move this into Elementor, each numbered section below becomes its
+  own Elementor section. The data-nav-bg attribute on each one is what makes
+  the navigation bar switch between light and dark.
+  ============================================================================
+-->
+<style>
+  body { margin: 0; background: var(--color-paper); }
+
+  /* Colour bands for the sections */
+  .band-light { background: var(--color-paper); }
+  .band-mist  { background: var(--color-canvas); }
+  .band-dark  {
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(76,197,218,.24), rgba(76,197,218,0) 60%),
+      linear-gradient(180deg, #0C333C 0%, #124D5A 60%, #0B9198 100%);
+  }
+
+  /* The hand-off colour from the LAST frame of the video. The divider right
+     after the hero must sit on this, or a hard seam appears. */
+  .seq-blend { background-color: #298D94; }
+  @media (min-width: 1024px) { .seq-blend { background-color: #0B9198; } }
+</style>
+</head>
+<body class="luvit-dock-offset">
+
+<a class="luvit-skip" href="#main">تخطّي إلى المحتوى</a>
+
+<!-- ==================================================================== -->
+<!-- NAVIGATION — the Water Pill (bar + drawer + mobile dock)             -->
+<!-- In Elementor this lives in Templates > Theme Builder > Header        -->
+<!-- ==================================================================== -->
+<header class="luvit-nav" id="luvit-nav">
+  <div class="luvit-nav__bar">
+    <span class="luvit-nav__drop" aria-hidden="true"></span>
+
+    <a class="luvit-nav__brand" href="#top">Luv it!</a>
+
+    <nav class="luvit-nav__links" aria-label="التنقل الرئيسي">
+      <a class="luvit-nav__link" href="#top" aria-current="page">الرئيسية</a>
+      <a class="luvit-nav__link" href="#products">المتجر</a>
+      <a class="luvit-nav__link" href="#routine">الروتين</a>
+      <a class="luvit-nav__link" href="#why">ليش LUVIT</a>
+      <a class="luvit-nav__link" href="#faq">الأسئلة</a>
+    </nav>
+
+    <div class="luvit-nav__actions">
+      <a class="luvit-nav__icon-btn" href="#" aria-label="سلة التسوّق">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="luvit-nav__count" id="luvit-cart-count">0</span>
+      </a>
+
+      <button class="luvit-nav__icon-btn luvit-nav__toggle" type="button"
+              aria-label="فتح القائمة" aria-expanded="false" aria-controls="luvit-drawer">
+        <span class="luvit-nav__burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="luvit-drawer" id="luvit-drawer" role="dialog" aria-modal="true"
+     aria-label="قائمة التنقل" aria-hidden="true">
+  <div class="luvit-drawer__water" aria-hidden="true"></div>
+  <nav class="luvit-drawer__panel" aria-label="قائمة الجوال">
+    <a class="luvit-drawer__link" href="#top" aria-current="page">الرئيسية</a>
+    <a class="luvit-drawer__link" href="#products">المتجر</a>
+    <a class="luvit-drawer__link" href="#routine">الروتين</a>
+    <a class="luvit-drawer__link" href="#why">ليش LUVIT</a>
+    <a class="luvit-drawer__link" href="#how">كيف تطلبي</a>
+    <a class="luvit-drawer__link" href="#faq">الأسئلة الشائعة</a>
+
+    <div class="luvit-drawer__sep" role="presentation"></div>
+
+    <a class="luvit-drawer__link luvit-drawer__small" href="#">حسابي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="#">تتبّع طلبي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="#">الشحن والتوصيل</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="#">تواصلي معنا</a>
+  </nav>
+</div>
+
+<nav class="luvit-dock" aria-label="التنقل السريع">
+  <a class="luvit-dock__item" href="#top" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>
+    </svg>
+    <span>الرئيسية</span>
+  </a>
+  <a class="luvit-dock__item" href="#products">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/>
+    </svg>
+    <span>المتجر</span>
+  </a>
+  <a class="luvit-dock__item" href="#routine">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/>
+    </svg>
+    <span>الروتين</span>
+  </a>
+  <a class="luvit-dock__item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+      <path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/>
+    </svg>
+    <span>السلة</span>
+  </a>
+</nav>
+
+<main id="main">
+<span id="top"></span>
+
+<!-- ==================================================================== -->
+<!-- 1. HERO — the real pinned scroll sequence + the 5 story chapters     -->
+<!-- ==================================================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="motion.js"></script>
+
+<!--
+  ============================================================================
+  LUVIT — HERO SCROLL SEQUENCE + STORY CHAPTERS
+  Drop-in for an Elementor "HTML" widget.
+  ============================================================================
+  Two things share ONE ScrollTrigger:
+    1. the canvas frame sequence (the underwater video scrub)
+    2. the five Arabic story chapters that reveal over it
+
+  There is exactly ONE ScrollTrigger and ONE pin. The chapters are driven by
+  the same `state.p` (0 -> 1) that picks the video frame, so they can never
+  drift out of sync with the footage.
+
+  TO ADJUST THE STORY: everything you might want to change lives in the
+  MANUAL TUNING PANEL at the top of the script below. You should not need to
+  touch anything else.
+
+  SETUP:
+    · Frames are already pointed at the live plasmajo.com URLs.
+    · The section BELOW this one must use the matching turquoise so the video
+      blends into the page:
+         selector { background-color: #298D94; }
+         @media (min-width: 1024px) { selector { background-color: #0B9198; } }
+  ============================================================================
+-->
+
+<section id="hero-seq" class="hero-seq" aria-label="قصة LUVIT">
+  <div class="hero-seq__pin">
+    <canvas class="hero-seq__canvas"></canvas>
+
+    <!-- LOCAL DIMMERS (z-index 10) — one soft gradient per chapter, sitting
+         under the copy. They move with their chapter and never cover the
+         whole video, so the products stay visible. -->
+    <div class="hero-story__dims" aria-hidden="true">
+      <span class="hero-story__dim" data-i="0"></span>
+      <span class="hero-story__dim" data-i="1"></span>
+      <span class="hero-story__dim" data-i="2"></span>
+      <span class="hero-story__dim" data-i="3"></span>
+      <span class="hero-story__dim" data-i="4"></span>
+    </div>
+
+    <!-- STORY CHAPTERS (z-index 20) -->
+    <div class="hero-story">
+
+      <article class="hero-story__ch" data-i="0" aria-hidden="false">
+        <p class="hero-story__line">جرّبتي ألف منتج، وسمعتي ألف نصيحة...</p>
+        <p class="hero-story__line">وكل مرة بتوقفي قدام الرف أكثر حيرة.</p>
+        <p class="hero-story__line">المشكلة مش فيكِ — المشكلة إنه محدا فهّمك.</p>
+      </article>
+
+      <article class="hero-story__ch" data-i="1" aria-hidden="true">
+        <p class="hero-story__line">العناية بالبشرة مش لازم تكون لغز.</p>
+        <p class="hero-story__line">بشرتك ما بدها 10 خطوات... بدها اللي بيناسبها بس.</p>
+        <p class="hero-story__line">بشرتك بدها حب — Luv it!</p>
+      </article>
+
+      <article class="hero-story__ch" data-i="2" aria-hidden="true">
+        <p class="hero-story__line">كل بشرة إلها حكاية... وإلها روتينها.</p>
+        <p class="hero-story__line">جافّة، دهنية، مختلطة، حسّاسة — منبنيلك روتين على قدّ بشرتك إنتِ،</p>
+        <p class="hero-story__line">بمكوّنات فعّالة ونِسَب واضحة مكتوبة عالعبوة.</p>
+      </article>
+
+      <article class="hero-story__ch" data-i="3" aria-hidden="true">
+        <p class="hero-story__line">بشرتك حلوة من زمان — والعناية فيها مش رفاهية، هي حقّها عليكِ.</p>
+        <p class="hero-story__line">ومنضلّ معك خطوة بخطوة.</p>
+        <p class="hero-story__line">وبصراحة؟ النتيجة ما بتبين بليلة... بس بتبين أكيد.</p>
+      </article>
+
+      <article class="hero-story__ch hero-story__ch--final" data-i="4" aria-hidden="true">
+        <p class="hero-story__line hero-story__line--big">بشرتك مستنّية مِنِّك خطوة.</p>
+        <!-- TODO: the routine section in Elementor must be given the CSS ID
+             "routine" (Advanced -> CSS ID) so this link scrolls to it.
+             The arrow is supplied by CSS (.luvit-btn--arrow) — do NOT type an
+             arrow character into the label. -->
+        <a class="luvit-btn luvit-btn--arrow hero-story__cta"
+           href="#routine" tabindex="-1">اكتشفي روتينك</a>
+      </article>
+
+    </div>
+
+    <!-- SCROLL CUE — visible before the first scroll, fades out early. -->
+    <div class="hero-story__cue" data-cue aria-hidden="true">
+      <span class="hero-story__cue-text">مرّري لتكمّلي الرحلة</span>
+      <span class="hero-story__cue-dot"></span>
+    </div>
+
+    <!-- LOADER (z-index 30) — stays above the chapters while frames load. -->
+    <div class="hero-seq__loader" data-loader>
+      <div class="hero-seq__spinner" aria-hidden="true"></div>
+      <div class="hero-seq__pct" data-pct>0%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STYLES ===== -->
+<style>
+  html, body { overflow-x: hidden; }
+
+  #hero-seq {
+    --seq-bg: #298D94;
+    background-color: var(--seq-bg);
+    position: relative;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: 0;
+    overflow-x: clip;
+  }
+
+  #hero-seq .hero-seq__pin {
+    position: relative; width: 100%;
+    height: 100vh; height: 100svh;
+    overflow: hidden;
+    background-color: var(--seq-bg);
+  }
+
+  /* ---- LAYER ORDER ----
+     canvas 1  <  dimmers 10  <  chapters 20  <  loader 30
+     (the fixed Water Pill nav stays at 160, from tokens.css) */
+  #hero-seq .hero-seq__canvas {
+    position: relative; z-index: 1;
+    display: block; width: 100%; height: 100%;
+    will-change: contents;
+  }
+
+  /* ---- Local dimmers ---- */
+  #hero-seq .hero-story__dims { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+  #hero-seq .hero-story__dim {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 100%; height: 100%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    /* A soft ellipse that fades to fully transparent well before the edges,
+       so it protects the copy without veiling the whole frame. */
+    background: radial-gradient(
+      ellipse var(--dim-w, 60%) var(--dim-h, 46%) at 50% 50%,
+      rgba(3, 24, 30, 1) 0%,
+      rgba(3, 24, 30, 0.82) 38%,
+      rgba(3, 24, 30, 0.42) 60%,
+      rgba(3, 24, 30, 0) 78%);
+    will-change: opacity;
+  }
+
+  /* ---- Chapters ---- */
+  #hero-seq .hero-story { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
+
+  /* ---- The liquid-glass panel ----
+     Frosted WITHOUT backdrop-filter, which cannot be used here: the canvas
+     behind repaints on every scroll tick, so a real blur would be recomputed
+     every frame of the scrub. Instead this is the same free recipe the nav
+     bar uses — translucent depth fill + a bright bezel edge + a soft outer
+     shadow. Over soft underwater footage it reads as glass and costs nothing.
+       · the top gloss line is the light catching the pane
+       · inset 2px 2px 0 -2px  = the refracted top-left edge
+       · inset 0 0 3px 1px     = the rim glow around the whole pane          */
+  #hero-seq .hero-story__ch {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(88vw, 460px);
+    box-sizing: border-box;
+    margin: 0;
+    padding: var(--panel-pad-y, 30px) var(--panel-pad-x, 28px);
+    border-radius: var(--panel-radius, 26px);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 52%),
+      linear-gradient(180deg,
+        rgba(var(--panel-rgb, 12, 51, 60), var(--panel-a, 0.40)) 0%,
+        rgba(var(--panel-rgb, 12, 51, 60), calc(var(--panel-a, 0.40) * 1.28)) 100%);
+    box-shadow:
+      inset 2px 2px 0 -2px rgba(255, 255, 255, 0.62),
+      inset 0 0 3px 1px rgba(255, 255, 255, 0.26),
+      0 20px 52px -20px rgba(2, 20, 26, 0.55);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55em;
+    direction: rtl;
+    text-align: center;
+    color: #fff;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity, transform;
+    /* A soft pool of DEEP WATER behind the letters, not a hard drop shadow.
+       Colour comes from COPY_SHADOW_RGB in the tuning panel; strength rises
+       with scroll progress so the copy stays readable as the water brightens.
+       Both layers are wide and soft on purpose — a tight shadow reads as a
+       cheap outline. */
+    text-shadow:
+      0 4px 28px rgba(var(--copy-shadow-rgb, 12, 51, 60), var(--copy-shadow-a, 0.5)),
+      0 2px 12px rgba(var(--copy-shadow-rgb, 12, 51, 60), calc(var(--copy-shadow-a, 0.5) * 0.65));
+  }
+
+  #hero-seq .hero-story__line {
+    margin: 0;
+    font-family: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 500;
+    font-size: clamp(1rem, 0.86rem + 0.95vw, 1.35rem);
+    line-height: 1.85;
+  }
+  #hero-seq .hero-story__line--big {
+    font-family: 'El Messiri', 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 1.1rem + 2.2vw, 2.5rem);
+    line-height: 1.4;
+  }
+
+  /* PANEL.on = false in the tuning panel strips the glass back to bare text. */
+  #hero-seq.no-panel .hero-story__ch {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  /* The final chapter's CTA must be clickable, so it re-enables pointers. */
+  #hero-seq .hero-story__cta {
+    align-self: center;
+    margin-top: 0.9em;
+    pointer-events: auto;
+    text-shadow: none;
+  }
+  #hero-seq .hero-story__ch[aria-hidden="true"] .hero-story__cta { pointer-events: none; }
+
+  /* ---- Scroll cue ---- */
+  #hero-seq .hero-story__cue {
+    position: absolute;
+    left: 50%; bottom: max(26px, env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    color: rgba(255,255,255,.9);
+    font-family: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+    font-size: 13px; font-weight: 500;
+    text-shadow: 0 2px 14px rgba(var(--copy-shadow-rgb, 12, 51, 60), .55);
+    pointer-events: none;
+    will-change: opacity;
+  }
+  #hero-seq .hero-story__cue-dot {
+    width: 22px; height: 34px;
+    border: 1.5px solid rgba(255,255,255,.65);
+    border-radius: 12px;
+    position: relative;
+  }
+  #hero-seq .hero-story__cue-dot::after {
+    content: "";
+    position: absolute; left: 50%; top: 7px;
+    width: 3px; height: 6px; margin-left: -1.5px;
+    border-radius: 2px; background: rgba(255,255,255,.9);
+    animation: hero-cue-drift 1.8s ease-in-out infinite;
+  }
+  @keyframes hero-cue-drift {
+    0%, 100% { transform: translateY(0);    opacity: 1; }
+    50%      { transform: translateY(11px); opacity: .35; }
+  }
+
+  /* ---- Loader ---- */
+  #hero-seq .hero-seq__loader {
+    position: absolute; inset: 0; z-index: 30;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px;
+    background-color: var(--seq-bg); color: #fff;
+    font: 600 15px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    text-align: center; transition: opacity .5s ease;
+  }
+  #hero-seq .hero-seq__loader.is-hidden { opacity: 0; pointer-events: none; }
+  #hero-seq .hero-seq__spinner {
+    width: 34px; height: 34px;
+    border: 3px solid rgba(255,255,255,.35); border-top-color: #fff;
+    border-radius: 50%; animation: hero-seq-spin .8s linear infinite;
+  }
+  #hero-seq .hero-seq__pct { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+  @keyframes hero-seq-spin { to { transform: rotate(360deg); } }
+
+  /* ---- Reduced motion: chapters fade only, nothing travels ---- */
+  @media (prefers-reduced-motion: reduce) {
+    #hero-seq .hero-seq__spinner,
+    #hero-seq .hero-story__cue-dot::after { animation: none; }
+  }
+</style>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================================
+     LUVIT HERO STORY — MANUAL TUNING PANEL
+     Change values HERE only. Nothing below this panel needs editing.
+     ========================================================================= */
+
+  /* -------------------------------------------------------------------------
+     A. CHAPTER TIMING
+     Numbers are scroll progress through the hero: 0.00 = the very start
+     (dark water), 1.00 = the very end (bright, products settled).
+
+       enterStart .. enterEnd  -> the chapter fades IN
+       enterEnd   .. holdEnd   -> fully visible (reading time)
+       holdEnd    .. exitEnd   -> the chapter fades OUT
+
+     TO MAKE A CHAPTER APPEAR EARLIER : lower its enterStart AND enterEnd.
+     TO MAKE A CHAPTER APPEAR LATER   : raise its enterStart AND enterEnd.
+     TO GIVE MORE READING TIME        : raise holdEnd (and exitEnd with it).
+     Keep each chapter's numbers in order and avoid big overlaps between
+     chapters, or two will be visible at once.
+     ------------------------------------------------------------------------- */
+  var CHAPTER_TIMING = [
+    { enterStart: 0.00, enterEnd: 0.00, holdEnd: 0.15, exitEnd: 0.21 }, // 1 — visible from the very start
+    { enterStart: 0.18, enterEnd: 0.23, holdEnd: 0.35, exitEnd: 0.41 }, // 2
+    { enterStart: 0.38, enterEnd: 0.43, holdEnd: 0.56, exitEnd: 0.62 }, // 3
+    { enterStart: 0.59, enterEnd: 0.64, holdEnd: 0.77, exitEnd: 0.83 }, // 4
+    { enterStart: 0.80, enterEnd: 0.86, holdEnd: 1.00, exitEnd: 1.00 }  // 5 — stays to the end (CTA)
+  ];
+
+  /* -------------------------------------------------------------------------
+     B. DESKTOP POSITIONS  (widescreen video — products spread horizontally)
+     One entry per chapter, all independent.
+
+       inline : LEFT-to-RIGHT position of the text's CENTRE, as a % of screen
+                width. 50% = middle. SMALLER = further LEFT. BIGGER = further
+                RIGHT.  (Physical, not affected by RTL — so tuning is
+                predictable: to nudge a chapter left, lower this number.)
+       block  : TOP-to-BOTTOM position of the text's CENTRE, as a % of screen
+                height. SMALLER = higher up. BIGGER = further down.
+       align  : text alignment inside the block — "right" | "center" | "left".
+       width  : maximum text width in px. Keep roughly 430-520 on desktop.
+
+     Defaults put the copy in the open water on the RIGHT, because in this
+     footage the products enter and cluster toward the LEFT/CENTRE. Chapter 5
+     moves UP because by then the products span the full width.
+     ------------------------------------------------------------------------- */
+  var DESKTOP_POSITIONS = [
+    { inline: 50, block: 50, align: "center", width: 620 }, // 1 — empty dark frame: safe to centre
+    { inline: 72, block: 46, align: "right",  width: 470 }, // 2 — products entering centre-left
+    { inline: 74, block: 48, align: "right",  width: 500 }, // 3 — products centre-left
+    { inline: 73, block: 50, align: "right",  width: 500 }, // 4 — products centre-left
+    { inline: 50, block: 34, align: "center", width: 620 }  // 5 — products fill the width. 34 sits it just above centre; RAISE to move DOWN, lower to move UP
+  ];
+
+  /* -------------------------------------------------------------------------
+     C. MOBILE POSITIONS  (portrait video — products descend and settle CENTRE)
+     Same meanings as above. Horizontally centred by default; only the vertical
+     position changes, to stay clear of the products as they fall and settle.
+
+     Remember the Water Pill nav sits at the top and the bottom dock at the
+     bottom, so avoid block values below ~22 or above ~80.
+     ------------------------------------------------------------------------- */
+  var MOBILE_POSITIONS = [
+    { inline: 50, block: 46, align: "center", width: 340 }, // 1 — empty frame
+    { inline: 50, block: 34, align: "center", width: 340 }, // 2 — products falling through centre: sit higher
+    { inline: 50, block: 32, align: "center", width: 345 }, // 3 — products mid-frame
+    { inline: 50, block: 31, align: "center", width: 345 }, // 4 — products lower
+    { inline: 50, block: 30, align: "center", width: 340 }  // 5 — products settled centre-bottom: sit above
+  ];
+
+  /* -------------------------------------------------------------------------
+     D. DIMMING  (the soft shadow behind the text that keeps it readable)
+     The footage starts dark and ends bright, so the protection grows with it.
+
+       darkSceneOpacity   -> strength at the START   (dark water)
+       midSceneOpacity    -> strength in the MIDDLE
+       brightSceneOpacity -> strength at the END     (bright final frame)
+       dimStart/dimMid/dimEnd -> the progress points those three refer to
+       gradientWidth/Height   -> size of the soft patch, as % of the screen.
+                                 BIGGER = a wider, softer pool of shade.
+       textShadowDark/Bright  -> shadow behind the letters, start -> end
+
+     IF TEXT IS HARD TO READ  -> raise the three ...SceneOpacity numbers.
+     IF PRODUCTS LOOK TOO DARK -> lower them.
+     Mobile is intentionally stronger: the copy sits directly over the video
+     on a narrow screen with nowhere else to go.
+     ------------------------------------------------------------------------- */
+  var DIM_DESKTOP = {
+    darkSceneOpacity:   0.16,
+    midSceneOpacity:    0.26,
+    brightSceneOpacity: 0.40,
+    dimStart: 0.00, dimMid: 0.50, dimEnd: 1.00,
+    gradientWidth:  46,   // % of screen width
+    gradientHeight: 40,   // % of screen height
+    /* Kept LIGHT on purpose: the glass panel now provides the contrast, so
+       the letters only need a whisper of depth. Raise these if you turn the
+       panel off (PANEL.on = false). */
+    textShadowDark:   0.22,
+    textShadowBright: 0.38
+  };
+
+  var DIM_MOBILE = {
+    darkSceneOpacity:   0.28,
+    midSceneOpacity:    0.42,
+    brightSceneOpacity: 0.58,
+    dimStart: 0.00, dimMid: 0.50, dimEnd: 1.00,
+    gradientWidth:  92,   // % of screen width — broad, so it has no visible edge
+    gradientHeight: 46,
+    /* See the note in DIM_DESKTOP — the panel carries the contrast now. */
+    textShadowDark:   0.26,
+    textShadowBright: 0.45
+  };
+
+  /* -------------------------------------------------------------------------
+     E. PER-CHAPTER DIM MULTIPLIER
+     Fine-tune ONE chapter without darkening the others. 1.0 = no change,
+     1.15 = 15% more shade behind that chapter only, 0.9 = 10% less.
+     Useful for the final chapter, which sits on the brightest frame.
+     ------------------------------------------------------------------------- */
+  var DESKTOP_DIM_MULTIPLIER = [0.90, 1.00, 1.00, 1.08, 1.15];
+  var MOBILE_DIM_MULTIPLIER  = [1.00, 1.00, 1.05, 1.10, 1.15];
+
+  /* -------------------------------------------------------------------------
+     F0. THE LIQUID-GLASS PANEL behind each chapter
+     This is what makes the copy readable now, so the letter-shadow can stay
+     light and the halo behind the panel stays subtle.
+
+       on        -> false goes back to bare text with no panel at all
+       radius    -> corner rounding in px. Bigger = softer, more pill-like
+       padY/padX -> space between the panel edge and the text inside
+       rgb       -> panel tint, "R, G, B". Default is deep water #0C333C
+       dark / mid / bright -> how OPAQUE the glass is at the start / middle /
+                    end of the video. The footage brightens, so the glass
+                    thickens to keep the white text readable.
+
+     IF TEXT IS HARD TO READ  -> raise dark/mid/bright (thicker glass)
+     IF THE PANEL LOOKS HEAVY -> lower them (thinner, more see-through)
+     Mobile is deliberately thicker: the copy sits right over the video.
+     ------------------------------------------------------------------------- */
+  var PANEL = {
+    on: true,
+    radius: 26,
+    padY: 30,
+    padX: 28,
+    rgb: "12, 51, 60",                              // deep water aqua-900
+    desktop: { dark: 0.30, mid: 0.38, bright: 0.48 },
+    mobile:  { dark: 0.40, mid: 0.50, bright: 0.60 },
+    /* How much of the soft halo to keep behind the panel. The panel already
+       does the heavy lifting, so the halo is just there to stop the glass
+       looking pasted onto bright water. 0 = no halo at all. */
+    haloScale: 0.45
+  };
+
+  /* -------------------------------------------------------------------------
+     F. SHADOW COLOUR BEHIND THE TEXT
+     An "R, G, B" triplet (no #, no rgb() wrapper). Default is our deep water
+     aqua-900 #0C333C, so the copy sits in a pool of depth rather than a black
+     drop shadow.
+
+     TO TRY OTHER COLOURS:
+       "12, 51, 60"   deep water aqua-900  (default)
+       "18, 77, 90"   aqua-800 — slightly lighter, softer
+       "2, 20, 26"    near-black — strongest contrast, harshest look
+       "0, 0, 0"      pure black — not recommended, fights the water palette
+
+     TO REMOVE THE SHADOW COMPLETELY:
+       set textShadowDark AND textShadowBright to 0 in BOTH dim blocks above.
+       WARNING: on the bright final frame the white copy then relies entirely
+       on the dimmer, so raise brightSceneOpacity if it becomes hard to read.
+
+     WHY NOT A LIGHT TURQUOISE: the shadow exists to separate white letters
+     from the water. On the bright final frame the water is already turquoise,
+     so a light shadow would disappear and the text would lose contrast right
+     where it needs it most. A DARK colour is doing the work — this just makes
+     it a brand colour instead of black.
+     ------------------------------------------------------------------------- */
+  var COPY_SHADOW_RGB = "12, 51, 60";
+
+  /* -------------------------------------------------------------------------
+     G. CHAPTER MOTION + SCROLL CUE
+     ------------------------------------------------------------------------- */
+  var CH_RISE_PX   = 26;   // how far a chapter drifts up as it fades in/out
+  var CUE_FADE_END = 0.14; // the scroll cue is gone by this progress
+
+  /* =========================================================================
+     END OF TUNING PANEL — the sequence config below is the original setup
+     ========================================================================= */
+
+  var VARIANTS = {
+    mobile:  { base: "../hero-sequence/frames/",         bg: "#298D94" },
+    desktop: { base: "../hero-sequence/frames-desktop/", bg: "#0B9198" }
+  };
+
+  var DESKTOP_MIN_WIDTH = 1024;   // also decides which STORY layout is used
+  var SCROLL_DISTANCE_VH = 4;
+  var SCRUB_SMOOTHING = 0.5;
+  var MAX_DPR = 2;
+  var FOCUS_X = 0.5;
+  var FOCUS_Y = 1.0;
+  var COVER_ZOOM = 1.12;
+
+  var GSAP_URL = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js";
+  var ST_URL   = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js";
+  var ROOT_ID  = "hero-seq";
+
+  var root   = document.getElementById(ROOT_ID);
+  if (!root) return;
+  var pin    = root.querySelector(".hero-seq__pin");
+  var canvas = root.querySelector(".hero-seq__canvas");
+  var loader = root.querySelector("[data-loader]");
+  var pctEl  = root.querySelector("[data-pct]");
+  var ctx    = canvas.getContext("2d");
+
+  var chapters = Array.prototype.slice.call(root.querySelectorAll(".hero-story__ch"));
+  var dimmers  = Array.prototype.slice.call(root.querySelectorAll(".hero-story__dim"));
+  var cueEl    = root.querySelector("[data-cue]");
+  var ctaEl    = root.querySelector(".hero-story__cta");
+
+  var REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var cache = {};
+  var activeKey = null;
+  var dpr = 1;
+  var state = { p: 0 };
+  var lastDrawn = -1;
+  var ScrollTriggerRef = null;
+  var activeChapter = -1;
+
+  function pickKey() {
+    return window.innerWidth >= DESKTOP_MIN_WIDTH ? "desktop" : "mobile";
+  }
+  function isDesktopStory() { return window.innerWidth >= DESKTOP_MIN_WIDTH; }
+
+  /* ---------- small maths helpers (deterministic, no layout reads) ---------- */
+  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function norm(v, a, b) { return b === a ? (v >= b ? 1 : 0) : clamp01((v - a) / (b - a)); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  /* =========================================================================
+     STORY — layout
+     Applied once on load and again whenever the breakpoint changes. It never
+     touches state.p, so resizing cannot lose the reader's place.
+     ========================================================================= */
+  function applyStoryLayout() {
+    var desktop = isDesktopStory();
+    var pos = desktop ? DESKTOP_POSITIONS : MOBILE_POSITIONS;
+    var dim = desktop ? DIM_DESKTOP : DIM_MOBILE;
+
+    /* Panel + shadow settings from the tuning panel (set once, not per frame). */
+    root.style.setProperty("--copy-shadow-rgb", COPY_SHADOW_RGB);
+    root.style.setProperty("--panel-rgb", PANEL.rgb);
+    root.style.setProperty("--panel-radius", PANEL.radius + "px");
+    root.style.setProperty("--panel-pad-y", PANEL.padY + "px");
+    root.style.setProperty("--panel-pad-x", PANEL.padX + "px");
+    root.classList.toggle("no-panel", !PANEL.on);
+
+    chapters.forEach(function (ch, i) {
+      var p = pos[i] || pos[pos.length - 1];
+      ch.style.left = p.inline + "%";
+      ch.style.top = p.block + "%";
+      ch.style.width = "min(88vw, " + p.width + "px)";
+      ch.style.textAlign = p.align;
+    });
+
+    dimmers.forEach(function (d, i) {
+      var p = pos[i] || pos[pos.length - 1];
+      d.style.left = p.inline + "%";
+      d.style.top = p.block + "%";
+      d.style.setProperty("--dim-w", dim.gradientWidth + "%");
+      d.style.setProperty("--dim-h", dim.gradientHeight + "%");
+    });
+  }
+
+  /* =========================================================================
+     STORY — per-frame update. Called from the SAME ScrollTrigger onUpdate as
+     the canvas, so the copy can never drift from the footage.
+     ========================================================================= */
+  function updateChapters(p) {
+    var desktop = isDesktopStory();
+    var dim = desktop ? DIM_DESKTOP : DIM_MOBILE;
+    var mult = desktop ? DESKTOP_DIM_MULTIPLIER : MOBILE_DIM_MULTIPLIER;
+
+    /* How much shade this point in the footage needs: dark -> mid -> bright. */
+    var dimBase;
+    if (p <= dim.dimMid) {
+      dimBase = lerp(dim.darkSceneOpacity, dim.midSceneOpacity, norm(p, dim.dimStart, dim.dimMid));
+    } else {
+      dimBase = lerp(dim.midSceneOpacity, dim.brightSceneOpacity, norm(p, dim.dimMid, dim.dimEnd));
+    }
+
+    /* The glass thickens as the water brightens, on the same dark->mid->bright
+       curve. With the panel doing the work, the halo behind it is scaled back
+       so it stays a soft glow rather than a second dark blob. */
+    if (PANEL.on) {
+      var pc = desktop ? PANEL.desktop : PANEL.mobile;
+      var panelA = (p <= dim.dimMid)
+        ? lerp(pc.dark, pc.mid, norm(p, dim.dimStart, dim.dimMid))
+        : lerp(pc.mid, pc.bright, norm(p, dim.dimMid, dim.dimEnd));
+      root.style.setProperty("--panel-a", panelA.toFixed(3));
+      dimBase *= PANEL.haloScale;
+    }
+
+    /* Letter shadow grows with the brightening water — the copy stays white
+       throughout rather than flipping to dark, which would look abrupt. */
+    root.style.setProperty("--copy-shadow-a",
+      lerp(dim.textShadowDark, dim.textShadowBright, clamp01(p)).toFixed(3));
+
+    var best = -1, bestA = 0;
+
+    for (var i = 0; i < chapters.length; i++) {
+      var t = CHAPTER_TIMING[i];
+      var a;
+
+      if (p < t.enterStart) a = 0;
+      else if (p < t.enterEnd) a = norm(p, t.enterStart, t.enterEnd);   // fading in
+      else if (p <= t.holdEnd) a = 1;                                    // holding
+      else if (p < t.exitEnd) a = 1 - norm(p, t.holdEnd, t.exitEnd);     // fading out
+      else a = (t.holdEnd >= 1 && t.exitEnd >= 1) ? 1 : 0;               // final chapter stays
+
+      var ch = chapters[i];
+      ch.style.opacity = a;
+
+      /* Fade + slight rise, matching the reveal language in motion.js.
+         Under reduced motion it is a pure cross-fade with no travel. */
+      if (REDUCED) {
+        ch.style.transform = "translate(-50%, -50%)";
+      } else {
+        var rise = (1 - a) * CH_RISE_PX * (p > t.holdEnd ? -1 : 1);
+        ch.style.transform = "translate(-50%, calc(-50% + " + rise.toFixed(1) + "px))";
+      }
+
+      dimmers[i].style.opacity = (a * dimBase * (mult[i] || 1)).toFixed(3);
+
+      if (a > bestA) { bestA = a; best = i; }
+    }
+
+    /* Only the chapter actually being read is exposed to assistive tech and
+       allowed to receive focus. */
+    if (best !== activeChapter) {
+      activeChapter = best;
+      for (var j = 0; j < chapters.length; j++) {
+        chapters[j].setAttribute("aria-hidden", j === best ? "false" : "true");
+      }
+      if (ctaEl) ctaEl.tabIndex = (best === chapters.length - 1) ? 0 : -1;
+    }
+
+    /* Scroll cue: present before the first scroll, gone by CUE_FADE_END. */
+    if (cueEl) {
+      var cueA = 1 - norm(p, 0, CUE_FADE_END);
+      cueEl.style.opacity = cueA.toFixed(3);
+      cueEl.style.visibility = cueA <= 0.01 ? "hidden" : "visible";
+    }
+  }
+
+  /* =========================================================================
+     Canvas rendering — COVER fit (unchanged)
+     ========================================================================= */
+  function render() {
+    var v = cache[activeKey];
+    var cw = pin.clientWidth, ch = pin.clientHeight;
+    var bg = VARIANTS[activeKey].bg;
+    if (!v || !v.loaded || !v.count) {
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, cw, ch);
+      return;
+    }
+    var i = Math.max(0, Math.min(v.count - 1, Math.round(state.p * (v.count - 1))));
+    if (i === lastDrawn) return;
+    lastDrawn = i;
+    var img = v.images[i];
+    if (!img || !img.naturalWidth) return;
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, cw, ch);
+    var scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * COVER_ZOOM;
+    var dw = img.naturalWidth * scale;
+    var dh = img.naturalHeight * scale;
+    var dx = (cw - dw) * FOCUS_X;
+    var dy = (ch - dh) * FOCUS_Y;
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  /* The ONE place the scroll progress fans out: frame + story together. */
+  function onProgress() {
+    render();
+    updateChapters(state.p);
+  }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+    var cw = pin.clientWidth, ch = pin.clientHeight;
+    canvas.width = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+    canvas.style.width = cw + "px";
+    canvas.style.height = ch + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    lastDrawn = -1;
+    render();
+  }
+
+  function ensureVariant(key) {
+    var v = cache[key];
+    if (v && v.promise) return v.promise;
+    v = cache[key] = { images: [], count: 0, loaded: false, promise: null };
+    var base = VARIANTS[key].base;
+    v.promise = fetch(base + "manifest.json", { cache: "force-cache" })
+      .then(function (r) {
+        if (!r.ok) throw new Error(key + " manifest.json HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (manifest) {
+        var frames = manifest.frames || [];
+        v.count = frames.length;
+        v.images = new Array(v.count);
+        var loaded = 0;
+        function bump() {
+          loaded++;
+          if (key === activeKey && pctEl) {
+            pctEl.textContent = Math.round((loaded / v.count) * 100) + "%";
+          }
+        }
+        var jobs = frames.map(function (f, idx) {
+          return new Promise(function (resolve) {
+            var img = new Image();
+            img.decoding = "async";
+            img.src = base + f.file;
+            v.images[idx] = img;
+            var done = function () { bump(); resolve(); };
+            if (img.decode) {
+              img.decode().then(done).catch(function () { img.onload = done; img.onerror = done; });
+            } else { img.onload = done; img.onerror = done; }
+          });
+        });
+        return Promise.all(jobs);
+      })
+      .then(function () { v.loaded = true; });
+    return v.promise;
+  }
+
+  function switchTo(key) {
+    activeKey = key;
+    root.style.setProperty("--seq-bg", VARIANTS[key].bg);
+    var v = cache[key];
+    if (!v || !v.loaded) {
+      if (loader) loader.classList.remove("is-hidden");
+      if (pctEl) pctEl.textContent = "0%";
+    }
+    ensureVariant(key).then(function () {
+      if (activeKey !== key) return;
+      if (loader) loader.classList.add("is-hidden");
+      lastDrawn = -1;
+      resize();
+      applyStoryLayout();          /* the other video = the other composition */
+      updateChapters(state.p);     /* keep the reader's place across the switch */
+      if (ScrollTriggerRef) ScrollTriggerRef.refresh();
+    });
+  }
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var ex = document.querySelector('script[src="' + src + '"]');
+      if (ex) { if (ex.dataset.loaded) return resolve(); ex.addEventListener("load", resolve); ex.addEventListener("error", reject); return; }
+      var s = document.createElement("script");
+      s.src = src; s.async = false;
+      s.onload = function () { s.dataset.loaded = "1"; resolve(); };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+  function ensureGSAP() {
+    if (window.gsap && window.ScrollTrigger) return Promise.resolve();
+    return loadScript(GSAP_URL).then(function () { return loadScript(ST_URL); });
+  }
+
+  function startAnimation() {
+    var gsap = window.gsap;
+    ScrollTriggerRef = window.ScrollTrigger;
+    gsap.registerPlugin(ScrollTriggerRef);
+
+    applyStoryLayout();
+    resize();
+    render();
+    updateChapters(0);            /* Chapter 1 is up before any scroll happens */
+
+    /* ---- THE ONE AND ONLY ScrollTrigger ----
+       It drives the frame AND the story from the same progress value. Do not
+       add a second trigger or a second pin for the chapters. */
+    gsap.to(state, {
+      p: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: root,
+        start: "top top",
+        end: function () { return "+=" + (window.innerHeight * SCROLL_DISTANCE_VH); },
+        pin: pin, pinSpacing: true,
+        scrub: SCRUB_SMOOTHING,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: onProgress
+      }
+    });
+
+    ScrollTriggerRef.addEventListener("refreshInit", resize);
+
+    var t;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(function () {
+        var want = pickKey();
+        if (want !== activeKey) {
+          switchTo(want);                 /* switchTo re-applies the layout */
+        } else {
+          resize();
+          applyStoryLayout();
+          updateChapters(state.p);        /* progress preserved */
+          if (ScrollTriggerRef) ScrollTriggerRef.refresh();
+        }
+      }, 150);
+    });
+
+    if (loader) loader.classList.add("is-hidden");
+  }
+
+  function staticFallback() {
+    var v = cache[activeKey];
+    if (v && v.count) state.p = 1;
+    resize(); render();
+    applyStoryLayout();
+    updateChapters(state.p);
+    if (loader) loader.classList.add("is-hidden");
+    window.addEventListener("resize", function () {
+      var want = pickKey();
+      if (want !== activeKey) switchTo(want);
+      else { resize(); applyStoryLayout(); updateChapters(state.p); }
+    });
+  }
+
+  activeKey = pickKey();
+  root.style.setProperty("--seq-bg", VARIANTS[activeKey].bg);
+  applyStoryLayout();
+  updateChapters(0);
+
+  ensureVariant(activeKey)
+    .then(ensureGSAP)
+    .then(startAnimation)
+    .catch(function (err) {
+      console.error("[hero-seq] " + (err && err.message ? err.message : err));
+      var v = cache[activeKey];
+      if (v && v.loaded && v.images[0]) staticFallback();
+      else if (pctEl) pctEl.textContent = "Couldn’t load sequence — check the base URLs";
+    });
+
+  /* Exposed for the preview page's dev toolbar only. Harmless in production:
+     nothing on the live site reads it. */
+  window.__LUVIT_HERO__ = {
+    state: state,
+    chapters: chapters,
+    isDesktopStory: isDesktopStory,
+    activeChapter: function () { return activeChapter; }
+  };
+})();
+</script>
+
+<!-- Wave hand-off, sitting on the video's final colour so there's no seam. -->
+<div class="luvit-wave luvit-wave--drift seq-blend" style="--wave-fill:#FFFFFF" aria-hidden="true">
+  <svg viewBox="0 0 2880 70" preserveAspectRatio="none">
+    <path fill="currentColor" d="M0,34 C240,72 420,4 720,30 C1010,55 1200,72 1440,34 C1680,72 1860,4 2160,30 C2450,55 2640,72 2880,34 L2880,70 L0,70 Z"/>
+  </svg>
+</div>
+
+<!-- ==================================================================== -->
+<!-- 2. TRUST BAR                                                         -->
+<!-- ==================================================================== -->
+<section class="luvit-section luvit-section--tight band-light" data-nav-bg="light">
+  <div class="luvit-section__inner">
+    <div class="luvit-trust" data-luvit="stagger">
+
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="6" width="14" height="11" rx="2"/><path d="M15 9h4l3 3v5h-7z"/>
+            <circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/>
+          </svg>
+        </span>
+        <p class="luvit-trust__title">توصيل لكل الأردن</p>
+        <p class="luvit-trust__note">خلال ٢٤–٤٨ ساعة</p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/>
+          </svg>
+        </span>
+        <p class="luvit-trust__title">الدفع عند الاستلام</p>
+        <p class="luvit-trust__note">ادفعي لمّا يوصلك</p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 4 6v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/>
+          </svg>
+        </span>
+        <p class="luvit-trust__title">أصلي <span data-luvit="counter">100</span>٪</p>
+        <p class="luvit-trust__note">مكوّنات واضحة على العبوة</p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-9A8.4 8.4 0 1 1 21 11.5z"/>
+          </svg>
+        </span>
+        <p class="luvit-trust__title">منرافقك خطوة بخطوة</p>
+        <p class="luvit-trust__note">استشارة مجانية</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================================== -->
+<!-- 3. ROUTINES                                                          -->
+<!-- ==================================================================== -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="routine">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Routines</p>
+      <h2 class="luvit-section__title">روتين على قدّ بشرتك إنتِ</h2>
+      <p class="luvit-section__sub">
+        مش وصفة وحدة للكل. اختاري نوع بشرتك ومنبنيلك خطوات واضحة — بمكوّنات ونِسَب مكتوبة.
+      </p>
+    </div>
+
+    <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
+
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين البشرة الدهنية"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(116,214,231)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23a)'/><rect x='250' y='120' width='58' height='170' rx='14' fill='rgb(255,255,255)' opacity='.94'/><rect x='320' y='150' width='52' height='140' rx='12' fill='rgb(255,255,255)' opacity='.88'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">1</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Oily</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">البشرة الدهنية</a></h3>
+          <p class="luvit-card__text">توازن بلا جفاف — تنظيف لطيف وترطيب خفيف.</p>
+          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين البشرة الجافة"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='b' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23b)'/><rect x='245' y='130' width='58' height='160' rx='13' fill='rgb(255,255,255)' opacity='.9'/><rect x='315' y='115' width='54' height='175' rx='13' fill='rgb(166,101,42)' opacity='.85'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">2</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Dry</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">البشرة الجافة</a></h3>
+          <p class="luvit-card__text">ترطيب يدوم — طبقات تحبس الماء داخل البشرة.</p>
+          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين البشرة الحسّاسة"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='c' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23c)'/><circle cx='320' cy='190' r='78' fill='rgb(255,255,255)' opacity='.5'/><rect x='292' y='140' width='56' height='150' rx='13' fill='rgb(255,255,255)' opacity='.92'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">3</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Sensitive</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">البشرة الحسّاسة</a></h3>
+          <p class="luvit-card__text">بلا عطور قاسية — تهدئة أولًا، دائمًا.</p>
+          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================================== -->
+<!-- 4. QUIZ TEASER — one question, right here (dark living water)        -->
+<!-- ==================================================================== -->
+<section class="luvit-section luvit-section--dark luvit-deep" data-nav-bg="dark"
+         data-luvit-bubbles="10" id="quiz">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-section__inner">
+    <div class="luvit-quiz luvit-quiz--on-dark" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Skin quiz</p>
+      <h2 class="luvit-quiz__q">شو أكثر إشي بيزعجك ببشرتك؟</h2>
+
+      <div class="luvit-optiongrid">
+        <label class="luvit-option">
+          <input type="radio" name="home-quiz" value="dry">
+          <span class="luvit-option__icon" aria-hidden="true">💧</span>
+          <span class="luvit-option__label">جفاف وشدّ</span>
+        </label>
+        <label class="luvit-option">
+          <input type="radio" name="home-quiz" value="oil">
+          <span class="luvit-option__icon" aria-hidden="true">✦</span>
+          <span class="luvit-option__label">لمعة ودهون</span>
+        </label>
+        <label class="luvit-option">
+          <input type="radio" name="home-quiz" value="acne">
+          <span class="luvit-option__icon" aria-hidden="true">◇</span>
+          <span class="luvit-option__label">حبوب</span>
+        </label>
+        <label class="luvit-option">
+          <input type="radio" name="home-quiz" value="calm">
+          <span class="luvit-option__icon" aria-hidden="true">✿</span>
+          <span class="luvit-option__label">احمرار وحساسية</span>
+        </label>
+      </div>
+
+      <div class="luvit-quiz__foot">
+        <a href="#" class="luvit-btn luvit-btn--arrow">كمّلي الاختبار</a>
+        <p class="luvit-quiz__hint">أقل من دقيقة — ٥ أسئلة بس.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true">
+  <svg viewBox="0 0 2880 70" preserveAspectRatio="none">
+    <path fill="currentColor" d="M0,26 C300,6 520,66 780,38 C1040,10 1240,48 1440,26 C1740,6 1960,66 2220,38 C2480,10 2680,48 2880,26 L2880,70 L0,70 Z"/>
+  </svg>
+</div>
+
+<!-- ==================================================================== -->
+<!-- 5. PRODUCTS                                                          -->
+<!-- ==================================================================== -->
+<section class="luvit-section band-light" data-nav-bg="light" id="products">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">The collection</p>
+      <h2 class="luvit-section__title">مكوّنات واضحة، مكتوبة عالعبوة</h2>
+      <p class="luvit-section__sub">لمحة عن التشكيلة — كل منتج بنِسَب مكتوبة، بلا وعود فاضية.</p>
+    </div>
+
+    <div class="luvit-card-grid" data-luvit="stagger">
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge">جديد</span>
+          <img loading="lazy" decoding="async" alt="منظف هيدرا اللطيف"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p1' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p1)'/><rect x='152' y='150' width='96' height='250' rx='20' fill='rgb(255,255,255)' opacity='.94'/><rect x='180' y='108' width='40' height='50' rx='11' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Cleanser</p>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">منظف هيدرا اللطيف</a></h3>
+          <p class="luvit-card__text">رغوة ناعمة تنظّف دون أن تجفّف.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">12.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge luvit-card__badge--accent">الأكثر مبيعًا</span>
+          <img loading="lazy" decoding="async" alt="سيروم فيتامين سي"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p2' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p2)'/><rect x='158' y='170' width='84' height='230' rx='16' fill='rgb(166,101,42)' opacity='.85'/><rect x='176' y='104' width='48' height='70' rx='12' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Serum</p>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">سيروم فيتامين سي</a></h3>
+          <p class="luvit-card__text">إشراقة يومية مع نياسيناميد.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">22.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="تونر الترطيب العميق"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p3' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(116,214,231)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p3)'/><rect x='156' y='140' width='88' height='260' rx='14' fill='rgb(255,255,255)' opacity='.9'/><rect x='156' y='300' width='88' height='100' rx='14' fill='rgb(41,120,192)' opacity='.35'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Toner</p>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">تونر الترطيب العميق</a></h3>
+          <p class="luvit-card__text">يوازن البشرة ويهيّئها للسيروم.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">15.00 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="كريم الترطيب المكثّف"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p4' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p4)'/><path d='M168 150 h64 v240 a12 12 0 0 1 -12 12 h-40 a12 12 0 0 1 -12 -12 z' fill='rgb(255,255,255)' opacity='.94'/><rect x='176' y='120' width='48' height='34' rx='8' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Moisturizer</p>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">كريم الترطيب المكثّف</a></h3>
+          <p class="luvit-card__text">ترطيب يدوم ٢٤ ساعة بقوام خفيف.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">18.50 JOD</span>
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <p style="text-align:center;margin-top:var(--space-7)">
+      <a href="#" class="luvit-btn luvit-btn--ghost">شوفي كل المنتجات</a>
+    </p>
+  </div>
+</section>
+
+<!-- ==================================================================== -->
+<!-- 6. INGREDIENT TRANSPARENCY — proving the promise (living water)      -->
+<!-- ==================================================================== -->
+<section class="luvit-section luvit-section--dark luvit-deep" data-nav-bg="dark"
+         data-luvit-bubbles="14" id="ingredients">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">What's inside</p>
+      <h2 class="luvit-section__title">النِسَب مكتوبة — مش سرّ</h2>
+      <p class="luvit-section__sub">
+        هاي المكوّنات الفعّالة بسيروم فيتامين سي، بنِسَبها الحقيقية. نفس الأرقام
+        اللي عالعبوة بالظبط.
+      </p>
+    </div>
+
+    <div class="luvit-ing luvit-ing--on-dark" data-luvit="stagger">
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">10%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">فيتامين سي</p>
+          <p class="luvit-ing__note">يوحّد لون البشرة ويعطيها إشراقة تدريجية.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">نياسيناميد</p>
+          <p class="luvit-ing__note">يقلّل ظهور المسام ويوازن إفراز الدهون.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">حمض الهيالورونيك</p>
+          <p class="luvit-ing__note">يسحب الماء لطبقات البشرة ويحبسه فيها.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">بانثينول</p>
+          <p class="luvit-ing__note">يهدّي الاحمرار ويدعم حاجز البشرة.</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:var(--space-7)">
+      <a href="#" class="luvit-btn luvit-btn--ghost luvit-btn--on-dark">اقرأي كل المكوّنات</a>
+    </p>
+  </div>
+</section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FAFCFD;background:#0B9198" aria-hidden="true">
+  <svg viewBox="0 0 2880 70" preserveAspectRatio="none">
+    <path fill="currentColor" d="M0,44 C260,66 480,8 760,32 C1020,54 1230,20 1440,44 C1700,66 1920,8 2200,32 C2460,54 2670,20 2880,44 L2880,70 L0,70 Z"/>
+  </svg>
+</div>
+
+<!-- ==================================================================== -->
+<!-- 7. BEFORE / AFTER — the strongest proof in skincare                  -->
+<!-- ==================================================================== -->
+<section class="luvit-section band-mist" data-nav-bg="light">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Real results</p>
+      <h2 class="luvit-section__title">بعد ٤ أسابيع</h2>
+      <p class="luvit-section__sub">اسحبي الخط لتشوفي الفرق. صور حقيقية بلا فلاتر.</p>
+    </div>
+
+    <!-- ===== REAL BEFORE/AFTER PHOTOS GO HERE ===== -->
+    <div class="luvit-compare">
+      <img alt="البشرة قبل الروتين"
+           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'><defs><linearGradient id='bf' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='rgb(198,186,178)'/><stop offset='1' stop-color='rgb(166,150,140)'/></linearGradient></defs><rect width='800' height='600' fill='url(%23bf)'/><circle cx='300' cy='230' r='16' fill='rgb(150,110,100)' opacity='.5'/><circle cx='420' cy='330' r='12' fill='rgb(150,110,100)' opacity='.45'/><circle cx='350' cy='400' r='14' fill='rgb(150,110,100)' opacity='.4'/><text x='40' y='560' font-size='30' fill='rgb(255,255,255)' opacity='.75'>BEFORE</text></svg>">
+      <img class="luvit-compare__after" alt="البشرة بعد أربعة أسابيع"
+           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'><defs><linearGradient id='af' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='rgb(240,228,220)'/><stop offset='1' stop-color='rgb(214,196,186)'/></linearGradient></defs><rect width='800' height='600' fill='url(%23af)'/><text x='40' y='560' font-size='30' fill='rgb(255,255,255)' opacity='.85'>AFTER</text></svg>">
+
+      <span class="luvit-compare__label luvit-compare__label--before">قبل</span>
+      <span class="luvit-compare__label luvit-compare__label--after">بعد</span>
+
+      <input class="luvit-compare__range" type="range" min="0" max="100" value="50"
+             aria-label="اسحبي لمقارنة قبل وبعد">
+      <span class="luvit-compare__line" aria-hidden="true">
+        <span class="luvit-compare__grip">⇄</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================================== -->
+<!-- 8. WHY LUVIT — living deep water                                     -->
+<!-- ==================================================================== -->
+<section class="luvit-section luvit-section--dark luvit-deep" data-nav-bg="dark"
+         data-luvit-bubbles="12" id="why">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Why LUVIT</p>
+      <h2 class="luvit-section__title">العناية مش رفاهية — هي حقّك</h2>
+      <p class="luvit-section__sub">ما منبيع وعود. منبيع وضوح، ومنضلّ معك بعد الطلب.</p>
+    </div>
+
+    <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">◇</span>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#ingredients">شفافية كاملة</a></h3>
+          <p class="luvit-card__text">كل مكوّن ونسبته مكتوبة عالعبوة — بلا أسرار.</p>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">✿</span>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">صدق بالنتائج</a></h3>
+          <p class="luvit-card__text">النتيجة ما بتبين بليلة — ومنقلّك هيك من البداية.</p>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">✦</span>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">مرافقة مستمرة</a></h3>
+          <p class="luvit-card__text">أسئلتك مفتوحة قبل الطلب وبعده.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FAFCFD;background:#0B9198" aria-hidden="true">
+  <svg viewBox="0 0 2880 70" preserveAspectRatio="none">
+    <path fill="currentColor" d="M0,34 C240,72 420,4 720,30 C1010,55 1200,72 1440,34 C1680,72 1860,4 2160,30 C2450,55 2640,72 2880,34 L2880,70 L0,70 Z"/>
+  </svg>
+</div>
+
+<!-- ==================================================================== -->
+<!-- 9. HOW TO ORDER                                                      -->
+<!-- ==================================================================== -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="how">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">How it works</p>
+      <h2 class="luvit-section__title">كيف تطلبي؟</h2>
+      <p class="luvit-section__sub">أربع خطوات، وبتدفعي لمّا يوصلك الطلب على بابك.</p>
+    </div>
+
+    <div class="luvit-steps" data-luvit="stagger">
+      <div class="luvit-step">
+        <span class="luvit-step__num">١</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">اختاري روتينك</h3>
+          <p class="luvit-step__text">أو اعملي اختبار البشرة ومنرشّحلك.</p>
+        </div>
+      </div>
+      <div class="luvit-step">
+        <span class="luvit-step__num">٢</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">أضيفي للسلة</h3>
+          <p class="luvit-step__text">بلا حساب وبلا تعقيد.</p>
+        </div>
+      </div>
+      <div class="luvit-step">
+        <span class="luvit-step__num">٣</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">أكّدي الطلب</h3>
+          <p class="luvit-step__text">اسمك ورقمك وعنوانك — بس.</p>
+        </div>
+      </div>
+      <div class="luvit-step">
+        <span class="luvit-step__num">٤</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">ادفعي عند الاستلام</h3>
+          <p class="luvit-step__text">تفحصي الطلب وبعدين تدفعي.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================================== -->
+<!-- 10. TESTIMONIALS                                                     -->
+<!-- ==================================================================== -->
+<section class="luvit-section band-light" data-nav-bg="light">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Real stories</p>
+      <h2 class="luvit-section__title">آراء عميلاتنا</h2>
+      <p class="luvit-section__sub">اسحبي البطاقة أو استخدمي الأسهم.</p>
+    </div>
+
+    <div class="luvit-testimonials">
+      <div class="luvit-testimonials__stack">
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <div class="luvit-testimonial__stars" aria-label="5 من 5">★★★★★</div>
+          <p class="luvit-testimonial__quote">بشرتي كانت جافة كثير وبعد أسبوعين صار ملمسها أنعم. وما سبب لي أي تهيّج.</p>
+          <p class="luvit-testimonial__author">رنا خ.</p>
+          <p class="luvit-testimonial__role">عمّان</p>
+        </article>
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <div class="luvit-testimonial__stars" aria-label="5 من 5">★★★★★</div>
+          <p class="luvit-testimonial__quote">طلبت ووصلني خلال يومين، والدفع عند الاستلام سهّل الموضوع كثير.</p>
+          <p class="luvit-testimonial__author">ليان م.</p>
+          <p class="luvit-testimonial__role">إربد</p>
+        </article>
+        <article class="luvit-testimonial">
+          <span class="luvit-testimonial__mark" aria-hidden="true">”</span>
+          <div class="luvit-testimonial__stars" aria-label="4 من 5">★★★★☆</div>
+          <p class="luvit-testimonial__quote">المنظف لطيف جدًا وما بيشدّ البشرة بعد الغسيل.</p>
+          <p class="luvit-testimonial__author">سلمى ع.</p>
+          <p class="luvit-testimonial__role">الزرقاء</p>
+        </article>
+      </div>
+
+      <div class="luvit-testimonials__controls">
+        <button class="luvit-testimonials__btn" type="button" data-tst-prev aria-label="الرأي السابق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="luvit-testimonials__dots" role="tablist" aria-label="اختيار الرأي">
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 1"></button>
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 2"></button>
+          <button class="luvit-testimonials__dot" type="button" role="tab" aria-label="الرأي 3"></button>
+        </div>
+        <button class="luvit-testimonials__btn" type="button" data-tst-next aria-label="الرأي التالي">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+      </div>
+      <p class="luvit-sr-only" data-tst-live aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================================== -->
+<!-- 11. FAQ                                                              -->
+<!-- ==================================================================== -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="faq">
+  <div class="luvit-section__inner" style="max-width:820px">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">FAQ</p>
+      <h2 class="luvit-section__title">الأسئلة الشائعة</h2>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+      <details class="luvit-acc__item" open>
+        <summary class="luvit-acc__q">
+          كيف بعرف نوع بشرتي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>اعملي اختبار البشرة عندنا — أسئلة قصيرة ومنرشّحلك الروتين المناسب. وإذا حابة، تواصلي معنا ومنساعدك.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كم بتاخد مدة التوصيل؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>عادة ٢٤–٤٨ ساعة داخل عمّان، ولحد ٣ أيام لباقي المحافظات.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          بقدر أدفع عند الاستلام؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>أكيد — الدفع عند الاستلام متاح لكل الأردن. بتفحصي الطلب وبعدها بتدفعي.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          إذا بشرتي حسّاسة، المنتجات مناسبة؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>عنا خط مخصص للبشرة الحسّاسة بلا عطور قاسية. وكل المكوّنات ونِسَبها مكتوبة على العبوة حتى تقدري تتأكدي.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          إيمتى بتبين النتيجة؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>بصراحة؟ مش بليلة. أغلب البشرات بتبين عليها فرق خلال ٢–٤ أسابيع مع الاستمرار.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================================== -->
+<!-- 12. CLOSING CTA — the deepest water before the footer                -->
+<!-- ==================================================================== -->
+<section class="luvit-cta luvit-deep" data-nav-bg="dark" data-luvit-bubbles="16">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div data-luvit="reveal">
+    <h2 class="luvit-cta__title">بشرتك مستنّية مِنِّك خطوة.</h2>
+    <p class="luvit-cta__sub">ابدئي باختبار قصير، ومنبنيلك روتين على قدّك — والدفع عند الاستلام.</p>
+    <a href="#quiz" class="luvit-btn luvit-btn--arrow">اكتشفي روتينك</a>
+  </div>
+</section>
+
+</main>
+
+<!-- ==================================================================== -->
+<!-- 13. FOOTER                                                           -->
+<!-- ==================================================================== -->
+<footer class="luvit-footer" data-nav-bg="dark">
+  <div class="luvit-footer__inner">
+
+    <div>
+      <p class="luvit-footer__brand">Luv it!</p>
+      <p class="luvit-footer__tag">
+        عناية بالبشرة بمكوّنات واضحة ونِسَب مكتوبة — ومرافقة حقيقية قبل الطلب وبعده.
+        بشرتك بدها حب.
+      </p>
+      <div class="luvit-footer__social">
+        <a href="#" aria-label="إنستغرام">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </a>
+        <a href="#" aria-label="تيك توك">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3v9.5a3.5 3.5 0 1 1-3-3.46"/><path d="M15 6.5A4.5 4.5 0 0 0 19.5 11"/></svg>
+        </a>
+        <a href="#" aria-label="واتساب">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-9A8.4 8.4 0 1 1 21 11.5z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <p class="luvit-footer__h">تسوّقي</p>
+      <ul class="luvit-footer__list">
+        <li><a href="#products">كل المنتجات</a></li>
+        <li><a href="#routine">الروتينات</a></li>
+        <li><a href="#ingredients">المكوّنات</a></li>
+        <li><a href="#quiz">اختبار نوع البشرة</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="luvit-footer__h">مساعدة</p>
+      <ul class="luvit-footer__list">
+        <li><a href="#how">كيف تطلبي</a></li>
+        <li><a href="#">تتبّع طلبي</a></li>
+        <li><a href="#faq">الأسئلة الشائعة</a></li>
+        <li><a href="#">تواصلي معنا</a></li>
+        <li><a href="#">سياسة الاستبدال</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="luvit-footer__bar">
+    <span>© 2026 LUVIT Jordan — جميع الحقوق محفوظة</span>
+    <span class="luvit-footer__pay">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg>
+      الدفع عند الاستلام
+    </span>
+  </div>
+</footer>
+
+<script>
+  /* Local demo only: placeholder links would jump to the top. */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="#"]');
+    if (a) e.preventDefault();
+  });
+</script>
+</body>
+</html>
