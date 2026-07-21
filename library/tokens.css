@@ -2862,13 +2862,40 @@ body.luvit-locked { overflow: hidden; }
     linear-gradient(180deg, #0B9198 0%, #124D5A 100%);
   color: #fff;
 }
+/* A glass pane behind the closing message.
+   WHY: this section carries a bubble field, and bubbles drifting BEHIND the
+   letters break up their shape and destroy legibility — no colour change
+   fixes that, because the interference is behind the glyphs, not a contrast
+   problem in the text itself. The pane separates the words from the water.
+   Same free recipe as the hero panel: translucent fill + bezel, no blur. */
+.luvit-cta__panel {
+  max-width: 660px;
+  margin-inline: auto;
+  padding: var(--space-7) var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0) 52%),
+    linear-gradient(180deg, rgba(6, 34, 42, 0.52) 0%, rgba(6, 34, 42, 0.68) 100%);
+  box-shadow:
+    inset 2px 2px 0 -2px rgba(255, 255, 255, 0.55),
+    inset 0 0 3px 1px rgba(255, 255, 255, 0.20),
+    0 20px 52px -22px rgba(2, 20, 26, 0.55);
+}
+
 .luvit-cta__title {
   font-family: var(--font-heading);
   font-size: var(--text-h1);
   font-weight: 700;
   margin: 0 0 var(--space-3);
   text-wrap: balance;
+  text-shadow: 0 3px 22px rgba(6, 34, 42, .55);
 }
+/* Highlight a single phrase in bright aqua — measured at ~6.7:1 on this
+   background. TO CHANGE THE ACCENT COLOUR, change this one value.
+   Do NOT use --fuchsia-500 here: it measures ~2.1:1 on deep teal and is
+   genuinely unreadable, however good it looks on the white cart badge. */
+.luvit-cta__accent { color: var(--aqua-300); }
 .luvit-cta__sub {
   margin: 0 auto var(--space-6);
   max-width: 48ch;
@@ -3089,12 +3116,15 @@ body.luvit-locked { overflow: hidden; }
   user-select: none;
   pointer-events: none;
 }
-/* The "after" image is revealed by clipping from the inline-start edge. */
+/* EVERYTHING HERE IS PHYSICAL, NOT LOGICAL — on purpose.
+   v1 flipped the clip for RTL but left the divider line on a physical `left`,
+   so the two moved in OPPOSITE directions: drag right and the line went one
+   way while the reveal went the other. A wipe slider is a direct-manipulation
+   control — the line must sit exactly where the image changes, in every
+   language. So: "after" always occupies the LEFT portion, growing rightwards
+   as the value rises, and the line always sits at that same boundary. */
 .luvit-compare__after {
-  clip-path: inset(0 0 0 var(--cmp, 50%));
-}
-[dir="rtl"] .luvit-compare__after {
-  clip-path: inset(0 var(--cmp, 50%) 0 0);
+  clip-path: inset(0 calc(100% - var(--cmp, 50%)) 0 0);
 }
 
 .luvit-compare__label {
@@ -3109,8 +3139,9 @@ body.luvit-locked { overflow: hidden; }
   font-weight: 600;
   pointer-events: none;
 }
-.luvit-compare__label--before { inset-inline-start: var(--space-3); }
-.luvit-compare__label--after  { inset-inline-end: var(--space-3); }
+/* Physical sides, matching the physical wipe above. */
+.luvit-compare__label--after  { left: var(--space-3); }
+.luvit-compare__label--before { right: var(--space-3); }
 
 /* The divider line + grip */
 .luvit-compare__line {
@@ -3145,6 +3176,9 @@ body.luvit-locked { overflow: hidden; }
   margin: 0;
   opacity: 0;
   cursor: ew-resize;
+  /* Forced LTR: browsers reverse range inputs under dir="rtl", which would
+     make dragging right DECREASE the value and invert the whole control. */
+  direction: ltr;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;

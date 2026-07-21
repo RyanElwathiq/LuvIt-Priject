@@ -302,6 +302,123 @@ overrides or a CSS mapping like the one above.
 
 ---
 
+## PART 8 — THE REST OF THE LIBRARY (components 5–14)
+
+Added after the first four. All follow the same rule: paste the markup into an
+Elementor **HTML widget**. Full working examples live in `home-preview.html`.
+
+### 5 · Testimonials — `.luvit-testimonials`
+Swipeable card stack. **One dot per card**, or the dots desync.
+Drag, arrows, dots and keyboard all work. Needs `motion.js`.
+
+### 6 · Wave divider — `.luvit-wave`
+The seam between two sections, as water.
+```html
+<div class="luvit-wave" style="--wave-fill:#FFFFFF;background:#0B9198"></div>
+```
+`--wave-fill` = colour of the section **below**. `background` = colour **above**.
+
+⚠️ **Adding `--drift` (a moving wave)?** The path must tile or it visibly jumps:
+its `viewBox` must be `0 0 2880 70` (two identical cycles, second one's control
+points = first's with x + 1440), and it must **start, pass x=1440, and end at
+the same y**. Both rules are documented in the CSS. Elementor's own Shape
+Divider is a fine alternative.
+
+### 7 · Trust bar — `.luvit-trust`
+Delivery / COD / authenticity. 2-up on phones, 4-up on desktop.
+
+### 8 · Steps — `.luvit-steps`
+"كيف تطلبي". Numbered, joined by a water line on desktop.
+
+### 9 · Accordion — `.luvit-acc`
+Built on native `<details>`, so keyboard and screen readers work **with no
+JavaScript**. Add `data-acc-single` to the wrapper so opening one closes the rest.
+
+### 10 · Footer — `.luvit-footer`
+The deepest water on the site. In Elementor put this in
+**Theme Builder → Footer**, same as the header.
+
+### 11 · Living deep water — `.luvit-deep`
+Makes a dark section breathe instead of sitting as a flat gradient.
+```html
+<section class="luvit-deep" data-luvit-bubbles="12">
+  <span class="luvit-deep__rays"></span>
+  … content …
+</section>
+```
+Drifting caustics + light rays (CSS) and a bubble field (`data-luvit-bubbles`).
+Cycles are 34–44s **on purpose** — if you can consciously watch it move, it
+reads as "animated" rather than "alive". Content needs no extra class; the
+component already lifts it above the water layers.
+
+### 12 · Ingredients — `.luvit-ing`
+Prints real percentages. **There are no percentage bars, deliberately** —
+actives sit at 2–5%, so a bar would either look negligible or need scaling up,
+which misrepresents the dose. The number is the truth.
+🔴 **Verify every percentage against the actual bottle before publishing.**
+
+### 13 · Before / after — `.luvit-compare`
+Wipe slider. The control is a real `<input type="range">`, so keyboard and
+screen readers work for free.
+⚠️ Everything in it is **physical, not logical** (`left`/`right`, and the range
+is forced `direction: ltr`). Do not "fix" it to logical properties for RTL —
+that was the original bug: the divider line and the reveal moved in opposite
+directions.
+
+### 14 · Quiz teaser — `.luvit-quiz`
+One question inline. Reuses the option cards from the forms component.
+
+### Section helpers
+`.luvit-section` + `__inner` `__head` `__eyebrow` `__title` `__sub` ·
+`--dark` for dark bands · `.luvit-cta` + `__panel` `__title` `__sub` `__accent`
+
+⚠️ **`.luvit-cta__accent`**: use an aqua. `--fuchsia-500` measures ~2.1:1 on deep
+teal — unreadable — however well it works on the white cart badge.
+
+### Scroll motion, applied as attributes
+```html
+data-luvit="reveal"    fade + rise as it enters view   (use on section heads)
+data-luvit="stagger"   children appear one by one      (use on card grids)
+data-luvit="counter"   count a number up
+data-luvit-bubbles="12"  bubble field (on .luvit-deep)
+```
+
+---
+
+## PART 9 — BUILDING THE HOME PAGE IN ELEMENTOR
+
+`library/home-preview.html` is the finished reference. Each numbered section
+there becomes one Elementor section, in this order:
+
+| # | Section | Component |
+|---|---|---|
+| 1 | Hero + 5 story chapters | the scroll sequence (HTML widget) |
+| 2 | Trust bar | `.luvit-trust` |
+| 3 | Routines | `.luvit-card--routine` |
+| 4 | Quiz teaser | `.luvit-quiz` on `.luvit-deep` |
+| 5 | Products | `.luvit-card--product` |
+| 6 | Ingredients | `.luvit-ing` on `.luvit-deep` |
+| 7 | Before / after | `.luvit-compare` |
+| 8 | Why LUVIT | `.luvit-card--feature` on `.luvit-deep` |
+| 9 | How to order | `.luvit-steps` |
+| 10 | Testimonials | `.luvit-testimonials` |
+| 11 | FAQ | `.luvit-acc` |
+| 12 | Closing CTA | `.luvit-cta` |
+| 13 | Footer | `.luvit-footer` (Theme Builder) |
+
+**Every section needs `data-nav-bg|dark` or `|light`** (Advanced → Attributes),
+or the navigation bar can't re-theme itself. See Part 3.2.
+
+**Suggested order of work:** start with the **trust bar** — it's the simplest,
+has no motion, and proves the whole pipeline works before you tackle anything
+harder. Leave the hero until last; it's the most complex piece.
+
+🔴 **Before going live:** every image in the preview is a placeholder SVG, and
+every number (percentages, prices, delivery times, testimonials) is example
+text written during the build. All of it must be replaced with real content.
+
+---
+
 ## QUICK REFERENCE — every class
 
 **Buttons:** `luvit-btn` · `--ghost` · `--arrow` · `--on-dark`
@@ -315,8 +432,47 @@ overrides or a CSS mapping like the one above.
 `luvit-field` · `__label/__req/__control/__hint/__error/__success/__prefix` ·
 `luvit-input` · `luvit-textarea` · `luvit-select` · `luvit-check` · `--radio` · `__box` ·
 `luvit-switch` · `__track/__drop` · `luvit-option` · `__icon/__label` · `luvit-optiongrid`
+**Testimonials:** `luvit-testimonials` · `--on-dark` · `__stack` `__controls` `__btn` `__dots` `__dot` ·
+`luvit-testimonial` · `--glass` · `__avatar/__stars/__quote/__author/__role/__mark`
+**Wave:** `luvit-wave` · `--drift` · `--flip` (set `--wave-fill`)
+**Trust:** `luvit-trust` · `--on-dark` · `__item/__icon/__title/__note`
+**Steps:** `luvit-steps` · `luvit-step` · `__num/__body/__title/__text`
+**Accordion:** `luvit-acc` (+ `data-acc-single`) · `__item/__q/__sign/__a`
+**Footer:** `luvit-footer` · `__inner/__brand/__tag/__h/__list/__social/__bar/__pay`
+**Deep water:** `luvit-deep` · `__rays` (+ `data-luvit-bubbles="12"`)
+**Ingredients:** `luvit-ing` · `--on-dark` · `__row/__pct/__body/__name/__note`
+**Compare:** `luvit-compare` · `__after/__label/__label--before/__label--after/__line/__grip/__range`
+**Quiz:** `luvit-quiz` · `--on-dark` · `__q/__foot/__hint`
+**Sections:** `luvit-section` · `--tight` `--dark` · `__inner/__head/__eyebrow/__title/__sub` ·
+`luvit-cta` · `__panel/__title/__sub/__accent` · `luvit-nav-offset` · `luvit-dock-offset`
 **Utility (pre-existing):** `luvit-glass` · `luvit-water-bg` · `luvit-badge` · `luvit-price` ·
-`luvit-eyebrow` · `luvit-skeleton`
-**Motion attributes:** `data-luvit="reveal|stagger|slide|parallax|float|counter"`
-**JS API:** `LUVIT.bubblePress()` · `LUVIT.nav.*` · `LUVIT.form.*` · `LUVIT.reveal()` ·
-`LUVIT.batchReveal()` · `LUVIT.bubbles()`
+`luvit-eyebrow` · `luvit-skeleton` · `luvit-sr-only`
+**Motion attributes:** `data-luvit="reveal|stagger|slide|parallax|float|counter"` ·
+`data-luvit-bubbles="12"` · `data-nav-bg="light|dark"` · `data-acc-single`
+**JS API:** `LUVIT.bubblePress()` · `LUVIT.nav.*` · `LUVIT.form.*` · `LUVIT.testimonials.*` ·
+`LUVIT.accordion.*` · `LUVIT.compare.*` · `LUVIT.reveal()` · `LUVIT.batchReveal()` · `LUVIT.bubbles()`
+
+---
+
+## FILE MAP
+
+```
+D:\luvit\
+├── library\                    ← the component library
+│   ├── tokens.css              ← ALL styles (paste into WPCode)
+│   ├── motion.js               ← ALL behaviour (paste into WPCode)
+│   ├── ELEMENTOR-GUIDE.md      ← this file
+│   ├── home-preview.html       ← the finished HOME page reference
+│   └── *-demo.html             ← one demo per component
+└── hero-sequence\              ← the scroll-frame hero
+    ├── scroll-sequence.html    ← the drop-in (live plasmajo.com URLs)
+    ├── hero-chapters-preview.html
+    ├── frames\  frames-desktop\
+    └── *.mp4
+```
+
+**To preview locally** (needed — the browser blocks `fetch()` on `file://`):
+```
+node serve.js "D:\luvit" 4322
+http://localhost:4322/library/home-preview.html
+```
