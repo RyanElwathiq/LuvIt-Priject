@@ -147,15 +147,43 @@
   /* ---- Chapters ---- */
   #hero-seq .hero-story { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
 
-  /* ---- The liquid-glass panel ----
-     Frosted WITHOUT backdrop-filter, which cannot be used here: the canvas
-     behind repaints on every scroll tick, so a real blur would be recomputed
-     every frame of the scrub. Instead this is the same free recipe the nav
-     bar uses — translucent depth fill + a bright bezel edge + a soft outer
-     shadow. Over soft underwater footage it reads as glass and costs nothing.
-       · the top gloss line is the light catching the pane
-       · inset 2px 2px 0 -2px  = the refracted top-left edge
-       · inset 0 0 3px 1px     = the rim glow around the whole pane          */
+  /* ---- The liquid-glass panel — a LENS OF DEEPER WATER ----
+     No backdrop-filter here, ever: the canvas behind repaints on every scroll
+     tick, so a real blur would be recomputed on every frame of the scrub.
+     Everything below is static paint — gradients only, no filters — so it
+     costs ONE paint when a chapter appears and literally nothing during the
+     scrub. Only opacity/transform animate.
+
+     The first version was a flat, evenly-dark rectangle, which reads as a
+     hole punched in the video rather than an object floating in it. This is
+     built the way a bubble actually behaves underwater:
+
+       · light enters from ABOVE, so the fill is THIN at the top and DENSE at
+         the floor — that vertical density change is what sells "volume"
+       · a bubble is brightest at its RIM; the rim then dims along the shaded
+         flank and picks back up at the bottom from light bouncing off the far
+         wall. That is ::after — a GRADIENT hairline, not a flat 1px border.
+         This single detail is most of the difference between "glass" and
+         "div with a border".
+       · a specular catch-light where the light source strikes the surface
+       · a cool caustic bloom low-right: light refracted through the far wall
+
+     ---------------------------------------------------------------------
+     CONTRAST — the copy is white, so the panel has to stay dark enough to
+     carry it. The tint is LAGOON rgb(6,52,54), chosen on the real footage.
+     Measured against the brightest OPEN WATER in the final frames:
+         top of the panel (its thinnest point) ....... 5.43:1  AA pass
+         bottom of the panel ......................... 8.87:1  AA pass
+     and against a deliberately harsher stress background (#7FDCE8), which is
+     brighter than anything actually in the footage:
+         top of the panel ............................ 4.66:1  AA pass
+     Do NOT lower PANEL.desktop.bright below ~0.52 with this tint — under that
+     the top of the panel drops beneath 4.5:1 on the final frames and the
+     first line gets hard to read. Darker is always safe; lighter has a floor.
+
+     If you ever change PANEL.rgb, re-check this: a lighter or more saturated
+     tint raises the floor. The local preview has a live contrast readout —
+     run `node make-local-preview.js` and scroll to the end.                  */
   #hero-seq .hero-story__ch {
     position: absolute;
     left: 50%; top: 50%;
@@ -163,18 +191,34 @@
     width: min(88vw, 460px);
     box-sizing: border-box;
     margin: 0;
-    padding: var(--panel-pad-y, 30px) var(--panel-pad-x, 28px);
-    border-radius: var(--panel-radius, 26px);
-    border: 1px solid rgba(255, 255, 255, 0.20);
+    padding: var(--panel-pad-y, 34px) var(--panel-pad-x, 30px);
+    border-radius: var(--panel-radius, 34px);
+    border: 0;
     background:
-      linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 52%),
-      linear-gradient(180deg,
-        rgba(var(--panel-rgb, 12, 51, 60), var(--panel-a, 0.40)) 0%,
-        rgba(var(--panel-rgb, 12, 51, 60), calc(var(--panel-a, 0.40) * 1.28)) 100%);
+      /* 1 — specular catch-light. Sits mostly ABOVE the panel and is spent
+             well before the first line of text, so it never eats contrast
+             where the words actually are. */
+      radial-gradient(116% 70% at 24% -14%,
+        rgba(255,255,255,0.15) 0%,
+        rgba(255,255,255,0.05) 40%,
+        rgba(255,255,255,0) 66%),
+      /* 2 — caustic bloom: light bent through the far wall of the bubble.
+             Cool aqua, low and to the side, never centred. */
+      radial-gradient(86% 54% at 72% 116%,
+        rgba(126, 224, 240, 0.20) 0%,
+        rgba(126, 224, 240, 0.06) 44%,
+        rgba(126, 224, 240, 0) 64%),
+      /* 3 — DEPTH. Thin at the surface, dense at the floor. The 176deg tilt
+             is deliberate: a perfectly vertical gradient reads mechanical. */
+      linear-gradient(176deg,
+        rgba(var(--panel-rgb, 6, 52, 54), var(--panel-a, 0.51)) 0%,
+        rgba(var(--panel-rgb, 6, 52, 54), calc(var(--panel-a, 0.51) * 1.16)) 46%,
+        rgba(var(--panel-rgb, 6, 52, 54), calc(var(--panel-a, 0.51) * 1.42)) 100%);
     box-shadow:
-      inset 2px 2px 0 -2px rgba(255, 255, 255, 0.62),
-      inset 0 0 3px 1px rgba(255, 255, 255, 0.26),
-      0 20px 52px -20px rgba(2, 20, 26, 0.55);
+      /* the panel sits IN the water, not on top of it: a tight dark contact
+         shadow plus a wide turquoise glow that ties it to the footage */
+      0 18px 48px -22px rgba(2, 20, 26, 0.60),
+      0 40px 90px -48px rgba(11, 145, 152, 0.55);
     display: flex;
     flex-direction: column;
     gap: 0.55em;
@@ -193,6 +237,41 @@
       0 4px 28px rgba(var(--copy-shadow-rgb, 12, 51, 60), var(--copy-shadow-a, 0.5)),
       0 2px 12px rgba(var(--copy-shadow-rgb, 12, 51, 60), calc(var(--copy-shadow-a, 0.5) * 0.65));
   }
+
+  /* THE RIM — the meniscus of the bubble.
+     A 1px gradient hairline, made by painting a gradient over the whole box
+     and then masking out everything except the border ring. A flat
+     `border: 1px solid` cannot do this: it is one colour the whole way round,
+     which is exactly what makes a panel look like a UI element instead of an
+     object with light falling on it.
+       0%   bright white ....... where the light enters, top-left
+       48%  almost gone ........ the shaded flank
+       100% bright again ....... caustic bounce off the far wall           */
+  #hero-seq .hero-story__ch::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(150deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(196, 240, 250, 0.42) 22%,
+      rgba(255, 255, 255, 0.07) 48%,
+      rgba(160, 232, 245, 0.26) 74%,
+      rgba(255, 255, 255, 0.66) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* The copy must paint ABOVE the rim. The chapter is a flex container, so
+     the pseudo-element is kept out of the flex flow by position:absolute —
+     but a positioned pseudo would still paint over static children, hence
+     lifting the real content to z-index 1. */
+  #hero-seq .hero-story__ch > * { position: relative; z-index: 1; }
 
   #hero-seq .hero-story__line {
     margin: 0;
@@ -216,6 +295,7 @@
     background: none;
     box-shadow: none;
   }
+  #hero-seq.no-panel .hero-story__ch::after { display: none; }
 
   /* The final chapter's CTA must be clickable, so it re-enables pointers. */
   #hero-seq .hero-story__cta {
@@ -428,16 +508,38 @@
      ------------------------------------------------------------------------- */
   var PANEL = {
     on: true,
-    radius: 26,
-    padY: 30,
-    padX: 28,
-    rgb: "12, 51, 60",                              // deep water aqua-900
-    desktop: { dark: 0.30, mid: 0.38, bright: 0.48 },
-    mobile:  { dark: 0.40, mid: 0.50, bright: 0.60 },
-    /* How much of the soft halo to keep behind the panel. The panel already
-       does the heavy lifting, so the halo is just there to stop the glass
-       looking pasted onto bright water. 0 = no halo at all. */
-    haloScale: 0.45
+    /* 34 not 26: a modest radius reads as "box", a generous one reads as
+       "droplet". This is the shape cue that does the most work. */
+    radius: 34,
+    /* The extra top padding is load-bearing — it keeps the first line of text
+       clear of the specular catch-light, which is the one bright spot on the
+       panel and the only place contrast could suffer. */
+    padY: 34,
+    padX: 30,
+    /* LAGOON. Greener and a little lighter than the old 12,51,60, which went
+       muddy grey over turquoise footage. This sits in the same hue family as
+       the water, so the panel reads as a patch of DEEPER water rather than as
+       a foreign dark rectangle. Picked on the real footage in the preview's
+       tint lab, not from a swatch. */
+    rgb: "6, 52, 54",
+    /* Alpha at the TOP of the panel — its thinnest, lightest point. The CSS
+       gradient carries it to x1.42 at the bottom by itself.
+
+       The curve is deliberately SHALLOW (0.46 -> 0.56, not 0.36 -> 0.56):
+       0.56 was approved on the real footage with the thickness held constant,
+       so keeping the start close to it means what ships matches what was
+       signed off. The small remaining rise still spares the dark opening
+       frames, which genuinely need less protection.
+       See the CONTRAST note in the stylesheet: 0.52 is the floor here.       */
+    desktop: { dark: 0.46, mid: 0.51, bright: 0.56 },
+    /* Mobile stays thicker: the copy sits directly over the products with no
+       open water to move into. NOT yet reviewed on a real phone. */
+    mobile:  { dark: 0.54, mid: 0.60, bright: 0.66 },
+    /* How much of the soft halo to keep behind the panel. Pulled back from
+       0.45 — the panel now carries the contrast by itself, so the halo is
+       only there to stop the glass looking pasted onto bright water. A halo
+       that is too strong just re-creates the dark blob we removed. */
+    haloScale: 0.38
   };
 
   /* -------------------------------------------------------------------------

@@ -14,3 +14,9 @@ hero-seq.zip.zip
 
 # Exported chat/account data - private, never publish
 Chat's/
+
+# Generated local preview. Built from scroll-sequence.html by
+# make-local-preview.js, so tracking it would just be a stale duplicate that
+# silently drifts from the real file. Rebuild it with:
+#     node hero-sequence/make-local-preview.js
+hero-sequence/scroll-sequence.local.html
