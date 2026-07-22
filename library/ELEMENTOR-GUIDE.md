@@ -318,11 +318,28 @@ The seam between two sections, as water.
 ```
 `--wave-fill` = colour of the section **below**. `background` = colour **above**.
 
-⚠️ **Adding `--drift` (a moving wave)?** The path must tile or it visibly jumps:
-its `viewBox` must be `0 0 2880 70` (two identical cycles, second one's control
-points = first's with x + 1440), and it must **start, pass x=1440, and end at
-the same y**. Both rules are documented in the CSS. Elementor's own Shape
-Divider is a fine alternative.
+The div is **empty** — the shape is a repeating mask, so there is no `<svg>` to
+paste. Old markup that still contains one keeps working; the `<svg>` is hidden.
+
+| knob | does |
+|---|---|
+| `--wave-fill` | colour of the section below |
+| `background` | colour of the section above |
+| `--wave-h` | height, e.g. `--wave-h:90px`. Default 70px |
+| `data-wave-cycles` | waves across the width. `1` = one lazy swell, `2` = livelier |
+| `luvit-wave--drift` | makes it move. Needs `motion.js` |
+| `luvit-wave--flip` | turns it upside down |
+
+**Why it can't break the way it used to.** The old build slid a double-width
+`<svg>`, which had an edge — and whenever that edge showed you got a hard
+vertical step with the section colour beside it. A repeating mask has no edge:
+it tiles to fill whatever width the box is, so the step is impossible rather
+than merely avoided. The shape is also smooth by construction, with no corners
+at the joins or at the wrap.
+
+⚠️ **Raising `--wave-h` a lot makes the wave harsher, not just bigger** — the
+shape stretches with the box. Past roughly 100px, ask for a matching
+`--wave-mask` with a lower amplitude.
 
 ### 7 · Trust bar — `.luvit-trust`
 Delivery / COD / authenticity. 2-up on phones, 4-up on desktop.

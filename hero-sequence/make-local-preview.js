@@ -47,19 +47,19 @@ const page = `<!doctype html>
   /* The preview shell only. None of this ships to Elementor. */
   body { margin: 0; background: #298D94; }
 
-  /* Stands in for the section that follows the hero on the real page. Its
-     colour must match the last frame or you get a visible seam — this is the
-     same value the drop-in's header comment tells you to set in Elementor. */
+  /* Stands in for the section that follows the hero on the real page.
+     WHITE here on purpose, to match the live site — and it must be the same
+     colour as WAVE.fill in the drop-in, or the wave stops reading as a seam.
+     Change both together if the real section below ever changes. */
   .after-hero {
-    background-color: #298D94;
+    background-color: #FFFFFF;
     min-height: 80vh;
     display: grid; place-items: center;
-    color: #fff; text-align: center;
+    color: #124D5A; text-align: center;
     font-family: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
     padding: 40px 20px;
   }
-  @media (min-width: 1024px) { .after-hero { background-color: #0B9198; } }
-  .after-hero p { max-width: 44ch; line-height: 1.9; opacity: .9; }
+  .after-hero p { max-width: 44ch; line-height: 1.9; opacity: .85; }
 
   /* ---- PREVIEW-ONLY TINT LAB ----
      Lets you judge the panel colour on the real footage instead of on a hex

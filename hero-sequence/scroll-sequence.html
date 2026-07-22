@@ -90,6 +90,16 @@
       <div class="hero-seq__pct" data-pct>0%</div>
     </div>
   </div>
+
+  <!-- WAVE SEAM — deliberately OUTSIDE .hero-seq__pin.
+       Inside the pin it would be stuck to the viewport and float over the
+       products for the whole scroll. Out here it sits at the bottom of the
+       tall hero section, so it is off-screen until the pin releases and then
+       rides in on the final frame — exactly at the join.
+
+       The shape is a repeating MASK, not an inline <svg>, so there is no
+       markup here — see the stylesheet for why. -->
+  <div class="hero-seq__wave" aria-hidden="true"></div>>
 </section>
 
 <!-- ===== STYLES ===== -->
@@ -356,10 +366,109 @@
   #hero-seq .hero-seq__pct { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
   @keyframes hero-seq-spin { to { transform: rotate(360deg); } }
 
+  /* ---- WAVE SEAM ----
+     The join between the hero and whatever follows it, drawn as a water
+     surface instead of a straight cut.
+
+     WHY IT IS ANCHORED TO THE SECTION AND NOT TO THE PIN: while the sequence
+     is scrubbing, .hero-seq__pin is fixed to the viewport. Anything inside it
+     is fixed too, so a wave there would hang over the products for the entire
+     scroll. Anchored to #hero-seq instead, it sits at the very bottom of the
+     tall (4 x viewport) section — far below the fold — and only comes into
+     view as the pin releases. That is precisely the seam.
+
+     It OVERLAPS the last ~70px of the video on purpose. That crop is what
+     makes it read as one surface rather than two stacked blocks.
+
+     --wave-fill MUST be the colour of the section BELOW the hero. Set it in
+     the WAVE block of the tuning panel, not here. Get it wrong and the wave
+     reads as a floating shape instead of the next section rising up.
+     z-index 5: above the canvas (1) and the chapters (20 is inside the pin,
+     a separate stacking context), below the fixed Water Pill nav (160).
+
+     ---------------------------------------------------------------------
+     WHY A REPEATING MASK AND NOT A SLIDING <svg>
+
+     The obvious build — and the one .luvit-wave in tokens.css uses — is an
+     svg at 200% width holding two identical cycles, slid left by exactly one
+     cycle. That works for a normal in-flow divider, but it FAILED here and
+     the failure is worth writing down: the svg has an EDGE. If its width
+     resolves to anything less than the box (and percentage widths resolve
+     differently against an absolutely-positioned parent than against an
+     in-flow one), that edge becomes visible as a hard vertical step with the
+     video showing through beside it.
+
+     A repeat-x background has no edge. It tiles to fill whatever width the
+     box happens to be, so the step is not merely avoided, it is impossible.
+     The animation then slides the PATTERN by exactly one tile, which lands on
+     an identical tile — seamless by construction rather than by arithmetic.
+
+     The shape lives in a mask instead of the image so the colour stays a
+     plain CSS variable (--wave-fill) that JS can set. Painting a coloured svg
+     would mean rebuilding the data URI every time the colour changes.        */
+  #hero-seq .hero-seq__wave {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: -1px;                 /* -1px kills the hairline gap some browser
+                                     zoom levels leave under an absolute box */
+    width: auto;
+    height: var(--wave-h, 74px);
+    z-index: 5;
+    pointer-events: none;
+    background-color: var(--wave-fill, #FFFFFF);
+    /* ONE cycle, and it is SMOOTH — no corners.
+       Two symmetric half-cycles. Each runs 720 wide off a baseline of y=30,
+       with its control points at 1/3 and 2/3 of its span (240 and 480) and
+       both pushed the same distance off the baseline (±24). That symmetry is
+       what removes the kink: it forces the incoming and outgoing tangents at
+       every join onto ONE straight line, so the curve changes direction
+       without ever showing a corner.
+
+           join at x=720 : in (480,11)->(720,30) = (240, 19)
+                           out (720,30)->(960,49) = (240, 19)   collinear
+           wrap x=1440/0 : in (1200,49)->(1440,30) = (240,-19)
+                           out (0,30)->(240,11)   = (240,-19)   collinear
+
+       The wrap line matters as much as the inner one: the tile repeats, so a
+       mismatch there would print a visible crease once per screen width.
+
+       IF YOU EDIT THIS: keep the control points symmetric about each half's
+       midpoint and keep start y = end y. Amplitude is the ±19 (bigger =
+       choppier); the baseline 30 is how high the water sits in the strip
+       (smaller = higher).
+
+       ⚠ AMPLITUDE AND HEIGHT ARE COUPLED. preserveAspectRatio is none, so the
+       viewBox stretches to whatever WAVE.hDesktop is — a taller strip scales
+       this curve up with it. Raising the height alone makes the wave HARSHER,
+       not just bigger. When you raise the height, drop the amplitude by
+       roughly the same ratio to keep the swell as gentle as it is now.       */
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='M0,30 C240,11 480,11 720,30 C960,49 1200,49 1440,30 L1440,70 L0,70 Z'/%3E%3C/svg%3E");
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='M0,30 C240,11 480,11 720,30 C960,49 1200,49 1440,30 L1440,70 L0,70 Z'/%3E%3C/svg%3E");
+    -webkit-mask-repeat: repeat-x;      mask-repeat: repeat-x;
+    -webkit-mask-size: var(--wave-tile, 100vw) 100%;
+            mask-size: var(--wave-tile, 100vw) 100%;
+    -webkit-mask-position: 0 bottom;    mask-position: 0 bottom;
+    animation: hero-wave-slide 28s linear infinite;
+  }
+  /* Slides by exactly one tile, so the loop point is invisible. Repainting a
+     ~74px strip once a frame is negligible, and this element is only on
+     screen at the seam — never during the scrub. */
+  @keyframes hero-wave-slide {
+    from { -webkit-mask-position: 0 bottom;
+                   mask-position: 0 bottom; }
+    to   { -webkit-mask-position: var(--wave-tile, 100vw) bottom;
+                   mask-position: var(--wave-tile, 100vw) bottom; }
+  }
+  /* Parking the animation is safe: the mask still tiles, so there is still
+     no edge to expose — the wave just holds still. */
+  #hero-seq .hero-seq__wave.is-static { animation: none; }
+  #hero-seq.no-wave .hero-seq__wave { display: none; }
+
   /* ---- Reduced motion: chapters fade only, nothing travels ---- */
   @media (prefers-reduced-motion: reduce) {
     #hero-seq .hero-seq__spinner,
     #hero-seq .hero-story__cue-dot::after { animation: none; }
+    #hero-seq .hero-seq__wave { animation: none; }
   }
 </style>
 
@@ -573,6 +682,43 @@
   var CH_RISE_PX   = 26;   // how far a chapter drifts up as it fades in/out
   var CUE_FADE_END = 0.14; // the scroll cue is gone by this progress
 
+  /* -------------------------------------------------------------------------
+     H. THE WAVE SEAM at the bottom of the hero
+
+       on     -> false removes it entirely and you get a straight cut back
+       fill   -> ⚠ THE MOST IMPORTANT ONE. This must be the background colour
+                 of the section DIRECTLY BELOW the hero in Elementor. The wave
+                 is that section's water rising over the video; if the colours
+                 disagree it stops reading as a seam and becomes a random
+                 white shape sitting on the footage.
+                    white section below   -> "#FFFFFF"
+                    off-white / page bg   -> "#FAFCFD"
+                    turquoise section     -> "#0B9198"
+       hDesktop / hMobile -> wave height in px. Taller = a lazier, more open
+                 curve; shorter = tighter and choppier. Mobile is kept lower
+                 because the same height eats far more of a phone screen.
+       cycles -> how many complete waves fit across the screen. 1 = one long
+                 lazy swell (calm, premium). 2 = a livelier surface. Below 1
+                 you only see part of a cycle and it stops reading as water.
+       drift  -> false parks the wave. It still looks correct, just still.
+
+     ⚠ IF YOU CHANGE THE SECTION BELOW, COME BACK AND CHANGE `fill`.
+     ------------------------------------------------------------------------- */
+  var WAVE = {
+    on: true,
+    fill: "#FFFFFF",
+    /* Raised twice, 74 -> 92 -> 130. The strip is anchored to the BOTTOM of
+       the hero, so a taller strip pushes the crest further up over the video.
+       Eating into the final frame was approved, and it costs nothing here:
+       the last frame is open water, so there is no product in the crop.
+       The path amplitude was dropped 24 -> 19 at the same time to cancel the
+       stretch — see the coupling warning in the stylesheet. */
+    hDesktop: 130,
+    hMobile: 78,
+    cycles: 1,
+    drift: true
+  };
+
   /* =========================================================================
      END OF TUNING PANEL — the sequence config below is the original setup
      ========================================================================= */
@@ -644,6 +790,20 @@
     root.style.setProperty("--panel-pad-y", PANEL.padY + "px");
     root.style.setProperty("--panel-pad-x", PANEL.padX + "px");
     root.classList.toggle("no-panel", !PANEL.on);
+
+    /* The wave seam. Height is the only thing that differs by breakpoint. */
+    var wave = root.querySelector(".hero-seq__wave");
+    if (wave) {
+      root.classList.toggle("no-wave", !WAVE.on);
+      wave.classList.toggle("is-static", !WAVE.drift);
+      wave.style.setProperty("--wave-fill", WAVE.fill);
+      wave.style.setProperty("--wave-h", (desktop ? WAVE.hDesktop : WAVE.hMobile) + "px");
+      /* Measured, not 100vw: on Windows the vertical scrollbar is part of the
+         viewport width, so 100vw is a few px wider than the element and the
+         wave would creep out of phase with itself over time. */
+      var tile = (pin.clientWidth || window.innerWidth) / Math.max(0.25, WAVE.cycles);
+      wave.style.setProperty("--wave-tile", tile.toFixed(2) + "px");
+    }
 
     chapters.forEach(function (ch, i) {
       var p = pos[i] || pos[pos.length - 1];

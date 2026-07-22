@@ -2483,27 +2483,76 @@ body.luvit-locked { overflow: hidden; }
    In Elementor you can also use the built-in Shape Divider; this exists so
    custom HTML sections can carry the same wave.
 
-   ⚠ IF YOU ADD .luvit-wave--drift, THE PATH MUST TILE. Two rules:
-     1. viewBox is 0 0 2880 70 — TWO identical wave cycles side by side.
-        The second half must repeat the first half's control points, each
-        x shifted by +1440.
-     2. The path must START and END at the SAME y, and pass through that
-        same y at x=1440. e.g. M0,34 ... 1440,34 ... 2880,34
-     Break either rule and the wave visibly JUMPS every time it loops.
+   --------------------------------------------------------------------------
+   REBUILT — was a sliding inline <svg>, now a repeating MASK.
+
+   The old build put an svg at 200% width inside an overflow-hidden box and
+   slid it left by half its own body. That svg has an EDGE, and whenever its
+   width resolved to less than the box the edge showed up as a hard vertical
+   step with the section colour beside it.
+
+   A repeat-x mask has no edge. It tiles to fill whatever width the box turns
+   out to be, so the step is not avoided by careful arithmetic — it is
+   impossible. The colour stays a plain variable (--wave-fill) because the
+   shape lives in the mask rather than in a coloured image.
+
+   THE SHAPE IS SMOOTH BY CONSTRUCTION. Two symmetric half-cycles, control
+   points at 1/3 and 2/3 of each half, pushed the same distance either side of
+   the baseline. That symmetry forces the tangents on both sides of every join
+   onto one straight line, so the curve turns without ever showing a corner —
+   including at the wrap, which repeats once per tile and would otherwise
+   print a visible crease across the page.
+
+   MARKUP — the div is now empty. Any inner <svg> is ignored (hidden), so old
+   markup keeps working untouched:
+
+     <div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF"></div>
+
+   TO USE A DIFFERENT SHAPE on one instance, hand it its own mask:
+     style="--wave-mask:url(\"data:image/svg+xml,...\")"
+   Whatever you supply must still start and end at the same y, or it will
+   jump every tile.
    ========================================================================== */
+/* The wave is painted by ::before, NOT by the box itself. That is deliberate
+   and load-bearing: existing markup sets `background:` inline to colour the
+   section ABOVE the wave, and if the wave's own colour lived on the box that
+   inline declaration would win and repaint the whole strip. Keeping the box
+   free means every wave already pasted into Elementor keeps its exact
+   meaning — background = above, --wave-fill = below. */
 .luvit-wave {
+  position: relative;
   display: block;
-  line-height: 0;               /* kills the inline-svg gap */
-  color: var(--wave-fill, #FFFFFF);
+  height: var(--wave-h, 70px);
   margin: 0;
   pointer-events: none;
-  /* The drifting variant makes the svg twice as wide as this box, so the
-     overflow MUST be clipped or it spills into the page and can force a
-     horizontal scrollbar. */
   overflow: hidden;
 }
-.luvit-wave svg { display: block; width: 100%; height: var(--wave-h, 70px); }
-.luvit-wave--flip svg { transform: scaleY(-1); }
+.luvit-wave::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--wave-fill, #FFFFFF);
+  -webkit-mask-image: var(--wave-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='M0,30 C240,11 480,11 720,30 C960,49 1200,49 1440,30 L1440,70 L0,70 Z'/%3E%3C/svg%3E"));
+          mask-image: var(--wave-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='M0,30 C240,11 480,11 720,30 C960,49 1200,49 1440,30 L1440,70 L0,70 Z'/%3E%3C/svg%3E"));
+  -webkit-mask-repeat: repeat-x;   mask-repeat: repeat-x;
+  /* --wave-tile is measured per element by motion.js. 100vw is the fallback
+     for when JS has not run yet; it tiles either way, so the worst case is a
+     slightly different number of cycles, never a gap. */
+  -webkit-mask-size: var(--wave-tile, 100vw) 100%;
+          mask-size: var(--wave-tile, 100vw) 100%;
+  -webkit-mask-position: 0 bottom; mask-position: 0 bottom;
+}
+/* Legacy markup: the shape comes from the mask now, so an inline svg would
+   just draw a second wave on top. Hidden rather than required to be deleted,
+   so nothing already pasted into Elementor has to be touched. */
+.luvit-wave > svg { display: none; }
+/* Flips the whole box now that there is no inner svg to flip. */
+.luvit-wave--flip { transform: scaleY(-1); }
+
+/* ⚠ AMPLITUDE AND HEIGHT ARE COUPLED. preserveAspectRatio is none, so the
+   viewBox stretches to --wave-h: a taller wave scales the curve up with it and
+   reads HARSHER, not just bigger. If you raise --wave-h a lot, supply a
+   --wave-mask with the amplitude reduced by about the same ratio. */
 
 /* ==========================================================================
    LIQUID GLASS v1  —  COMPONENT 7: TRUST BAR
@@ -2993,29 +3042,21 @@ body.luvit-locked { overflow: hidden; }
   .luvit-deep__rays { animation: none; }
 }
 
-/* Waves can drift too — the seam should never look frozen. */
-/* The svg carries TWO identical wave cycles across its viewBox, and slides by
-   exactly one of them — so the loop is seamless.
-
-   min-width is the important line. The base rule above sets width:100%, and
-   if that ever wins the cascade the svg slides half its own body out of view
-   and leaves a hard-edged GAP on the trailing side showing the container
-   colour underneath. min-width can't be undone by a width declaration, so it
-   guarantees the svg is always wide enough to cover the box at every point
-   of the animation. Do not remove it. */
-.luvit-wave--drift svg {
-  width: 200%;
-  min-width: 200%;
+/* Waves can drift too — the seam should never look frozen.
+   The mask slides by exactly one tile, which lands on an identical tile, so
+   the loop point cannot be seen. Parking it is safe at any moment: the mask
+   still tiles, so there is never an edge to expose — it just holds still. */
+.luvit-wave--drift::before {
   animation: luvit-wave-slide 28s linear infinite;
-  will-change: transform;
 }
 @keyframes luvit-wave-slide {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
+  from { -webkit-mask-position: 0 bottom;
+                 mask-position: 0 bottom; }
+  to   { -webkit-mask-position: var(--wave-tile, 100vw) bottom;
+                 mask-position: var(--wave-tile, 100vw) bottom; }
 }
 @media (prefers-reduced-motion: reduce) {
-  /* Still needs min-width reset, or the svg stays double-width while parked. */
-  .luvit-wave--drift svg { animation: none; width: 100%; min-width: 100%; }
+  .luvit-wave--drift::before { animation: none; }
 }
 
 /* ==========================================================================

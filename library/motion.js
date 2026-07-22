@@ -1126,9 +1126,44 @@ function luvitAutoBubbles(scope) {
   });
 }
 
+/* ==========================================================================
+   WAVE DIVIDER — tile sizing
+   --------------------------------------------------------------------------
+   The wave is a repeat-x mask. It tiles at --wave-tile, and the drift animation
+   slides it by exactly that distance, so the tile MUST match the element's own
+   width or consecutive loops creep out of phase with the section edges.
+
+   CSS alone can't do this: 100vw includes the vertical scrollbar on Windows,
+   and a wave inside a padded container is narrower than the viewport anyway.
+   So it is measured. The CSS fallback still tiles if this never runs — the
+   worst case is a slightly different number of cycles, never a gap.
+
+   --wave-cycles (optional, on the element) sets how many complete waves span
+   the box: 1 = one long lazy swell, 2 = a livelier surface.
+   ========================================================================== */
+function luvitWaves(scope) {
+  scope = scope || document;
+  scope.querySelectorAll('.luvit-wave').forEach(function (el) {
+    var w = el.clientWidth;
+    if (!w) return;                       /* hidden or not laid out yet */
+    var cycles = parseFloat(el.getAttribute('data-wave-cycles')) || 1;
+    if (cycles < 0.25) cycles = 0.25;
+    el.style.setProperty('--wave-tile', (w / cycles).toFixed(2) + 'px');
+  });
+}
+
+/* Re-measure on resize. Debounced, because clientWidth forces layout and a
+   drag-resize would otherwise thrash it on every pixel. */
+var luvitWaveTimer;
+window.addEventListener('resize', function () {
+  clearTimeout(luvitWaveTimer);
+  luvitWaveTimer = setTimeout(function () { luvitWaves(); }, 150);
+});
+
 function luvitPageEnhance() {
   luvitCompare();
   luvitAutoBubbles();
+  luvitWaves();
 }
 
 if (document.readyState === 'loading') {
@@ -1139,3 +1174,4 @@ if (document.readyState === 'loading') {
 
 window.LUVIT.compare = { init: luvitCompare };
 window.LUVIT.autoBubbles = luvitAutoBubbles;
+window.LUVIT.waves = { init: luvitWaves };
