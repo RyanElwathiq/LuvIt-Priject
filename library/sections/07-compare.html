@@ -1,0 +1,46 @@
+<!--
+  ============================================================================
+  LUVIT · سكشن 7 من ١٣ · قبل وبعد
+  ============================================================================
+  مولّد من library/home-preview.html · لا تعدّل هون، عدّل بالمعاينة وأعد التوليد.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : ما بده
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ 🔴 الصورتان placeholder والكوبي بيقول «صور حقيقية بلا فلاتر»
+  ⚠ 🔴 «بعد ٤ أسابيع» رقم مثال
+  ============================================================================
+-->
+
+<section class="luvit-section band-mist" data-nav-bg="light">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Real results</p>
+      <h2 class="luvit-section__title">بعد ٤ أسابيع</h2>
+      <p class="luvit-section__sub">اسحبي الخط لتشوفي الفرق. صور حقيقية بلا فلاتر.</p>
+    </div>
+
+    <!-- ===== REAL BEFORE/AFTER PHOTOS GO HERE ===== -->
+    <div class="luvit-compare">
+      <img alt="البشرة قبل الروتين"
+           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'><defs><linearGradient id='bf' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='rgb(198,186,178)'/><stop offset='1' stop-color='rgb(166,150,140)'/></linearGradient></defs><rect width='800' height='600' fill='url(%23bf)'/><circle cx='300' cy='230' r='16' fill='rgb(150,110,100)' opacity='.5'/><circle cx='420' cy='330' r='12' fill='rgb(150,110,100)' opacity='.45'/><circle cx='350' cy='400' r='14' fill='rgb(150,110,100)' opacity='.4'/><text x='40' y='560' font-size='30' fill='rgb(255,255,255)' opacity='.75'>BEFORE</text></svg>">
+      <img class="luvit-compare__after" alt="البشرة بعد أربعة أسابيع"
+           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'><defs><linearGradient id='af' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='rgb(240,228,220)'/><stop offset='1' stop-color='rgb(214,196,186)'/></linearGradient></defs><rect width='800' height='600' fill='url(%23af)'/><text x='40' y='560' font-size='30' fill='rgb(255,255,255)' opacity='.85'>AFTER</text></svg>">
+
+      <span class="luvit-compare__label luvit-compare__label--before">قبل</span>
+      <span class="luvit-compare__label luvit-compare__label--after">بعد</span>
+
+      <input class="luvit-compare__range" type="range" min="0" max="100" value="50"
+             aria-label="اسحبي لمقارنة قبل وبعد">
+      <span class="luvit-compare__line" aria-hidden="true">
+        <span class="luvit-compare__grip">⇄</span>
+      </span>
+    </div>
+  </div>
+</section>
