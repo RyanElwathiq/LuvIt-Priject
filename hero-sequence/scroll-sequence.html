@@ -327,6 +327,25 @@
     color: #fff;
     margin-block-end: 0.28em;
   }
+
+  /* PHONES — the lead needs more measure than a 390px screen gives it.
+     Three things buy it: a wider panel (MOBILE_POSITIONS), less side padding
+     here, and a slightly smaller display size. Padding is set directly rather
+     than through --panel-pad-x, because the script writes that variable
+     inline on #hero-seq and a variable override would lose to it. */
+  @media (max-width: 480px) {
+    #hero-seq .hero-story__ch {
+      padding-inline: 20px;
+    }
+    #hero-seq .hero-story__ch > .hero-story__line:first-child {
+      font-size: clamp(1.18rem, 0.98rem + 1.18vw, 1.5rem);
+      line-height: 1.38;
+    }
+    #hero-seq .hero-story__line {
+      font-size: clamp(0.96rem, 0.87rem + 0.5vw, 1.12rem);
+      line-height: 1.68;
+    }
+  }
   #hero-seq .hero-story__line--big {
     font-family: 'El Messiri', 'Segoe UI', Tahoma, sans-serif;
     font-weight: 700;
@@ -598,11 +617,15 @@
      bottom, so avoid block values below ~22 or above ~80.
      ------------------------------------------------------------------------- */
   var MOBILE_POSITIONS = [
-    { inline: 50, block: 46, align: "center", width: 340 }, // 1 — empty frame
-    { inline: 50, block: 34, align: "center", width: 340 }, // 2 — products falling through centre: sit higher
-    { inline: 50, block: 32, align: "center", width: 345 }, // 3 — products mid-frame
-    { inline: 50, block: 31, align: "center", width: 345 }, // 4 — products lower
-    { inline: 50, block: 30, align: "center", width: 340 }  // 5 — products settled centre-bottom: sit above
+    /* Raised on 9 Aug for the display-size lead line. On a 390px screen the
+       old 340 left only ~280px of measure after padding, and the longest lead
+       ("كل بشرة إلها حكاية... وإلها روتينها.") needed about 300. 358 keeps a
+       16px breath either side at 390 and still fits a 360px phone. */
+    { inline: 50, block: 46, align: "center", width: 358 }, // 1 — empty frame
+    { inline: 50, block: 34, align: "center", width: 358 }, // 2 — products falling through centre: sit higher
+    { inline: 50, block: 32, align: "center", width: 358 }, // 3 — products mid-frame
+    { inline: 50, block: 31, align: "center", width: 358 }, // 4 — products lower
+    { inline: 50, block: 30, align: "center", width: 358 }  // 5 — products settled centre-bottom: sit above
   ];
 
   /* -------------------------------------------------------------------------
