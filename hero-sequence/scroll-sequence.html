@@ -99,7 +99,7 @@
 
        The shape is a repeating MASK, not an inline <svg>, so there is no
        markup here — see the stylesheet for why. -->
-  <div class="hero-seq__wave" aria-hidden="true"></div>>
+  <div class="hero-seq__wave" aria-hidden="true"></div>
 </section>
 
 <!-- ===== STYLES ===== -->
@@ -198,7 +198,11 @@
     position: absolute;
     left: 50%; top: 50%;
     transform: translate(-50%, -50%);
-    width: min(88vw, 460px);
+    /* ⚠ This is only the fallback. The real width is written inline per
+       chapter by the script (DESKTOP_POSITIONS / MOBILE_POSITIONS -> p.width),
+       because each chapter dodges the bottles differently. Editing this line
+       alone changes nothing — that cost a full round trip on 9 Aug. */
+    width: min(88vw, 520px);
     box-sizing: border-box;
     margin: 0;
     padding: var(--panel-pad-y, 34px) var(--panel-pad-x, 30px);
@@ -224,11 +228,21 @@
         rgba(var(--panel-rgb, 6, 52, 54), var(--panel-a, 0.51)) 0%,
         rgba(var(--panel-rgb, 6, 52, 54), calc(var(--panel-a, 0.51) * 1.16)) 46%,
         rgba(var(--panel-rgb, 6, 52, 54), calc(var(--panel-a, 0.51) * 1.42)) 100%);
+    /* EDGE — added 9 Aug. The panel had border:0, so on the brighter frames
+       later in the sequence its fill sat within a few percent of the water
+       behind it and the shape simply dissolved. A hairline plus a top inner
+       highlight gives it a rim to catch the light on, which is what makes
+       glass read as glass. Deliberately NOT backdrop-filter: the canvas
+       repaints every frame and a blur over it costs more than it is worth. */
+    border: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow:
       /* the panel sits IN the water, not on top of it: a tight dark contact
          shadow plus a wide turquoise glow that ties it to the footage */
       0 18px 48px -22px rgba(2, 20, 26, 0.60),
-      0 40px 90px -48px rgba(11, 145, 152, 0.55);
+      0 40px 90px -48px rgba(11, 145, 152, 0.55),
+      /* the lit top edge, and a faint floor bounce */
+      inset 0 1px 0 rgba(255, 255, 255, 0.20),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.05);
     display: flex;
     flex-direction: column;
     gap: 0.55em;
@@ -283,12 +297,35 @@
      lifting the real content to z-index 1. */
   #hero-seq .hero-story__ch > * { position: relative; z-index: 1; }
 
+  /* TYPE HIERARCHY — added 9 Aug.
+     Before this, all three lines of every chapter were the same family, the
+     same weight and the same size. Three equal lines have no entry point:
+     the eye lands nowhere and the whole panel reads as a paragraph of small
+     print floating over a film. Giving the FIRST line of each chapter the
+     display face and real size turns it into the sentence you actually read,
+     and the rest into support. Checked against all five chapters — every
+     opening line works as the lead. */
   #hero-seq .hero-story__line {
     margin: 0;
     font-family: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
-    font-weight: 500;
-    font-size: clamp(1rem, 0.86rem + 0.95vw, 1.35rem);
-    line-height: 1.85;
+    font-weight: 450;
+    font-size: clamp(1.02rem, 0.88rem + 0.92vw, 1.34rem);
+    line-height: 1.75;
+    /* Stops the last line dropping a single orphan word — a lone word under
+       a full line is the thing that made chapter 3 look broken. Progressive:
+       browsers without it just wrap normally. */
+    text-wrap: balance;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  #hero-seq .hero-story__ch > .hero-story__line:first-child {
+    font-family: 'El Messiri', 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.34rem, 1.02rem + 1.62vw, 2.02rem);
+    line-height: 1.42;
+    letter-spacing: -0.004em;
+    color: #fff;
+    margin-block-end: 0.28em;
   }
   #hero-seq .hero-story__line--big {
     font-family: 'El Messiri', 'Segoe UI', Tahoma, sans-serif;
@@ -298,6 +335,22 @@
   }
 
   /* PANEL.on = false in the tuning panel strips the glass back to bare text. */
+  /* OUTER TRAY — added 9 Aug. A second, wider rim set back from the panel.
+     One rectangle on footage reads as an overlay; a plate seated in a tray
+     reads as an object with a place in the scene. The radius is the panel's
+     plus the offset so the two curves stay concentric — mismatched radii are
+     what make nested frames look wrong without anyone being able to say why.
+     No fill beyond a whisper, so it never costs contrast on the copy. */
+  #hero-seq .hero-story__ch::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--panel-tray, 11px) * -1);
+    border-radius: calc(var(--panel-radius, 34px) + var(--panel-tray, 11px));
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    background: rgba(255, 255, 255, 0.022);
+    pointer-events: none;
+  }
+
   #hero-seq.no-panel .hero-story__ch {
     padding: 0;
     border: 0;
@@ -305,6 +358,7 @@
     background: none;
     box-shadow: none;
   }
+  #hero-seq.no-panel .hero-story__ch::before { display: none; }
   #hero-seq.no-panel .hero-story__ch::after { display: none; }
 
   /* The final chapter's CTA must be clickable, so it re-enables pointers. */
@@ -523,10 +577,15 @@
      moves UP because by then the products span the full width.
      ------------------------------------------------------------------------- */
   var DESKTOP_POSITIONS = [
+    /* Widths went up on 9 Aug when the first line of each chapter became a
+       display-size lead. At the old widths that lead broke after two or three
+       words and read as chopped. Headroom checked against the footage: with
+       inline 72-74 the panel's left edge lands around x=660 at 1280, and the
+       bottles never reach past ~400, so there is room. */
     { inline: 50, block: 50, align: "center", width: 620 }, // 1 — empty dark frame: safe to centre
-    { inline: 72, block: 46, align: "right",  width: 470 }, // 2 — products entering centre-left
-    { inline: 74, block: 48, align: "right",  width: 500 }, // 3 — products centre-left
-    { inline: 73, block: 50, align: "right",  width: 500 }, // 4 — products centre-left
+    { inline: 72, block: 46, align: "right",  width: 530 }, // 2 — products entering centre-left
+    { inline: 74, block: 48, align: "right",  width: 560 }, // 3 — products centre-left
+    { inline: 73, block: 50, align: "right",  width: 560 }, // 4 — products centre-left
     { inline: 50, block: 34, align: "center", width: 620 }  // 5 — products fill the width. 34 sits it just above centre; RAISE to move DOWN, lower to move UP
   ];
 
