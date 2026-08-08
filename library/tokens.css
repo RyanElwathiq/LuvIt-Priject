@@ -726,7 +726,14 @@ h1, h2, h3, h4, .luvit-heading {
   font-weight: 600;
   box-shadow: var(--shadow-sm);
 }
-.luvit-card__badge--accent { background: var(--fuchsia-500); color: #fff; }
+/* NOTE — why this is ink and not fuchsia. The brand rule is that #D02D86 is an
+   ACCENT, never a fill: it is allowed on the tiny cart count, and nowhere it
+   would read as a coloured block. A "best seller" pill sitting on a product
+   photo is a block. Deep ink carries the same "look here" weight against a
+   pale product shot, measures ~15:1 against white, and does not fight the
+   aqua system. Change --badge-accent-bg if a different emphasis is wanted. */
+:root { --badge-accent-bg: var(--color-ink); }
+.luvit-card__badge--accent { background: var(--badge-accent-bg); color: #fff; }
 
 /* ---- Body ---- */
 .luvit-card__body {
@@ -1271,6 +1278,13 @@ h1, h2, h3, h4, .luvit-heading {
   color: var(--nav-fg-strong);
   text-decoration: none;
   letter-spacing: .01em;
+  /* NOTE — RTL: "Luv it!" is Latin text inside a dir=rtl document. The "!" is
+     a bidi-neutral character, so at the end of a run it inherits the PARAGRAPH
+     direction and jumps to the left: the brand rendered as "!Luv it".
+     Forcing ltr + isolate makes the name its own bidi run, so the mark stays
+     where it was typed. Any Latin string ending in ! ? . : here needs this. */
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 /* ---- Desktop links + droplet ---- */
@@ -2304,7 +2318,18 @@ body.luvit-locked { overflow: hidden; }
 .luvit-testimonial {
   position: absolute;
   top: 0;
-  left: 0;
+  /* NOTE — the fan only ever travels ONE way: motion.js does
+     x = dir * pos * --tst-fan-x, and dir follows the reading direction. So the
+     back cards always pile toward the START edge. Anchoring the front card at
+     the physical left:0 therefore pushed the whole stack off-screen in RTL
+     (measured: back card at -138px on a 390px viewport, -107px at 800px).
+     Centring it was worse — the front card then overran the RIGHT by 36px and
+     its text was clipped.
+     Correct anchor is the START edge, so the fan has the whole stack box to
+     fall into. inset-inline-start (not left) makes this work in both
+     directions without a [dir] override, because the fan flips with dir too.
+     Do not swap this back to a transform — motion.js owns transform. */
+  inset-inline-start: 0;
   width: var(--tst-w);
   max-width: 100%;
   height: var(--tst-h);
@@ -2465,7 +2490,17 @@ body.luvit-locked { overflow: hidden; }
 .luvit-testimonials--on-dark .luvit-testimonials__dot[aria-selected="true"] { background: #fff; }
 
 @media (max-width: 480px) {
-  :root { --tst-w: 280px; --tst-h: 420px; --tst-fan-x: 18%; --tst-fan-rot: 4deg; }
+  /* NOTE — the real constraint here is NOT --tst-w. The card is not
+     border-box, so --tst-w:280px plus var(--space-6) padding on both sides
+     renders 346px wide, inside a 350px stack. There is essentially no room
+     left, and motion.js fans by a PERCENTAGE of that 346 — which is why an
+     18% fan threw two cards off the left edge and the tilt pushed the front
+     card 9px off the right.
+     Shrinking --tst-w further would starve the Arabic copy (280 - 64 padding
+     is already only 216px of text). So the fan and the tilt come down instead.
+     A back card peeking slightly past the edge is fine and reads as depth;
+     the FRONT card must stay whole, and does. */
+  :root { --tst-w: 280px; --tst-h: 420px; --tst-fan-x: 8%; --tst-fan-rot: 2deg; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2801,6 +2836,11 @@ body.luvit-locked { overflow: hidden; }
   font-weight: 700;
   color: #fff;
   margin: 0 0 var(--space-3);
+  /* Same bidi fix as .luvit-nav__brand — see the note there. isolate alone
+     was not enough: the run still inherited rtl and moved the "!". */
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
 }
 .luvit-footer__tag {
   margin: 0 0 var(--space-4);
@@ -3118,9 +3158,19 @@ body.luvit-locked { overflow: hidden; }
 }
 
 /* On dark water */
+/* NOTE — the row sits on .luvit-deep, which drifts a bubble field behind it.
+   At rgba(255,255,255,.07) the panel was too sheer to hide them: bubbles read
+   as passing THROUGH the numbers (measured: 4 bubble/row overlaps at 390px,
+   2 at 1280px), which is exactly where the copy must be most legible.
+   Fix is opacity, not z-index — the bubble layer is already behind at z:0.
+   A deep-water wash under a thin white sheen keeps the glass feel, blocks the
+   bubbles, and lifts contrast for the white text. No backdrop-filter: this
+   component can appear 4x on screen and the glass budget is spent elsewhere. */
 .luvit-ing--on-dark .luvit-ing__row {
-  background: rgba(255,255,255,.07);
-  border-color: rgba(255,255,255,.18);
+  background:
+    linear-gradient(to bottom, rgba(255,255,255,.10), rgba(255,255,255,.045)),
+    rgba(6, 52, 54, .58);
+  border-color: rgba(255,255,255,.20);
   box-shadow: var(--nav-bezel);
 }
 .luvit-ing--on-dark .luvit-ing__name { color: #fff; }

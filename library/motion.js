@@ -751,7 +751,7 @@ function luvitErrorMessage(control) {
     if (control.type === 'tel') return 'الرجاء إدخال رقم هاتف صحيح';
     return 'الصيغة غير صحيحة';
   }
-  if (v.tooShort)  return 'النص قصير جدًا — الحد الأدنى ' + control.minLength + ' حرفًا';
+  if (v.tooShort)  return 'النص قصير جدًا، الحد الأدنى ' + control.minLength + ' حرفًا';
   if (v.tooLong)   return 'النص طويل جدًا';
   if (v.rangeUnderflow) return 'القيمة أقل من المسموح';
   if (v.rangeOverflow)  return 'القيمة أكبر من المسموح';
