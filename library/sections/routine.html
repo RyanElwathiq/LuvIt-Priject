@@ -1,0 +1,152 @@
+<!--
+  ============================================================================
+  LUVIT — ROUTINE SECTION
+  Drop-in for an Elementor "HTML" widget.
+  ============================================================================
+  NEEDS: tokens.css (styles) and motion.js (the reveal/stagger animation).
+  Both are already installed as WPCode snippets.
+
+  ⚠ THE CONTAINER THIS GOES INTO MUST HAVE CSS ID = routine
+     Elementor -> the containing Section/Container -> Advanced -> CSS ID
+     The hero's "اكتشفي روتينك" button scrolls to #routine. Without this ID
+     that button does nothing.
+
+  WHAT TO EDIT:
+    1. the four images   -> see the IMAGE GUIDE comment above the first card
+    2. the four links    -> every href="#" needs the real routine page URL
+    3. the copy          -> the text is mine; check it says what you mean
+  ============================================================================
+-->
+
+<section class="luvit-section band-mist" data-nav-bg="light" id="routine">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Routines</p>
+      <h2 class="luvit-section__title">روتين على قدّ بشرتك إنتِ</h2>
+      <p class="luvit-section__sub">
+        مش وصفة وحدة للكل. اختاري نوع بشرتك ومنبنيلك خطوات واضحة — بمكوّنات ونِسَب مكتوبة.
+      </p>
+    </div>
+
+    <div class="luvit-card-grid luvit-card-grid--wide routine-grid" data-luvit="stagger">
+
+      <!--
+        ======================= IMAGE GUIDE =======================
+        Every card image is swapped the same way: replace the whole
+        src="data:image/svg+xml..." value with your WordPress image URL.
+
+            src="https://plasmajo.com/wp-content/uploads/2026/07/oily.webp"
+
+        To get that URL: WordPress -> Media -> Add New -> upload -> click the
+        image -> copy "File URL".
+
+        SHAPE — 16:9 landscape. This is LOCKED in CSS so the page never jumps
+        while images load. A portrait photo will not make the card taller, it
+        will just get cropped top and bottom.
+
+        SIZE — upload 1280 x 720. The card shows roughly 560px wide at most,
+        so 1280 covers retina screens with room to spare. Bigger than 1600 is
+        wasted bytes.
+
+        FILE — .webp if you can (WordPress makes them), .jpg otherwise. Aim
+        under 150 KB each. Four cards means four downloads on every visit.
+
+        ⚠ COMPOSITION — the image is cropped with object-fit:cover, which
+        trims from the EDGES and keeps the middle. So:
+           · put the subject in the CENTRE, not off to one side
+           · leave the bottom 45px calm — the waterline wave sits there
+           · leave the top-left soft — a light highlight falls across it
+        A tight product shot on a plain background is the safest choice.
+
+        ALT TEXT — the alt="" on each image is read aloud by screen readers
+        and indexed by Google. Keep it descriptive in Arabic. Do not leave it
+        as the placeholder text.
+        ===========================================================
+      -->
+
+      <!-- ============ 1. OILY ============ -->
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين البشرة الدهنية"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(116,214,231)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23a)'/><rect x='250' y='120' width='58' height='170' rx='14' fill='rgb(255,255,255)' opacity='.94'/><rect x='320' y='150' width='52' height='140' rx='12' fill='rgb(255,255,255)' opacity='.88'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">1</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Oily</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">البشرة الدهنية</a></h3>
+          <p class="luvit-card__text">توازن بلا جفاف — تنظيف لطيف وترطيب خفيف.</p>
+          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+        </div>
+      </article>
+
+      <!-- ============ 2. DRY ============ -->
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين البشرة الجافة"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='b' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23b)'/><rect x='245' y='130' width='58' height='160' rx='13' fill='rgb(255,255,255)' opacity='.9'/><rect x='315' y='115' width='54' height='175' rx='13' fill='rgb(166,101,42)' opacity='.85'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">2</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Dry</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">البشرة الجافة</a></h3>
+          <p class="luvit-card__text">ترطيب يدوم — طبقات تحبس الماء داخل البشرة.</p>
+          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+        </div>
+      </article>
+
+      <!-- ============ 3. COMBINATION ============ -->
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين البشرة المختلطة"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='d' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='rgb(224,247,252)'/><stop offset='.5' stop-color='rgb(116,214,231)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23d)'/><rect x='248' y='128' width='56' height='162' rx='13' fill='rgb(255,255,255)' opacity='.92'/><rect x='318' y='142' width='54' height='148' rx='13' fill='rgb(255,255,255)' opacity='.8'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">3</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Combination</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">البشرة المختلطة</a></h3>
+          <p class="luvit-card__text">منطقة T دهنية والباقي جاف؟ روتين بيوازن الاثنين.</p>
+          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+        </div>
+      </article>
+
+      <!-- ============ 4. SENSITIVE ============ -->
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين البشرة الحسّاسة"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'><defs><linearGradient id='c' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='640' height='360' fill='url(%23c)'/><circle cx='320' cy='190' r='78' fill='rgb(255,255,255)' opacity='.5'/><rect x='292' y='140' width='56' height='150' rx='13' fill='rgb(255,255,255)' opacity='.92'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step">4</span>
+            <p class="luvit-card__eyebrow" style="margin:0">Sensitive</p>
+          </div>
+          <h3 class="luvit-card__title"><a class="luvit-card__link" href="#">البشرة الحسّاسة</a></h3>
+          <p class="luvit-card__text">بلا عطور قاسية — تهدئة أولًا، دائمًا.</p>
+          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The shared --wide grid is 1 / 2 / 3 columns, which would leave the fourth
+     card stranded alone on its own row. Four cards want an even split, so this
+     section overrides to 2-up on tablet and 4-up only once there is genuinely
+     room for four 16:9 images side by side. Scoped to .routine-grid so no
+     other section is affected. */
+  @media (min-width: 700px) {
+    .routine-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1240px) {
+    .routine-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+</style>

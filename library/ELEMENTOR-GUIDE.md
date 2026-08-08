@@ -474,7 +474,7 @@ text written during the build. All of it must be replaced with real content.
 ## FILE MAP
 
 ```
-D:\luvit\
+D:\Ryan-Work\luvit\luvit\
 ├── library\                    ← the component library
 │   ├── tokens.css              ← ALL styles (paste into WPCode)
 │   ├── motion.js               ← ALL behaviour (paste into WPCode)
@@ -490,6 +490,6 @@ D:\luvit\
 
 **To preview locally** (needed — the browser blocks `fetch()` on `file://`):
 ```
-node serve.js "D:\luvit" 4322
+node serve.js "D:\Ryan-Work\luvit\luvit" 4322
 http://localhost:4322/library/home-preview.html
 ```

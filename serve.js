@@ -5,7 +5,7 @@
    on file:// URLs, so the hero's manifest.json never loads and the sequence
    sits at 0%. This serves the project over http:// instead, which fixes it.
 
-   RUN IT:   from D:\luvit  ->  node serve.js
+   RUN IT:   from D:\Ryan-Work\luvit\luvit  ->  node serve.js
    THEN OPEN:
        http://localhost:4322/library/home-preview.html          the HOME page
        http://localhost:4322/hero-sequence/hero-chapters-preview.html
