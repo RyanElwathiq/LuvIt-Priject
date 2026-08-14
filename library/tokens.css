@@ -2676,6 +2676,15 @@ body.luvit-locked { overflow: hidden; }
 .luvit-cut-top {
   --cut-h: var(--wave-h, 70px);
   margin-top: calc(var(--cut-h) * -1);
+  /* NOTE — give back the space the curve eats.
+     The mask removes the top --cut-h of the element, but padding-top is
+     measured from the element's ORIGINAL top edge, which is now under the
+     curve. So the author's 96px of breathing room rendered as 26px and the
+     copy sat almost against the wave. Measured on all five elements carrying
+     this class: quiz, ingredients, why, cta, footer — every one of them 26px.
+     Adding --cut-h back keeps the intended gap BELOW the curve.
+     --cut-pad is overridable for any element whose base padding differs. */
+  --cut-pad: var(--space-9);
   -webkit-mask-image:
     var(--wave-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='M0,30 C240,11 480,11 720,30 C960,49 1200,49 1440,30 L1440,70 L0,70 Z'/%3E%3C/svg%3E")),
     linear-gradient(#000 0 0);
@@ -2690,6 +2699,17 @@ body.luvit-locked { overflow: hidden; }
           mask-position: 0 top, 0 bottom;
   -webkit-mask-repeat: repeat-x, no-repeat;
           mask-repeat: repeat-x, no-repeat;
+}
+
+/* Doubling the class is deliberate, not a typo. .luvit-footer, .luvit-section
+   and .luvit-cta all set `padding` as a shorthand, and all of them are
+   declared LATER in this file than .luvit-cut-top. At equal specificity the
+   later rule wins, so a single-class padding here was silently overwritten —
+   the measured gap stayed 26px after the first attempt. Repeating the class
+   raises specificity to (0,2,0) so this lands regardless of file order,
+   without reaching for !important. */
+.luvit-cut-top.luvit-cut-top {
+  padding-block-start: calc(var(--cut-pad) + var(--cut-h));
 }
 /* Flips the whole box now that there is no inner svg to flip. */
 .luvit-wave--flip { transform: scaleY(-1); }
