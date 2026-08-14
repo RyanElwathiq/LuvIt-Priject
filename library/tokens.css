@@ -2937,7 +2937,23 @@ body.luvit-locked { overflow: hidden; }
   grid-template-columns: minmax(0, 1fr);
 }
 @media (min-width: 760px) {
-  .luvit-footer__inner { grid-template-columns: 1.4fr 1fr 1fr; gap: var(--space-6); }
+  /* NOTE — was `1.4fr 1fr 1fr`, which looked balanced on paper and wrong on
+     screen. Fractional tracks hand each column a wide box, but the text
+     inside is Arabic so it sits against the RIGHT edge of its own box. The
+     link columns are short ("كيف تطلبي" is ~60px in a 334px track), so every
+     column ended up hugging the right and roughly a quarter of the footer
+     was empty space on the left.
+
+     Sizing the link columns to their CONTENT and letting the free space fall
+     BETWEEN the columns fixes it: the brand still leads on the right, the
+     last column reaches the left edge, and the gaps are even. The brand keeps
+     a max so its paragraph does not stretch into an unreadable line length. */
+  .luvit-footer__inner {
+    grid-template-columns: minmax(0, 420px) max-content max-content;
+    justify-content: space-between;
+    column-gap: var(--space-7);
+    row-gap: var(--space-7);
+  }
 }
 
 .luvit-footer__brand {
