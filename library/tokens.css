@@ -2968,12 +2968,21 @@ body.luvit-locked { overflow: hidden; }
      BETWEEN the columns fixes it: the brand still leads on the right, the
      last column reaches the left edge, and the gaps are even. The brand keeps
      a max so its paragraph does not stretch into an unreadable line length. */
+  /* Two blocks, not three islands (ريّان's call, 9 Aug): identity on the right
+     with room to breathe, link columns grouped together on the left.
+     The brand track takes 1fr so every spare pixel collects between the brand
+     and the links — that single wide gap is what separates the two blocks.
+     The link tracks are max-content so they sit close to each other, spaced by
+     one deliberate gap rather than drifting apart. */
   .luvit-footer__inner {
-    grid-template-columns: minmax(0, 420px) max-content max-content;
-    justify-content: space-between;
-    column-gap: var(--space-7);
+    grid-template-columns: minmax(0, 1fr) max-content max-content;
+    column-gap: var(--space-8);
     row-gap: var(--space-7);
   }
+  /* A 1fr track on a 1200px container would run the tagline to ~90 characters.
+     Capping the measure keeps it readable without shrinking the track, which
+     is what holds the two blocks apart. */
+  .luvit-footer__tag { max-width: 44ch; }
 }
 
 .luvit-footer__brand {
@@ -2983,10 +2992,20 @@ body.luvit-locked { overflow: hidden; }
   color: #fff;
   margin: 0 0 var(--space-3);
   /* Same bidi fix as .luvit-nav__brand — see the note there. isolate alone
-     was not enough: the run still inherited rtl and moved the "!". */
+     was not enough: the run still inherited rtl and moved the "!".
+     ⚠ text-align has to be stated. Its initial value is `start`, and `start`
+     resolves against THIS element's direction — which we just forced to ltr.
+     So the default means LEFT here, and removing the declaration changes
+     nothing (measured: computed still `start`). The brand name detached from
+     its own paragraph and drifted to the far side of its column the moment
+     that column got wide.
+     `right`, not `end`: end would also resolve against the forced ltr and
+     land back on the left. The site is Arabic throughout, so a physical value
+     is the honest one — direction:ltr here exists only to keep the "!"
+     attached to "Luv it", never to lay the block out. */
   direction: ltr;
   unicode-bidi: isolate;
-  text-align: start;
+  text-align: right;
 }
 .luvit-footer__tag {
   margin: 0 0 var(--space-4);
