@@ -24,7 +24,31 @@
 
 gsap.registerPlugin(ScrollTrigger);
 
-var LUVIT_RTL = document.documentElement.getAttribute('dir') === 'rtl';
+/* NOTE — read the RESOLVED direction, not the dir attribute.
+   This used to be `document.documentElement.getAttribute('dir') === 'rtl'`.
+   That is true in our standalone previews, where the markup carries
+   <html dir="rtl">. It is NOT reliable on WordPress: the attribute is written
+   from the SITE language, so an Arabic-content site running an English admin
+   locale ships <html> with no dir at all.
+
+   When that happens the CSS and the JS disagree. Our stylesheet sets
+   direction: rtl on the components, so `inset-inline-start` resolves to the
+   RIGHT edge — while this flag came back false and every direction-aware
+   animation fanned to the RIGHT as well. Both to the same side, so the
+   testimonial stack crept off-centre instead of spreading.
+
+   Symptom seen live on 9 Aug: stack visibly shifted on desktop, and fine on
+   mobile only because the phone fan is 5% and the drift was too small to spot.
+
+   getComputedStyle answers what the browser actually laid out, whatever the
+   attribute says, so CSS and JS can no longer disagree. Reading <body> too
+   because a theme may set direction there rather than on <html>. */
+var LUVIT_RTL = (function () {
+  var el = document.documentElement;
+  if (el.getAttribute('dir') === 'rtl') return true;
+  if (getComputedStyle(el).direction === 'rtl') return true;
+  return !!(document.body && getComputedStyle(document.body).direction === 'rtl');
+})();
 var LUVIT_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var LUVIT_MM = gsap.matchMedia();
 
