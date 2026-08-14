@@ -2947,10 +2947,19 @@ body.luvit-locked { overflow: hidden; }
     radial-gradient(120% 90% at 50% 0%, rgba(76,197,218,.18), rgba(76,197,218,0) 62%),
     linear-gradient(180deg, #124D5A 0%, #0C333C 60%, #08262E 100%);
   color: rgba(255,255,255,.82);
-  padding: var(--space-9) var(--container-gutter) var(--space-6);
+  /* Side gutter scales with the viewport now that __inner is unbounded.
+     At the old flat 20px the columns would sit against the screen edge on a
+     1920 monitor; clamp keeps phones exactly where they were. */
+  padding: var(--space-9) clamp(20px, 4.5vw, 96px) var(--space-6);
 }
+/* NOTE — the footer deliberately breaks the 1200px container the rest of the
+   page keeps to (ريّان's call, 9 Aug). It is the closing band of the site, so
+   letting it reach the screen edges reads as a base rather than as one more
+   boxed section. The gutter scales with the viewport instead of staying at
+   --container-gutter, otherwise the columns would touch the glass on a wide
+   monitor. Phones keep the same 20px they always had. */
 .luvit-footer__inner {
-  max-width: var(--container-max);
+  max-width: none;
   margin-inline: auto;
   display: grid;
   gap: var(--space-7);
@@ -3048,7 +3057,9 @@ body.luvit-locked { overflow: hidden; }
 .luvit-footer__social svg { width: 20px; height: 20px; }
 
 .luvit-footer__bar {
-  max-width: var(--container-max);
+  /* matches __inner — the rule keeping the divider the same width as the
+     content it sits under. See the note on .luvit-footer__inner. */
+  max-width: none;
   margin: var(--space-7) auto 0;
   padding-top: var(--space-5);
   border-top: 1px solid rgba(255,255,255,.16);
