@@ -2626,6 +2626,50 @@ body.luvit-locked { overflow: hidden; }
   position: relative;
   z-index: 2;
 }
+
+/* ==========================================================================
+   TOP EDGE — the section cuts ITSELF, added 9 Aug
+   --------------------------------------------------------------------------
+   A separate wave element works going dark-to-light, because --wave-fill is
+   then a flat white and a flat colour is all it has to match.
+
+   It cannot work going light-to-DARK. Here --wave-fill would have to match a
+   surface that is a vertical gradient PLUS two drifting caustic blooms PLUS a
+   bubble field. A 70px strip of one flat colour can never be that, so a seam
+   line shows where the strip ends and the real surface begins, and bubbles
+   get sliced in half along it. Reported from the live site, and correct.
+
+   So: no strip. The section carries the curve on its own top edge, via a two
+   layer mask — the wave shape across the top band, a solid block for
+   everything under it. Everything the section paints (gradient, blooms,
+   bubbles, rays) is clipped by the same curve, because it is all one element.
+   There is no second thing to match.
+
+   Pull it up by the wave height so the curve bites into the section above
+   instead of adding height of its own.
+
+   -webkit- prefix is still required: Safari has no unprefixed mask shorthand
+   support that covers mask-composite reliably, and this must not silently
+   fall back to an unmasked square on iPhone.
+   ========================================================================== */
+.luvit-cut-top {
+  --cut-h: var(--wave-h, 70px);
+  margin-top: calc(var(--cut-h) * -1);
+  -webkit-mask-image:
+    var(--wave-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='M0,30 C240,11 480,11 720,30 C960,49 1200,49 1440,30 L1440,70 L0,70 Z'/%3E%3C/svg%3E")),
+    linear-gradient(#000 0 0);
+          mask-image:
+    var(--wave-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' d='M0,30 C240,11 480,11 720,30 C960,49 1200,49 1440,30 L1440,70 L0,70 Z'/%3E%3C/svg%3E")),
+    linear-gradient(#000 0 0);
+  /* الشريط العلوي بارتفاع الموجة، والباقي كتلة صلبة. +1px تداخل عشان ما يبين
+     خط شعرة بين الطبقتين على شاشات بكثافة كسرية. */
+  -webkit-mask-size: var(--wave-tile, 100vw) var(--cut-h), 100% calc(100% - var(--cut-h) + 1px);
+          mask-size: var(--wave-tile, 100vw) var(--cut-h), 100% calc(100% - var(--cut-h) + 1px);
+  -webkit-mask-position: 0 top, 0 bottom;
+          mask-position: 0 top, 0 bottom;
+  -webkit-mask-repeat: repeat-x, no-repeat;
+          mask-repeat: repeat-x, no-repeat;
+}
 /* Flips the whole box now that there is no inner svg to flip. */
 .luvit-wave--flip { transform: scaleY(-1); }
 
