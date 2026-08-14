@@ -2283,7 +2283,17 @@ body.luvit-locked { overflow: hidden; }
    ========================================================================== */
 
 :root {
-  --tst-w:         330px;   /* card width  */
+  /* NOTE — this is the card's TOTAL width (border-box), not its content box.
+     It used to be the content box, which quietly broke the stack: the stack
+     is sized as --tst-w * 1.52 to hold the card plus the fan, but the card
+     actually rendered 66px wider than --tst-w once var(--space-6) padding and
+     the border were added. So the real span was ~100px wider than the box
+     holding it, the extra all fell on the fan's side, and the whole stack sat
+     visibly off-centre. Making the card border-box below closes that gap and
+     the stack centres itself with no offset hack.
+     396 = the old 330 content + 66 padding/border, so the card looks the same
+     size as before this change. */
+  --tst-w:         396px;   /* card width, border-box */
   --tst-h:         430px;   /* card height */
   --tst-fan-x:     26%;     /* sideways offset per step back  */
   --tst-fan-rot:   6deg;    /* rotation per step back         */
@@ -2330,6 +2340,9 @@ body.luvit-locked { overflow: hidden; }
      directions without a [dir] override, because the fan flips with dir too.
      Do not swap this back to a transform — motion.js owns transform. */
   inset-inline-start: 0;
+  /* Load-bearing — see the --tst-w note. Without it the padding is added ON
+     TOP of --tst-w and the stack's width maths stops describing reality. */
+  box-sizing: border-box;
   width: var(--tst-w);
   max-width: 100%;
   height: var(--tst-h);
@@ -2500,7 +2513,15 @@ body.luvit-locked { overflow: hidden; }
      is already only 216px of text). So the fan and the tilt come down instead.
      A back card peeking slightly past the edge is fine and reads as depth;
      the FRONT card must stay whole, and does. */
-  :root { --tst-w: 280px; --tst-h: 420px; --tst-fan-x: 8%; --tst-fan-rot: 2deg; }
+  /* Phones are the tight case. The stack can only ever be as wide as the
+     section's content box (350px inside a 390px screen), and it cannot grow
+     to fit the fan the way the desktop stack does — min(100%, …) caps it.
+     So the CARD has to be small enough that card + fan fits 350:
+         316 * (1 + 2*0.05) = 347.6  ✓
+     Side padding comes down to 20 so the Arabic still gets a usable measure
+     (316 - 40 - 2 = 274px of text) despite the narrower card. */
+  :root { --tst-w: 316px; --tst-h: 420px; --tst-fan-x: 5%; --tst-fan-rot: 2deg; }
+  .luvit-testimonial { padding-inline: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
