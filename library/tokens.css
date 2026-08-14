@@ -2581,6 +2581,51 @@ body.luvit-locked { overflow: hidden; }
    just draw a second wave on top. Hidden rather than required to be deleted,
    so nothing already pasted into Elementor has to be touched. */
 .luvit-wave > svg { display: none; }
+
+/* ==========================================================================
+   SEAM OVER LIVING WATER — added 9 Aug
+   --------------------------------------------------------------------------
+   The problem, reported from the live site and confirmed in the markup:
+
+     <section class="luvit-deep">…bubbles + gradient…</section>
+     <div class="luvit-wave" style="--wave-fill:#FFF; background:#0B9198"></div>
+
+   That inline `background` paints a 70px strip of FLAT #0B9198 under a
+   section whose own surface is a gradient with a drifting bubble field. So
+   the bubbles stop dead along a straight horizontal line, and below that line
+   the colour no longer matches the gradient it is supposed to continue. It
+   reads exactly as what it is: one slab laid on top of another.
+
+   The fix is to stop laying anything on top. A wave that directly follows a
+   .luvit-deep section is pulled UP over it by its own height and its box is
+   made transparent, so only the mask's fill paints — the colour of the
+   section BELOW, cutting into the water above it.
+
+   Result: the deep section keeps its gradient and its bubbles all the way
+   down, and the boundary is the curve itself rather than a straight cut with
+   a patch under it. This is the clipping-mask behaviour the seam always
+   implied.
+
+   Why `!important`: the strip colour is written INLINE on every wave already
+   pasted into Elementor, and inline wins over a class. Overriding it here
+   means none of that markup has to be edited by hand.
+
+   Applies to every wave EXCEPT the hero's own seam (.seq-blend). That one is
+   a different case: the last video frame really is close to flat, so a solid
+   hand-off colour is correct there and must not change.
+
+   It works in both directions. Going dark-to-light, --wave-fill is the light
+   colour and it cuts down into the water. Going light-to-dark, --wave-fill is
+   the dark colour and it rises into the light section. Same rule, no extra
+   class, because in both cases the wave is simply the section BELOW reaching
+   up over the section above.
+   ========================================================================== */
+.luvit-wave:not(.seq-blend) {
+  margin-top: calc(var(--wave-h, 70px) * -1);
+  background: transparent !important;
+  position: relative;
+  z-index: 2;
+}
 /* Flips the whole box now that there is no inner svg to flip. */
 .luvit-wave--flip { transform: scaleY(-1); }
 
