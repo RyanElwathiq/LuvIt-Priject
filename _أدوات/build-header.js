@@ -103,7 +103,9 @@ sub(dockOld, dockNew, 'دوك · الروتين←المنتجات');
 
    والتعليق بيضل الماركب مقروءاً كقائمة مهام، وهاد كان السبب الوحيد إني ما
    أحذفهم أصلاً. وبناء أي صفحة بيضل تعديل سطر: احذف علامتي التعليق. */
-const DEAD = ['/routines', '/about', '/quiz', '/track', '/shipping', '/faq', '/contact'];
+/* 🔴 هاي القائمة **بتنقص** كل ما تنبني صفحة · مش قائمة ثابتة.
+   /track انشالت منها ٢٢ آب لما انعملت صفحة 210 وانفحصت 200. */
+const DEAD = ['/routines', '/about', '/quiz', '/shipping', '/faq', '/contact'];
 const lines = h.split('\n');
 const out = [];
 let wrapped = 0;
@@ -119,7 +121,7 @@ for (const line of lines) {
   wrapped++;
 }
 h = out.join('\n');
-if (wrapped !== 9) throw new Error('توقّعت ٩ روابط ميتة ولقيت ' + wrapped);
+if (wrapped !== 8) throw new Error('توقّعت ٨ روابط ميتة ولقيت ' + wrapped);
 log.push('✅ روابط معلّقة ×' + wrapped + ' على ' + Object.keys(seen).length + ' مسار');
 
 /* ── فحوصات · كلها لازم تمر قبل الكتابة ──────────────────────────────── */
@@ -140,7 +142,7 @@ const orphan = h.match(/<\/[a-z]+>\s*>/g);
 if (orphan) throw new Error('وسم إغلاق يتيم: ' + orphan.join(' '));
 
 /* كل رابط باقٍ بالـDOM لازم يكون على صفحة حية · مقيس ٢١ آب بكود الحالة */
-const LIVE = ['/', '/shop', '/products', '/cart', '/checkout', '/my-account'];
+const LIVE = ['/', '/shop', '/products', '/cart', '/checkout', '/my-account', '/track'];
 const domHrefs = [];
 h.replace(/<!--[\s\S]*?-->/g, '').replace(/href="(\/[^"]*)"/g, (m, u) => { domHrefs.push(u); return m; });
 const dead = [...new Set(domHrefs)].filter(u => !LIVE.includes(u));

@@ -9764,3 +9764,121 @@ body.woocommerce #reviews #comments ol.commentlist li .comment-text .description
     padding: var(--space-4);
   }
 }
+
+/* ==========================================================================
+   5.40 · ORDER TRACKING FORM  (22 Aug)
+   --------------------------------------------------------------------------
+   /track/ is a page with two blocks: our own section markup, then a
+   `wp:shortcode` block holding [woocommerce_order_tracking]. The shortcode has
+   to be its own block — a shortcode inside a `wp:html` block is printed as
+   literal text, never executed.
+
+   MEASURED on the live page the moment it went up:
+
+       viewport ................ 1521
+       .luvit-section__inner ... 1200 wide, starting at x=160   (ours)
+       form.woocommerce-…  ..... 1521 wide, starting at x=0     (full bleed)
+       parent chain ............ DIV.woocommerce -> BODY.rtl
+
+   The form is a DIRECT CHILD OF BODY. The elementor_header_footer template
+   prints the_content with no wrapper of its own, so the shortcode's own
+   `<div class="woocommerce">` lands at the top level and stretches edge to
+   edge, with the submit button pushed off past the footer wave.
+
+   The inputs were already correct — radius 16px, our padding — because the
+   form rules in section 5 reach any input on the site. Only the box around
+   them and the button were wrong.
+
+   🔴 SCOPED TO THE FORM, NOT TO `.woocommerce`. That class is on the shop,
+   the cart, my-account and every product page; constraining it globally would
+   silently narrow all of them. `:has()` keeps this to the one wrapper that
+   actually contains a tracking form, and the direct rule on the form itself is
+   the fallback for anything that does not support it.
+   ========================================================================== */
+
+/* the wrapper: gives the block the page gutter and vertical rhythm */
+body .woocommerce:has(form.woocommerce-form-track-order) {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: 0 var(--container-gutter) var(--space-9);
+}
+
+/* the form itself, and the status table WooCommerce prints after a search */
+form.woocommerce-form-track-order,
+body .woocommerce:has(form.woocommerce-form-track-order) > * {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+}
+
+form.woocommerce-form-track-order {
+  padding: var(--space-6);
+  background: var(--color-paper);
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* the intro paragraph WooCommerce prints above the fields */
+form.woocommerce-form-track-order > p:first-child {
+  margin-block-start: 0;
+  color: var(--color-ink-soft);
+}
+
+/* two fields side by side once there is room for them, stacked before that */
+@media (min-width: 720px) {
+  form.woocommerce-form-track-order {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 var(--space-5);
+    align-items: end;
+  }
+  form.woocommerce-form-track-order > p:first-child,
+  form.woocommerce-form-track-order > p.form-row-wide,
+  form.woocommerce-form-track-order > .clear { grid-column: 1 / -1; }
+}
+
+form.woocommerce-form-track-order label {
+  display: block;
+  margin-block-end: var(--space-2);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+/* the button shipped as the user-agent grey, same as the review form did.
+   `.button` here is WooCommerce's own class on the submit control. */
+form.woocommerce-form-track-order button.button,
+form.woocommerce-form-track-order input.button[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 48px;
+  padding: 0 var(--space-6);
+  background-color: var(--color-primary);
+  background-image: none;
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius-pill);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: background-color var(--duration-instant) var(--ease-out-soft),
+              box-shadow var(--duration-instant) var(--ease-out-soft);
+}
+form.woocommerce-form-track-order button.button:hover,
+form.woocommerce-form-track-order input.button[type="submit"]:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+}
+form.woocommerce-form-track-order button.button:focus-visible,
+form.woocommerce-form-track-order input.button[type="submit"]:focus-visible {
+  outline: 2px solid var(--aqua-600);
+  outline-offset: 3px;
+}
+
+/* the result WooCommerce prints after a successful lookup */
+body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-order-details,
+body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-details {
+  margin-block-start: var(--space-6);
+}
