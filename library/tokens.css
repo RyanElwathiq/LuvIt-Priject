@@ -9914,3 +9914,43 @@ body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-d
 @media (min-width: 1240px) {
   .routine-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+/* ==========================================================================
+   5.42 · A GRID HOLDING ONE CARD  (22 Aug)
+   --------------------------------------------------------------------------
+   Every routine page ends with a package section containing exactly ONE
+   product card. `.luvit-card-grid` is three columns on desktop, so that card
+   took the first track and left two thirds of the row empty beside it. On an
+   RTL page it read as a card shoved against the right edge with a hole where
+   the rest of the row should be.
+
+   MEASURED on /routines/sensitive/: card at the right, roughly 640px of empty
+   grid to its left.
+
+   The grid is not wrong and neither is the card. A container built for a set
+   is simply being handed a set of one, which is a layout question, not a
+   content one: nothing should be added just to fill the row.
+
+   🔴 `:has(> :only-child)` matches only when the grid has exactly one child,
+   so a grid of two or more is untouched. Chrome, Safari and Firefox have all
+   shipped it; a browser without it falls back to the old three-column
+   behaviour, which is the current state and not a regression.
+   ========================================================================== */
+.luvit-card-grid:has(> :only-child) {
+  grid-template-columns: minmax(0, 420px);
+  justify-content: center;
+}
+
+/* ونفس المنطق لبطاقتين. بلوك «منطقتين · ونفس المنتجات» بصفحة المختلطة
+   بطاقتين بجريد ثلاثي، فبقيت خانة فاضية على اليسار.
+
+   🔴 والتعميم انفحص قبل ما ينكتب: عدّينا كل جريد بملفات السكاشن اللي فيه
+   أقل من ثلاث بطاقات، والنتيجة **صفحات الروتين وبس**. ولا جريد بالرئيسية
+   ولا بصفحة المنتجات فيه بطاقة أو بطاقتين، فما في صفحة تانية بتتأثر.
+
+   `:nth-child(2):last-child` بتطابق العنصر التاني إذا كان آخر واحد · يعني
+   «بالضبط اثنان». ثلاثة وأكثر ما بتتأثر. */
+.luvit-card-grid:has(> :nth-child(2):last-child) {
+  grid-template-columns: repeat(2, minmax(0, 420px));
+  justify-content: center;
+}
