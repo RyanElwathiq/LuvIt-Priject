@@ -9511,7 +9511,7 @@ a.luvit-option:focus-visible {
 /* ==========================================================================
    5.38 · NAV LINKS WHOSE PAGE DOES NOT EXIST YET  (21 Aug)
    --------------------------------------------------------------------------
-   MEASURED 21 Aug, every nav destination fetched by HTTP status:
+   MEASURED 21 Aug, every nav destination fetched and judged by HTTP status:
 
        live (200)   /  ·  /shop  ·  /products  ·  /cart  ·  /checkout
                     /my-account
@@ -9522,21 +9522,245 @@ a.luvit-option:focus-visible {
    the customer on a 404, and the header rides every page of the site, so the
    same eight broke everywhere at once.
 
-   `/offers` was not hidden, it was REPLACED: Ryan named the hub page المنتجات,
+   /offers was not hidden, it was REPLACED: Ryan named the hub page المنتجات,
    so العروض now points at /products and is live.
 
-   The other seven are marked, not deleted. Deleting them would mean rebuilding
-   the markup once each page lands; marking means un-shipping one is deleting
-   one word. The markup stays a visible to-do list.
+   🔴 THE OTHER SEVEN ARE COMMENTED OUT IN THE MARKUP, NOT HIDDEN WITH THIS
+      RULE — and the difference is the whole point.
 
-   WHY `display: none` IS SAFE HERE and was not on the checkout sidebar:
-   that sidebar was a WooCommerce React block whose fill is driven by a
-   ResizeObserver, so hiding the container measured 0 and emptied the DOM. These
-   are our own static anchors with nothing observing them.
+      The first attempt marked them with .luvit-unbuilt and let CSS hide them.
+      A review of the change caught what that misses: display:none hides a link
+      from PEOPLE. It is still in the DOM, still in the HTML a crawler reads,
+      and still a promise of a page that answers 404. Nine of them, on every
+      single page of the site.
 
-   🔴 A hidden link is still IN THE DOM, so it is still in the tab order and
-   still read by a screen reader. `display: none` removes it from both, which is
-   exactly what is wanted — but do not swap it for `opacity: 0` or
-   `visibility: hidden` later without re-reading this note.
+      An HTML comment costs nothing in the DOM, is invisible to crawlers and
+      screen readers alike, and keeps the markup readable as the to-do list it
+      is — which was the only reason not to delete them outright. Building the
+      page is still a one-line edit: delete the comment markers around it.
+
+   This rule stays as the mechanism for a link that must remain in the DOM but
+   out of sight — a case that has not come up yet. If it never does, it costs
+   one line.
    ========================================================================== */
 .luvit-unbuilt { display: none; }
+
+/* --------------------------------------------------------------------------
+   The droplet with nowhere honest to sit
+   --------------------------------------------------------------------------
+   luvitNavDroplet used to fall back to links[0] — الرئيسية — when no link
+   carried aria-current. On /checkout, which has no nav entry of its own, that
+   meant the bead sat on الرئيسية and quietly claimed the reader was on the
+   home page.
+
+   The JS now passes null in that case and adds .is-idle instead of guessing.
+   -------------------------------------------------------------------------- */
+.luvit-nav__drop.is-idle { opacity: 0; }
+
+/* ==========================================================================
+   5.39 · WOOCOMMERCE PRODUCT REVIEWS  (21 Aug)
+   --------------------------------------------------------------------------
+   Reviews went live today, so this is the first time the block has ever been
+   on the site and the first time its raw markup has been visible. CLAUDE.md
+   has carried "بدهم طبقة CSS توافق — لساها ما انبنت" from the beginning.
+   This is that layer for the reviews half of it.
+
+   THE MARKUP
+   ----------
+     #reviews
+       #comments
+         ol.commentlist
+           li.review
+             div.comment_container
+               img.avatar          <- position:absolute, into a 50px gutter
+               div.comment-text    <- the border was here
+                 div.star-rating   <- float:left
+                 p.meta            <- author, dash, date
+                 div.description
+
+   MEASURED BEFORE ANY OF THIS, on the live product page
+     .comment_container   no background, no padding, no border, no radius
+     img.avatar           absolute, 32px, pinned to the RTL start edge
+     .comment-text        the border lived here, so the avatar sat OUTSIDE the
+                          visible box and read as a loose icon beside it
+     .star-rating         float:left, which is the FAR END in RTL. Stars at
+                          x=207, the author name at x=1202. Same line, 900px.
+     #submit              rgb(233,230,237) on rgb(81,81,81), radius 3px
+     .stars a             rgb(204,51,102), a colour not in this brand at all
+
+   SPECIFICITY, MEASURED RATHER THAN ASSUMED
+   -----------------------------------------
+   Every target sits inside #comments and so does the WooCommerce selector for
+   it. Enumerating the rules that actually match each element gave:
+
+       ol.commentlist    .woocommerce #reviews #comments ol.commentlist   2,2,1
+       img.avatar        ... ol.commentlist li img.avatar                 2,3,3
+       .comment-text     ... ol.commentlist li .comment-text              2,3,2
+       p.meta            ... ol.commentlist li .comment-text p.meta       2,4,3
+       .star-rating      .woocommerce .star-rating                        0,2,0
+       .comment_container  (nothing)
+       .description        (nothing)
+
+   The first draft opened with #reviews .commentlist, ONE id against two, and
+   lost everywhere it mattered. The second added #comments and still lost
+   .comment-text by a single class.
+
+   AND THE LOAD ORDER IS NOT WHAT THIS PROJECT ASSUMED. Measured on the live
+   product page: our WPCode snippet is stylesheet #46 and woocommerce-rtl.css
+   is #16, so on a CLASSIC page we come after it and a tie would fall to us.
+   The note in CLAUDE.md about WooCommerce loading last is about
+   wc-blocks-rtl.css, which is #48, after us, and only on cart and checkout.
+   Two different files with opposite answers.
+
+   So none of these selectors lean on order. body.woocommerce mirrors the
+   WooCommerce leading class and costs one class plus one element, which puts
+   every rule below STRICTLY above its counterpart. If the load order ever
+   changes, nothing here moves.
+
+   HOW THIS WAS CHECKED, because the checking went wrong twice
+   ----------------------------------------------------------
+   getComputedStyle returned STALE values throughout: the product tab was not
+   the selected tab and Chrome had stopped painting it. A control test (set
+   background-color inline to rgb(9,9,9), read it back, get the old value)
+   exposed it, and two rules had been reported as "not applying" when they had
+   applied all along. requestAnimationFrame never fires in that tab either:
+   one await on it froze the call until a 45s timeout.
+
+   Judge this section from a SCREENSHOT, and read specificity by walking
+   document.styleSheets, which stays true in a sleeping tab.
+   See memory computed-style-goes-stale.
+   ========================================================================== */
+
+/* ---- the list ---------------------------------------------------------- */
+body.woocommerce #reviews #comments ol.commentlist.commentlist {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+body.woocommerce #reviews #comments ol.commentlist li.review,
+body.woocommerce #reviews #comments ol.commentlist li.comment {
+  margin: 0 0 var(--space-4);
+}
+
+/* ---- the card ---------------------------------------------------------- */
+body.woocommerce #reviews #comments ol.commentlist li .comment_container {
+  padding: var(--space-5);
+  background: var(--color-paper);
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* THE AVATAR IS HIDDEN, NOT REPOSITIONED, and that is a content decision
+   rather than a styling shortcut.
+
+   WooCommerce draws it from Gravatar, keyed to the reviewer email. Nobody who
+   reviews this shop will have one: the placeholder reviews use addresses at a
+   reserved domain that cannot exist, and the real ones are coming from
+   Instagram screenshots typed in by hand. So every row would show the same
+   grey silhouette forever, a picture of a person who does not exist, repeated
+   down the page.
+
+   Hiding it also ends the absolute-positioning fight outright rather than
+   winning it, which is why there is no flex row on the card any more.
+
+   To bring it back: delete this rule, restore position:static on the image,
+   and make .comment_container a flex row. Only once real avatars exist. */
+body.woocommerce #reviews #comments ol.commentlist li img.avatar.avatar {
+  display: none;
+}
+
+/* the border used to live here, which is what left the avatar outside it, and
+   the margin reserved the 50px gutter the avatar no longer occupies */
+body.woocommerce #reviews #comments ol.commentlist li .comment-text.comment-text {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+/* ---- the rating -------------------------------------------------------- */
+/* the float is REMOVED, not flipped. A float that has to be correct in two
+   directions is a bug waiting for the next language; a block that stacks is
+   correct in both without asking which way the page runs. */
+body.woocommerce #reviews #comments ol.commentlist li .star-rating.star-rating {
+  float: none;
+  margin: 0 0 var(--space-2);
+  color: var(--aqua-500);
+}
+body.woocommerce #reviews #comments ol.commentlist li .star-rating span::before {
+  color: var(--aqua-500);
+}
+/* WooCommerce paints the empty half underneath with ::before */
+body.woocommerce #reviews #comments ol.commentlist li .star-rating::before {
+  color: var(--aqua-100);
+}
+
+body.woocommerce #reviews #comments ol.commentlist li .comment-text p.meta.meta {
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--color-ink-soft);
+}
+body.woocommerce #reviews #comments ol.commentlist li .comment-text p.meta .woocommerce-review__author {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+body.woocommerce #reviews #comments ol.commentlist li .comment-text .description {
+  color: var(--color-ink);
+}
+body.woocommerce #reviews #comments ol.commentlist li .comment-text .description p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- the form ---------------------------------------------------------- */
+/* WooCommerce ships #CC3366 on these. It is not one of ours. */
+#reviews #respond .comment-form-rating .stars a,
+#reviews #respond .stars a { color: var(--aqua-500); }
+#reviews #respond .comment-form-rating .stars a:hover,
+#reviews #respond .stars a:hover { color: var(--aqua-600); }
+
+/* The WooCommerce selector here is
+     .woocommerce:where(body:not(...)) #respond input#submit
+   and :where() contributes ZERO specificity, so it scores 2,1,1. This scores
+   3,1,1 and wins on ID count alone. background-color is written as a LONGHAND
+   so a background-image declaration from either side cannot knock it out. */
+#reviews #respond input#submit.submit,
+#reviews #respond #submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 48px;
+  padding: 0 var(--space-6);
+  background-color: var(--color-primary);
+  background-image: none;
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius-pill);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: background-color var(--duration-instant) var(--ease-out-soft),
+              box-shadow var(--duration-instant) var(--ease-out-soft);
+}
+#reviews #respond input#submit.submit:hover,
+#reviews #respond #submit:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+}
+#reviews #respond input#submit.submit:focus-visible,
+#reviews #respond #submit:focus-visible {
+  outline: 2px solid var(--aqua-600);
+  outline-offset: 3px;
+}
+
+/* ---- narrow screens ---------------------------------------------------- */
+@media (max-width: 480px) {
+  body.woocommerce #reviews #comments ol.commentlist li .comment_container {
+    padding: var(--space-4);
+  }
+}

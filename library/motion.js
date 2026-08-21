@@ -475,11 +475,38 @@ function luvitNavDroplet(root) {
   var links = Array.prototype.slice.call(bar.querySelectorAll('.luvit-nav__link'));
   if (!links.length) return;
 
-  var active = links.filter(function (l) { return l.hasAttribute('aria-current'); })[0] || links[0];
+  /* 🔴 THIS USED TO BE A CAPTURED VARIABLE, AND THAT WAS A BUG:
+
+         var active = links.filter(has aria-current)[0] || links[0];
+
+     Two things were wrong with it at once. It read the DOM ONCE at init, and
+     when nothing matched it fell back to links[0] — الرئيسية.
+
+     That was harmless only while aria-current was hard-coded in the markup.
+     The moment §14 took over writing it, the ordering decided the outcome:
+     luvitNavInit registers its DOMContentLoaded listener at this point in the
+     file and §14 registers one at the very end, so the bead read the attribute
+     BEFORE §14 wrote it, found none, and parked on الرئيسية — on every page of
+     the site, while the colour highlight moved to the right link.
+
+     Two indicators disagreeing is worse than one being wrong: the page tells
+     the reader two different things about where they are.
+
+     Re-reading on demand fixes both halves. There is no fallback to links[0]
+     any more either: on a page with no nav entry of its own (/checkout) the
+     honest answer is that no link is current, and the bead hides. */
+  var pinned = null;
+  function current() {
+    if (pinned && bar.contains(pinned)) return pinned;
+    return links.filter(function (l) { return l.hasAttribute('aria-current'); })[0] || null;
+  }
   var settleTimer = null;
 
   function moveTo(el) {
-    if (!el) return;
+    /* no current page in this bar (e.g. /checkout) → the bead has nothing
+       honest to point at, so it fades instead of guessing */
+    if (!el) { drop.classList.add('is-idle'); return; }
+    drop.classList.remove('is-idle');
     var b = bar.getBoundingClientRect();
     var r = el.getBoundingClientRect();
 
@@ -523,23 +550,41 @@ function luvitNavDroplet(root) {
     l.addEventListener('click', function () {
       links.forEach(function (x) { x.removeAttribute('aria-current'); });
       l.setAttribute('aria-current', 'page');
-      active = l;
+      /* pinned, not `active`: the click happens before the next document
+         exists, so the bead has to follow the intent rather than the URL */
+      pinned = l;
     });
   });
 
   /* Pointer leaves the whole pill -> the bead flows back to the current page. */
-  bar.addEventListener('pointerleave', function () { moveTo(active); });
+  bar.addEventListener('pointerleave', function () { moveTo(current()); });
   bar.addEventListener('focusout', function (e) {
-    if (!bar.contains(e.relatedTarget)) moveTo(active);
+    if (!bar.contains(e.relatedTarget)) moveTo(current());
   });
 
   /* Initial placement + keep it correct on resize / font load. */
-  requestAnimationFrame(function () { moveTo(active); });
-  window.addEventListener('load', function () { moveTo(active); });
+  /* 🔴 NOT requestAnimationFrame. It never fires in a tab Chrome has stopped
+     painting, and this ran during a session where exactly that happened: an
+     await on rAF froze a call for 45 seconds until it timed out. A timer runs
+     in a sleeping tab; rAF does not. Same reasoning as §11.b and §12. */
+  setTimeout(function () { moveTo(current()); }, 0);
+  window.addEventListener('load', function () { moveTo(current()); });
+
+  /* Restoring from bfcache re-runs no script and fires no DOMContentLoaded,
+     but it DOES fire pageshow with persisted=true. Without this the bead keeps
+     whatever position it had when the page was frozen, which after a back
+     button is the position for a DIFFERENT page. */
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    pinned = null;
+    if (window.LUVIT && window.LUVIT.navCurrent) window.LUVIT.navCurrent.init();
+    moveTo(current());
+  });
+
   var rt;
   window.addEventListener('resize', function () {
     clearTimeout(rt);
-    rt = setTimeout(function () { moveTo(active); }, 120);
+    rt = setTimeout(function () { moveTo(current()); }, 120);
   });
 
   return { move: moveTo };
@@ -569,9 +614,18 @@ function luvitNavDrawer(opts) {
   }
 
   function stagger(open) {
-    /* Links surface one after another once the water is up. */
-    var items = drawer.querySelectorAll('.luvit-drawer__link');
-    Array.prototype.forEach.call(items, function (el, i) {
+    /* Links surface one after another once the water is up.
+
+       🔴 The index has to count only the links that will actually appear.
+       Hidden ones (a page that has not been built yet) used to take their turn
+       in the sequence and reveal nothing, so the cascade came out with gaps in
+       it — a beat of silence where a link should have been. offsetParent is
+       null for anything display:none, including an ancestor that is hidden. */
+    var items = Array.prototype.filter.call(
+      drawer.querySelectorAll('.luvit-drawer__link'),
+      function (el) { return el.offsetParent !== null; }
+    );
+    items.forEach(function (el, i) {
       el.style.transitionDelay = open && !LUVIT_REDUCED ? (160 + i * 45) + 'ms' : '0ms';
     });
   }
@@ -713,6 +767,14 @@ function luvitNavTheme() {
    Boot the navigation (safe to call twice; each piece no-ops if absent)
    -------------------------------------------------------------------------- */
 function luvitNavInit() {
+  /* 🔴 FIRST, AND THE ORDER IS THE WHOLE POINT. luvitNavDroplet reads
+     aria-current to decide where the bead sits, and §14 is what writes it.
+     §14 registers its own DOMContentLoaded listener at the end of this file,
+     which fires AFTER this one — so leaving it to run on its own put the write
+     after the read and parked the bead on الرئيسية everywhere.
+     Function declarations hoist, so calling it here is safe despite §14 being
+     defined 900 lines further down. */
+  luvitNavCurrent();
   luvitNavDroplet();
   luvitNavDrawer();
   luvitNavHeroGuard();
@@ -1818,16 +1880,24 @@ window.LUVIT.rails = { init: luvitRails };
    no nav link of its own, and المتجر is the honest ancestor for it.
    -------------------------------------------------------------------------- */
 function luvitNavCurrent() {
+  /* .luvit-nav__icon-btn is in here so the cart button in the bar can be the
+     current page on /cart. It is also a droplet target, so leaving it out left
+     the bead with nothing to sit on there. */
   var links = document.querySelectorAll(
-    '.luvit-nav__link, .luvit-drawer__link, .luvit-dock__item'
+    '.luvit-nav__link, .luvit-drawer__link, .luvit-dock__item, .luvit-nav__icon-btn'
   );
   if (!links.length) return;
 
-  /* a URL with no nav link of its own borrows its ancestor's */
+  /* a URL with no nav link of its own borrows its ancestor's.
+
+     🔴 '/order-received/' was wrong and never matched once: WooCommerce nests
+     the thank-you page under the checkout page, at /checkout/order-received/…,
+     so nothing ever starts with it. The prefix below is the real one. */
   var ALIAS = [
-    { when: '/product/',        use: '/shop' },
-    { when: '/product-category/', use: '/shop' },
-    { when: '/order-received/', use: '/cart' }
+    { when: '/product/',           use: '/shop' },
+    { when: '/product-category/',  use: '/shop' },
+    { when: '/product-tag/',       use: '/shop' },
+    { when: '/checkout/order-received', use: '/cart' }
   ];
 
   function norm(p) {
@@ -1838,8 +1908,9 @@ function luvitNavCurrent() {
   }
 
   var here = norm(window.location.pathname);
+  var exact = true;                     /* false once we borrow an ancestor */
   for (var a = 0; a < ALIAS.length; a++) {
-    if (here.indexOf(ALIAS[a].when) === 0) { here = ALIAS[a].use; break; }
+    if (here.indexOf(ALIAS[a].when) === 0) { here = ALIAS[a].use; exact = false; break; }
   }
 
   /* the longest matching href wins, so '/shop/sale' beats '/shop' when both
@@ -1852,9 +1923,17 @@ function luvitNavCurrent() {
     if (href.charAt(0) !== '/') continue;          /* skip #anchors and absolutes */
     href = norm(href);
 
-    var hit = href === '/'
-      ? here === '/'
-      : (here === href || here.indexOf(href + '/') === 0);
+    var hit;
+    if (href === '/') {
+      hit = here === '/';
+    } else if (here === href) {
+      hit = true;
+    } else if (here.indexOf(href + '/') === 0) {
+      hit = true;
+      exact = false;                    /* /my-account/orders under /my-account */
+    } else {
+      hit = false;
+    }
 
     if (hit && href.length > bestLen) { best = href; bestLen = href.length; }
   }
@@ -1863,7 +1942,13 @@ function luvitNavCurrent() {
     el = links[i];
     href = el.getAttribute('href') || '';
     if (best !== null && href.charAt(0) === '/' && norm(href) === best) {
-      el.setAttribute('aria-current', 'page');
+      /* 🔴 "page" means THIS IS the page. On /product/xyz the link that lights
+         up is المتجر, which is an ancestor and not the page at all — announcing
+         it as "current page" tells a screen-reader user they are somewhere they
+         are not. "true" is the value for current-within-a-set, and tokens.css
+         selects on [aria-current] with no value, so the highlight is identical
+         either way. The styling does not change; the claim does. */
+      el.setAttribute('aria-current', exact ? 'page' : 'true');
     } else {
       el.removeAttribute('aria-current');          /* see note 1 above */
     }

@@ -19,7 +19,7 @@ const LINKS=[
   ['.luvit-drawer__link','/shipping'],['.luvit-drawer__link','/faq'],
   ['.luvit-drawer__link','/contact'],
   ['.luvit-dock__item','/'],['.luvit-dock__item','/products'],
-  ['.luvit-dock__item','/shop'],['.luvit-dock__item','/cart'],
+  ['.luvit-dock__item','/shop'],['.luvit-dock__item','/cart'],['.luvit-nav__icon-btn','/cart'],
   /* ودخلاء ما إلهم href مطلق · لازم ينتخطوا */
   ['.luvit-nav__link','#main'],['.luvit-nav__link','https://plasmajo.com/shop'],
 ];
@@ -37,7 +37,7 @@ function run(pathname){
   };
   const fn=new Function('document','window', fnSrc+'\nreturn luvitNavCurrent;')(sandbox.document,sandbox.window);
   fn();
-  return els.filter(e=>'aria-current' in e.attrs).map(e=>e.cls+' '+e.attrs.href);
+  return els.filter(e=>'aria-current' in e.attrs).map(e=>e.cls+' '+e.attrs.href+' ='+e.attrs['aria-current']);
 }
 
 const CASES=[
@@ -53,7 +53,9 @@ const CASES=[
   ['/checkout',               ['ولا شي · ما إلها رابط']],
   ['/my-account',             ['حسابي · بالدرج']],
   ['/my-account/orders',      ['حسابي · مسار فرعي']],
-  ['/order-received/123',     ['السلة · عبر الاسم المستعار']],
+  ['/checkout/order-received/123', ['السلة · المسار الحقيقي بووكومرس']],
+  ['/order-received/123',     ['ولا شي · المسار القديم كان غلط']],
+  ['/product-tag/x',          ['المتجر']],
   ['/PRODUCTS',               ['؟ حساسية الأحرف']],
   ['//',                      ['؟']],
   ['/faq',                    ['الأسئلة · مخفي بس معلّم']],
