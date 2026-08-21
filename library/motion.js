@@ -1268,15 +1268,46 @@ function luvitCartCount() {
   var nodes = document.querySelectorAll('.luvit-nav__count, #luvit-cart-count');
   if (!nodes.length) return;
 
+  var painted = null;   /* last value actually written, so we repaint nothing */
+  var settled = false;  /* true once one real reading has landed */
+
   function paint(n) {
+    if (typeof n !== 'number' || n === painted) return;
+    painted = n;
+    settled = true;
     for (var i = 0; i < nodes.length; i++) {
       nodes[i].textContent = String(n);
-      /* hide a zero badge rather than advertise an empty cart */
+      /* hide a zero badge rather than advertise an empty cart.
+         tokens.css carries `.luvit-nav__count[hidden]{display:none}` because our
+         own `display:block` would otherwise beat the UA rule for [hidden]. */
       nodes[i].hidden = (n === 0);
       nodes[i].setAttribute('aria-label', n === 1 ? 'قطعة واحدة بالسلة' : n + ' قطع بالسلة');
     }
   }
 
+  /* ---- A · the blocks data store.
+     Instant and free: no network, the number is already in memory. Only the cart
+     and checkout pages register this store, so it is a bonus path, not the path.
+
+     MEASURED 21 Aug: the store's shape is `itemsCount` (camelCase). `items_count`
+     is the REST shape and is undefined here — reading it is why the badge never
+     moved. Confirmed against `Object.keys(getCartData())`. ---- */
+  function fromStore() {
+    try {
+      if (!window.wp || !window.wp.data) return false;
+      var sel = window.wp.data.select('wc/store/cart');
+      if (!sel || typeof sel.getCartData !== 'function') return false;
+      var cart = sel.getCartData();
+      if (!cart || typeof cart.itemsCount !== 'number') return false;
+      /* before the store resolves it answers 0. Trust a zero only once something
+         real has already landed, otherwise the badge blinks off on every load. */
+      if (!settled && cart.itemsCount === 0) return false;
+      paint(cart.itemsCount);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  /* ---- B · Store API. Works on every page, including the shop grid. ---- */
   function read() {
     fetch('/wp-json/wc/store/v1/cart', { credentials: 'include' })
       .then(function (r) { return r.ok ? r.json() : null; })
@@ -1284,13 +1315,32 @@ function luvitCartCount() {
       .catch(function () { /* offline or blocked — leave the badge as it is */ });
   }
 
+  fromStore();
   read();
 
-  /* blocks cart/checkout */
-  ['wc-blocks_added_to_cart', 'wc-blocks_removed_from_cart', 'wc-blocks_cart_updated']
-    .forEach(function (ev) { document.body.addEventListener(ev, read); });
+  /* ---- C · what actually fires.
+     MEASURED 21 Aug by wrapping EventTarget.prototype.dispatchEvent for the whole
+     duration of a quantity change: WooCommerce 11 emits exactly ONE event,
+     `wc-blocks_store_sync_required`, on WINDOW. The three names this function
+     used to listen for never fired once, which is why the badge sat on a stale
+     number while the cart itself updated correctly. ---- */
+  window.addEventListener('wc-blocks_store_sync_required', read);
 
-  /* classic AJAX add-to-cart (the shop grid uses this one) */
+  /* the older names cost nothing and still exist on some paths */
+  ['wc-blocks_added_to_cart', 'wc-blocks_removed_from_cart', 'wc-blocks_cart_updated']
+    .forEach(function (ev) {
+      document.body.addEventListener(ev, read);
+      window.addEventListener(ev, read);
+    });
+
+  /* ---- D · the store subscription is what makes it feel instant: it lands on the
+     optimistic update, before the round trip finishes. `read()` above still runs
+     as the correction. ---- */
+  if (window.wp && window.wp.data && typeof window.wp.data.subscribe === 'function') {
+    window.wp.data.subscribe(fromStore);
+  }
+
+  /* ---- E · classic AJAX add-to-cart (the shop grid uses this one) ---- */
   if (window.jQuery) {
     window.jQuery(document.body).on('added_to_cart removed_from_cart updated_cart_totals', read);
   }
@@ -1303,3 +1353,79 @@ if (document.readyState === 'loading') {
 }
 
 window.LUVIT.cartCount = { init: luvitCartCount };
+
+/* --------------------------------------------------------------------------
+   12. Checkout field hints — 21 Aug, at Ryan's request.
+
+   "يكون جوا المربع بكلام خفيف grayed out انه حط الايميل"
+
+   `placeholder` is a DOM attribute, so CSS cannot write one; 5.25 only styles
+   it. WooCommerce ships none, which is why every box on the checkout was blank
+   inside until she guessed what belonged there.
+
+   Two rules kept the list honest:
+     · a hint that repeats its own label is noise, so the name fields get none
+     · a hint shows the FORMAT she is being asked for, nothing else
+
+   Also set here: `inputmode`, so the phone and postcode fields open a number pad
+   instead of a full keyboard. MEASURED 21 Aug — every field on the live page had
+   `inputmode` unset.
+
+   Re-applied through a MutationObserver because the checkout is React: an
+   address change unmounts and rebuilds these inputs, and a one-shot pass would
+   survive only until the first re-render.
+   -------------------------------------------------------------------------- */
+function luvitFieldHints() {
+  if (!document.body || !/woocommerce-checkout|woocommerce-cart/.test(document.body.className)) return;
+
+  /* keyed by the id WooCommerce gives each input, measured on the live page */
+  var HINTS = {
+    'email':               { ph: 'name@example.com', im: 'email' },
+    'shipping-phone':      { ph: '07 9999 9999',     im: 'tel' },
+    'billing-phone':       { ph: '07 9999 9999',     im: 'tel' },
+    'shipping-address_1':  { ph: 'اسم الشارع ورقم البناية' },
+    'billing-address_1':   { ph: 'اسم الشارع ورقم البناية' },
+    'shipping-address_2':  { ph: 'شقة أو طابق (اختياري)' },
+    'billing-address_2':   { ph: 'شقة أو طابق (اختياري)' },
+    'shipping-city':       { ph: 'عمّان' },
+    'billing-city':        { ph: 'عمّان' },
+    'shipping-postcode':   { ph: '11118', im: 'numeric' },
+    'billing-postcode':    { ph: '11118', im: 'numeric' }
+  };
+
+  function apply() {
+    var ids = Object.keys(HINTS);
+    for (var i = 0; i < ids.length; i++) {
+      var el = document.getElementById(ids[i]);
+      if (!el || el.tagName !== 'INPUT') continue;
+      var h = HINTS[ids[i]];
+      if (h.ph && el.getAttribute('placeholder') !== h.ph) el.setAttribute('placeholder', h.ph);
+      if (h.im && el.getAttribute('inputmode') !== h.im) el.setAttribute('inputmode', h.im);
+      /* required is already set by Woo; mirror it for screen readers, which do
+         not all infer aria-required from the attribute */
+      if (el.required && el.getAttribute('aria-required') !== 'true') {
+        el.setAttribute('aria-required', 'true');
+      }
+    }
+  }
+
+  apply();
+
+  var form = document.querySelector('.wc-block-checkout, .wc-block-cart');
+  if (!form || typeof MutationObserver !== 'function') return;
+
+  var queued = false;
+  new MutationObserver(function () {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; apply(); });
+  }).observe(form, { childList: true, subtree: true });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitFieldHints);
+} else {
+  luvitFieldHints();
+}
+
+window.LUVIT.fieldHints = { init: luvitFieldHints };

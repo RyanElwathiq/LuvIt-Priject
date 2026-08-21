@@ -6878,7 +6878,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v24";
+  content: "CSS v27";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -7301,4 +7301,264 @@ body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.
    on it and numbered it 5. It is a panel, not a step. */
 body.woocommerce-checkout .wc-block-checkout .wp-block-woocommerce-checkout-order-summary-block.wp-block-woocommerce-checkout-order-summary-block .wc-block-components-checkout-step__title::before {
   content: none;
+}
+
+/* ==========================================================================
+   5.24 · FIVE THINGS RYAN FELT AND ONE HE COULD NOT SEE  (21 Aug)
+   ========================================================================== */
+
+/* ---- 1 · THE EMPTY 56px LANE ------------------------------------------------
+   MEASURED on the live checkout at 375px and 1200px:
+
+       .wc-block-components-checkout-step  padding-inline-start : 56px
+       step::before (the rail)             inset-inline-start   : 15.5px
+       __title::before (the badge)         starts at 56px, w 32px
+                                           so its centre sits at 72px
+
+   The lane and the rail were built in 5.6 for a badge that lived INSIDE the lane.
+   5.7 moved the badge onto the heading line and nobody moved the lane. What is
+   left is 56px of empty gutter with a 1px thread running down it, 56px away from
+   the badges it is supposed to connect.
+
+   On a phone that gutter is 56 of 290px. The email input measured 234px wide
+   inside a 360px screen. That is the "ابعاد الايميل جايه غلط" Ryan reported.
+
+   Phones get the width back: no lane, no rail, the number reads as part of the
+   heading. Wide screens get the stepper it was always meant to be, with the
+   badge back in the lane so badge, rail and indent finally share one axis. ---- */
+
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step {
+  padding-inline-start: 0;
+}
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step::before {
+  content: none;
+}
+
+@media (min-width: 1024px) {
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step {
+    padding-inline-start: calc(var(--luvit-badge) + var(--space-5, 1.5rem));
+  }
+  /* the rail comes back, and now it runs under the badge instead of past it */
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step::before {
+    content: "";
+  }
+  /* the badge moves off the heading line and into the lane. ::before on the step
+     is the rail, so the badge takes ::after — measured free, nothing used it. */
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step .wc-block-components-checkout-step__title.wc-block-components-checkout-step__title::before {
+    content: none;
+  }
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step::after {
+    content: counter(luvit-step);
+    position: absolute;
+    z-index: 1;
+    inset-inline-start: 0;
+    inset-block-start: calc(var(--luvit-step-pt) - 2px);
+    display: grid;
+    place-items: center;
+    inline-size: var(--luvit-badge);
+    block-size: var(--luvit-badge);
+    border-radius: 50%;
+    background-color: var(--aqua-50, #EAFAFD);
+    border: 1px solid var(--aqua-200, #A6E7F1);
+    color: var(--aqua-700, #196B7D);
+    font-family: var(--font-latin, "Jost", system-ui, sans-serif);
+    font-size: var(--text-body-sm, 0.9375rem);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    pointer-events: none;
+  }
+}
+
+/* ---- 2 · THE CHECKBOX SITTING ON ITS OWN LABEL ------------------------------
+   MEASURED: the box spans 228 to 250 and the text spans 73 to 250. Same right
+   edge, 22px of overlap, on BOTH checkboxes. That is the box in Ryan's shot.
+
+   5.18 gave the label `display:flex; gap:12px` and expected that to space them.
+   It could not: Woo sets the input to `position:absolute`, and an out-of-flow
+   child is not a flex item. The gap applied to nothing, while the padding that
+   used to reserve the space had already been dropped.
+
+   Put the input back in flow and flex does the rest. ---- */
+/* CORRECTED, same session. The first attempt set the input to `position:static`
+   and lost the cascade: the rule that makes it absolute is OUR OWN, at
+   `body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]`
+   = (0,4,2), against the new rule's (0,3,2). Measured after publishing v25:
+   still `absolute`, still overlapping.
+
+   And overriding it would have been wrong anyway. That input IS the drawn
+   control: `appearance:none` plus a 7px squircle and an inset ring. Absolute
+   placement at the label's inline start is the design, and it worked as long as
+   the label reserved the lane for it. 5.18 replaced that reserved lane with
+   `display:flex; gap`, which an out-of-flow child never sees.
+
+   So give the lane back: 22px of control plus a 12px gap. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox label,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox label {
+  position: relative;
+  display: block;
+  padding-inline-start: calc(var(--luvit-ctl, 22px) + var(--space-3, 0.75rem));
+  min-block-size: var(--luvit-ctl, 22px);
+}
+/* the text is the only in-flow child now, so it takes the full remaining width
+   instead of being squeezed by a gap that applied to nothing */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox .wc-block-components-checkbox__label,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox .wc-block-components-checkbox__label {
+  display: block;
+  padding-inline-start: 0;
+  line-height: 1.6;
+}
+
+/* ---- 3 · TEXT INPUTS WERE 9px FROM THEIR OWN EDGE ---------------------------
+   MEASURED: inputs computed `padding: 24px 9px 8px`, selects computed
+   `14px 16px`. Two field types, two insets, one form. The 9px comes from
+   WooCommerce's floating-label rule in checkout-rtl.css and packages-style-rtl,
+   both of which load after our snippet.
+
+   The 24px top is load-bearing: the label floats inside the box and needs it.
+   Only the inline value is wrong, so only the inline value changes. ---- */
+body.woocommerce-checkout .wc-block-components-form .wc-block-components-text-input.wc-block-components-text-input input,
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input {
+  padding-inline: var(--field-pad-x, 16px);
+}
+body.woocommerce-checkout .wc-block-components-form .wc-block-components-text-input.wc-block-components-text-input label,
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input label {
+  inset-inline-start: var(--field-pad-x, 16px);
+}
+
+/* ---- 4 · THE SKIP LINK WAS PARKED OFF THE WRONG EDGE ------------------------
+   MEASURED: `.luvit-skip` computes to `left: 10203px` on a 375px page. It is
+   written `inset-inline-start: -9999px`, and in RTL the inline start IS the
+   right edge, so -9999px throws it 10,000px off to the right instead of hiding
+   it to the left. `html` and `body` are both `overflow-x: visible`, so nothing
+   clips it.
+
+   WordPress's own `.screen-reader-text` does not do this: it clips a 1px box in
+   place. Same result, no geometry to escape from, direction-agnostic. ---- */
+.luvit-skip.luvit-skip {
+  inset-inline-start: 0;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.luvit-skip.luvit-skip:focus {
+  inline-size: auto;
+  block-size: auto;
+  padding: 12px 20px;
+  overflow: visible;
+  clip-path: none;
+}
+
+/* ---- 5 · THE LOADING STATE NOBODY COULD SEE ---------------------------------
+   Ryan: "زدت الرقم او قللته ما بتتحدث بلحظتها"
+
+   MEASURED end to end on a real quantity change: the Store API answered in
+   298ms, but the totals stayed empty for 2002ms. WooCommerce DOES render three
+   placeholder bars while it waits. Their background computes to
+   `color(srgb 0.278 0.333 0.357 / 0.05)`, five percent of the body ink on a
+   near-white card. Invisible.
+
+   So the customer taps +, watches every price disappear, and concludes the cart
+   is broken. It is not broken, it is silent. Give the bars a colour she can see
+   and a sweep that reads as "counting" rather than "gone". ---- */
+body.woocommerce-cart .wc-block-components-skeleton__element,
+body.woocommerce-checkout .wc-block-components-skeleton__element {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-pill, 999px);
+  background-color: var(--aqua-100, #CFF1F7);
+  min-block-size: 14px;
+}
+body.woocommerce-cart .wc-block-components-skeleton__element::after,
+body.woocommerce-checkout .wc-block-components-skeleton__element::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--color-paper, #FFF) 85%, transparent) 50%,
+    transparent 100%);
+  animation: luvit-skeleton-sweep 1.1s var(--ease-out-soft, ease) infinite;
+}
+@keyframes luvit-skeleton-sweep {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.woocommerce-cart .wc-block-components-skeleton__element::after,
+  body.woocommerce-checkout .wc-block-components-skeleton__element::after {
+    animation: none;
+  }
+}
+body.woocommerce-cart .wc-block-components-totals-item:has(.wc-block-components-skeleton__element),
+body.woocommerce-checkout .wc-block-components-totals-item:has(.wc-block-components-skeleton__element) {
+  opacity: .75;
+}
+
+/* ==========================================================================
+   5.25 · THE LABEL WAS UNDER THE FIELD, NOT ABOVE IT  (21 Aug)
+   --------------------------------------------------------------------------
+   Ryan: "واتاكد كمان من ابعاد الايميل حاسها جايه غلط"
+
+   MEASURED on the live checkout at 375px:
+
+       .wc-block-components-text-input   353 → 429   (76px tall)
+       input                             353 → 409   (56px, padding-block 24/8)
+       label "البريد الإلكتروني"           409 → 426   BELOW the input
+       label computed                    position:static, top:6px, scale(.82)
+
+   Section 5.3 un-floats Woo's label on purpose, and that call was right: a
+   floating label deletes the field's purpose at the exact moment she is
+   answering it, and shrunken Arabic glyphs lose legibility faster than Latin
+   ones. The reasoning still stands. What was never finished is the other half.
+
+   Woo's DOM is `<input>` then `<label>`. Float the label and it lands inside
+   the box; make it static and it lands UNDERNEATH. So the field ended up with a
+   caption below it and 24px of padding at the top still reserved for a label
+   that had moved out. Two bugs from one unfinished edit.
+
+   Order the wrapper instead of the label's position: the wrapper becomes a
+   column and the label takes the first slot. And with nothing living inside the
+   box any more, the top padding goes back to matching the bottom. ---- */
+
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input,
+body.woocommerce-checkout .wc-block-components-country-input.wc-block-components-country-input,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input {
+  display: flex;
+  flex-direction: column;
+}
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input label,
+body.woocommerce-checkout .wc-block-components-country-input.wc-block-components-country-input label,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input label {
+  order: -1;
+  margin-block-end: var(--field-gap, 6px);
+}
+
+/* the 24px belonged to a label that no longer sits inside the box */
+body.woocommerce-checkout .wc-block-components-form .wc-block-components-text-input.wc-block-components-text-input input,
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input {
+  padding-block: 14px;
+}
+
+/* ---- the grey hint Ryan asked for: "يكون جوا المربع بكلام خفيف grayed out".
+   The text itself is set from motion.js §12, because `placeholder` is a DOM
+   attribute and CSS cannot write one. This only styles it. Muted enough to read
+   as a hint, dark enough to stay legible: it is a suggestion, not the answer. */
+body.woocommerce-checkout .wc-block-components-text-input input::placeholder,
+body.woocommerce-checkout .wc-block-components-text-input textarea::placeholder,
+body.woocommerce-cart .wc-block-components-text-input input::placeholder {
+  color: var(--field-placeholder, #8A9AA0);
+  opacity: 1;                    /* Firefox dims placeholders by default */
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
+/* a required field that is empty AFTER she has left it should say so quietly,
+   not shout before she has had a chance. `:user-invalid` fires only after
+   interaction, which is the whole difference from `:invalid`. */
+body.woocommerce-checkout .wc-block-components-text-input input:user-invalid {
+  border-color: var(--color-danger, #C4443E);
 }
