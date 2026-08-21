@@ -9882,3 +9882,35 @@ body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-order-deta
 body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-details {
   margin-block-start: var(--space-6);
 }
+
+/* ==========================================================================
+   5.41 · THE FOUR-UP ROUTINE GRID  (22 Aug)
+   --------------------------------------------------------------------------
+   `.routine-grid` was defined in a <style> block at the bottom of
+   library/sections/03-routine.html, which works there and only there: a
+   section file is pasted whole into an Elementor HTML widget, so its own
+   <style> travels with it.
+
+   The routines page reuses the same four-card layout, and a second consumer
+   is the moment a local style stops being local. Moving it here also removes
+   the drift risk of two copies with one edited.
+
+   ⚠️ NAME KEPT AS-IS, WITHOUT THE luvit- PREFIX. It breaks the convention,
+   but `.routine-grid` is already in the markup live on the home page. A
+   rename means re-pasting that section into Elementor for no gain.
+
+   THE REASON THE OVERRIDE EXISTS: the shared --wide grid runs 1 / 2 / 3
+   columns, which strands the fourth card alone on its own row. Four cards
+   want an even split, so this goes 2-up on tablet and 4-up only once there
+   is genuinely room for four 16:9 images side by side.
+
+   🔴 03-routine.html still carries its own identical copy. Delete that
+   <style> block the next time that section is re-pasted into Elementor —
+   not before, or the home page loses the layout until it is.
+   ========================================================================== */
+@media (min-width: 700px) {
+  .routine-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1240px) {
+  .routine-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
