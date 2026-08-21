@@ -6991,3 +6991,42 @@ body.woocommerce-checkout .wc-block-components-radio-control-accordion-content.w
   color: var(--color-ink-soft);
   font-size: var(--text-body-sm);
 }
+
+/* ==========================================================================
+   5.18 · SPACING PASS FROM RYAN'S SCREENSHOTS  (21 Aug)
+   ========================================================================== */
+
+/* ---- 1 · the white slab behind the cart's proceed button.
+   Measured: .wc-block-cart__submit-container paints #FAFCFD, so the button
+   sat on a pale rectangle that read as a stray box on top of the water. ---- */
+body.woocommerce-cart .wc-block-cart__submit-container.wc-block-cart__submit-container,
+body.woocommerce-cart .wc-block-cart__submit.wc-block-cart__submit,
+body.woocommerce-checkout .wc-block-checkout__actions_row {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* ---- 2 · payment description was flush against the row above it
+   (padding-block-start measured 0). Give it air, keep the reserved radio
+   lane on the inline-start side. ---- */
+body.woocommerce-checkout .wc-block-components-radio-control-accordion-content.wc-block-components-radio-control-accordion-content {
+  padding-block: var(--space-3) var(--space-4);
+}
+
+/* ---- 3 · the "add a note" checkbox sat against its own label: the label is
+   display:block, so the gap token never applied. Make it a real row. ---- */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox label,
+body.woocommerce-checkout label.wc-block-components-checkbox__label-container {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+body.woocommerce-checkout .wc-block-components-checkbox .wc-block-components-checkbox__label {
+  padding-inline-start: 0;
+  line-height: 1.6;
+}
+body.woocommerce-checkout .wc-block-components-checkbox .wc-block-components-checkbox__input {
+  flex: 0 0 auto;
+  margin-block-start: 2px;
+}

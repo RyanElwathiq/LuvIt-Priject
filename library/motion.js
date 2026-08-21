@@ -1253,3 +1253,53 @@ if (document.readyState === 'loading') {
 }
 
 window.LUVIT.anchorScroll = { init: luvitAnchorScroll };
+
+/* --------------------------------------------------------------------------
+   11. Cart count badge — plan item 3.4, wired 21 Aug at Ryan's request.
+
+   The header pill already renders `.luvit-nav__count`; it was hard-coded to 0
+   because nothing ever fed it. WooCommerce's Store API exposes the live count
+   without a page reload, and the blocks fire events whenever the cart changes.
+
+   Cheap by design: one fetch on load, then only on cart-change events. No
+   polling, no timers.
+   -------------------------------------------------------------------------- */
+function luvitCartCount() {
+  var nodes = document.querySelectorAll('.luvit-nav__count, #luvit-cart-count');
+  if (!nodes.length) return;
+
+  function paint(n) {
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].textContent = String(n);
+      /* hide a zero badge rather than advertise an empty cart */
+      nodes[i].hidden = (n === 0);
+      nodes[i].setAttribute('aria-label', n === 1 ? 'قطعة واحدة بالسلة' : n + ' قطع بالسلة');
+    }
+  }
+
+  function read() {
+    fetch('/wp-json/wc/store/v1/cart', { credentials: 'include' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) { if (c && typeof c.items_count === 'number') paint(c.items_count); })
+      .catch(function () { /* offline or blocked — leave the badge as it is */ });
+  }
+
+  read();
+
+  /* blocks cart/checkout */
+  ['wc-blocks_added_to_cart', 'wc-blocks_removed_from_cart', 'wc-blocks_cart_updated']
+    .forEach(function (ev) { document.body.addEventListener(ev, read); });
+
+  /* classic AJAX add-to-cart (the shop grid uses this one) */
+  if (window.jQuery) {
+    window.jQuery(document.body).on('added_to_cart removed_from_cart updated_cart_totals', read);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitCartCount);
+} else {
+  luvitCartCount();
+}
+
+window.LUVIT.cartCount = { init: luvitCartCount };
