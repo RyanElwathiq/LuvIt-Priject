@@ -9507,3 +9507,36 @@ a.luvit-option:focus-visible {
 @media (min-width: 480px) and (max-width: 899px) {
   .luvit-optiongrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ==========================================================================
+   5.38 · NAV LINKS WHOSE PAGE DOES NOT EXIST YET  (21 Aug)
+   --------------------------------------------------------------------------
+   MEASURED 21 Aug, every nav destination fetched by HTTP status:
+
+       live (200)   /  ·  /shop  ·  /products  ·  /cart  ·  /checkout
+                    /my-account
+       dead (404)   /routines  ·  /offers  ·  /about  ·  /quiz  ·  /track
+                    /shipping  ·  /faq  ·  /contact
+
+   The site is seven pages. The nav promised fifteen. Eight of its links landed
+   the customer on a 404, and the header rides every page of the site, so the
+   same eight broke everywhere at once.
+
+   `/offers` was not hidden, it was REPLACED: Ryan named the hub page المنتجات,
+   so العروض now points at /products and is live.
+
+   The other seven are marked, not deleted. Deleting them would mean rebuilding
+   the markup once each page lands; marking means un-shipping one is deleting
+   one word. The markup stays a visible to-do list.
+
+   WHY `display: none` IS SAFE HERE and was not on the checkout sidebar:
+   that sidebar was a WooCommerce React block whose fill is driven by a
+   ResizeObserver, so hiding the container measured 0 and emptied the DOM. These
+   are our own static anchors with nothing observing them.
+
+   🔴 A hidden link is still IN THE DOM, so it is still in the tab order and
+   still read by a screen reader. `display: none` removes it from both, which is
+   exactly what is wanted — but do not swap it for `opacity: 0` or
+   `visibility: hidden` later without re-reading this note.
+   ========================================================================== */
+.luvit-unbuilt { display: none; }

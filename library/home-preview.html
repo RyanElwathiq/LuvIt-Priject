@@ -59,6 +59,19 @@
     <a class="luvit-nav__brand" href="#top">Luv it!</a>
 
     <nav class="luvit-nav__links" aria-label="التنقل الرئيسي">
+
+      <!-- ⚠️ الحبّة النشطة بالقائمة ما بتبين بهاي المعاينة · وهاد مقصود.
+           motion.js §14 (luvitNavCurrent) بيحدد الصفحة الحالية من
+           window.location.pathname. على localhost المسار بيكون
+           /library/<اسم-الملف>.html فما بيطابق ولا رابط، والدالة بتشيل
+           aria-current من الكل — بما فيها اللي مثبتة بأيدينا تحت.
+
+           ولا تحلها بتعطيل الدالة بالمعاينة ولا بمفتاح تجاوز: وقتها
+           المعاينة بتفحص مساراً غير اللي بيشتغل على الموقع، وهاد بالضبط
+           الفخ اللي وقعنا فيه قبل (ستايل معاينة ما شُحن ولا مرة).
+
+           الفحص الحقيقي للمطابقة بـ _أدوات (محاكي بلا متصفح) وعلى الموقع.
+      -->
       <a class="luvit-nav__link" href="#top" aria-current="page">الرئيسية</a>
       <a class="luvit-nav__link" href="#products">المتجر</a>
       <a class="luvit-nav__link" href="#routine">الروتين</a>

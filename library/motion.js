@@ -1788,3 +1788,92 @@ if (document.readyState === 'loading') {
 }
 
 window.LUVIT.rails = { init: luvitRails };
+
+/* --------------------------------------------------------------------------
+   14. Which nav item is the current page — 21 Aug.
+
+   The header shipped with `aria-current="page"` HARD-CODED on الرئيسية in three
+   places: the bar, the drawer and the dock. MEASURED on the live /products/
+   page: the nav still announced الرئيسية as current, so the highlight sat on
+   the wrong item on every page of the site except the home page.
+
+   That is not a cosmetic bug. `aria-current="page"` is the machine-readable
+   claim "you are here", and a screen reader repeats it verbatim.
+
+   The attribute is now absent from the markup and written here instead.
+
+   TWO THINGS THIS HAS TO GET RIGHT
+   --------------------------------
+   1. REMOVE, never set to "false". tokens.css selects on `[aria-current]` with
+      no value (lines 1375, 1494, 1613), so `aria-current="false"` still matches
+      and still paints the link. Only removeAttribute() actually clears it.
+
+   2. `/products` and `/product/abc` are one character apart and mean different
+      things — our hub page versus a single WooCommerce product. A naive
+      startsWith would light up المنتجات on every product page. The prefix test
+      below always appends the separator ('/products/' vs '/product/'), which
+      keeps them apart.
+
+   WooCommerce archive URLs are mapped rather than matched: a product page has
+   no nav link of its own, and المتجر is the honest ancestor for it.
+   -------------------------------------------------------------------------- */
+function luvitNavCurrent() {
+  var links = document.querySelectorAll(
+    '.luvit-nav__link, .luvit-drawer__link, .luvit-dock__item'
+  );
+  if (!links.length) return;
+
+  /* a URL with no nav link of its own borrows its ancestor's */
+  var ALIAS = [
+    { when: '/product/',        use: '/shop' },
+    { when: '/product-category/', use: '/shop' },
+    { when: '/order-received/', use: '/cart' }
+  ];
+
+  function norm(p) {
+    try { p = decodeURI(p); } catch (e) { /* malformed escape: use it raw */ }
+    p = p.split('?')[0].split('#')[0];
+    if (p.length > 1) p = p.replace(/\/+$/, '');
+    return p || '/';
+  }
+
+  var here = norm(window.location.pathname);
+  for (var a = 0; a < ALIAS.length; a++) {
+    if (here.indexOf(ALIAS[a].when) === 0) { here = ALIAS[a].use; break; }
+  }
+
+  /* the longest matching href wins, so '/shop/sale' beats '/shop' when both
+     are present. Home is exact-match only — every path starts with '/'. */
+  var best = null, bestLen = -1;
+  var i, el, href;
+  for (i = 0; i < links.length; i++) {
+    el = links[i];
+    href = el.getAttribute('href') || '';
+    if (href.charAt(0) !== '/') continue;          /* skip #anchors and absolutes */
+    href = norm(href);
+
+    var hit = href === '/'
+      ? here === '/'
+      : (here === href || here.indexOf(href + '/') === 0);
+
+    if (hit && href.length > bestLen) { best = href; bestLen = href.length; }
+  }
+
+  for (i = 0; i < links.length; i++) {
+    el = links[i];
+    href = el.getAttribute('href') || '';
+    if (best !== null && href.charAt(0) === '/' && norm(href) === best) {
+      el.setAttribute('aria-current', 'page');
+    } else {
+      el.removeAttribute('aria-current');          /* see note 1 above */
+    }
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitNavCurrent);
+} else {
+  luvitNavCurrent();
+}
+
+window.LUVIT.navCurrent = { init: luvitNavCurrent };
