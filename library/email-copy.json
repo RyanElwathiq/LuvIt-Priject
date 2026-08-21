@@ -1,0 +1,81 @@
+{
+  "_ملاحظة": "كوبي إيميلات ووكومرس · الزبونة تُخاطَب بالمؤنث · ولا شرطة طويلة · ولا وعد بمدة أو نتيجة ما حدا أكّدها",
+  "_قواعد": [
+    "ما في ولا رقم ولا مدة توصيل · لأنها لساها ما انأكّدت من المندوب",
+    "ما في «ردّي على هالإيميل» · الدومين بلا سجل MX فالرد بيروح بالفراغ",
+    "الدفع عند الاستلام مذكور لأنه الحقيقة الوحيدة المؤكدة عن الدفع"
+  ],
+  "email": {
+    "woocommerce_email_from_name": "Luv it!",
+    "woocommerce_email_base_color": "#29A9C0",
+    "woocommerce_email_background_color": "#FAFCFD",
+    "woocommerce_email_body_background_color": "#FFFFFF",
+    "woocommerce_email_text_color": "#1A2529",
+    "woocommerce_email_footer_text": "{site_title}"
+  },
+  "email_new_order": {
+    "subject": "[{site_title}] طلب جديد #{order_number}",
+    "heading": "طلب جديد #{order_number}",
+    "additional_content": "الدفع عند الاستلام."
+  },
+  "email_customer_processing_order": {
+    "subject": "استلمنا طلبك #{order_number}",
+    "heading": "استلمنا طلبك",
+    "additional_content": "طلبك وصلنا وبلّشنا نجهّزه. الدفع عند الاستلام."
+  },
+  "email_customer_on_hold_order": {
+    "subject": "طلبك #{order_number} قيد المراجعة",
+    "heading": "طلبك قيد المراجعة",
+    "additional_content": "بنراجع طلبك وبنرجعلك أول ما يجهز."
+  },
+  "email_customer_completed_order": {
+    "subject": "طلبك #{order_number} وصل",
+    "heading": "طلبك وصل",
+    "additional_content": "نتمنى تحبّيه."
+  },
+  "email_customer_cancelled_order": {
+    "enabled": "yes",
+    "subject": "تم إلغاء طلبك #{order_number}",
+    "heading": "تم إلغاء طلبك",
+    "additional_content": "ما انسحب منك أي مبلغ، لأن الدفع عند الاستلام."
+  },
+  "email_customer_refunded_order": {
+    "subject_full": "تم استرجاع مبلغ طلبك #{order_number}",
+    "heading_full": "تم الاسترجاع",
+    "subject_partial": "تم استرجاع جزء من مبلغ طلبك #{order_number}",
+    "heading_partial": "استرجاع جزئي",
+    "additional_content": ""
+  },
+  "email_customer_invoice": {
+    "subject": "تفاصيل طلبك #{order_number}",
+    "heading": "تفاصيل طلبك",
+    "subject_paid": "تفاصيل طلبك #{order_number}",
+    "heading_paid": "تفاصيل طلبك",
+    "additional_content": "الدفع عند الاستلام."
+  },
+  "email_customer_note": {
+    "subject": "ملاحظة على طلبك #{order_number}",
+    "heading": "ملاحظة على طلبك",
+    "additional_content": ""
+  },
+  "email_customer_new_account": {
+    "subject": "أهلاً فيكِ بـ{site_title}",
+    "heading": "أهلاً فيكِ",
+    "additional_content": "حسابك جاهز، وبتقدري تتابعي طلباتك منه."
+  },
+  "email_customer_failed_order": {
+    "subject": "ما قدرنا نكمّل طلبك #{order_number}",
+    "heading": "الطلب ما اكتمل",
+    "additional_content": "بتقدري تعيدي الطلب من الموقع."
+  },
+  "email_failed_order": {
+    "subject": "[{site_title}] طلب فاشل #{order_number}",
+    "heading": "طلب فاشل #{order_number}",
+    "additional_content": ""
+  },
+  "email_cancelled_order": {
+    "subject": "[{site_title}] طلب ملغى #{order_number}",
+    "heading": "طلب ملغى #{order_number}",
+    "additional_content": ""
+  }
+}

@@ -497,8 +497,26 @@ function luvitNavDroplet(root) {
      honest answer is that no link is current, and the bead hides. */
   var pinned = null;
   function current() {
-    if (pinned && bar.contains(pinned)) return pinned;
-    return links.filter(function (l) { return l.hasAttribute('aria-current'); })[0] || null;
+    if (pinned && bar.contains(pinned) && pinned.offsetParent !== null) return pinned;
+
+    /* 🔴 visibleTargets(), NOT `links`. Two separate reasons, both found by a
+       review of this change rather than by writing it:
+
+       1. §14 marks .luvit-nav__icon-btn too, so that /cart has a current item
+          in the bar. Searching only .luvit-nav__link meant the one page where
+          the cart button IS the current page was the one page the bead refused
+          to sit anywhere at all.
+
+       2. A hidden link still matches [aria-current]. Its rect is all zeros, so
+          `r.left - b.left` came out at -128.5px with width 0 — the bead would
+          collapse and park itself outside the bar. offsetParent is null for
+          anything display:none, including via a hidden ancestor, which also
+          covers the whole link row below the 1024px breakpoint. */
+    var t = visibleTargets();
+    for (var i = 0; i < t.length; i++) {
+      if (t[i].hasAttribute('aria-current')) return t[i];
+    }
+    return null;
   }
   var settleTimer = null;
 
@@ -546,9 +564,12 @@ function luvitNavDroplet(root) {
     if (t && bar.contains(t)) moveTo(t);
   });
 
-  links.forEach(function (l) {
+  /* same target set as current(): clicking the cart button should move the
+     bead there too, not leave it on the link it was sitting on */
+  Array.prototype.slice.call(bar.querySelectorAll(TARGETS)).forEach(function (l) {
     l.addEventListener('click', function () {
-      links.forEach(function (x) { x.removeAttribute('aria-current'); });
+      Array.prototype.slice.call(bar.querySelectorAll(TARGETS))
+        .forEach(function (x) { x.removeAttribute('aria-current'); });
       l.setAttribute('aria-current', 'page');
       /* pinned, not `active`: the click happens before the next document
          exists, so the bead has to follow the intent rather than the URL */
