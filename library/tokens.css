@@ -3515,7 +3515,9 @@ body.luvit-locked { overflow: hidden; }
 :root {
   --woo-page-bg:          var(--color-canvas);
   --woo-card-gap-mobile:  var(--space-4);
-  --woo-card-gap-desktop: var(--space-5);
+  /* research round (Aesop pattern): small catalogue + "brand story, not a
+     catalogue" principle → luxury comes from whitespace. Was --space-5. */
+  --woo-card-gap-desktop: var(--space-6);
 }
 
 /* ---- 5.0 · box-sizing: NOT guaranteed on plugin markup (trap #6, Aug 9) ---- */
@@ -3673,7 +3675,11 @@ body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
   width: 100%;
   aspect-ratio: var(--card-media-ratio);
   object-fit: cover;
-  background: var(--card-media-bg);
+  /* research round (waterdrop pattern): the load-in moment shows a brand
+     water tint instead of empty white, and it doubles as a unified ground
+     once real product photos arrive */
+  background: radial-gradient(120% 100% at 50% 28%,
+    #FFFFFF 0%, var(--aqua-50) 100%);
   margin: 0;
   transition: transform var(--card-media-duration) var(--ease-out-soft);
 }
@@ -3691,11 +3697,20 @@ body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
 .woocommerce ul.products li.product .woocommerce-loop-product__title.woocommerce-loop-product__title {
   font-family: var(--font-heading);
   font-size: var(--text-h4);
-  line-height: var(--leading-heading);
+  /* research round: Arabic needs looser leading than Latin or clamping eats
+     the descenders of ج/ع/ي (UAE gov design system guidance). 1.5 not 1.2. */
+  line-height: 1.5;
   font-weight: 700;
   color: var(--color-ink);
   padding: var(--card-pad) var(--card-pad) 0;
   margin: 0;
+  /* two-line clamp + reserved height so prices align across the whole row
+     even when titles are one line (Ounass/Noon grid pattern) */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  min-height: calc(2 * 1.5em + var(--card-pad));
 }
 
 /* ---- price: Latin digits are an LTR run inside RTL — isolate them ---- */
@@ -3707,6 +3722,9 @@ body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
   direction: ltr;
   unicode-bidi: isolate;
   text-align: start;
+  /* research round (FACES bidi-wrap pattern): tabular digits line prices up
+     vertically across the grid */
+  font-variant-numeric: tabular-nums;
   padding: 0 var(--card-pad);
   margin: var(--space-2) 0 0;
 }
@@ -3719,9 +3737,13 @@ body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
   font-size: var(--text-body-sm);
 }
 
-/* ---- add-to-cart: full .luvit-btn recipe (~line 326). The sweep layer is
-   deliberately skipped here (payload discipline); gloss + lift carry it. ---- */
+/* ---- add-to-cart: full .luvit-btn recipe (~line 326) INCLUDING the light
+   sweep (research round: cheapest Liquid-Glass feel where backdrop-filter
+   is banned — reuses the existing luvit-btn-sweep keyframes). ---- */
 .woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3780,11 +3802,60 @@ body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
   }
 }
 
-/* AJAX states Woo injects on the same element */
+/* light sweep layer — same construction as .luvit-btn::before (~line 369) */
+.woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -50%;
+  bottom: -50%;
+  inset-inline-start: -60%;
+  width: 45%;
+  background: linear-gradient(100deg,
+    rgba(255,255,255,0) 0%, var(--btn-sweep) 50%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button:hover::before {
+    animation: luvit-btn-sweep 620ms var(--ease-out) 1;
+  }
+}
+[dir="rtl"] .woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button::before {
+  inset-inline-start: auto;
+  inset-inline-end: -60%;
+}
+@media (hover: hover) and (pointer: fine) {
+  [dir="rtl"] .woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button:hover::before {
+    animation-name: luvit-btn-sweep-rtl;
+  }
+}
+
+/* AJAX states Woo injects on the same element (research round: 3-state
+   button, feedback lives inside the button itself — no toast needed).
+   Our ::after overrides Woo core's icon-font spinner cleanly. */
 .woocommerce ul.products li.product .add_to_cart_button.loading {
-  opacity: 0.55;
+  opacity: 0.75;
   cursor: wait;
   transform: none;
+}
+.woocommerce ul.products li.product .add_to_cart_button.loading::after {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-inline-start: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: luvit-woo-spin 600ms linear infinite;
+  font-family: inherit; /* neutralise Woo's icon font */
+}
+@keyframes luvit-woo-spin { to { transform: rotate(360deg); } }
+.woocommerce ul.products li.product .add_to_cart_button.added::after {
+  content: "✓";
+  margin-inline-start: 8px;
+  font-family: inherit;
 }
 /* "view cart" ghost link that appears after a successful add */
 .woocommerce ul.products li.product a.added_to_cart.added_to_cart {
@@ -3796,8 +3867,10 @@ body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
   text-decoration: none;
 }
 
-/* ---- sale badge: same ink treatment as .luvit-card__badge--accent (~736).
-   Brand rule: fuchsia is never a fill. ---- */
+/* ---- sale badge: research round (21st.dev badge system + Golden Scent
+   placement). SALE is semantically different from label badges (جديد /
+   الأكثر مبيعًا stay ink): white ground, hairline, fuchsia dot + text —
+   the LEGAL fuchsia use (accent on white, never a fill). ---- */
 .woocommerce ul.products li.product span.onsale.onsale,
 .woocommerce span.onsale.onsale {
   position: absolute;
@@ -3808,16 +3881,26 @@ body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
   bottom: auto;
   min-height: 0;
   min-width: 0;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 5px 12px;
   border-radius: var(--radius-pill);
-  background: var(--badge-accent-bg);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(12, 51, 60, 0.12);
+  color: #D02D86;
   font-size: var(--text-caption);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.4;
   box-shadow: var(--shadow-sm);
   margin: 0;
+}
+.woocommerce span.onsale.onsale::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D02D86;
 }
 
 /* ---- toolbar row: result count + ordering ---- */
