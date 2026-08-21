@@ -3948,15 +3948,22 @@ body.woocommerce-page .woocommerce-result-count.woocommerce-result-count {
 body.woocommerce-page .woocommerce-ordering.woocommerce-ordering {
   margin: 0 0 var(--space-4);
 }
+/* CORRECTED 21 Aug. This shipped at 44px with a 1px border and 12px of inline
+   padding, while every other control on the site is 52px with a 1.5px border and
+   16px. Three disagreements on one dropdown, and 5.30's attempt to unify it lost
+   the cascade at (0,3,1) against this rule's (0,4,1) — our own selector, again.
+   Fixed here at source rather than layered over. */
 body.woocommerce-page .woocommerce-ordering select.orderby {
-  min-height: 44px;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--field-border, rgba(12, 51, 60, 0.18));
+  min-height: var(--field-h, 52px);
+  padding-block: 14px;
+  padding-inline: var(--field-pad-x, 16px);
+  border: 1.5px solid var(--field-border);
   border-radius: var(--field-radius);
-  background: #fff;
+  background: var(--field-bg, #fff);
   font-family: var(--font-body);
   font-size: var(--field-fs);
   color: var(--color-ink);
+  cursor: pointer;
 }
 
 /* ---- pagination [DOC: classic selectors — not in live capture yet (only
@@ -6878,7 +6885,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v34";
+  content: "CSS v36";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -8625,4 +8632,237 @@ body.woocommerce-cart .wc-blocks-components-select__container > svg {
   body.woocommerce-cart .wc-blocks-components-select__select option[value=""] {
     color: var(--field-placeholder, #8A9AA0);
   }
+}
+
+/* ==========================================================================
+   5.30 · ONE FORM LANGUAGE, EVERY PAGE  (21 Aug)
+   --------------------------------------------------------------------------
+   Ryan: «وتأكد · موحّد عكامل الموقع»
+
+   Everything built so far was scoped `body.woocommerce-cart` and
+   `body.woocommerce-checkout`, because those were the pages under review. So a
+   field on any OTHER page kept whatever WooCommerce or the browser gave it.
+
+   SURVEYED the whole front end, logged OUT (an admin never sees the login
+   form, which is exactly why this went unnoticed):
+
+     /shop
+       select.orderby ........ radius 16, border #C7D7DD, h 44   ours, near
+       a.add_to_cart_button .. aqua-600 pill, h 48               ours
+     /my-account  (logged out)
+       #username, #password .. radius 16, border #C7D7DD, h 54   ours, near
+       submit «تسجيل الدخول» . bg #E9E6ED, border #515151, radius 3, h 36  🔴
+       #rememberme ........... raw browser box, 13px tall                  🔴
+       .show-password-input .. black border, radius 0                      🔴
+     a blog post
+       #comment textarea ..... border #666, radius 3px                     🔴
+     every page
+       .power-coupons-drawer-close .. border #CC3366, radius 3             🔴
+
+   The login button is the worst of them: it is the primary action on that page
+   and it was WordPress grey with 3px corners. The remember-me box is 13px tall,
+   a third of a tap target.
+
+   Nothing below invents a value. Every number is the token the equivalent
+   control already uses on the cart and checkout.
+   ========================================================================== */
+
+/* ---- 1 · CLASSIC WOOCOMMERCE BUTTONS, WHEREVER THEY LAND -------------------
+   3779 dressed the shop grid's add-to-cart and nothing else, so «تسجيل الدخول»
+   and «تسجيل» and every future classic submit stayed stock. Same recipe, same
+   tokens, applied by role instead of by page. ---- */
+body.woocommerce-page .woocommerce a.button:not(.add_to_cart_button):not(.added_to_cart),
+body.woocommerce-page .woocommerce button.button,
+body.woocommerce-page .woocommerce input.button,
+body.woocommerce-page .woocommerce button[type="submit"].woocommerce-button,
+body.woocommerce-page .woocommerce-form button[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--btn-min-height, 48px);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
+  background-color: var(--btn-fill-top);
+  background-image:
+    linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 140ms var(--ease-out-soft, ease),
+    box-shadow 140ms var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-page .woocommerce a.button:not(.add_to_cart_button):hover,
+  body.woocommerce-page .woocommerce button.button:hover,
+  body.woocommerce-page .woocommerce input.button:hover,
+  body.woocommerce-page .woocommerce-form button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -10px color-mix(in oklab, var(--aqua-600, #1E869C) 70%, transparent);
+  }
+}
+body.woocommerce-page .woocommerce a.button:focus-visible,
+body.woocommerce-page .woocommerce button.button:focus-visible,
+body.woocommerce-page .woocommerce input.button:focus-visible,
+body.woocommerce-page .woocommerce-form button[type="submit"]:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 3px;
+}
+
+/* ---- 2 · THE DRAWN CONTROL, OUTSIDE THE BLOCK PAGES ------------------------
+   5.6 draws the checkbox and the radio, and scoped them to the two block
+   pages. «تذكرني» on the login form measured 13px tall and looked like 1998.
+   Same drawn control, reached by the classic markup instead. ---- */
+body.woocommerce-page .woocommerce-form input[type="checkbox"],
+body.woocommerce-page .woocommerce input[type="checkbox"]:not(.wc-block-components-checkbox__input),
+body.woocommerce-page form.woocommerce-form-login input[type="checkbox"],
+#commentform input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  inline-size: var(--luvit-ctl, 22px);
+  block-size: var(--luvit-ctl, 22px);
+  margin: 0;
+  margin-inline-end: var(--space-3, 0.75rem);
+  vertical-align: middle;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  background-color: var(--color-paper, #FFFFFF);
+  background-image: linear-gradient(180deg,
+    color-mix(in oklab, var(--color-paper, #FFF) 95%, transparent) 0%,
+    transparent 60%);
+  box-shadow: inset 0 0 0 var(--luvit-ring, 1.5px) var(--color-line, #E1E9EC);
+  transition:
+    background-color 180ms var(--luvit-ease, ease),
+    box-shadow 180ms var(--luvit-ease, ease),
+    transform 120ms var(--luvit-ease, ease);
+}
+body.woocommerce-page .woocommerce-form input[type="checkbox"]:checked,
+body.woocommerce-page .woocommerce input[type="checkbox"]:not(.wc-block-components-checkbox__input):checked,
+#commentform input[type="checkbox"]:checked {
+  background-color: var(--aqua-500, #29A9C0);
+  background-image: none;
+  box-shadow: inset 0 0 0 var(--luvit-ring, 1.5px) var(--aqua-500, #29A9C0);
+}
+/* the tick, drawn rather than shipped as an image */
+body.woocommerce-page .woocommerce-form input[type="checkbox"]:checked::after,
+body.woocommerce-page .woocommerce input[type="checkbox"]:not(.wc-block-components-checkbox__input):checked::after,
+#commentform input[type="checkbox"]:checked::after {
+  content: "";
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  background-color: #FFFFFF;
+  clip-path: polygon(
+    18% 48%, 30% 36%, 43% 49%, 70% 22%, 82% 34%, 43% 73%
+  );
+}
+body.woocommerce-page .woocommerce-form input[type="checkbox"]:focus-visible,
+body.woocommerce-page .woocommerce input[type="checkbox"]:not(.wc-block-components-checkbox__input):focus-visible,
+#commentform input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 3px;
+}
+/* the row it sits in: a 22px control against text needs a real baseline */
+body.woocommerce-page .woocommerce-form-login .woocommerce-form-login__rememberme,
+body.woocommerce-page .woocommerce-form__label-for-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  min-block-size: 44px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+/* ---- 3 · THE SHOW-PASSWORD EYE --------------------------------------------
+   WooCommerce parks a bare <button> inside the password field. It measured a
+   black border and square corners on a 16px-rounded field. ---- */
+body.woocommerce-page .woocommerce .show-password-input,
+body.woocommerce-page .woocommerce button.show-password-input {
+  inset-inline-end: var(--field-pad-x, 16px);
+  inset-inline-start: auto;
+  border: 0;
+  border-radius: var(--radius-sm, 10px);
+  background-color: transparent;
+  color: var(--color-ink-soft, #47555B);
+  cursor: pointer;
+}
+body.woocommerce-page .woocommerce .show-password-input:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+}
+
+/* ---- 4 · THE COMMENT FORM --------------------------------------------------
+   Not a shop page, so nothing had ever reached it: border #666, radius 3px,
+   browser defaults end to end. It is still the site, and it is still ours. ---- */
+#commentform input[type="text"],
+#commentform input[type="email"],
+#commentform input[type="url"],
+#commentform textarea {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: var(--field-h, 52px);
+  padding: 14px var(--field-pad-x, 16px);
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--field-radius, 16px);
+  background-color: var(--field-bg, #FFF);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--field-fs, 16px);   /* 16px floor: below it iOS zooms on focus */
+  line-height: 1.6;
+  text-align: start;
+  -webkit-appearance: none;
+          appearance: none;
+}
+#commentform textarea {
+  min-block-size: 140px;
+  resize: vertical;
+}
+#commentform input:focus,
+#commentform textarea:focus {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+  border-color: var(--aqua-600, #1E869C);
+}
+#commentform input::placeholder,
+#commentform textarea::placeholder {
+  color: var(--field-placeholder, #8A9AA0);
+  opacity: 1;
+}
+
+/* ---- 5 · SELECTS, EVERYWHERE ----------------------------------------------
+   5.29 dressed the governorate on the two block pages. `.orderby` on /shop was
+   already close but measured 44px against the 52px every field uses, so the
+   two disagreed by 8px. One height for every control on the site. ---- */
+/* the box itself is owned by the rule at the shop-grid section, corrected in
+   the same session. Only the focus ring is added here, because that section
+   never had one. */
+body.woocommerce-page .woocommerce select.orderby:focus,
+body.woocommerce-page .woocommerce-ordering select:focus {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+  border-color: var(--aqua-600, #1E869C);
+}
+
+/* ---- 6 · THE LAST OF THE STOCK PINK ---------------------------------------
+   `.power-coupons-drawer-close` still carries #CC3366 with 3px corners on
+   EVERY page, inside a fixed off-canvas panel. 5.9 hid the plugin's trigger,
+   so the drawer never opens and this is invisible today. It is one rule, and
+   the day someone re-enables that trigger it should not be the one element on
+   the site wearing another brand's accent. ---- */
+.power-coupons-drawer .power-coupons-drawer-close {
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: 50%;
+  background-color: var(--color-mist, #F2F7F9);
+  color: var(--color-ink, #1A2529);
 }
