@@ -1,0 +1,226 @@
+<!-- ══════════════════════════════════════════════════════════════════════
+     اختبار نوع البشرة · /quiz
+     ══════════════════════════════════════════════════════════════════════
+     الرئيسية بتوعد بالحرف: «أقل من دقيقة · ٥ أسئلة بس» وبتعرض السؤال
+     الأول («شو أكثر إشي بيزعجك ببشرتك؟») بخياراته الأربعة. فالسؤال الأول
+     هون **هو نفسه حرفياً** · لو اختلف، الزبونة بتحس إنها رجعت لورا.
+
+     ══════════════════════════════════════════════════════════════════════
+     كيف بيشتغل
+     ══════════════════════════════════════════════════════════════════════
+     الأسئلة الخمسة كلها بالماركب من أول تحميل. `motion.js` §15 بيخفي
+     غير الأول وبينقل بينهم مع كل اختيار.
+
+     🔴 **وبلا جافاسكربت؟** بتظهر الخمسة مع بعض ورسالة بتقول إن النتيجة
+        محتاجة جافاسكربت، مع رابط `/routines` عشان تختار بإيدها. ما في
+        زر بيوعد بنتيجة وما بيعطيها · هاد أسوأ من عدم وجود الاختبار.
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴 النتيجة **اقتراح مش تشخيص** · وهاد مكتوب بالنص المنشور مش بتعليق
+     ══════════════════════════════════════════════════════════════════════
+     خمس أسئلة ما بتشخّص بشرة. الصفحة بتقول هاد صراحة بمكانين: تحت زر
+     البدء، وبكرت النتيجة نفسه. وما في ولا كلمة عن حالة جلدية ولا علاج.
+
+     وقاعدة الترجيح: **الحسّاسة بتفوز أول** لو جمعت نقطتين أو أكثر، حتى لو
+     غيرها أعلى. السبب مش إحصائي، هو سلامة: روتين لطيف بيناسب بشرة عادية،
+     والعكس مش صحيح. والقاعدة مكتوبة بـ§15 مش هون.
+
+     ══════════════════════════════════════════════════════════════════════
+     ⚠️ الكونتينر بإلمنتور: CSS ID = `quiz` · و Attributes: `data-nav-bg|dark`
+        (خط عامودي مش يساوي). بلا الثاني القائمة بتتعامل مع السكشن كأنه
+        فاتح وبتطلع أبيض على أبيض.
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<section class="luvit-section luvit-section--dark luvit-deep luvit-page-top"
+         data-nav-bg="dark" data-luvit-bubbles="12" id="quiz">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">اختبار نوع البشرة</span>
+      </nav>
+      <p class="luvit-section__eyebrow">Skin quiz</p>
+      <h1 class="luvit-section__title">اكتشفي نوع بشرتك</h1>
+      <p class="luvit-section__sub">
+        خمس أسئلة قصيرة · وبنقترحلك روتين. مش تشخيص طبي.
+      </p>
+    </div>
+
+    <!-- ───────── الاختبار ───────── -->
+    <!-- 🔴 التعريف للجافاسكربت بـ`data-luvit-quiz` مش بكلاس. الكلاسات
+         للستايل والداتا للسلوك · وكلاس ما إله قاعدة بالستايل شيت هو كلاس
+         ميت بيوهم اللي بعدك إنه بيعمل إشي. -->
+    <div class="luvit-quiz luvit-quiz--on-dark" data-luvit-quiz>
+
+      <!-- 🔴 بينظهر بس لما الجافاسكربت ما يشتغل · §15 بيشيله أول شي -->
+      <p class="luvit-quiz__nojs">
+        الاختبار بده جافاسكربت عشان يطلّعلك النتيجة.
+        بتقدري تختاري نوع بشرتك بإيدك من <a href="/routines">صفحة الروتينات</a>.
+      </p>
+
+      <div class="luvit-quiz__progress" data-quiz-progress hidden>
+        <p class="luvit-quiz__count">
+          سؤال <span data-quiz-now>١</span> من ٥
+        </p>
+        <div class="luvit-quiz__bar" role="progressbar"
+             aria-valuemin="0" aria-valuemax="5" aria-valuenow="1"
+             aria-label="تقدّمك بالاختبار">
+          <span class="luvit-quiz__fill" data-quiz-fill></span>
+        </div>
+      </div>
+
+      <!-- ═════ سؤال ١ · نفس سؤال الرئيسية حرفياً ═════ -->
+      <fieldset class="luvit-quiz__step" data-quiz-step="1">
+        <legend class="luvit-quiz__q">شو أكثر إشي بيزعجك ببشرتك؟</legend>
+        <div class="luvit-optiongrid">
+          <label class="luvit-option">
+            <input type="radio" name="q1" value="dry">
+            <span class="luvit-option__icon" aria-hidden="true">💧</span>
+            <span class="luvit-option__label">جفاف وشدّ</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q1" value="oily">
+            <span class="luvit-option__icon" aria-hidden="true">✦</span>
+            <span class="luvit-option__label">لمعة ودهون</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q1" value="oily">
+            <span class="luvit-option__icon" aria-hidden="true">◇</span>
+            <span class="luvit-option__label">حبوب</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q1" value="sensitive">
+            <span class="luvit-option__icon" aria-hidden="true">✿</span>
+            <span class="luvit-option__label">احمرار وحساسية</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- ═════ سؤال ٢ ═════ -->
+      <fieldset class="luvit-quiz__step" data-quiz-step="2" hidden>
+        <legend class="luvit-quiz__q">بعد ساعتين من الغسيل، كيف بتصير بشرتك؟</legend>
+        <div class="luvit-optiongrid">
+          <label class="luvit-option">
+            <input type="radio" name="q2" value="oily">
+            <span class="luvit-option__icon" aria-hidden="true">✦</span>
+            <span class="luvit-option__label">بتلمع كلها</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q2" value="combination">
+            <span class="luvit-option__icon" aria-hidden="true">◈</span>
+            <span class="luvit-option__label">منطقة T بس بتلمع</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q2" value="dry">
+            <span class="luvit-option__icon" aria-hidden="true">💧</span>
+            <span class="luvit-option__label">بتشدّ وبتنشف</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q2" value="sensitive">
+            <span class="luvit-option__icon" aria-hidden="true">✿</span>
+            <span class="luvit-option__label">بتحمرّ أو بتحكّ</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- ═════ سؤال ٣ ═════ -->
+      <fieldset class="luvit-quiz__step" data-quiz-step="3" hidden>
+        <legend class="luvit-quiz__q">المسام عندك؟</legend>
+        <div class="luvit-optiongrid">
+          <label class="luvit-option">
+            <input type="radio" name="q3" value="oily">
+            <span class="luvit-option__icon" aria-hidden="true">✦</span>
+            <span class="luvit-option__label">واضحة بكل الوجه</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q3" value="combination">
+            <span class="luvit-option__icon" aria-hidden="true">◈</span>
+            <span class="luvit-option__label">واضحة بالأنف والجبين</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q3" value="dry">
+            <span class="luvit-option__icon" aria-hidden="true">💧</span>
+            <span class="luvit-option__label">تقريباً مش باينة</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q3" value="sensitive">
+            <span class="luvit-option__icon" aria-hidden="true">✿</span>
+            <span class="luvit-option__label">ما بلاحظها · بس بشرتي بتتهيّج</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- ═════ سؤال ٤ ═════ -->
+      <fieldset class="luvit-quiz__step" data-quiz-step="4" hidden>
+        <legend class="luvit-quiz__q">لمّا تجرّبي منتج جديد، شو بيصير عادةً؟</legend>
+        <div class="luvit-optiongrid">
+          <label class="luvit-option">
+            <input type="radio" name="q4" value="none">
+            <span class="luvit-option__icon" aria-hidden="true">◇</span>
+            <span class="luvit-option__label">ولا إشي</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q4" value="oily">
+            <span class="luvit-option__icon" aria-hidden="true">✦</span>
+            <span class="luvit-option__label">بتطلع حبوب</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q4" value="dry">
+            <span class="luvit-option__icon" aria-hidden="true">💧</span>
+            <span class="luvit-option__label">بتنشّف وبتقشّر</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q4" value="sensitive">
+            <span class="luvit-option__icon" aria-hidden="true">✿</span>
+            <span class="luvit-option__label">بتحمرّ أو بتحرق</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- ═════ سؤال ٥ ═════ -->
+      <fieldset class="luvit-quiz__step" data-quiz-step="5" hidden>
+        <legend class="luvit-quiz__q">بتفرق معك الشتا عن الصيف؟</legend>
+        <div class="luvit-optiongrid">
+          <label class="luvit-option">
+            <input type="radio" name="q5" value="none">
+            <span class="luvit-option__icon" aria-hidden="true">◇</span>
+            <span class="luvit-option__label">نفس الإشي</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q5" value="oily">
+            <span class="luvit-option__icon" aria-hidden="true">✦</span>
+            <span class="luvit-option__label">بالصيف بتلمع أكثر</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q5" value="dry">
+            <span class="luvit-option__icon" aria-hidden="true">💧</span>
+            <span class="luvit-option__label">بالشتا بتنشف كثير</span>
+          </label>
+          <label class="luvit-option">
+            <input type="radio" name="q5" value="sensitive">
+            <span class="luvit-option__icon" aria-hidden="true">✿</span>
+            <span class="luvit-option__label">أي تغيير بيتعبها</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- ═════ النتيجة ═════
+           فاضية بالماركب · §15 بيعبّيها. وهي `aria-live` عشان قارئ الشاشة
+           يسمع النتيجة لما تطلع، مش يضل يدوّر عليها. -->
+      <div class="luvit-quiz__result" data-quiz-result role="status" aria-live="polite" hidden></div>
+
+      <div class="luvit-quiz__foot" data-quiz-foot hidden>
+        <button type="button" class="luvit-btn luvit-btn--ghost luvit-btn--on-dark"
+                data-quiz-back>رجوع</button>
+        <p class="luvit-quiz__hint">اختاري إجابة ومنكمّل لحالنا.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>

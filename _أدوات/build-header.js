@@ -105,7 +105,7 @@ sub(dockOld, dockNew, 'دوك · الروتين←المنتجات');
    أحذفهم أصلاً. وبناء أي صفحة بيضل تعديل سطر: احذف علامتي التعليق. */
 /* 🔴 هاي القائمة **بتنقص** كل ما تنبني صفحة · مش قائمة ثابتة.
    /track انشالت منها ٢٢ آب لما انعملت صفحة 210 وانفحصت 200. */
-const DEAD = ['/routines', '/about', '/quiz', '/shipping', '/faq', '/contact'];
+const DEAD = ['/about', '/shipping', '/faq', '/contact'];
 const lines = h.split('\n');
 const out = [];
 let wrapped = 0;
@@ -121,7 +121,7 @@ for (const line of lines) {
   wrapped++;
 }
 h = out.join('\n');
-if (wrapped !== 8) throw new Error('توقّعت ٨ روابط ميتة ولقيت ' + wrapped);
+if (wrapped !== 5) throw new Error('توقّعت ٥ روابط ميتة ولقيت ' + wrapped);
 log.push('✅ روابط معلّقة ×' + wrapped + ' على ' + Object.keys(seen).length + ' مسار');
 
 /* ── فحوصات · كلها لازم تمر قبل الكتابة ──────────────────────────────── */
@@ -142,7 +142,8 @@ const orphan = h.match(/<\/[a-z]+>\s*>/g);
 if (orphan) throw new Error('وسم إغلاق يتيم: ' + orphan.join(' '));
 
 /* كل رابط باقٍ بالـDOM لازم يكون على صفحة حية · مقيس ٢١ آب بكود الحالة */
-const LIVE = ['/', '/shop', '/products', '/cart', '/checkout', '/my-account', '/track'];
+const LIVE = ['/', '/shop', '/products', '/cart', '/checkout', '/my-account', '/track',
+              '/routines', '/quiz'];
 const domHrefs = [];
 h.replace(/<!--[\s\S]*?-->/g, '').replace(/href="(\/[^"]*)"/g, (m, u) => { domHrefs.push(u); return m; });
 const dead = [...new Set(domHrefs)].filter(u => !LIVE.includes(u));
@@ -151,7 +152,26 @@ log.push('✅ كل رابط بالـDOM حي · ' + [...new Set(domHrefs)].sort(
 
 if (/aria-current/.test(h)) throw new Error('لسا فيه aria-current ثابتة بالماركب');
 if (/luvit-unbuilt/.test(h)) throw new Error('لسا فيه كلاس luvit-unbuilt · المفروض تعليق مش إخفاء');
-if (h.length < 4600) throw new Error('المخرج قصير: ' + h.length);
+
+/* 🔴 كان هون فحص طول («أقل من 4600 = مقطوع») وكان **مقياساً غلط**.
+   كل ما تنبني صفحة، بينشال رابط من قائمة الميتة، وبينشال معه سطرا التعليق
+   اللي حواليه · فالملف **بيقصر كل ما الموقع بيكبر**. العتبة انكسرت أول مرة
+   انفتح فيها رابطا الروتينات والكويز، وهي كانت بتقاتل الاتجاه الصح.
+
+   الطول مش دليل على السلامة أصلاً. الدليل إن القطع اللي لازم تكون موجودة
+   موجودة، وهاد بينفحص بالاسم. */
+const MUST = [
+  ['<header class="luvit-nav"', 'الهيدر'],
+  ['luvit-drawer', 'الدرج'],
+  ['luvit-dock', 'الدوك'],
+  ['id="luvit-cart-count"', 'عدّاد السلة'],
+  ['luvit-skip', 'رابط تخطّي المحتوى'],
+  ['href="/products"', 'رابط المنتجات'],
+  ['href="/shop"', 'رابط المتجر'],
+];
+const missing = MUST.filter(([needle]) => !h.includes(needle)).map(([, name]) => name);
+if (missing.length) throw new Error('ناقص من المخرج: ' + missing.join(' · '));
+log.push('✅ كل قطعة أساسية موجودة · ' + MUST.length + ' فحص');
 
 /* ── الكتابة ─────────────────────────────────────────────────────────── */
 const final = CRLF ? h.replace(/\n/g, '\r\n') : h;

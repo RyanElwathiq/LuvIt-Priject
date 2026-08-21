@@ -9954,3 +9954,173 @@ body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-d
   grid-template-columns: repeat(2, minmax(0, 420px));
   justify-content: center;
 }
+
+/* ==========================================================================
+   5.43 · THE SKIN QUIZ PAGE  (22 Aug)
+   --------------------------------------------------------------------------
+   /quiz reuses `.luvit-quiz` and `.luvit-option` from the home page teaser.
+   What it adds is everything a real quiz needs and a teaser does not: a
+   progress bar, one-question-at-a-time framing, and a result card.
+
+   🔴 EVERY CLASS BELOW IS NEW AND LIVES HERE, NOT IN THE SECTION FILE.
+   A rule written inside a section's own <style> block travels with that one
+   section and nowhere else. `.routine-grid` was already learned the hard way
+   (see 5.41), and the quiz needs its styles on a page the section does not
+   own alone.
+
+   The whole page sits on `.luvit-deep`, so every colour here is a light-on-
+   dark value. Nothing in this section is reused on a light band.
+   ========================================================================== */
+
+/* ---- the no-JS notice ---------------------------------------------------
+   Visible by default and hidden by §15 on its first line. That order is
+   deliberate: a notice that starts hidden and is *shown* by script is a
+   notice that never appears when the script is the thing that failed. */
+.luvit-quiz__nojs {
+  max-inline-size: 46ch;
+  margin: 0 auto var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  text-align: center;
+  line-height: 1.7;
+}
+.luvit-quiz__nojs a { color: var(--aqua-200); }
+
+/* ---- progress ----------------------------------------------------------- */
+.luvit-quiz__progress {
+  max-inline-size: 30ch;
+  margin: 0 auto var(--space-6);
+  text-align: center;
+}
+.luvit-quiz__count {
+  margin: 0 0 var(--space-3);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.72);
+}
+.luvit-quiz__bar {
+  block-size: 6px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+/* 🔴 the fill is sized with inline-size, NOT width, and it is set from JS as
+   a percentage. In RTL a block element fills from the inline start, which is
+   the right edge, so the bar grows the way the page reads with no flipping
+   and no direction check anywhere. */
+.luvit-quiz__fill {
+  display: block;
+  block-size: 100%;
+  inline-size: 20%;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--aqua-300), var(--aqua-400));
+  transition: inline-size var(--duration-base, 320ms) var(--ease-out-soft);
+}
+
+/* ---- a question --------------------------------------------------------- */
+/* fieldset carries a user-agent border and padding in every browser; a
+   question is not a boxed group here, it is the whole screen */
+.luvit-quiz__step {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;   /* fieldset refuses to shrink below its content without this */
+}
+.luvit-quiz__step legend {
+  display: block;
+  inline-size: 100%;
+  padding: 0;
+}
+/* the legend is focused by script when a question appears, so it must not
+   draw a focus ring the way a control would */
+.luvit-quiz__step legend:focus { outline: none; }
+.luvit-quiz__step legend:focus-visible {
+  outline: 2px solid var(--aqua-300);
+  outline-offset: 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- the result --------------------------------------------------------- */
+.luvit-quiz__result {
+  max-inline-size: 54ch;
+  margin-inline: auto;
+  padding: var(--space-7) var(--space-6);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.09);
+  text-align: center;
+  color: #fff;
+}
+.luvit-quiz__result:focus { outline: none; }
+
+.luvit-quiz__resultlabel {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-latin);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--aqua-200);
+}
+.luvit-quiz__resulttitle {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: #fff;
+}
+.luvit-quiz__resultline {
+  margin: 0 0 var(--space-6);
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.7;
+}
+.luvit-quiz__resultfoot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+/* the sentence that keeps the result a suggestion. It is quieter than the
+   result and it is never hidden: no breakpoint, no state, no toggle. */
+.luvit-quiz__resultnote {
+  margin: var(--space-6) 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.62);
+}
+.luvit-quiz__resultnote a { color: var(--aqua-200); }
+
+/* ---- the back button row ------------------------------------------------ */
+.luvit-quiz__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* 🔴 THE `hidden` ATTRIBUTE LOSES TO ANY AUTHOR `display` RULE, AND THIS
+   SHIPPED BROKEN BEFORE IT WAS CAUGHT.
+
+   The browser implements `hidden` as `[hidden] { display: none }` in its own
+   stylesheet, and every author rule outranks the user-agent sheet. So
+   `.luvit-quiz__foot { display: flex }` above quietly cancelled it: §15 set
+   `foot.hidden = true` when the result appeared, the attribute landed on the
+   element, and the back button stayed on screen underneath the result anyway.
+
+   The first version of this only covered CHILDREN of the foot
+   (`.luvit-quiz__foot [hidden]`, with a space) and missed the foot itself.
+
+   ⚠️ Any element that gets a `display` here and is toggled with `hidden` from
+   script needs its own line below. `.luvit-quiz__progress`,
+   `.luvit-quiz__result` and the fieldsets are safe only because nothing here
+   sets `display` on them. */
+.luvit-quiz__foot[hidden],
+.luvit-quiz__resultfoot[hidden],
+.luvit-quiz__foot [hidden] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-quiz__fill { transition: none; }
+}

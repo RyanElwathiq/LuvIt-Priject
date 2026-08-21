@@ -1983,3 +1983,216 @@ if (document.readyState === 'loading') {
 }
 
 window.LUVIT.navCurrent = { init: luvitNavCurrent };
+
+/* --------------------------------------------------------------------------
+   15. Skin quiz — 22 Aug.
+
+   Five questions, one visible at a time, then a suggested routine. All five
+   are in the markup from the first byte; this only hides four of them.
+
+   WHY THE MARKUP CARRIES ALL FIVE
+   -------------------------------
+   With this script absent or broken, the reader still sees every question and
+   a line telling her the result needs JavaScript, plus a link to /routines so
+   she can choose for herself. The alternative — an empty container filled by
+   script — shows nothing at all when the script fails, and a quiz that shows
+   nothing is worse than no quiz.
+
+   🔴 THE RESULT IS A SUGGESTION, NOT A DIAGNOSIS. Five questions cannot tell
+   anyone what their skin is. The page says so in its own copy, twice, and this
+   file must never start producing anything that reads as a verdict.
+
+   THE TIE RULE, AND WHY IT IS NOT A MAJORITY
+   ------------------------------------------
+   `sensitive` wins outright at 2 points or more, even when another type scores
+   higher. That is not what the answers say; it is a deliberate override, and
+   the reason is asymmetric risk:
+
+       a gentle routine on ordinary skin ....... fine
+       an active routine on reactive skin ...... not fine
+
+   So when the answers are ambiguous the suggestion errs toward the routine
+   that cannot hurt. Everything else is a plain highest-score, and a tie
+   between oily and dry resolves to `combination`, which is what a face with
+   both actually is.
+
+   `none` is a real answer, not a missing one: "nothing happens" and "no
+   difference between summer and winter" both describe balanced skin and
+   deliberately score nothing.
+   -------------------------------------------------------------------------- */
+function luvitQuiz() {
+  var root = document.querySelector('[data-luvit-quiz]');
+  if (!root) return;
+
+  var steps    = Array.prototype.slice.call(root.querySelectorAll('[data-quiz-step]'));
+  var result   = root.querySelector('[data-quiz-result]');
+  var foot     = root.querySelector('[data-quiz-foot]');
+  var progress = root.querySelector('[data-quiz-progress]');
+  var fill     = root.querySelector('[data-quiz-fill]');
+  var nowEl    = root.querySelector('[data-quiz-now]');
+  var backBtn  = root.querySelector('[data-quiz-back]');
+  var nojs     = root.querySelector('.luvit-quiz__nojs');
+  if (!steps.length || !result) return;
+
+  var ROUTES = {
+    oily:        { ar: 'البشرة الدهنية',  href: '/routines/oily',
+                   line: 'توازن بلا جفاف · تنظيف لطيف وترطيب خفيف.' },
+    dry:         { ar: 'البشرة الجافة',   href: '/routines/dry',
+                   line: 'ترطيب بطبقات · الماء بينحبس لما تحطي طبقة فوق طبقة.' },
+    combination: { ar: 'البشرة المختلطة', href: '/routines/combination',
+                   line: 'منطقتين بمزاجين · نفس المنتجات والكمية بتختلف.' },
+    sensitive:   { ar: 'البشرة الحسّاسة', href: '/routines/sensitive',
+                   line: 'أقل عدد خطوات · وكل منتج جديد بيتجرّب لحاله.' }
+  };
+
+  var ARABIC = ['٠', '١', '٢', '٣', '٤', '٥'];
+  var at = 0;
+
+  /* the markup shows everything for the no-JS reader; from here the script
+     owns visibility, so it takes over before anything else happens */
+  if (nojs) nojs.hidden = true;
+  if (progress) progress.hidden = false;
+  if (foot) foot.hidden = false;
+
+  function show(i) {
+    at = i;
+    steps.forEach(function (s, n) { s.hidden = (n !== i); });
+    result.hidden = true;
+    if (foot) foot.hidden = false;
+    if (backBtn) backBtn.hidden = (i === 0);
+    if (nowEl) nowEl.textContent = ARABIC[i + 1] || String(i + 1);
+    if (fill) fill.style.inlineSize = ((i + 1) / steps.length * 100) + '%';
+    var bar = root.querySelector('[role="progressbar"]');
+    if (bar) bar.setAttribute('aria-valuenow', String(i + 1));
+
+    /* move focus to the question so a keyboard or screen-reader user lands on
+       the new one instead of staying on the option they just left behind */
+    var legend = steps[i].querySelector('legend');
+    if (legend) {
+      legend.setAttribute('tabindex', '-1');
+      try { legend.focus({ preventScroll: true }); } catch (e) { legend.focus(); }
+    }
+  }
+
+  function score() {
+    var tally = { oily: 0, dry: 0, combination: 0, sensitive: 0 };
+    var answered = 0;
+    steps.forEach(function (s) {
+      var picked = s.querySelector('input[type="radio"]:checked');
+      if (!picked) return;
+      answered++;
+      if (picked.value !== 'none' && tally.hasOwnProperty(picked.value)) tally[picked.value]++;
+    });
+    return { tally: tally, answered: answered };
+  }
+
+  function decide(t) {
+    /* see the note at the top: this override is about risk, not arithmetic */
+    if (t.sensitive >= 2) return 'sensitive';
+
+    var best = null, bestN = -1, tied = [];
+    Object.keys(t).forEach(function (k) {
+      if (t[k] > bestN) { bestN = t[k]; best = k; tied = [k]; }
+      else if (t[k] === bestN) { tied.push(k); }
+    });
+
+    /* 🔴 ANY TIE AT THE TOP RESOLVES TO `combination`, AND THAT IS A RULE, NOT
+       A FALLBACK.
+
+       The first version only caught an oily/dry tie and let everything else
+       fall through to `best`. `best` is whichever tied key the loop happened
+       to reach first, which is the order the keys were written in the object
+       literal — so a 2-2 tie between oily and combination returned `oily`
+       purely because `oily` is typed above `combination` in this file. That is
+       a result decided by source formatting, and moving one line would have
+       changed what a reader is told about her own face.
+
+       MEASURED on the live page before the fix: answers oily / combination /
+       combination / none / oily gave oily 2, combination 2, and the page said
+       البشرة الدهنية.
+
+       The principled answer was already sitting there: a tie means the five
+       answers did not agree on one type, and a face showing more than one type
+       at once is what `combination` means. So the tie IS the finding, not a
+       problem to break. */
+    if (tied.length > 1) return 'combination';
+
+    /* nobody scored: every answer was "nothing happens" */
+    if (bestN === 0) return 'combination';
+    return best;
+  }
+
+  function finish() {
+    var s = score();
+    var key = decide(s.tally);
+    var r = ROUTES[key] || ROUTES.combination;
+
+    steps.forEach(function (st) { st.hidden = true; });
+    if (progress) progress.hidden = true;
+    if (foot) foot.hidden = true;
+
+    result.innerHTML =
+      '<p class="luvit-quiz__resultlabel">على حسب إجاباتك</p>' +
+      '<h2 class="luvit-quiz__resulttitle">' + r.ar + '</h2>' +
+      '<p class="luvit-quiz__resultline">' + r.line + '</p>' +
+      '<div class="luvit-quiz__resultfoot">' +
+      '<a class="luvit-btn luvit-btn--arrow" href="' + r.href + '">شوفي الروتين</a>' +
+      '<button type="button" class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" ' +
+      'data-quiz-again>أعيدي الاختبار</button>' +
+      '</div>' +
+      /* 🔴 this line is not decoration. It is the difference between a
+         suggestion and a claim, and it ships with every single result. */
+      '<p class="luvit-quiz__resultnote">هاد اقتراح مبني على خمس أسئلة · مش تشخيص. ' +
+      'وبتقدري تشوفي <a href="/routines">كل الروتينات</a> وتختاري غيره.</p>';
+    result.hidden = false;
+
+    var again = result.querySelector('[data-quiz-again]');
+    if (again) again.addEventListener('click', reset);
+
+    result.setAttribute('tabindex', '-1');
+    try { result.focus({ preventScroll: true }); } catch (e) { result.focus(); }
+  }
+
+  function reset() {
+    root.querySelectorAll('input[type="radio"]').forEach(function (i) { i.checked = false; });
+    result.innerHTML = '';
+    if (progress) progress.hidden = false;
+    show(0);
+  }
+
+  /* delegated: one listener for all five questions, and it keeps working if a
+     question is ever added or removed from the markup */
+  root.addEventListener('change', function (e) {
+    var input = e.target;
+    if (!input || input.type !== 'radio') return;
+    var step = input.closest('[data-quiz-step]');
+    if (!step) return;
+    var i = steps.indexOf(step);
+    if (i < 0) return;
+
+    /* a beat before moving on, so the chosen option is visibly chosen first.
+       🔴 setTimeout, not requestAnimationFrame: rAF never fires in a tab the
+       browser has stopped painting, and this has already frozen a call in this
+       project for 45 seconds. Same reasoning as §11.b, §12 and §14. */
+    setTimeout(function () {
+      if (i + 1 < steps.length) show(i + 1);
+      else finish();
+    }, LUVIT_REDUCED ? 0 : 260);
+  });
+
+  if (backBtn) {
+    backBtn.addEventListener('click', function () {
+      if (at > 0) show(at - 1);
+    });
+  }
+
+  show(0);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitQuiz);
+} else {
+  luvitQuiz();
+}
+
+window.LUVIT.quiz = { init: luvitQuiz };
