@@ -134,7 +134,12 @@
    animation: the page appears frozen for a beat, then lurches. Ryan reported
    exactly that on cart/checkout from his phone, 21 Aug — "بتضللك تعمل سكرول
    بدون ما يتغير اشي وفجاه بتنزل". So it is opted IN per page below. */
-html { direction: rtl; scroll-behavior: smooth; }
+/* NOTE — no scroll-behavior here on purpose. It applied to every scroll on
+   the site, so a plain finger flick on checkout became an eased animation
+   that froze then lurched (measured from Ryan's screen recording, 21 Aug).
+   Smooth scrolling now lives in motion.js and fires ONLY on same-page anchor
+   clicks. See "10. Anchor smooth scroll" there. */
+html { direction: rtl; }
 
 body {
   font-family: var(--font-body);
@@ -6660,10 +6665,12 @@ body.woocommerce-checkout .power-coupons-view-coupons-btn {
    🔴 RULE: never put `:has()` on `html` or `body` with a common argument.
    The cost is paid on every mutation, everywhere.
 
-   The checkout jank is still open. The right fix is JS, not CSS: drop the
-   global smooth rule entirely and give anchor links their own smooth scroll
-   via `scrollIntoView({behavior:'smooth'})` in motion.js. That needs the
-   motion.js snippet republished, so it is a separate, deliberate change.
+   ✅ RESOLVED 21 Aug, after Ryan sent a screen recording. Frame-by-frame
+   motion analysis of the content area showed it sitting at the noise floor
+   through most of a scroll with occasional 6-7x jumps — his "nothing moves
+   then it lurches", proven numerically. The global CSS rule is now GONE and
+   smooth scrolling lives in motion.js section 10: same-page anchors only,
+   only when the target exists, and never under prefers-reduced-motion.
    ========================================================================== */
 
 /* ==========================================================================
@@ -6764,5 +6771,29 @@ body.woocommerce-checkout .power-coupons-view-coupons-btn {
   body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step:has(+ .wc-block-checkout__terms),
   body.woocommerce-checkout .wc-block-checkout .wc-block-checkout__order-notes.wc-block-checkout__order-notes {
     border-bottom: 0;
+  }
+}
+
+/* ==========================================================================
+   5.13 · SMOOTH SCROLL OFF AT THE ROOT  (21 Aug)
+   --------------------------------------------------------------------------
+   Removing our own "html { scroll-behavior: smooth }" was not enough:
+   ELEMENTOR ships its own inside @media (prefers-reduced-motion: no-preference)
+   in frontend.min.css. Found by walking the CSSOM after the removal and seeing
+   the computed value still read "smooth".
+
+   "html:root" beats a bare "html" on specificity (0,1,1 vs 0,0,1) and needs no
+   :has(), which is banned on the root here — it re-evaluates on every DOM
+   mutation and visibly broke the home page waves.
+
+   Smooth scrolling is not lost: motion.js §10 applies it to same-page anchor
+   clicks only, which is the one place it was ever wanted.
+   ========================================================================== */
+html:root {
+  scroll-behavior: auto;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:root {
+    scroll-behavior: auto;
   }
 }

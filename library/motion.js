@@ -1199,3 +1199,57 @@ if (document.readyState === 'loading') {
 window.LUVIT.compare = { init: luvitCompare };
 window.LUVIT.autoBubbles = luvitAutoBubbles;
 window.LUVIT.waves = { init: luvitWaves };
+
+/* --------------------------------------------------------------------------
+   10. Anchor smooth scroll — replaces the global CSS rule.
+
+   `html { scroll-behavior: smooth }` applied to EVERY scroll on the site,
+   including a plain finger flick on checkout. A flick then became an eased
+   animation: the page looked frozen for a beat and lurched. Measured from
+   Ryan's screen recording, 21 Aug — the content area sat at the noise floor
+   through most of a scroll, with occasional jumps of 6-7x that.
+
+   Scoping the CSS rule with `html:has(...)` was tried and REVERTED: a :has()
+   on the root re-evaluates on every DOM mutation, and the home page mutates
+   constantly (hero canvas, GSAP, IntersectionObservers), which visibly broke
+   the waves.
+
+   So: no CSS smooth scrolling anywhere. Smooth behaviour is applied here,
+   only to same-page anchor clicks, only when the target exists, and never
+   when the visitor asked for reduced motion.
+   -------------------------------------------------------------------------- */
+function luvitAnchorScroll() {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="#"]') : null;
+    if (!a) return;
+
+    var href = a.getAttribute('href') || '';
+    var hash = href.indexOf('#') > -1 ? href.slice(href.indexOf('#')) : '';
+    if (!hash || hash === '#') return;                 /* placeholder link */
+
+    /* only same-document links */
+    if (a.pathname !== window.location.pathname || a.host !== window.location.host) return;
+
+    var target;
+    try { target = document.querySelector(hash); } catch (err) { return; }
+    if (!target) return;
+
+    e.preventDefault();
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+
+    /* keep the URL honest without triggering a second jump */
+    if (window.history && window.history.pushState) {
+      window.history.pushState(null, '', hash);
+    }
+  }, { passive: false });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitAnchorScroll);
+} else {
+  luvitAnchorScroll();
+}
+
+window.LUVIT.anchorScroll = { init: luvitAnchorScroll };
