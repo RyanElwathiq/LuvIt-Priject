@@ -105,7 +105,13 @@ sub(dockOld, dockNew, 'دوك · الروتين←المنتجات');
    أحذفهم أصلاً. وبناء أي صفحة بيضل تعديل سطر: احذف علامتي التعليق. */
 /* 🔴 هاي القائمة **بتنقص** كل ما تنبني صفحة · مش قائمة ثابتة.
    /track انشالت منها ٢٢ آب لما انعملت صفحة 210 وانفحصت 200. */
-const DEAD = ['/about', '/shipping', '/faq', '/contact'];
+const DEAD = ['/about', '/contact'];
+
+/* عدّ كم رابط بالماركب بيشير على مسار ميت · قبل ما نلمس إشي.
+   هاد هو العدد اللي لازم ينعلّق، وأي فرق معناه إن سطراً ما انطابق. */
+const expected = DEAD.reduce(
+  (n, href) => n + (h.match(new RegExp('href="' + href + '"', 'g')) || []).length, 0);
+
 const lines = h.split('\n');
 const out = [];
 let wrapped = 0;
@@ -121,7 +127,18 @@ for (const line of lines) {
   wrapped++;
 }
 h = out.join('\n');
-if (wrapped !== 5) throw new Error('توقّعت ٥ روابط ميتة ولقيت ' + wrapped);
+/* 🔴 العدد **بينحسب من الماركب**، ما بينكتب بالإيد.
+
+   كان مكتوباً رقماً ثابتاً بمكانين (الشرط والرسالة)، وكل مرة تنبني صفحة
+   لازم يتغيّروا الاثنين. أول مرة انفتح رابطا الشحن والأسئلة، الشرط انغيّر
+   والرسالة لأ · فطلعت «توقّعت ٥ ولقيت ٣» وهي كذبة بالحالتين.
+
+   والعدد المتوقّع مش عدد المسارات: `/about` موجود بالشريط **وبالدرج**،
+   فمسار واحد بيعطي تعليقين. فبنعدّ من الملف نفسه قبل التعديل. */
+if (wrapped !== expected) {
+  throw new Error('توقّعت ' + expected + ' رابط ميت بالماركب ولقيت ' + wrapped +
+    ' · المسارات: ' + DEAD.join(' '));
+}
 log.push('✅ روابط معلّقة ×' + wrapped + ' على ' + Object.keys(seen).length + ' مسار');
 
 /* ── فحوصات · كلها لازم تمر قبل الكتابة ──────────────────────────────── */
@@ -143,7 +160,7 @@ if (orphan) throw new Error('وسم إغلاق يتيم: ' + orphan.join(' '));
 
 /* كل رابط باقٍ بالـDOM لازم يكون على صفحة حية · مقيس ٢١ آب بكود الحالة */
 const LIVE = ['/', '/shop', '/products', '/cart', '/checkout', '/my-account', '/track',
-              '/routines', '/quiz'];
+              '/routines', '/quiz', '/shipping', '/faq'];
 const domHrefs = [];
 h.replace(/<!--[\s\S]*?-->/g, '').replace(/href="(\/[^"]*)"/g, (m, u) => { domHrefs.push(u); return m; });
 const dead = [...new Set(domHrefs)].filter(u => !LIVE.includes(u));

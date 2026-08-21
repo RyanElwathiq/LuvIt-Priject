@@ -38,7 +38,7 @@ if (!outName || !files.length) {
 const LIVE = new Set([
   '/', '/shop', '/products', '/cart', '/checkout', '/my-account', '/track',
   '/routines', '/routines/oily', '/routines/dry', '/routines/combination',
-  '/routines/sensitive', '/quiz',
+  '/routines/sensitive', '/quiz', '/shipping', '/faq',
 ]);
 
 const blocks = [];

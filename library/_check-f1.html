@@ -1,0 +1,336 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>check f1</title><link rel="stylesheet" href="tokens.css"></head>
+<body><!-- ══════════════════════════════════════════════════════════════════════
+     الأسئلة الشائعة · /faq
+     ══════════════════════════════════════════════════════════════════════
+     البنية · أربع كونتينرات بالإلمنتور:
+
+       ١. ترويسة الصفحة (فتات الخبز · h1 · جملة وصف)      id=page-head
+       ٢. الطلب والدفع + التوصيل                          id=faq-order
+       ٣. المنتجات والمكوّنات + البشرة والاستعمال          id=faq-product
+       ٤. الحساب وتتبّع الطلب + الإرجاع                    id=faq-account
+       ٥. الدرزة: ما لقيتي جوابك؟                          id=faq-more
+
+     ١٤ سؤال · ست مجموعات · كل مجموعة `luvit-acc` لحالها بـ`data-acc-single`
+     عشان فتح سؤال بمجموعة ما يسكّر سؤالاً بمجموعة تانية.
+
+     كيف بينركّب:
+     1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله (كونتينر لكل قسم فوق)
+     2. الصق السكشن كامل
+     3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+          data-nav-bg|light      (وللقسم الأخير: data-nav-bg|dark)
+        ⚠ الفاصل خط عامودي | مش يساوي =
+     4. CSS ID من الجدول فوق ← Advanced ← CSS ID
+     5. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+     ⚠ إيقاع الشرائط: mist (ترويسة) · light · mist · light · غامق (درزة).
+
+     ⚠ سؤال واحد بس مفتوح بالصفحة كلها (أول سؤال بأول مجموعة). لو فتحنا أول
+       سؤال بكل مجموعة بتصير خمس أجوبة مفتوحة على بعض والصفحة بتطول بلا فايدة.
+
+     🔴 وفقرة وحدة `<p>` بكل جواب · ولا أكثر.
+        `.luvit-acc__a` معرّف `display:grid` مع `> * { margin: 0 }`، فأي
+        فقرة تانية بتلزق بالأولى بلا مسافة. تحققت من tokens.css سطر 2950.
+
+     ══════════════════════════════════════════════════════════════════════
+     قواعد المحتوى · غير قابلة للتفاوض
+     ══════════════════════════════════════════════════════════════════════
+     · **الزبونة تُخاطَب بالمؤنث** · «اختاري» مش «اختار».
+     · **ولا شرطة طويلة** بأي نص بينشر · النقطة الوسطى (·) بدالها.
+     · وكل كلاس متفحوص إنه موجود بـtokens.css.
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴🔴🔴 أقفال · خمس أجوبة ممنوعة هون بأي صياغة
+     ══════════════════════════════════════════════════════════════════════
+
+     ١ · ولا مدة توصيل · لا ساعات ولا أيام ولا «بسرعة».
+         شركة التوصيل ما ردّت لحد الآن. جواب «متى بتوصل؟» مكتوب عشان يضل
+         صحيحاً بلا رقم، ونفس صياغة p7-faq.html بالضبط.
+         ⤷ انثبّتت المدة؟ بدّل الجملة الأخيرة برقم مثبّت، وحدّث
+           p6-delivery.html وp7-faq.html بنفس اللحظة.
+
+     ٢ · «بتفحصي الطلب قبل ما تدفعي» ممنوعة تماماً.
+         موجودة بـ11-faq.html سطر 49 وهي **غير مؤكدة** · ما انسأل أصلاً إذا
+         شركة التوصيل بتسمح بفتح الطرد. جواب «كيف بدفع؟» هون بيوعد بالدفع
+         عند الاستلام **بس**، ولا بيلمّح للفحص.
+
+     ٣ · «عنا خط مخصص للبشرة الحسّاسة» ممنوعة.
+         موجودة بـ11-faq.html سطر 63 وهي **مخترعة** · المتجر فيه ستة منتجات
+         بس ولا واحد منهم خط حسّاسة. الجواب هون بيقول الحقيقة صراحة
+         وبيوجّهها لصفحة روتين البشرة الحسّاسة (وهي موجودة فعلاً).
+
+     ٤ · ولا مدة لظهور نتيجة على البشرة.
+         «٢ لـ٤ أسابيع» بـ11-faq.html سطر 71 ادعاء طبي · ممنوع مطلقاً بأي
+         صياغة، ولا حتى «مع الاستمرار».
+
+     ٥ · **أجرة التوصيل ممنوع تنكتب بالـHTML.**
+         الرقم إعداد بووكومرس (Flat rate على زون JO)، ولو ريّان غيّره بتصير
+         الصفحة بتناقض الشيك أوت. الصياغة الصح: «بتبيّن بصفحة إتمام الطلب».
+         ⤷ نفس القفل بـp6-delivery.html · اقرأ رأسه قبل ما تعدّل.
+
+     ══════════════════════════════════════════════════════════════════════
+     ⚠ ولا «تواصلي معنا» بهاي الصفحة · الدومين بلا سجل MX فما بيستقبل إيميل،
+       وولا رقم تلفون مثبت، وما في صفحة /contact. فالصفحة **ما بتطلب تواصل
+       وما بتعطي طريقة**، بتوجّه لصفحة موجودة فعلاً بدالها:
+         نوع البشرة ← /quiz · الروتينات ← /routines · الطلب ← /track
+       🔴 أول ما ينثبّت مسار تواصل، درزة «ما لقيتي جوابك؟» هي مكانه.
+
+     ⚠ الروابط المستعملة هون كلها من القائمة المسموحة:
+       / · /shop · /products · /routines · /routines/sensitive · /quiz ·
+       /track · /my-account · /shipping
+       ولا href="#" ولا رابط على /contact أو /about.
+
+     🔴 و/shipping لساها بتتبنى بنفس الدفعة · إذا نزلت هاي الصفحة قبلها،
+        شيل الرابط من جواب «لوين بتوصلوا؟» ولا تخلّيه معلّقاً.
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
+         data-nav-bg="light" id="page-head">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">الأسئلة الشائعة</span>
+      </nav>
+
+      <p class="luvit-section__eyebrow">FAQ</p>
+      <h1 class="luvit-section__title">الأسئلة الشائعة</h1>
+      <p class="luvit-section__sub">
+        كل اللي بتحتاجي تعرفيه قبل ما تطلبي · وإذا في إشي لسا ما تأكّدنا منه،
+        مكتوب هون إنه لسا ما تأكّدنا منه.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٢ · الطلب والدفع + التوصيل ═══════════════ -->
+<section class="luvit-section band-light" data-nav-bg="light" id="faq-order">
+  <div class="luvit-section__inner" style="max-inline-size:820px">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Ordering</p>
+      <h2 class="luvit-section__title">الطلب والدفع</h2>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <details class="luvit-acc__item" open>
+        <summary class="luvit-acc__q">
+          كيف بطلب؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>اختاري البكج أو المنتج وأضيفيه للسلة. بعدها بصفحة إتمام الطلب بتكتبي اسمك ورقم تلفونك وعنوانك وبتأكّدي الطلب · وبتدفعي عند الاستلام. وكل المنتجات موجودة بـ<a href="/shop">المتجر</a>.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كيف بدفع؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>الدفع عند الاستلام بس · بتدفعي للمندوب لمّا يوصلك الطلب. ما في دفع مسبق ولا بطاقة على الموقع، وكل الأسعار بالدينار الأردني.</p></div>
+      </details>
+
+    </div>
+
+    <div class="luvit-section__head" data-luvit="reveal" style="margin-top:4rem">
+      <p class="luvit-section__eyebrow">Delivery</p>
+      <h2 class="luvit-section__title">التوصيل</h2>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          لوين بتوصلوا؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>التوصيل داخل الأردن بس، ولكل المحافظات. وحالياً ما منشحن لبرّا الأردن · وتفاصيل الشحن بتلاقيها بصفحة <a href="/shipping">الشحن والتوصيل</a>.</p></div>
+      </details>
+
+      <!-- 🔴 مقفول · ولا رقم لمدة التوصيل · نفس صياغة p7-faq.html -->
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          متى بتوصل؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>أول ما يوصلنا طلبك منجهّزه ومنسلّمه لشركة التوصيل. أما مدة التوصيل بالضبط بأيام العمل، منكتبها هون لمّا نثبّتها مع شركة التوصيل · ما منحكيلك رقم قبل ما نتأكد منه.</p></div>
+      </details>
+
+      <!-- 🔴 مقفول · ولا رقم لأجرة التوصيل · الرقم إعداد بووكومرس -->
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كم أجرة التوصيل؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>في أجرة توصيل ثابتة بتنضاف على قيمة الطلب، وبتبيّن بصفحة إتمام الطلب قبل ما تأكّدي · يعني بتشوفي المجموع كامل قبل ما تضغطي تأكيد.</p></div>
+      </details>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٣ · المنتجات والمكوّنات + البشرة والاستعمال ═══════════════ -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="faq-product">
+  <div class="luvit-section__inner" style="max-inline-size:820px">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Products</p>
+      <h2 class="luvit-section__title">المنتجات والمكوّنات</h2>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <!-- ⚠ الستة أسماء مقيسة من wc/v3/products بتاريخ ٢٢ آب · ولا اسم غيرهم -->
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          شو المنتجات اللي عندكم؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>ثلاث منتجات مفردة: منظف هيدرا اللطيف · تونر الترطيب العميق · سيروم فيتامين سي. وثلاث بكجات: بكج الروتين الأساسي · بكج البشرة الدهنية · بكج البشرة الجافة. كلهم بـ<a href="/shop">المتجر</a>.</p></div>
+      </details>
+
+      <!-- ⚠ النِسَب الأربع مكتوبة على العبوة · اتّهمت مرة بالاختراع وطلعت صحيحة · لا تشيلها ولا تغيّرها -->
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          شو النِسَب المكتوبة على العبوة؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>فيتامين سي 10% · نياسيناميد 2% · حمض الهيالورونيك 2% · بانثينول 2%. النِسَب مكتوبة زي ما هي على العبوة، وبتلاقي تفاصيل المكوّنات بصفحة <a href="/products">المنتجات</a>.</p></div>
+      </details>
+
+      <!-- 🔴 محتويات البكجات غير مثبتة · البكجات الثلاثة simple مش grouped فووكومرس ما بيعرف شو جوّاهم -->
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          شو جوّا كل بكج؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>محتويات كل بكج منكتبها بصفحته أول ما نثبّتها · وما منحكيلك محتوى قبل ما نتأكد منه. ولحد ذاك الوقت، كل منتج مفرد بينباع لحاله من صفحة <a href="/products">المنتجات</a>.</p></div>
+      </details>
+
+    </div>
+
+    <div class="luvit-section__head" data-luvit="reveal" style="margin-top:4rem">
+      <p class="luvit-section__eyebrow">Skin</p>
+      <h2 class="luvit-section__title">البشرة والاستعمال</h2>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كيف بعرف نوع بشرتي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>اعملي <a href="/quiz">اختبار البشرة</a> · أسئلة قصيرة وبآخرها منرشّحلك الروتين اللي بناسبك.</p></div>
+      </details>
+
+      <!-- ⚠ ترتيب الخطوات معرفة عامة بالعناية مش ادعاء نتيجة · مسموح · ولا كلمة عن نتيجة أو مدة -->
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          بأي ترتيب أستعمل المنتجات؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>تنظيف، بعدها تونر، بعدها سيروم، وبالآخر ترطيب. وكل روتين مكتوب بخطواته صبح ومسا بصفحته من <a href="/routines">الروتينات</a>.</p></div>
+      </details>
+
+      <!-- 🔴 مقفول · ما في خط مخصص للبشرة الحسّاسة · الجواب بيقولها صراحة -->
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          بشرتي حسّاسة · شو المناسب؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>ما عنا خط منتجات مخصص للبشرة الحسّاسة · اللي عنا هو نفس المنتجات الستة. النِسَب مكتوبة على العبوة فتقدري تقرأيها قبل ما تشتري، وفي <a href="/routines/sensitive">روتين للبشرة الحسّاسة</a> بيشرح الترتيب.</p></div>
+      </details>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٤ · الحساب وتتبّع الطلب + الإرجاع ═══════════════ -->
+<section class="luvit-section band-light" data-nav-bg="light" id="faq-account">
+  <div class="luvit-section__inner" style="max-inline-size:820px">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Account</p>
+      <h2 class="luvit-section__title">الحساب وتتبّع الطلب</h2>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كيف بتبّع طلبي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>من صفحة <a href="/track">تتبّع الطلب</a> بتقدري تشوفي حالة طلبك.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          وين بلاقي طلباتي السابقة؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>بصفحة <a href="/my-account">حسابك</a> · سجّلي دخولك ومن هناك بتوصلي لطلباتك.</p></div>
+      </details>
+
+    </div>
+
+    <div class="luvit-section__head" data-luvit="reveal" style="margin-top:4rem">
+      <p class="luvit-section__eyebrow">Returns</p>
+      <h2 class="luvit-section__title">الإرجاع</h2>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <!-- 🔴 مؤقت · نص سياسة الإرجاع لساه ما انكتب · وولا رابط لصفحة ما انبنت -->
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          إذا ما ناسبتني؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>سياسة الإرجاع والاستبدال لسّا بتتكتب، وأول ما تجهز بتلاقيها كاملة بصفحتها · وما منوعدك بإشي قبل ما ينكتب. وإذا مش متأكدة إذا المنتج بناسب بشرتك، اعملي <a href="/quiz">الاختبار</a> قبل ما تطلبي.</p></div>
+      </details>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٥ · الدرزة: ما لقيتي جوابك؟ ═══════════════
+     🔴 ولا «تواصلي معنا» هون · ما في قناة تواصل مثبتة (الدومين بلا MX،
+        ولا رقم تلفون، ولا صفحة /contact). الأزرار الثلاثة كلها صفحات حيّة.
+     ⚠ `luvit-cut-top` بياكل ٧٠px من أعلى العنصر · الحشوة العلوية الافتراضية
+        بـ`luvit-section` بتعوّضها · لا تشيلها.
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-section luvit-section--dark luvit-deep luvit-cut-top"
+         data-nav-bg="dark" data-luvit-bubbles="6" id="faq-more">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <h2 class="luvit-section__title">ما لقيتي جوابك؟</h2>
+      <p class="luvit-section__sub">
+        في أسئلة لسا ما إلها جواب مؤكد عنا، وما منكتبها قبل ما نتأكد منها.
+        ولهلق، هدول الصفحات فيهم أغلب اللي بتدوّري عليه.
+      </p>
+    </div>
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--arrow" href="/quiz">اعملي الاختبار</a>
+      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/routines">كل الروتينات</a>
+      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/track">تتبّعي طلبك</a>
+    </div>
+  </div>
+</section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
+
+<script src="motion.js"></script></body></html>
