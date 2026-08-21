@@ -6885,7 +6885,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v36";
+  content: "CSS v38";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -8569,12 +8569,14 @@ body.woocommerce-cart .wc-blocks-components-select__container > svg {
   /* the select's own arrow is Woo's SVG in the container; base-select adds a
      second one of its own inside the button, so that one goes */
   body.woocommerce-checkout .wc-blocks-components-select__select::picker-icon,
-  body.woocommerce-cart .wc-blocks-components-select__select::picker-icon {
+  body.woocommerce-cart .wc-blocks-components-select__select::picker-icon,
+  body.woocommerce-page select.orderby::picker-icon {
     display: none;
   }
 
   body.woocommerce-checkout .wc-blocks-components-select__select::picker(select),
-  body.woocommerce-cart .wc-blocks-components-select__select::picker(select) {
+  body.woocommerce-cart .wc-blocks-components-select__select::picker(select),
+  body.woocommerce-page select.orderby::picker(select) {
     appearance: base-select;
     box-sizing: border-box;
     margin-block-start: var(--space-2, 0.5rem);
@@ -8592,7 +8594,8 @@ body.woocommerce-cart .wc-blocks-components-select__container > svg {
   }
 
   body.woocommerce-checkout .wc-blocks-components-select__select option,
-  body.woocommerce-cart .wc-blocks-components-select__select option {
+  body.woocommerce-cart .wc-blocks-components-select__select option,
+  body.woocommerce-page select.orderby option {
     display: flex;
     align-items: center;
     min-block-size: 44px;          /* a governorate is picked with a thumb */
@@ -8607,29 +8610,34 @@ body.woocommerce-cart .wc-blocks-components-select__container > svg {
   /* base-select draws a checkmark column in front of every option. We mark the
      chosen one with the wash instead, which is what the radio cards do. */
   body.woocommerce-checkout .wc-blocks-components-select__select option::checkmark,
-  body.woocommerce-cart .wc-blocks-components-select__select option::checkmark {
+  body.woocommerce-cart .wc-blocks-components-select__select option::checkmark,
+  body.woocommerce-page select.orderby option::checkmark {
     display: none;
   }
   body.woocommerce-checkout .wc-blocks-components-select__select option:hover,
-  body.woocommerce-cart .wc-blocks-components-select__select option:hover {
+  body.woocommerce-cart .wc-blocks-components-select__select option:hover,
+  body.woocommerce-page select.orderby option:hover {
     background-color: var(--aqua-50, #EAFAFD);
   }
   body.woocommerce-checkout .wc-blocks-components-select__select option:checked,
-  body.woocommerce-cart .wc-blocks-components-select__select option:checked {
+  body.woocommerce-cart .wc-blocks-components-select__select option:checked,
+  body.woocommerce-page select.orderby option:checked {
     background-color: var(--aqua-50, #EAFAFD);
     color: var(--aqua-700, #196B7D);
     font-weight: 600;
   }
   /* keyboard travel has to be visible, and the OS highlight is gone now */
   body.woocommerce-checkout .wc-blocks-components-select__select option:focus,
-  body.woocommerce-cart .wc-blocks-components-select__select option:focus {
+  body.woocommerce-cart .wc-blocks-components-select__select option:focus,
+  body.woocommerce-page select.orderby option:focus {
     outline: 2px solid var(--aqua-600, #1E869C);
     outline-offset: -2px;
     background-color: var(--aqua-100, #D0F3F9);
   }
   /* the placeholder row is an instruction, not a choice */
   body.woocommerce-checkout .wc-blocks-components-select__select option[value=""],
-  body.woocommerce-cart .wc-blocks-components-select__select option[value=""] {
+  body.woocommerce-cart .wc-blocks-components-select__select option[value=""],
+  body.woocommerce-page select.orderby option[value=""] {
     color: var(--field-placeholder, #8A9AA0);
   }
 }
@@ -8865,4 +8873,115 @@ body.woocommerce-page .woocommerce-ordering select:focus {
   border-radius: 50%;
   background-color: var(--color-mist, #F2F7F9);
   color: var(--color-ink, #1A2529);
+}
+
+/* ==========================================================================
+   5.32 · THE SHOP ORDERING DROPDOWN  (21 Aug)
+   --------------------------------------------------------------------------
+   Ryan: «هذا الزر مش متناسق واشاره السهم اللي لتحت ملزق بالزاويه كثير
+          والقائمه المنسدله كمان»
+
+   MEASURED on /shop after 5.30 corrected the box:
+
+       select.orderby   appearance: auto
+                        padding: 14px 16px      (symmetric, both sides)
+                        background-image: none
+
+   `appearance: auto` means the arrow in his screenshot is CHROME's, not ours.
+   Chrome draws it hard against the inline-end edge and vertically wherever it
+   likes, and our symmetric padding gave it nothing to sit in. So the arrow was
+   jammed into the corner of a 16px-rounded box, which is exactly what he saw.
+
+   And the open list was the operating system's, blue highlight and all, because
+   5.29's `base-select` opt-in named only the block checkout's select. That has
+   been widened in the same session: the eight rules in 5.29.b now carry
+   `select.orderby` too, so this dropdown opens wearing the same panel as the
+   governorate one.
+
+   What is left is the closed box: take Chrome's arrow away, draw our own, and
+   reserve the lane it stands in.
+   ========================================================================== */
+
+/* the form is the positioning context for the chevron. It ships as a block
+   form with the select inside; making it inline-block keeps it from stretching
+   the full row while still anchoring the arrow. */
+body.woocommerce-page form.woocommerce-ordering {
+  position: relative;
+  display: inline-block;
+  max-inline-size: 100%;
+}
+
+body.woocommerce-page .woocommerce-ordering select.orderby.orderby {
+  -webkit-appearance: none;
+          appearance: none;
+  /* room for the chevron: the gutter, the 20px glyph, and a breath between
+     them and the text. Matches the governorate field exactly. */
+  padding-inline-end: calc(var(--field-pad-x, 16px) + 20px + var(--space-2, 0.5rem));
+}
+
+/* our chevron, drawn once, centred against the box rather than the corner.
+   `translateY(-50%)` off the midline is what makes it sit level no matter what
+   the box height turns out to be. */
+body.woocommerce-page form.woocommerce-ordering::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: var(--field-pad-x, 16px);
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  inline-size: 20px;
+  block-size: 20px;
+  pointer-events: none;
+  background-color: var(--aqua-600, #1E869C);
+  /* a mask, not an <img>: the colour then comes from the token above and can
+     never drift out of the palette */
+  -webkit-mask: var(--luvit-chevron) center / 20px 20px no-repeat;
+          mask: var(--luvit-chevron) center / 20px 20px no-repeat;
+}
+
+/* one chevron for the whole sheet, so a second one can never disagree */
+:root {
+  --luvit-chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+}
+
+/* Firefox keeps a focus ring INSIDE the box on selects; ours is outside, and
+   two rings read as a rendering fault rather than as focus. */
+body.woocommerce-page .woocommerce-ordering select.orderby:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 var(--color-ink);
+}
+
+/* the row it sits in. WooCommerce prints the result count and the ordering form
+   as two floated siblings, which stack badly in RTL and worse on a phone. */
+body.woocommerce-page .woocommerce-notices-wrapper + .woocommerce-result-count,
+body.woocommerce-page .woocommerce-result-count {
+  margin-block-end: var(--space-3, 0.75rem);
+  color: var(--color-ink-soft, #47555B);
+  font-size: var(--text-body-sm, 0.875rem);
+}
+@media (max-width: 767px) {
+  body.woocommerce-page form.woocommerce-ordering {
+    display: block;
+    inline-size: 100%;
+  }
+  body.woocommerce-page .woocommerce-ordering select.orderby.orderby {
+    inline-size: 100%;
+  }
+}
+
+/* ---- 5.32 continued · re-assert the picker opt-in AFTER the fallback.
+   Measured right after publishing v37: `appearance` computed `none`, not
+   `base-select`. The opt-in lives in 5.29.b and this section sets
+   `appearance: none` on the same selector further down the file, so the
+   fallback quietly won and the list went back to being the operating system's.
+
+   Same shape of mistake as the checkbox, the quantity chip and the ordering
+   box before it: OUR rule beating OUR rule. Order matters as much as
+   specificity, and appending is not free.
+
+   The fallback still has to come first for every browser that stops there. So
+   the opt-in is simply restated last. ---- */
+@supports (appearance: base-select) {
+  body.woocommerce-page .woocommerce-ordering select.orderby.orderby {
+    appearance: base-select;
+  }
 }
