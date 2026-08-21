@@ -6878,7 +6878,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v15";
+  content: "CSS v24";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -7029,4 +7029,276 @@ body.woocommerce-checkout .wc-block-components-checkbox .wc-block-components-che
 body.woocommerce-checkout .wc-block-components-checkbox .wc-block-components-checkbox__input {
   flex: 0 0 auto;
   margin-block-start: 2px;
+}
+
+/* ==========================================================================
+   5.19 · THE CART ROW COULD NOT SHRINK  (21 Aug — Ryan's phone, text clipped)
+   --------------------------------------------------------------------------
+   Reported: on his phone the cart row ran off the screen and the line total
+   was cut in half ("66.00د.ا" rendered as ".00!د").
+
+   MEASURED, and it is a stock WooCommerce bug, not ours. Their phone layout
+   (cart-rtl.css, @media max-width:699px) turns the row into a grid:
+
+       grid-template-columns: 80px 132px;
+       .wc-block-cart-item__image    { grid-column-start:1; grid-row-start:1 }
+       .wc-block-cart-item__product  { grid-column:2/4;     grid-row-start:1 }
+       .wc-block-cart-item__quantity { grid-column-start:1; grid-row-start:2 }
+       .wc-block-cart-item__total    { grid-row-start:1 }   <-- no column
+
+   `.wc-block-cart-item__quantity` no longer exists as a row cell in Woo 11 —
+   the quantity selector moved inside the product cell — so that rule targets
+   a ghost, and the total, given a row but no column, auto-places into an
+   implicit FOURTH column. Computed on the live page:
+
+       grid-template-columns: 80px 132px 38px 71.25px
+       80 + 16 + 132 + 16 + 38 + 16 + 71 = 369px
+
+   369px is a floor: narrowing the container to 320px left the table at 369.
+   Any viewport under ~385px clips the total. Proven by probe — replacing the
+   track list dropped the table to 280px and it fit inside 320px.
+
+   FIX: give the grid the two rows Woo meant to have, with the free track as
+   minmax(0,1fr) so it can actually shrink. `1fr` alone would not: its implied
+   minimum is min-content, which is what let the quantity selector's 132px
+   push the whole table wide in the first place.
+   ========================================================================== */
+@media (max-width: 699px) {
+
+  /* Two columns, and the second one is allowed to give way. */
+  body.woocommerce-cart .wc-block-cart table.wc-block-cart-items .wc-block-cart-items__row {
+    grid-template-columns: 72px minmax(0, 1fr);
+    column-gap: var(--space-4);
+    align-items: start;
+  }
+
+  /* Thumbnail keeps its own column and spans both rows so the row reads as
+     one block rather than two stacked strips. */
+  body.woocommerce-cart .wc-block-cart table.wc-block-cart-items .wc-block-cart-items__row .wc-block-cart-item__image {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    padding-inline: 0;
+  }
+  body.woocommerce-cart .wc-block-cart table.wc-block-cart-items .wc-block-cart-item__image img {
+    inline-size: 100%;
+    block-size: auto;
+    border-radius: var(--radius-md, 16px);
+  }
+
+  /* Name, price and the quantity selector. min-inline-size:0 is the whole
+     point — without it a grid item refuses to shrink past its content. */
+  body.woocommerce-cart .wc-block-cart table.wc-block-cart-items .wc-block-cart-items__row .wc-block-cart-item__product {
+    grid-column: 2;
+    grid-row: 1;
+    min-inline-size: 0;
+    padding: 0;
+  }
+
+  /* The line total gets the row Woo intended for it. */
+  body.woocommerce-cart .wc-block-cart table.wc-block-cart-items .wc-block-cart-items__row .wc-block-cart-item__total {
+    grid-column: 2;
+    grid-row: 2;
+    min-inline-size: 0;
+    padding-block-start: var(--space-2);
+  }
+
+  /* Long product names must wrap instead of widening the track. */
+  body.woocommerce-cart .wc-block-cart .wc-block-components-product-name.wc-block-components-product-name,
+  body.woocommerce-cart .wc-block-cart .wc-block-cart-item__product .wc-block-components-product-price {
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* Belt and braces: the selector keeps its 44px tap targets but is no longer
+     allowed to act as a width floor for the track it sits in. */
+  body.woocommerce-cart .wc-block-components-quantity-selector.wc-block-components-quantity-selector {
+    max-inline-size: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Woo hides the remove link on phones and leaves no way to empty a line
+     except stepping the quantity down. Put it back. */
+  body.woocommerce-cart .wc-block-cart table.wc-block-cart-items .wc-block-cart-item__remove-link {
+    display: inline;
+    margin-inline-start: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--color-ink-soft, #5B6B70);
+  }
+}
+
+/* ==========================================================================
+   5.20 · TWO PRICES, TWO DIRECTIONS  (21 Aug — found while verifying 5.19)
+   --------------------------------------------------------------------------
+   MEASURED on the live cart, same row, same amount "22.00د.ا":
+
+       .wc-block-cart-item__product .wc-block-components-product-price
+           direction: rtl      <- inherited from <html>
+       .wc-block-cart-item__total  .wc-block-components-formatted-money-amount
+           direction: ltr      <- ours, section 5.3
+
+   Woo wraps the line total in `formatted-money-amount` but the unit price in
+   `product-price`, so our rule reached one and not the other. The result was
+   the currency sitting on opposite sides of the number twice in one row.
+
+   Unified on ltr, which is what every other price on the cart and checkout
+   already renders as (totals, subtotal, order summary all use
+   `formatted-money-amount`). Flipping the whole site to `د.ا 22.00` instead
+   is a one-word change here — it is a language call, not a technical one.
+   ========================================================================== */
+body.woocommerce-cart .wc-block-cart-item__product .wc-block-components-product-price,
+body.woocommerce-cart .wc-block-cart-item__product .wc-block-components-product-price__value,
+body.woocommerce-checkout .wc-block-components-order-summary-item__total-price {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-latin, "Jost", system-ui, sans-serif);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the remove button sat 16px further out than the 12px gap Woo gives it,
+   because 5.19 added a margin it did not need. Measured: selector starts at
+   108, remove ended at 80, and 108 - 12 - 80 = 16 = exactly that margin. ---- */
+@media (max-width: 699px) {
+  body.woocommerce-cart .wc-block-cart table.wc-block-cart-items .wc-block-cart-item__remove-link {
+    margin-inline-start: 0;
+  }
+}
+
+/* ==========================================================================
+   5.21 · THE SECOND COLUMN WAS FALLING OFF THE ROW  (21 Aug — Ryan, desktop)
+   --------------------------------------------------------------------------
+   Reported: "وضلت عمود واحد والزووم ع 100%" — the order summary sat under the
+   form instead of beside it, and he had already ruled out browser zoom.
+
+   MEASURED in his own browser (innerWidth 1536, devicePixelRatio 1.25 which is
+   Windows display scaling, not zoom):
+
+       .wc-block-components-sidebar-layout   flex-direction: row, flex-wrap: wrap
+       .wc-block-components-main             left 589  width 741  top 235
+       .wc-block-components-sidebar          left 931  width 399  top 1557
+
+   Same row in CSS, 1322px apart on screen. Woo sizes the two columns as
+   width:65% and width:35% — exactly 100% with nothing to spare — and keeps
+   `flex-wrap: wrap` on the container. Sections 5.3.1 and 5.5 then added
+   `gap: var(--space-6)` and `gap: var(--space-5)` for breathing room, so the
+   pair no longer fit on one line and the sidebar wrapped.
+
+   This was OURS, and it broke every viewport above 768px, not just his. An
+   earlier check called it two-column because it compared the two WIDTHS and
+   never compared their TOPS. Widths were right the whole time.
+
+   FIX: forbid the wrap above the phone breakpoint and let flex-shrink absorb
+   the gap. min-inline-size: 0 is required — a flex item's automatic minimum is
+   min-content, so without it the columns refuse to shrink and overflow instead.
+   ========================================================================== */
+@media (min-width: 768px) {
+
+  body.woocommerce-checkout .wc-block-components-sidebar-layout.wc-block-components-sidebar-layout,
+  body.woocommerce-cart .wc-block-components-sidebar-layout.wc-block-components-sidebar-layout {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+
+  body.woocommerce-checkout .wc-block-components-sidebar-layout .wc-block-components-main,
+  body.woocommerce-checkout .wc-block-components-sidebar-layout .wc-block-components-sidebar,
+  body.woocommerce-cart .wc-block-components-sidebar-layout .wc-block-components-main,
+  body.woocommerce-cart .wc-block-components-sidebar-layout .wc-block-components-sidebar {
+    min-inline-size: 0;
+  }
+}
+
+/* ==========================================================================
+   5.22 · STEP 1 WAS WEARING TWO BADGES  (21 Aug — seen in the v21 screenshot)
+   --------------------------------------------------------------------------
+   MEASURED on the live checkout, step by step:
+
+       step 1  __title::before            32px disc, bg #EAFAFD   <- ours, 5.7
+               __heading-content::before  32px disc, bg #EAFAFD   <- ours, 5.6
+       steps 2-4  __title::before only — they have no __heading-content at all
+
+   5.7 already tried to retire the __heading-content badge with `display:none`,
+   but the older rule doubles the step class:
+
+       ...checkout-step.wc-block-components-checkout-step .__heading-content
+       = (0,4,1),  against the hide rule's (0,3,1)
+
+   Equal-or-higher specificity wins regardless of order, so the disc stayed and
+   step 1 alone showed the number twice. Class doubling, not !important — the
+   same tactic the rest of this file uses against Woo's later-loading sheets.
+
+   The counter itself is untouched: increment lives on the step element, and a
+   ::before only READS it, so the numbering never depended on either badge.
+   ========================================================================== */
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step .wc-block-components-checkout-step__heading-content.wc-block-components-checkout-step__heading-content {
+  display: none;
+}
+
+/* ==========================================================================
+   5.23 · THE MOBILE CHECKOUT WAS COVERING ITSELF  (21 Aug — Ryan, twice)
+   --------------------------------------------------------------------------
+   Two reports that turned out to be one knot:
+     "معلومات جهه الاتصال والايميل بتحسها كانها تحت السيروم والتوصيل"
+     "ملخص الطلب متكرر مرتين والمفروض ما يتكرر هيك"
+
+   MEASURED at 375px, scrollY 0, DOM order vs painted position:
+
+       #2  contact-fields    top 261
+       #5  shipping-fields   top 510
+       #7  payment-method    top 1094
+       #10 checkout__actions top 441  height 659  position sticky  z-index 2
+
+   The actions block is the LAST child of the form, yet it painted fourth from
+   the top and 659px tall, so steps 2 through 7 were being drawn underneath it.
+   Three causes, stacked:
+
+   1 · OURS. Section 5.4 pinned `.wc-block-checkout__actions` with
+       `position: sticky; inset-block-end: 0; z-index: 2` under 767px, so the
+       place-order button would stay in reach. Sound for a button.
+
+   2 · WOO. Below 700px Woo renders a SECOND, fully expanded order summary
+       into that same actions block — `.checkout-order-summary-block-fill-wrapper`,
+       hidden at ≥700px and only there. Measured 581px of the 659.
+
+   3 · So the sticky bar inherited a 581px passenger and became a panel that
+       covers 60% of a phone screen, with the form scrolling behind it.
+
+   The duplicate is the same knot seen from the front: Woo's phone layout is a
+   collapsed teaser in the sidebar plus the full summary above the button. Here
+   the teaser is not even expandable (no toggle button in the DOM — measured),
+   and section 5.4's `order: 2` had pushed it to the very bottom at top 2295,
+   so it read as a second summary rather than a lead-in.
+
+   FIX, in Ryan's direction — one summary, no overlap:
+     · keep Woo's fill: the full summary directly above the place-order button
+     · drop the sidebar copy below 700px, exactly Woo's own breakpoint so no
+       width is ever left with two summaries or none
+     · un-stick the actions block: with the summary inside it, sticky can only
+       ever mean "cover the form"
+     · no step number on the summary heading — it is not a step
+   ========================================================================== */
+
+@media (max-width: 699px) {
+  /* CORRECTED after testing: hiding the sidebar ELEMENT with display:none also
+     removed the fill from the DOM entirely, leaving zero summaries on phones.
+     Woo drives the fill off a ResizeObserver on the sidebar, and a display:none
+     box measures 0, so the block decides there is nothing to fill into.
+     Hiding its CHILDREN instead keeps the box measurable — verified live: the
+     sidebar stays 340px wide and 0px tall, and the fill came back at 577px. */
+  body.woocommerce-checkout .wc-block-checkout .wc-block-checkout__sidebar.wc-block-checkout__sidebar > * {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  body.woocommerce-checkout .wc-block-checkout .wc-block-checkout__actions.wc-block-checkout__actions {
+    position: static;
+    z-index: auto;
+    border-block-start: 0;
+    background: transparent;
+  }
+}
+
+/* The order summary borrows checkout-step markup, so the step counter landed
+   on it and numbered it 5. It is a panel, not a step. */
+body.woocommerce-checkout .wc-block-checkout .wp-block-woocommerce-checkout-order-summary-block.wp-block-woocommerce-checkout-order-summary-block .wc-block-components-checkout-step__title::before {
+  content: none;
 }
