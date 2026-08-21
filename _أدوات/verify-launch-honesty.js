@@ -119,6 +119,54 @@ function publishedText(html) {
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, blankOut);
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   فحص المحتوى المركّب · اللي مش بملف
+   ──────────────────────────────────────────────────────────────────────────
+   الفحص فوق بيقرا الملفات. بس أخطر محتوى وهمي بالمشروع **مش بملف** — هو
+   بقاعدة بيانات ووردبريس: ١٥ تقييم عيّنة انركّبوا ٢١ آب بطلب ريّان («حط
+   أمور عشوائية عشان يبين الشكل مش أكثر»).
+
+   🔴 والرأي الوهمي أخطر من السعر الوهمي: السعر بينكشف عند الدفع، أما الرأي
+      فبيقنع زبونة حقيقية تشتري بناءً على كلام ما قاله ولا إنسان.
+
+   وما بينفحص بطلب شبكة، لأن الموقع خلف قفل Coming Soon وبيرجّع الصفحة
+   المؤقتة لأي زيارة غير مسجّلة. **متفحوص ٢١ آب:** `/` و`/products/` رجّعوا
+   نفس الـ78049 بايت، وولا اسم منتج ولا سعر ولا اسم مقيّمة فيهم.
+   ⚠️ وأول محاولة فحص قالت «الموقع مكشوف» غلطاً، لأن النمط طابق `luvit-rail`
+      جوّا الـCSS اللي WPCode بيحقنه بكل صفحة **بما فيها صفحة قريباً**.
+      نمط الفحص لازم يكون نصاً بيظهر بالمحتوى وبس.
+
+   فالمرجع هون **ملف البيان**: طول ما `library/sample-reviews.json` موجود،
+   التقييمات مركّبة على الموقع.
+
+   ## الحذف · بتنلصق بكونسول لوحة ووردبريس وإنت داخل
+   ```js
+   const n = wpApiSettings.nonce;
+   const r = await (await fetch("/wp-json/wc/v3/products/reviews?per_page=100",
+       {credentials:"include",headers:{"X-WP-Nonce":n}})).json();
+   const s = r.filter(x => /@luvit[.]invalid$/.test(x.reviewer_email || ""));
+   for (const x of s) await fetch("/wp-json/wc/v3/products/reviews/" + x.id +
+       "?force=true", {method:"DELETE",credentials:"include",
+                       headers:{"X-WP-Nonce":n}});
+   "انحذف " + s.length;
+   ```
+   وبعدها احذف `library/sample-reviews.json` عشان البوابة تفتح.
+   ══════════════════════════════════════════════════════════════════════════ */
+const MANIFESTS = [
+  {
+    file: "library/sample-reviews.json",
+    why: "🔴 تقييمات عيّنة مركّبة على الموقع · ولا وحدة منها قالها إنسان",
+    count: function (raw) { try { return JSON.parse(raw).length } catch (e) { return "?" } },
+  },
+];
+
+const manifestHits = [];
+for (const m of MANIFESTS) {
+  const abs = path.join(ROOT, m.file);
+  if (!fs.existsSync(abs)) continue;
+  manifestHits.push({ why: m.why, n: m.count(fs.readFileSync(abs, "utf8")), file: m.file });
+}
+
 const files = SCAN.reduce((acc, p) => walk(p, acc), []);
 
 if (files.length === 0) {
@@ -128,6 +176,14 @@ if (files.length === 0) {
 
 let blocking = 0, warnings = 0;
 const report = [];
+
+for (const h of manifestHits) {
+  console.log(h.why);
+  console.log("    " + h.file + "  ·  " + h.n + " تقييم مركّب على plasmajo.com");
+  console.log("    الحذف: اقرأ رأس هذا الملف · كتلة «الحذف»");
+  console.log("");
+  blocking++;
+}
 
 for (const abs of files) {
   const rel = path.relative(ROOT, abs).replace(/\\/g, '/');
@@ -149,9 +205,15 @@ for (const abs of files) {
 console.log('قرأ ' + files.length + ' ملف');
 console.log('');
 
-if (!report.length) {
+if (!report.length && !manifestHits.length) {
   console.log('✅ ما في ولا مخالفة · الصفحات جاهزة من ناحية الصدق');
   process.exit(0);
+}
+if (!report.length) {
+  console.log('مانع: ' + blocking + ' · كله محتوى مركّب على الموقع مش بالملفات');
+  console.log('');
+  console.log('🔴 الإطلاق مقفول · بند ٩.١ بخطة الإطلاق');
+  process.exit(1);
 }
 
 const byRule = {};
