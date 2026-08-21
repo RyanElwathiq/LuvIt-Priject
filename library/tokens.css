@@ -6894,3 +6894,53 @@ body.woocommerce-cart .wc-block-cart::after {
   pointer-events: none;
   box-shadow: 0 4px 14px rgba(0,0,0,.28);
 }
+
+/* ==========================================================================
+   5.16 · NO BACKDROP-FILTER WHILE SCROLLING A PURCHASE PAGE  (21 Aug)
+   --------------------------------------------------------------------------
+   THE ACTUAL CAUSE, found on the third screen recording.
+
+   Two elements sit on screen permanently and both carry a backdrop blur:
+     .luvit-nav__bar   blur(12px) saturate(1.7)   — floating pill, top
+     .luvit-dock       blur(12px)                 — bottom dock
+
+   backdrop-filter forces the browser to re-blur everything behind the element
+   on EVERY scroll frame. Two of them, top and bottom, over a long checkout,
+   is the single most expensive thing on the page. That is why:
+     · every static measurement here came back clean — blur costs paint, not layout
+     · this laptop never struggled and the phone crawled
+     · thinning the water atmosphere (5.15) changed nothing: wrong culprit
+
+   The project rule already said it — "backdrop-filter on a strict budget, the
+   hero does not use it because its canvas repaints every frame". A long
+   scrolling checkout repaints every frame too. Same rule, missed application.
+
+   On purchase pages the blur is replaced with a solid translucent fill. It
+   looks near-identical over our pale water ground and costs nothing.
+   Desktop keeps the real glass: it has the GPU headroom.
+   ========================================================================== */
+@media (max-width: 1023px) {
+  body.woocommerce-checkout .luvit-nav .luvit-nav__bar,
+  body.woocommerce-cart .luvit-nav .luvit-nav__bar,
+  body.woocommerce-account .luvit-nav .luvit-nav__bar,
+  body.woocommerce-shop .luvit-nav .luvit-nav__bar {
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    background-color: rgba(255, 255, 255, 0.94);
+  }
+  body.woocommerce-checkout .luvit-dock,
+  body.woocommerce-cart .luvit-dock,
+  body.woocommerce-account .luvit-dock,
+  body.woocommerce-shop .luvit-dock {
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    background-color: rgba(12, 51, 60, 0.96);
+  }
+}
+
+/* ---- and the summary is NOT a checkout step: on mobile WooCommerce gives its
+   heading the step-title class, so the counter numbered it "5". ---- */
+body.woocommerce-checkout .wc-block-components-sidebar .wc-block-components-checkout-step__title::before,
+body.woocommerce-checkout .wc-block-components-order-summary .wc-block-components-checkout-step__title::before {
+  content: none;
+}
