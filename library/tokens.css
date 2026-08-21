@@ -1644,9 +1644,10 @@ body.luvit-locked { overflow: hidden; }
      · Controls are 52px tall — comfortably past the 44px touch minimum.
      · Focus rings are visible; never removed without a replacement.
 
-   See also the WooCommerce / CartFlows compatibility layer at the end of this
-   section: those plugins render their own markup, so the same look is mapped
-   onto their selectors.
+   See also the TWO WooCommerce compatibility layers: the legacy form-field
+   layer at ~line 2181 (classic checkout/CartFlows inputs), and WOO COMPAT v2
+   at the very END of this file (whole Woo pages: shop grid, navbar fix,
+   account, cart/checkout blocks). Extend pages in v2, form fields here.
    ========================================================================== */
 
 :root {
@@ -2178,14 +2179,15 @@ body.luvit-locked { overflow: hidden; }
 }
 
 /* ==========================================================================
-   COMPATIBILITY LAYER — WooCommerce + CartFlows
+   COMPATIBILITY LAYER — WooCommerce + CartFlows  (LEGACY · form fields only)
    --------------------------------------------------------------------------
    Those plugins render their OWN form markup, so our .luvit-input class never
    lands on their fields. This maps the same look onto the selectors they
    actually output, so funnels and checkout match the rest of the site.
 
-   If a field still looks unstyled, inspect it and add its selector here —
-   that is the intended way to extend this block.
+   If a FORM FIELD still looks unstyled, inspect it and add its selector here.
+   For whole PAGES (shop grid, account, cart/checkout blocks, navbar fix) use
+   WOO COMPAT v2 at the very end of this file — do not grow this block.
    ========================================================================== */
 .woocommerce form .form-row input.input-text,
 .woocommerce form .form-row textarea,
@@ -3482,3 +3484,390 @@ body.luvit-locked { overflow: hidden; }
   color: var(--color-ink-faint);
 }
 .luvit-quiz--on-dark .luvit-quiz__hint { color: rgba(255,255,255,.7); }
+
+
+/* ==========================================================================
+   WOO COMPAT v2  ·  Phase 5  ·  added 2026-08-21
+   --------------------------------------------------------------------------
+   Second, page-level compatibility layer. The legacy layer (~line 2181)
+   handles classic FORM fields (checkout/CartFlows inputs) and stays as-is.
+   This layer skins whole WooCommerce PAGES onto the LUVIT system:
+
+     5.0 SHARED    body backgrounds · navbar on-light fix · titles · notices
+     5.1 SHOP      /shop classic loop (ul.products) → .luvit-card look
+     5.2 ACCOUNT   (next session)
+     5.3 CART      (blocks · next sessions)
+     5.4 CHECKOUT  (blocks · next sessions)
+
+   Ground rules in here:
+   · Specificity by class-doubling (.x.x), never !important (the single
+     allowed exception is the button text colour, same as .luvit-btn).
+   · Selectors proven against live markup captured 2026-08-21
+     (woo-markup-inventory.json). Anything speculative is tagged [DOC] and
+     must be verified on the live site before trusting it.
+   · ZERO new backdrop-filter in Woo pages: these are buying pages.
+   · The card "waterline" signature is intentionally NOT rebuilt here:
+     Woo's loop markup has no media wrapper, so the wave would need fragile
+     pseudo-element surgery. v1 identity = hover lift + image zoom.
+   ========================================================================== */
+
+/* ---- 5.0 · component tokens: consume existing library tokens only ---- */
+:root {
+  --woo-page-bg:          var(--color-canvas);
+  --woo-card-gap-mobile:  var(--space-4);
+  --woo-card-gap-desktop: var(--space-5);
+}
+
+/* ---- 5.0 · box-sizing: NOT guaranteed on plugin markup (trap #6, Aug 9) ---- */
+body.woocommerce-page .woocommerce,
+body.woocommerce-page .woocommerce *,
+body.woocommerce-page .woocommerce *::before,
+body.woocommerce-page .woocommerce *::after,
+.wc-block-cart, .wc-block-cart *,
+.wc-block-checkout, .wc-block-checkout * {
+  box-sizing: border-box;
+}
+
+/* ---- 5.0 · page ground: never raw white behind the grid ---- */
+body.woocommerce-page.woocommerce-page {
+  background: var(--woo-page-bg);
+}
+
+/* ---- 5.0 · NAVBAR FIX — Woo pages have no [data-nav-bg] sections, so
+   motion.js luvitNavTheme() returns early (checked: motion.js:672) and the
+   bar stays in its dark-hero default over a light page. Force the exact
+   .is-on-light look (values mirrored from ~line 1249) via body classes.
+   motion.js never toggles classes on these pages, so nothing fights this. */
+body.woocommerce-page .luvit-nav .luvit-nav__bar {
+  background-color: rgba(255, 255, 255, 0.72);
+  border-color: rgba(12, 51, 60, 0.10);
+  color: var(--color-ink-soft);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.90),
+    inset 0 0 0 1px rgba(12, 51, 60, 0.05),
+    0 14px 30px -18px rgba(12, 51, 60, 0.45);
+}
+body.woocommerce-page .luvit-nav .luvit-nav__brand { color: var(--color-ink); }
+body.woocommerce-page .luvit-nav .luvit-nav__link  { color: var(--color-ink-soft); }
+body.woocommerce-page .luvit-nav .luvit-nav__link:hover,
+body.woocommerce-page .luvit-nav .luvit-nav__link[aria-current] { color: var(--color-ink); }
+body.woocommerce-page .luvit-nav .luvit-nav__icon-btn { color: var(--color-ink); }
+body.woocommerce-page .luvit-nav .luvit-nav__drop {
+  background: rgba(41, 169, 192, 0.16);
+  border-color: rgba(41, 169, 192, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* ---- 5.0 · page header: breadcrumb + title ---- */
+body.woocommerce-page .woocommerce-breadcrumb.woocommerce-breadcrumb {
+  font-size: var(--text-caption);
+  color: var(--color-ink-faint);
+  margin: 0 0 var(--space-2);
+}
+body.woocommerce-page .woocommerce-breadcrumb a {
+  color: var(--color-ink-faint);
+  text-decoration: none;
+}
+body.woocommerce-page .woocommerce-breadcrumb a:hover { color: var(--aqua-700); }
+
+body.woocommerce-page .woocommerce-products-header__title.page-title,
+body.woocommerce-page .entry-title.entry-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 var(--space-5);
+}
+
+/* ---- 5.0 · classic notices: quiet aqua band, not a plugin-looking box ---- */
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-message,
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-info {
+  background: var(--aqua-50);
+  border: 1px solid rgba(41, 169, 192, 0.28);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  padding: var(--space-3) var(--space-4);
+  margin: 0 0 var(--space-4);
+}
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
+  background: #FDF1F4;
+  border: 1px solid rgba(208, 45, 134, 0.30);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  padding: var(--space-3) var(--space-4);
+  margin: 0 0 var(--space-4);
+  list-style: none;
+}
+
+/* ==========================================================================
+   5.1 · SHOP  (/shop · classic loop · selectors from live capture)
+   ========================================================================== */
+
+/* ---- grid: mirrors .luvit-card-grid breakpoints exactly (~line 1039) ---- */
+.woocommerce.woocommerce ul.products {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--woo-card-gap-mobile);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 700px) {
+  .woocommerce.woocommerce ul.products {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--woo-card-gap-desktop);
+  }
+}
+@media (min-width: 1000px) {
+  .woocommerce.woocommerce ul.products { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 359px) {
+  .woocommerce.woocommerce ul.products { grid-template-columns: minmax(0, 1fr); }
+}
+/* neutralise core's float layout so the grid owns geometry */
+.woocommerce.woocommerce ul.products li.product {
+  width: 100%;
+  float: none;
+  clear: none;
+  margin: 0;
+}
+
+/* ---- card: .luvit-card recipe (~line 622) mapped onto li.product ---- */
+.woocommerce ul.products li.product.product {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow), inset 0 1px 0 var(--card-sheen-top);
+  transition:
+    transform var(--card-duration) var(--ease-out-soft),
+    box-shadow var(--card-duration) var(--ease-out-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  .woocommerce ul.products li.product.product:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover), inset 0 1px 0 var(--card-sheen-top);
+  }
+  .woocommerce ul.products li.product.product:hover img.wp-post-image,
+  .woocommerce ul.products li.product.product:hover img.woocommerce-placeholder {
+    transform: scale(var(--card-media-zoom));
+  }
+}
+.woocommerce ul.products li.product.product:active img.wp-post-image {
+  transform: scale(var(--card-media-zoom));
+}
+.woocommerce ul.products li.product.product:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover), inset 0 1px 0 var(--card-sheen-top);
+}
+
+/* ---- media: ratio LOCKED like .luvit-card__media so images can't shove
+   the grid around. No wrapper exists, so ratio lives on the img itself. ---- */
+.woocommerce ul.products li.product img.wp-post-image,
+.woocommerce ul.products li.product img.woocommerce-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--card-media-ratio);
+  object-fit: cover;
+  background: var(--card-media-bg);
+  margin: 0;
+  transition: transform var(--card-media-duration) var(--ease-out-soft);
+}
+
+/* the loop link wraps image+title+price; kill core's underline/color */
+.woocommerce ul.products li.product a.woocommerce-LoopProduct-link {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ---- title ---- */
+.woocommerce ul.products li.product .woocommerce-loop-product__title.woocommerce-loop-product__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  line-height: var(--leading-heading);
+  font-weight: 700;
+  color: var(--color-ink);
+  padding: var(--card-pad) var(--card-pad) 0;
+  margin: 0;
+}
+
+/* ---- price: Latin digits are an LTR run inside RTL — isolate them ---- */
+.woocommerce ul.products li.product .price.price {
+  font-family: var(--font-latin);
+  font-size: var(--text-body-lg);
+  font-weight: 600;
+  color: var(--color-ink);
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+  padding: 0 var(--card-pad);
+  margin: var(--space-2) 0 0;
+}
+.woocommerce ul.products li.product .price.price del {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-faint);
+  margin-inline-end: var(--space-2);
+}
+.woocommerce ul.products li.product .price .woocommerce-Price-currencySymbol {
+  font-size: var(--text-body-sm);
+}
+
+/* ---- add-to-cart: full .luvit-btn recipe (~line 326). The sweep layer is
+   deliberately skipped here (payload discipline); gloss + lift carry it. ---- */
+.woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--btn-min-height);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--btn-fill-top);
+  background-image:
+    linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  color: #FFFFFF !important; /* same sanctioned exception as .luvit-btn:346 */
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    var(--btn-shadow),
+    inset 0 1px 0 var(--btn-sheen-top),
+    inset 0 -1px 0 var(--btn-bezel-bottom);
+  transition:
+    transform var(--duration-instant) var(--ease-out-soft),
+    box-shadow var(--duration-instant) var(--ease-out-soft),
+    background-color var(--duration-instant) var(--ease-out-soft);
+  -webkit-tap-highlight-color: transparent;
+  margin: var(--space-3) var(--card-pad) var(--card-pad);
+  align-self: stretch;
+}
+@media (hover: hover) and (pointer: fine) {
+  .woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button:hover {
+    transform: translateY(-2px);
+    background-image:
+      linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255,255,255,0) 55%),
+      linear-gradient(180deg, var(--btn-fill-top-hover) 0%, var(--btn-fill-bottom-hover) 100%);
+    box-shadow:
+      var(--btn-shadow-hover),
+      inset 0 1px 0 var(--btn-sheen-top),
+      inset 0 -1px 0 var(--btn-bezel-bottom);
+  }
+}
+.woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button:active {
+  transform: translateY(-1px) scale(0.97);
+}
+/* two-up mobile cards are ~156px wide: full-size button wraps to two ugly
+   lines. Tighten type + inline padding so «أضيفي إلى السلة» stays one line.
+   (buttons may go below 16px — the iOS-zoom rule is for INPUTS only) */
+@media (max-width: 480px) {
+  .woocommerce ul.products li.product .add_to_cart_button.add_to_cart_button {
+    font-size: 14px;
+    padding-inline: var(--space-2);
+    margin-inline: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+}
+
+/* AJAX states Woo injects on the same element */
+.woocommerce ul.products li.product .add_to_cart_button.loading {
+  opacity: 0.55;
+  cursor: wait;
+  transform: none;
+}
+/* "view cart" ghost link that appears after a successful add */
+.woocommerce ul.products li.product a.added_to_cart.added_to_cart {
+  display: inline-block;
+  margin: 0 var(--card-pad) var(--card-pad);
+  color: var(--aqua-700);
+  font-weight: 600;
+  font-size: var(--text-body-sm);
+  text-decoration: none;
+}
+
+/* ---- sale badge: same ink treatment as .luvit-card__badge--accent (~736).
+   Brand rule: fuchsia is never a fill. ---- */
+.woocommerce ul.products li.product span.onsale.onsale,
+.woocommerce span.onsale.onsale {
+  position: absolute;
+  z-index: 3;
+  top: var(--space-3);
+  inset-inline-start: var(--space-3);
+  right: auto;
+  bottom: auto;
+  min-height: 0;
+  min-width: 0;
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--badge-accent-bg);
+  color: #fff;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: var(--shadow-sm);
+  margin: 0;
+}
+
+/* ---- toolbar row: result count + ordering ---- */
+body.woocommerce-page .woocommerce-result-count.woocommerce-result-count {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-faint);
+  margin: 0 0 var(--space-4);
+}
+body.woocommerce-page .woocommerce-ordering.woocommerce-ordering {
+  margin: 0 0 var(--space-4);
+}
+body.woocommerce-page .woocommerce-ordering select.orderby {
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--field-border, rgba(12, 51, 60, 0.18));
+  border-radius: var(--field-radius);
+  background: #fff;
+  font-family: var(--font-body);
+  font-size: var(--field-fs);
+  color: var(--color-ink);
+}
+
+/* ---- pagination [DOC: classic selectors — not in live capture yet (only
+   one product exists); verify once the catalogue paginates ---- */
+body.woocommerce-page nav.woocommerce-pagination ul.page-numbers {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 0;
+  margin: var(--space-6) 0 0;
+}
+body.woocommerce-page nav.woocommerce-pagination ul.page-numbers li {
+  border: 0;
+}
+body.woocommerce-page nav.woocommerce-pagination .page-numbers li .page-numbers {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(12, 51, 60, 0.14);
+  background: #fff;
+  color: var(--color-ink-soft);
+  font-family: var(--font-latin);
+  text-decoration: none;
+}
+body.woocommerce-page nav.woocommerce-pagination .page-numbers li .page-numbers.current {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: #fff;
+}
