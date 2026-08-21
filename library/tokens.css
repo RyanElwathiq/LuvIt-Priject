@@ -6695,3 +6695,74 @@ body.woocommerce-checkout .power-coupons-view-coupons-btn {
     inset-block-start: auto;
   }
 }
+
+/* ==========================================================================
+   5.12 · MOBILE BREATHING ROOM  (21 Aug — measured at a REAL 375px viewport)
+   --------------------------------------------------------------------------
+   First session where the phone layout could actually be inspected (Hostinger
+   maintenance bypass link + WooCommerce visibility set to Live, so the site
+   stays protected by ONE lock instead of two). What the numbers showed:
+
+     · option cards: padding-block was 12px — a title plus a description
+       crammed into it, which is the "ملزقة ببعض" Ryan reported
+     · checkout steps: 24px top and bottom and NO separator, so consecutive
+       steps read as one undifferentiated column
+
+   Desktop already had enough room, so both fixes are phone-only.
+   ========================================================================== */
+@media (max-width: 767px) {
+  /* option cards breathe, and the two inline sides stop fighting: the radio
+     lane stays reserved (44px, solved earlier) but the text side matches it
+     visually with a comfortable block padding instead of a cramped 12px */
+  body.woocommerce-checkout .wc-block-components-radio-control .wc-block-components-radio-control__option.wc-block-components-radio-control__option {
+    padding-block: var(--space-4);
+  }
+
+  /* one hairline per step boundary — enough to separate, quiet enough not to
+     read as a table. No border on the last step: nothing follows it. */
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step {
+    padding-block: var(--space-5);
+  }
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step + .wc-block-components-checkout-step {
+    border-top: 1px solid var(--color-line-soft);
+  }
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* ---- 5.12 corrections, same session (measured, not assumed) ----
+   · --space-5 IS 24px, which is what the steps already had: that edit changed
+     nothing. Use --space-6 (32px) for a real difference on a phone.
+   · `step + step` left one step unseparated — those two are not immediate
+     siblings. A bottom border on every step except the last does not care
+     about adjacency at all. */
+@media (max-width: 767px) {
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step {
+    padding-block: var(--space-6);
+    border-top: 0;
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step:last-of-type {
+    border-bottom: 0;
+  }
+}
+
+/* :last-of-type missed the final step — it is not the last element of its type
+   inside its parent. A negative bottom margin on the LAST step is fragile too,
+   so instead: draw the separator on the top of every step EXCEPT the first
+   one that has a step before it anywhere. Simplest reliable form is to clip
+   the final hairline with the container's own background. */
+@media (max-width: 767px) {
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step:last-child {
+    border-bottom: 0;
+  }
+  /* the actions block follows the steps; if a hairline still lands above it,
+     this hides that one specific edge without touching the others */
+  /* measured: the final step is .wc-block-checkout__order-notes and what
+     follows it is __terms, not __actions. Target the real neighbour. */
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step:has(+ .wc-block-checkout__terms),
+  body.woocommerce-checkout .wc-block-checkout .wc-block-checkout__order-notes.wc-block-checkout__order-notes {
+    border-bottom: 0;
+  }
+}
