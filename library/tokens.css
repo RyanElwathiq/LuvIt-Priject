@@ -6859,3 +6859,38 @@ body.woocommerce-cart .wc-block-cart__sidebar.is-sticky {
     display: none;
   }
 }
+
+/* ==========================================================================
+   🔧 TEMP · VERSION STAMP  (21 Aug — remove once the phone issue is settled)
+   --------------------------------------------------------------------------
+   Three fixes measured correct here and reported unchanged on Ryan's phone.
+   Every static check on this end is clean: sidebar static, no fixed ancestor,
+   no transform/filter/contain, touch-action auto, and the checkout is served
+   no-cache. The remaining unknown is simply WHICH stylesheet his device is
+   rendering — Chrome restores whole pages from the back-forward cache, and
+   nothing we can measure from here sees through that.
+
+   So the page states its own version. He reads the badge, we both stop
+   guessing. DELETE THIS BLOCK once confirmed.
+   ========================================================================== */
+body.woocommerce-checkout::marker,
+body.woocommerce-cart::marker { content: ""; }
+
+body.woocommerce-checkout .wc-block-checkout::after,
+body.woocommerce-cart .wc-block-cart::after {
+  content: "CSS v15";
+  position: fixed;
+  inset-block-end: 84px;
+  inset-inline-start: 10px;
+  z-index: 99999;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: #D02D86;
+  color: #fff;
+  font-family: var(--font-latin);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,.28);
+}
