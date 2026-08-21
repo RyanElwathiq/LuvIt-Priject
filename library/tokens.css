@@ -6878,7 +6878,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v32";
+  content: "CSS v33";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -8397,5 +8397,28 @@ body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-pa
   body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button,
   body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button {
     flex: 1 0 100%;
+  }
+}
+
+/* ==========================================================================
+   5.28 · THE COMMIT BUTTON ON THE NARROWEST PHONE  (21 Aug)
+   --------------------------------------------------------------------------
+   The label became «أكّدي الطلب · الدفع عند الاستلام» today, because the last
+   line she reads before paying is where "no card needed" belongs.
+
+   MEASURED at three widths:
+       390px viewport  ->  button 340 x 54   one line
+       375px viewport  ->  button 324 x 54   one line
+       320px viewport  ->  button 269 x 71   TWO lines
+
+   320 is the floor of real phones, not a hypothetical. Rather than cut the
+   reassurance out of the sentence, give the type one step less at that width.
+   15px is fine on a button: the 16px floor exists to stop iOS zooming on FOCUS,
+   and a button is never focused for typing.
+   ========================================================================== */
+@media (max-width: 359px) {
+  body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button {
+    font-size: 15px;
+    letter-spacing: -0.01em;
   }
 }
