@@ -4350,3 +4350,1111 @@ body.woocommerce-account .u-columns .col-2 {
   border-radius: var(--card-radius);
   box-shadow: var(--card-shadow);
 }
+
+/* ==========================================================================
+   5.3 CART  (blocks · CSS only)
+   --------------------------------------------------------------------------
+   WHY THIS EXISTS
+   WooCommerce 11.0.1 ships NO CSS custom properties for the cart/checkout
+   blocks (verified: 0 `--wc-*` definitions across the 132 shipped block CSS
+   files). Borders are derived from `currentColor` via `color-mix`, every
+   other colour is hard-coded, and RTL arrives as a separate `-rtl.css` that
+   loads AFTER a WPCode snippet. Consequences baked into every rule below:
+
+     · Never set `color` to fix a border — it moves the text too. Always
+       write `border-color` explicitly.
+     · Equal specificity loses to `cart-rtl.css` on load order, so class
+       doubling ALONE is not enough. Every override is scoped to its block
+       (`.wc-block-cart` / `.wc-block-checkout`) AND doubled, which lands at
+       (0,3,0)+ and wins regardless of load order.
+     · Woo declares its inner DOM "private". Selectors marked /* [DOC] */ are
+       NOT in the markup captured from the live site on 2026-08-21 — they are
+       inferred from shipped CSS and must be re-verified on the real page and
+       after every WooCommerce update.
+     · `container-type: inline-size` lives on the block wrappers and drives 34
+       container queries. Nothing here introduces a new containment context.
+   ========================================================================== */
+
+/* Plugin markup carries no box-sizing guarantee, and a content-box card with
+   a width token silently draws wider than the math says (trap #6, Aug 9).
+   Repeated from 5.0 on purpose: this section may be pasted on its own. */
+.wc-block-cart, .wc-block-cart *,
+.wc-block-cart *::before, .wc-block-cart *::after {
+  box-sizing: border-box;
+}
+
+/* Arabic loses letter connection under tracking, and needs a taller line than
+   Latin. Woo sets neither, so the block inherits whatever the theme had. */
+.wc-block-cart.wc-block-cart {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  letter-spacing: 0;
+  line-height: var(--leading-body);
+}
+
+/* --------------------------------------------------------------------------
+   5.3.1 · LAYOUT
+   -------------------------------------------------------------------------- */
+
+/* Breathing room between the two columns. Logical props only, so the same
+   declaration serves RTL and LTR instead of Woo's mirrored twin files. */
+.wc-block-cart .wc-block-components-sidebar-layout.wc-block-components-sidebar-layout {
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+/* Totals must stay in view while a long item list scrolls: the moment the
+   total leaves the screen the shopper stops trusting it (Baymard).
+   FRAGILE BY NATURE — any ancestor with `overflow: hidden` kills sticky.
+   Verify in DevTools on the live page, not by intent. */
+@media (min-width: 1024px) {
+  .wc-block-cart .wc-block-components-sidebar.wc-block-components-sidebar {
+    position: sticky;
+    inset-block-start: var(--space-5);
+  }
+}
+
+/* Mobile: one column, and the order is a decision not an accident —
+   items first (what am I buying), totals second (what does it cost). */
+@media (max-width: 767px) {
+  .wc-block-cart .wc-block-components-sidebar-layout.wc-block-components-sidebar-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  .wc-block-cart .wc-block-components-sidebar-layout > .wc-block-components-main {
+    order: 1;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    padding-inline: 0;
+  }
+  .wc-block-cart .wc-block-components-sidebar-layout > .wc-block-components-sidebar {
+    order: 2;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    padding-inline: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5.3.2 · LINE ITEMS
+   -------------------------------------------------------------------------- */
+
+/* The item list is the page's content, not a data table: kill the ruled-grid
+   look and let one hairline per row do the separating. */
+.wc-block-cart .wc-block-cart-items.wc-block-cart-items {
+  border: 0;
+  margin-block: 0 var(--space-5);
+}
+
+/* [DOC] row wrapper — inferred from cart.css, not in the 2026-08-21 capture */
+.wc-block-cart .wc-block-cart-items .wc-block-cart-items__row {
+  border-block-end: 1px solid var(--color-line);
+  padding-block: var(--space-4);
+}
+
+/* Product name is the one thing scanned on this page — give it heading voice
+   and a real 44px tap target, because it is also a link. */
+.wc-block-cart .wc-block-components-product-name.wc-block-components-product-name {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  line-height: var(--leading-heading);
+  color: var(--color-ink);
+  text-decoration: none;
+  min-block-size: 44px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .wc-block-cart .wc-block-components-product-name.wc-block-components-product-name:hover {
+    color: var(--aqua-600);
+  }
+}
+
+/* Variation/attribute lines are support text; they must not compete. */
+.wc-block-cart .wc-block-components-product-metadata.wc-block-components-product-metadata {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-soft);
+  margin-block-start: var(--space-1);
+}
+
+.wc-block-cart .wc-block-components-product-price.wc-block-components-product-price {
+  font-size: var(--text-body);
+  color: var(--color-ink);
+}
+
+/* --------------------------------------------------------------------------
+   5.3.3 · MONEY
+   -------------------------------------------------------------------------- */
+
+/* Latin digits inside an Arabic paragraph reorder unless they are isolated —
+   a bidi bug here turns 123 into 321 and the shopper distrusts the whole
+   page. Tabular figures also stop the column jittering as quantity changes. */
+.wc-block-cart .wc-block-components-formatted-money-amount.wc-block-components-formatted-money-amount {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
+  /* explicit: `start` under `direction: ltr` means LEFT, and it is the
+     initial value, so omitting it would not be neutral (trap #5, Aug 9) */
+  text-align: start;
+}
+
+/* [DOC] Woo 10.2.0+ regression: this class applies `unicode-bidi:
+   bidi-override` and renders every price mirrored on RTL stores
+   (woocommerce#60986). Doubled instead of the upstream `!important`.
+   VERIFY ON THE LIVE PAGE FIRST — if the class is absent, this is a no-op. */
+.woocommerce-Price-bidi.woocommerce-Price-bidi {
+  unicode-bidi: normal;
+}
+
+/* --------------------------------------------------------------------------
+   5.3.4 · QUANTITY  (WCAG 2.5.5 / Apple HIG — 44px)
+   -------------------------------------------------------------------------- */
+
+/* Woo's default +/- controls land well under any touch guideline, and this is
+   the single most-tapped control on the page. */
+.wc-block-cart .wc-block-components-quantity-selector.wc-block-components-quantity-selector {
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-pill);
+  background: var(--field-bg);
+  block-size: auto;
+  min-block-size: 44px;
+  overflow: hidden;
+}
+/* [DOC] +/- buttons */
+.wc-block-cart .wc-block-components-quantity-selector .wc-block-components-quantity-selector__button {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  color: var(--aqua-700);
+  opacity: 1;
+  cursor: pointer;
+  transition: background-color var(--duration-instant) var(--ease-out-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  .wc-block-cart .wc-block-components-quantity-selector .wc-block-components-quantity-selector__button:hover {
+    background: var(--aqua-50);
+  }
+}
+/* [DOC] the number itself — 16px keeps iOS from zooming on focus */
+.wc-block-cart .wc-block-components-quantity-selector .wc-block-components-quantity-selector__input {
+  font-family: var(--font-latin);
+  font-size: var(--field-fs);
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: center;
+  color: var(--color-ink);
+  min-block-size: 44px;
+}
+
+/* --------------------------------------------------------------------------
+   5.3.5 · TOTALS PANEL
+   -------------------------------------------------------------------------- */
+
+/* The totals column is the page's answer to "what will this cost me" — it
+   earns card treatment so it reads as one object, not stray rows. */
+.wc-block-cart .wc-block-components-sidebar .wc-block-components-totals-wrapper.wc-block-components-totals-wrapper {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--space-4) var(--space-5);
+  margin-block-end: var(--space-4);
+}
+
+/* Rows need vertical air; the hairline between them is redundant once each
+   row has room, so only the grand total keeps a rule above it. */
+.wc-block-cart .wc-block-components-totals-item.wc-block-components-totals-item {
+  padding-block: var(--space-3);
+  font-size: var(--text-body);
+  color: var(--color-ink-soft);
+}
+/* [DOC] label / value halves of a totals row */
+.wc-block-cart .wc-block-components-totals-item .wc-block-components-totals-item__label {
+  color: var(--color-ink-soft);
+}
+.wc-block-cart .wc-block-components-totals-item .wc-block-components-totals-item__value {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+/* Shipping is the #1 abandonment trigger when it appears late, so it is
+   deliberately NOT dimmed to caption level like a footnote. */
+.wc-block-cart .wc-block-components-totals-shipping.wc-block-components-totals-shipping {
+  color: var(--color-ink-soft);
+  font-size: var(--text-body-sm);
+}
+/* [DOC] the shipping figure inside that row */
+.wc-block-cart .wc-block-components-totals-shipping .wc-block-components-totals-item__value {
+  font-size: var(--text-body);
+  color: var(--color-ink);
+}
+
+/* Grand total: the one number the eye should land on first. */
+.wc-block-cart .wc-block-components-totals-footer-item.wc-block-components-totals-footer-item {
+  border-block-start: 1px solid var(--color-line);
+  padding-block-start: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+/* [DOC] value inside the footer row */
+.wc-block-cart .wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
+  font-family: var(--font-latin);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  color: var(--color-ink);
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  text-align: start;
+}
+
+/* Coupon stays collapsed behind its link: an open coupon box makes every
+   shopper without a code feel they are overpaying. Only the trigger is
+   restyled — nothing here forces it open. */
+.wc-block-cart .wc-block-components-totals-coupon.wc-block-components-totals-coupon {
+  padding-block: var(--space-2);
+}
+/* [DOC] the disclosure link */
+.wc-block-cart .wc-block-components-totals-coupon .wc-block-components-panel__button {
+  min-block-size: 44px;
+  font-size: var(--text-body-sm);
+  color: var(--aqua-700);
+  font-weight: 600;
+}
+
+/* Generic collapsible panel (mobile totals, coupon) — touch target only. */
+.wc-block-cart .wc-block-components-panel.wc-block-components-panel {
+  border-block-start: 1px solid var(--color-line-soft);
+}
+
+/* --------------------------------------------------------------------------
+   5.3.6 · NOTICES
+   -------------------------------------------------------------------------- */
+
+/* Woo's stock notice colours are generic admin greens/reds; these are the
+   library's own status tints so a cart message looks like our product. */
+.wc-block-cart .wc-block-components-notices.wc-block-components-notices {
+  font-size: var(--text-body-sm);
+  margin-block-end: var(--space-4);
+}
+/* [DOC] individual notice banner */
+.wc-block-cart .wc-block-components-notices .wc-block-components-notice-banner {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-line);
+  background: var(--color-info-bg);
+  color: var(--color-ink);
+}
+
+/* --------------------------------------------------------------------------
+   5.3.7 · PROCEED BUTTON
+   -------------------------------------------------------------------------- */
+
+/* Base for every block button: touch size and type only. This class is also
+   worn by "remove item" and other quiet links, so it must NOT carry a fill. */
+.wc-block-cart .wc-block-components-button.wc-block-components-button {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0;
+  min-block-size: 44px;
+  border-radius: var(--radius-pill);
+  -webkit-tap-highlight-color: transparent;
+}
+/* [DOC] text variant stays a link, not a slab */
+.wc-block-cart .wc-block-components-button.wc-block-components-button--text {
+  min-block-size: 44px;
+  background: transparent;
+  color: var(--aqua-700);
+  padding-inline: 0;
+}
+
+/* The primary action. Woo defines no background for this class at all, so the
+   library's button recipe applies cleanly instead of fighting a hard-coded
+   fill. Full width because a partial-width primary reads as optional. */
+/* [DOC] .wc-block-cart__submit-button */
+.wc-block-cart .wc-block-cart__submit-button.wc-block-cart__submit-button,
+/* [DOC] fallback if the submit class is renamed again (it has changed 4×) */
+.wc-block-cart .wc-block-cart__submit-container .wc-block-components-button.wc-block-components-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: var(--btn-min-height);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--btn-fill-top);
+  background-image:
+    linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body);
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    var(--btn-shadow),
+    inset 0 1px 0 var(--btn-sheen-top),
+    inset 0 -1px 0 var(--btn-bezel-bottom);
+  transition:
+    transform var(--duration-instant) var(--ease-out-soft),
+    box-shadow var(--duration-instant) var(--ease-out-soft),
+    background-color var(--duration-instant) var(--ease-out-soft);
+}
+/* Lift is mouse-only: on touch it fires on tap and reads as a glitch. */
+@media (hover: hover) and (pointer: fine) {
+  .wc-block-cart .wc-block-cart__submit-button.wc-block-cart__submit-button:hover,
+  .wc-block-cart .wc-block-cart__submit-container .wc-block-components-button.wc-block-components-button:hover {
+    transform: translateY(-2px);
+    background-image:
+      linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255, 255, 255, 0) 55%),
+      linear-gradient(180deg, var(--btn-fill-top-hover) 0%, var(--btn-fill-bottom-hover) 100%);
+    box-shadow:
+      var(--btn-shadow-hover),
+      inset 0 1px 0 var(--btn-sheen-top),
+      inset 0 -1px 0 var(--btn-bezel-bottom);
+  }
+}
+.wc-block-cart .wc-block-cart__submit-button.wc-block-cart__submit-button:active,
+.wc-block-cart .wc-block-cart__submit-container .wc-block-components-button.wc-block-components-button:active {
+  transform: translateY(-1px) scale(0.98);
+}
+.wc-block-cart .wc-block-cart__submit-button.wc-block-cart__submit-button:focus-visible,
+.wc-block-cart .wc-block-cart__submit-container .wc-block-components-button.wc-block-components-button:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--btn-shadow),
+    inset 0 1px 0 var(--btn-sheen-top),
+    0 0 0 3px var(--color-ring);
+}
+
+/* [DOC] Woo's own docs name this container as themeable. Solid canvas, never
+   backdrop-filter: this is a buying page and the blur repaints every frame.
+   Its ::before shadow is drawn with currentColor, hence the `color` here. */
+.wc-block-cart .wc-block-cart__submit-container.wc-block-cart__submit-container {
+  background: var(--color-canvas);
+  color: var(--color-line);
+  padding-block: var(--space-3);
+  padding-block-end: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+}
+
+/* --------------------------------------------------------------------------
+   5.3.8 · EMPTY CART
+   -------------------------------------------------------------------------- */
+
+/* An empty cart is a dead end unless it offers a way forward — centre it and
+   let the product grid below carry the same card language as /shop. */
+.wp-block-woocommerce-empty-cart-block.wp-block-woocommerce-empty-cart-block {
+  text-align: center;
+  padding-block: var(--space-7);
+}
+.wc-block-cart__empty-cart__title.wc-block-cart__empty-cart__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+  color: var(--color-ink);
+  margin-block-end: var(--space-4);
+}
+.wp-block-woocommerce-empty-cart-block .wc-block-grid__product.wc-block-grid__product {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--space-4);
+  text-align: center;
+  transition:
+    transform var(--card-duration) var(--ease-out-soft),
+    box-shadow var(--card-duration) var(--ease-out-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  .wp-block-woocommerce-empty-cart-block .wc-block-grid__product.wc-block-grid__product:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+  }
+}
+
+/* Outer block wrapper: page ground, never raw white behind a white card. */
+.wp-block-woocommerce-cart.wp-block-woocommerce-cart {
+  background: transparent;
+  margin-inline: auto;
+  max-inline-size: var(--container-max);
+  padding-inline: var(--container-gutter);
+}
+
+
+/* ==========================================================================
+   5.4 CHECKOUT  (blocks · CSS only)
+   --------------------------------------------------------------------------
+   Cash on delivery is the only payment method, so the job here is trust and
+   speed, not card-form polish. Two mechanics drive most of this section:
+
+   1. Field borders are `color-mix(in srgb, currentColor 80%, transparent)`
+      and the focus border is `border: 1.5px solid` with NO colour — i.e.
+      currentColor. Every border colour below is therefore stated outright;
+      changing `color` to steer a border would drag the user's own text with
+      it. Focus especially: without an explicit `border-color` the ring is
+      just darker ink, not brand turquoise.
+   2. Woo's field rule is
+      `.wc-block-components-form .wc-block-components-text-input input[type=text]`
+      = (0,3,1). Class doubling alone ties at (0,3,1) and then LOSES on load
+      order to `checkout-rtl.css`. Adding the block scope lands at (0,4,1),
+      which clears every field rule except the `.has-dark-controls` branch
+      (also (0,4,1)) — not in play on a light canvas.
+
+   NOTE: `container-type: inline-size` sits on `.wp-block-woocommerce-checkout`
+   and 34 container queries depend on it. No rule here introduces containment
+   between that wrapper and its descendants.
+   ========================================================================== */
+
+.wc-block-checkout, .wc-block-checkout *,
+.wc-block-checkout *::before, .wc-block-checkout *::after {
+  box-sizing: border-box;
+}
+
+/* Arabic typography: tracking breaks glyph joining outright, and 1.75 is the
+   Arabic line height — Latin's 1.5 crowds the ascenders. */
+.wc-block-checkout.wc-block-checkout,
+.wc-block-checkout .wc-block-components-form.wc-block-components-form,
+.wc-block-checkout .wc-block-components-radio-control.wc-block-components-radio-control {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  letter-spacing: 0;
+  line-height: 1.75;
+}
+
+/* --------------------------------------------------------------------------
+   5.4.1 · LAYOUT
+   -------------------------------------------------------------------------- */
+
+.wc-block-checkout .wc-block-components-main.wc-block-components-main {
+  padding-inline: 0;
+}
+
+/* The order total must stay visible while the address form is filled in;
+   leaving checkout to re-check the total is a real exit risk.
+   FRAGILE: dies under any ancestor `overflow: hidden`. Verify in DevTools. */
+@media (min-width: 1024px) {
+  .wc-block-checkout .wc-block-components-sidebar.wc-block-components-sidebar {
+    position: sticky;
+    inset-block-start: var(--space-5);
+  }
+}
+
+/* Mobile: form first, summary after it — the shopper already agreed to the
+   total on the cart page; asking them to scroll past it again costs a step. */
+@media (max-width: 767px) {
+  /* [DOC] sidebar-layout was captured on the cart page, not on checkout */
+  .wc-block-checkout .wc-block-components-sidebar-layout.wc-block-components-sidebar-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  .wc-block-checkout .wc-block-components-sidebar-layout > .wc-block-components-main {
+    order: 1;
+    inline-size: 100%;
+    max-inline-size: 100%;
+  }
+  .wc-block-checkout .wc-block-components-sidebar-layout > .wc-block-components-sidebar {
+    order: 2;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    padding-inline: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5.4.2 · STEPS
+   -------------------------------------------------------------------------- */
+
+/* Steps are the spine of the page — separate them with space, not boxes, so
+   the form still reads as one continuous task. */
+.wc-block-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step {
+  border: 0;
+  padding-inline: 0;
+  padding-block: var(--space-5) 0;
+  margin-block-end: var(--space-5);
+}
+/* [DOC] step heading + its helper line */
+.wc-block-checkout .wc-block-components-checkout-step__title {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  line-height: var(--leading-heading);
+  color: var(--color-ink);
+}
+.wc-block-checkout .wc-block-components-checkout-step__description {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-soft);
+  margin-block-start: var(--space-1);
+}
+/* [DOC] the step number badge */
+.wc-block-checkout .wc-block-components-checkout-step__heading-content {
+  color: var(--aqua-700);
+}
+
+/* --------------------------------------------------------------------------
+   5.4.3 · FIELDS
+   -------------------------------------------------------------------------- */
+
+.wc-block-checkout .wc-block-components-address-form.wc-block-components-address-form {
+  margin-block-start: var(--space-4);
+}
+
+/* Vertical rhythm: a label must sit closer to its own input than fields sit
+   to each other, or the eye groups it with the field above (proximity). */
+.wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input,
+.wc-block-checkout .wc-block-components-country-input.wc-block-components-country-input {
+  margin-block-end: var(--field-stack);
+}
+
+/* Un-float the label. Woo animates it into the field's border on focus, which
+   means the field's purpose disappears the moment it is being answered — the
+   classic floating-label failure, and worse in Arabic where the shrunken
+   glyphs lose legibility fastest. Static label, visible at every state. */
+/* [DOC] label element inside the captured wrapper */
+.wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input label,
+.wc-block-checkout .wc-block-components-country-input.wc-block-components-country-input label {
+  position: static;
+  transform: none;
+  display: block;
+  inline-size: auto;
+  max-inline-size: none;
+  padding: 0;
+  margin-block-end: var(--field-gap);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-ink);
+  text-align: start;
+  overflow: visible;
+  transition: none;
+}
+
+/* The field itself. (0,4,1) beats Woo's (0,3,1) irrespective of load order,
+   which is the only reason these values survive `checkout-rtl.css`.
+   16px is a hard floor: anything smaller makes iOS zoom the viewport. */
+/* [DOC] the input element inside the captured wrapper */
+.wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input[type="text"],
+.wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input[type="email"],
+.wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input[type="tel"],
+.wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input[type="number"],
+.wc-block-checkout .wc-block-components-country-input.wc-block-components-country-input input[type="text"] {
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: auto;
+  min-block-size: var(--field-h);
+  padding: 14px var(--field-pad-x);
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background-color: var(--field-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--field-fs);
+  line-height: 1.4;
+  text-align: start;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition:
+    border-color var(--duration-instant) var(--ease-out-soft),
+    box-shadow var(--duration-instant) var(--ease-out-soft);
+  -webkit-appearance: none;
+          appearance: none;
+}
+/* [DOC] placeholder inside the captured wrapper */
+.wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input::placeholder {
+  color: var(--field-placeholder);
+}
+@media (hover: hover) and (pointer: fine) {
+  .wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input:hover {
+    border-color: var(--field-border-hover);
+  }
+}
+/* Focus: Woo writes `border: 1.5px solid` with no colour, so without this the
+   ring is currentColor — dark ink, indistinguishable from rest. */
+/* [DOC] focus state of the inner input */
+.wc-block-checkout .wc-block-components-text-input.wc-block-components-text-input input:focus,
+.wc-block-checkout .wc-block-components-country-input.wc-block-components-country-input input:focus {
+  outline: none;
+  border: 1.5px solid var(--field-border-focus);
+  background-color: var(--field-bg);
+  color: var(--color-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 0 3px var(--color-ring);
+}
+
+/* Phone numbers carry `direction: ltr`; with it, `text-align: start` resolves
+   to LEFT and silently un-aligns the field from its neighbours. Stated. */
+/* [DOC] direction-flipped inputs */
+.wc-block-checkout .wc-block-components-text-input input[dir="ltr"],
+.wc-block-checkout .wc-block-components-text-input input[type="tel"] {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+  font-variant-numeric: tabular-nums;
+}
+
+/* [DOC] country/state select rendered by the captured wrapper */
+.wc-block-checkout .wc-block-components-country-input.wc-block-components-country-input select,
+.wc-block-checkout .wc-block-components-country-input .wc-block-components-combobox-control input {
+  min-block-size: var(--field-h);
+  padding: 14px var(--field-pad-x);
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background-color: var(--field-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--field-fs);
+  text-align: start;
+}
+
+/* Validation: fuchsia is an accent, never a fill — brand rule. Error state is
+   a fuchsia message plus a thicker border, so it also survives colour-blind
+   viewing (colour alone is never the signal). */
+/* [DOC] error message element */
+.wc-block-checkout .wc-block-components-validation-error {
+  font-size: var(--text-body-sm);
+  line-height: 1.5;
+  color: var(--fuchsia-500);
+  margin-block-start: var(--field-gap);
+}
+/* [DOC] invalid input */
+.wc-block-checkout .wc-block-components-text-input input[aria-invalid="true"] {
+  border-width: 2px;
+  border-color: var(--fuchsia-500);
+}
+
+/* Checkbox rows (ship-to-different, terms) need a 44px hit area — the label
+   is the target, not the 16px box. */
+.wc-block-checkout .wc-block-components-checkbox.wc-block-components-checkbox {
+  display: flex;
+  align-items: center;
+  min-block-size: 44px;
+  font-size: var(--text-body);
+  color: var(--color-ink);
+}
+/* [DOC] the input inside the captured wrapper */
+.wc-block-checkout .wc-block-components-checkbox input[type="checkbox"] {
+  inline-size: 20px;
+  block-size: 20px;
+  accent-color: var(--aqua-500);
+  margin-inline-end: var(--space-3);
+}
+/* [DOC] its label */
+.wc-block-checkout .wc-block-components-checkbox label {
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+/* The read-only address summary shown after a step is completed. */
+.wc-block-checkout .wc-block-components-address-card.wc-block-components-address-card {
+  background: var(--color-mist);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-soft);
+  line-height: 1.75;
+}
+
+/* --------------------------------------------------------------------------
+   5.4.4 · PAYMENT — cash on delivery is the only option
+   -------------------------------------------------------------------------- */
+
+/* Full-width radio cards, never a dropdown: dropdowns have vanished from
+   large stores and test badly. With one method it is preselected anyway, so
+   the card's real job is to say plainly what will happen at the door. */
+.wc-block-checkout .wc-block-components-radio-control.wc-block-components-radio-control {
+  display: grid;
+  gap: var(--space-3);
+  border: 0;
+}
+/* [DOC] one selectable card */
+.wc-block-checkout .wc-block-components-radio-control__option {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--btn-min-height);
+  padding: var(--space-4);
+  margin: 0;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background: var(--card-bg);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-instant) var(--ease-out),
+    background-color var(--duration-instant) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .wc-block-checkout .wc-block-components-radio-control__option:hover {
+    border-color: var(--aqua-300);
+  }
+}
+/* Selected state carries THREE signals — border colour, border weight, tint —
+   because colour alone is not an accessible selection indicator. */
+/* [DOC] checked variant of the captured highlight modifier */
+.wc-block-checkout .wc-block-components-radio-control--highlight-checked .wc-block-components-radio-control__option--checked-option-highlighted {
+  border-width: 2px;
+  border-color: var(--aqua-500);
+  background: var(--aqua-50);
+}
+/* [DOC] the radio dot */
+.wc-block-checkout .wc-block-components-radio-control input[type="radio"] {
+  inline-size: 20px;
+  block-size: 20px;
+  accent-color: var(--aqua-500);
+  margin-inline-end: var(--space-3);
+}
+
+.wc-block-checkout .wc-block-components-payment-method-label.wc-block-components-payment-method-label {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body);
+  color: var(--color-ink);
+}
+/* The COD explanation set in WooCommerce → Payments → Description lands here.
+   Contextual help at the point of doubt, which is where it actually works. */
+/* [DOC] description slot under the label */
+.wc-block-checkout .wc-block-components-radio-control__description {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-soft);
+  line-height: 1.75;
+  margin-block-start: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   5.4.5 · ORDER SUMMARY
+   -------------------------------------------------------------------------- */
+
+/* One card, so the whole "what am I confirming" answer reads as a single
+   object rather than three floating lists. */
+.wc-block-checkout .wc-block-components-order-summary.wc-block-components-order-summary,
+.wc-block-checkout .wc-block-components-sidebar .wc-block-components-panel.wc-block-components-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--space-4) var(--space-5);
+  margin-block-end: var(--space-4);
+}
+/* [DOC] the summary's own disclosure button on mobile — touch target */
+.wc-block-checkout .wc-block-components-panel .wc-block-components-panel__button {
+  min-block-size: 44px;
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  color: var(--color-ink);
+}
+
+.wc-block-checkout .wc-block-components-order-summary-item.wc-block-components-order-summary-item {
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--color-line-soft);
+}
+.wc-block-checkout .wc-block-components-product-name.wc-block-components-product-name {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.6;
+}
+/* [DOC] quantity badge — one of the four selectors Woo's docs sanction */
+.wc-block-checkout .wc-block-components-order-summary-item__quantity {
+  background: var(--aqua-50);
+  border: 1px solid var(--aqua-100);
+  color: var(--aqua-700);
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Same bidi isolation as the cart — the totals here are the last numbers the
+   shopper reads before committing, so a mirrored digit is fatal. */
+/* [DOC] class captured on the cart page; presumed identical here */
+.wc-block-checkout .wc-block-components-formatted-money-amount.wc-block-components-formatted-money-amount {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
+  text-align: start;
+}
+
+.wc-block-checkout .wc-block-components-totals-item.wc-block-components-totals-item {
+  padding-block: var(--space-3);
+  font-size: var(--text-body);
+  color: var(--color-ink-soft);
+}
+/* [DOC] label / value halves */
+.wc-block-checkout .wc-block-components-totals-item .wc-block-components-totals-item__label {
+  color: var(--color-ink-soft);
+}
+.wc-block-checkout .wc-block-components-totals-item .wc-block-components-totals-item__value {
+  color: var(--color-ink);
+  font-weight: 600;
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+}
+/* [DOC] grand total row — the single number that must dominate */
+.wc-block-checkout .wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
+  font-size: var(--text-h4);
+  font-weight: 700;
+}
+.wc-block-checkout .wc-block-components-totals-footer-item.wc-block-components-totals-footer-item {
+  border-block-start: 1px solid var(--color-line);
+  padding-block-start: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   5.4.6 · PLACE ORDER
+   -------------------------------------------------------------------------- */
+
+/* Quiet baseline for every other button in the block (edit address, coupon),
+   so only one control on the page can look primary. */
+.wc-block-checkout .wc-block-components-button.wc-block-components-button {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0;
+  min-block-size: 44px;
+  border-radius: var(--radius-pill);
+  -webkit-tap-highlight-color: transparent;
+}
+/* [DOC] text variant */
+.wc-block-checkout .wc-block-components-button.wc-block-components-button--text {
+  background: transparent;
+  color: var(--aqua-700);
+  padding-inline: 0;
+}
+
+/* The commit button: library primary recipe, full width. */
+.wc-block-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: var(--btn-min-height);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--btn-fill-top);
+  background-image:
+    linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body);
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow:
+    var(--btn-shadow),
+    inset 0 1px 0 var(--btn-sheen-top),
+    inset 0 -1px 0 var(--btn-bezel-bottom);
+  transition:
+    transform var(--duration-instant) var(--ease-out-soft),
+    box-shadow var(--duration-instant) var(--ease-out-soft),
+    background-color var(--duration-instant) var(--ease-out-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  .wc-block-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:hover {
+    transform: translateY(-2px);
+    background-image:
+      linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255, 255, 255, 0) 55%),
+      linear-gradient(180deg, var(--btn-fill-top-hover) 0%, var(--btn-fill-bottom-hover) 100%);
+    box-shadow:
+      var(--btn-shadow-hover),
+      inset 0 1px 0 var(--btn-sheen-top),
+      inset 0 -1px 0 var(--btn-bezel-bottom);
+  }
+}
+.wc-block-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:active {
+  transform: translateY(-1px) scale(0.98);
+}
+/* Woo's own focus shadow is a hard-coded blue (#0675c4) that belongs to no
+   palette on this site. Replaced with the library ring. */
+.wc-block-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--btn-shadow),
+    inset 0 1px 0 var(--btn-sheen-top),
+    0 0 0 3px var(--color-ring);
+}
+/* Submitting: freeze the lift so the button cannot look interactive twice. */
+.wc-block-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:disabled {
+  opacity: 0.55;
+  transform: none;
+  cursor: wait;
+}
+
+/* Keeping the commit button reachable on mobile removes a scroll between
+   decision and action. Solid canvas — backdrop-filter is banned on buying
+   pages, and a blurred bar repaints on every scroll frame. */
+/* [DOC] actions row wrapper */
+@media (max-width: 767px) {
+  .wc-block-checkout .wc-block-checkout__actions {
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 2;
+    background: var(--color-canvas);
+    border-block-start: 1px solid var(--color-line);
+    box-shadow: var(--shadow-sm);
+    padding-block: var(--space-3);
+    padding-block-end: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+    padding-inline: var(--space-4);
+    margin-inline: calc(var(--space-4) * -1);
+  }
+  /* [DOC] the "back to cart" link sharing that bar — must not read primary */
+  .wc-block-checkout .wc-block-checkout__actions .wc-block-components-checkout-return-to-cart-button {
+    display: block;
+    text-align: center;
+    margin-block-end: var(--space-2);
+    color: var(--aqua-700);
+    font-size: var(--text-body-sm);
+    min-block-size: 44px;
+  }
+}
+
+/* Users who ask for less motion get none of the lift. */
+@media (prefers-reduced-motion: reduce) {
+  .wc-block-cart .wc-block-cart__submit-button.wc-block-cart__submit-button,
+  .wc-block-cart .wc-block-cart__submit-container .wc-block-components-button.wc-block-components-button,
+  .wc-block-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button,
+  .wc-block-checkout .wc-block-components-radio-control__option,
+  .wp-block-woocommerce-empty-cart-block .wc-block-grid__product.wc-block-grid__product {
+    transition: none;
+    transform: none;
+  }
+}
+/* ==========================================================================
+   5.5 · BLOCKS — LIVE-MEASURED CORRECTIONS  (21 Aug, after publishing 5.3/5.4)
+   --------------------------------------------------------------------------
+   Three defects found by measuring the real page, not by reading the markup:
+
+   1. EVERY totals row carries .wc-block-components-totals-wrapper — coupon,
+      subtotal, shipping, total. Card-treating the wrapper produced FOUR
+      separate floating cards instead of one summary. The card belongs on
+      the summary BLOCK; rows go back to being rows.
+   2. Product name computed 13px despite a (0,3,0) rule: Woo's own cart CSS
+      loads after the WPCode snippet and wins ties. Proven live by injecting
+      a body-scoped rule and watching it jump to 18px. Everything that must
+      beat core is re-declared here at (0,4,0).
+   3. The quantity selector measured 107px wide while its contents need
+      40 + 44 + 44 = 128px, so `overflow: hidden` clipped the "+" button off
+      the end. Widen to fit instead of hiding the control.
+   ========================================================================== */
+
+/* ---- 1 · one summary card, hairline rows inside ---- */
+body.woocommerce-cart .wc-block-components-sidebar .wp-block-woocommerce-cart-order-summary-block {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--space-5);
+  overflow: hidden;
+}
+body.woocommerce-cart .wc-block-components-sidebar .wc-block-components-totals-wrapper.wc-block-components-totals-wrapper {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-3) 0;
+  margin: 0;
+}
+body.woocommerce-cart .wc-block-components-sidebar .wc-block-components-totals-wrapper + .wc-block-components-totals-wrapper {
+  border-top: 1px solid var(--color-line-soft);
+}
+/* the grand total is the answer to the page — let it carry weight */
+body.woocommerce-cart .wc-block-components-sidebar .wc-block-components-totals-footer-item.wc-block-components-totals-footer-item {
+  font-family: var(--font-heading);
+  font-size: var(--text-body-lg);
+  color: var(--color-ink);
+  padding-top: var(--space-4);
+}
+
+/* ---- 2 · re-assert over core's later stylesheet ---- */
+body.woocommerce-cart .wc-block-cart .wc-block-components-product-name.wc-block-components-product-name {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  line-height: var(--leading-heading);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+body.woocommerce-cart .wc-block-cart .wc-block-components-formatted-money-amount.wc-block-components-formatted-money-amount {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
+  text-align: start;
+}
+
+/* ---- 3 · quantity control: fit the buttons, never clip them ---- */
+body.woocommerce-cart .wc-block-components-quantity-selector.wc-block-components-quantity-selector {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  min-width: 132px;
+  max-width: none;
+  overflow: visible;
+}
+body.woocommerce-cart .wc-block-components-quantity-selector .wc-block-components-quantity-selector__input {
+  flex: 0 0 44px;
+  width: 44px;
+  min-width: 44px;
+  text-align: center;
+  font-size: var(--field-fs);   /* 16px — below this iOS zooms the page */
+}
+body.woocommerce-cart .wc-block-components-quantity-selector .wc-block-components-quantity-selector__button {
+  flex: 0 0 44px;
+}
+
+/* ---- 5.5 continued · checkout, same two classes of defect ---- */
+
+/* one summary card here too (the checkout wrapper has its own block name) */
+body.woocommerce-checkout .wc-block-components-sidebar .wp-block-woocommerce-checkout-order-summary-block {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--space-5);
+  overflow: hidden;
+}
+body.woocommerce-checkout .wc-block-components-sidebar .wc-block-components-totals-wrapper.wc-block-components-totals-wrapper {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-3) 0;
+  margin: 0;
+}
+body.woocommerce-checkout .wc-block-components-sidebar .wc-block-components-totals-wrapper + .wc-block-components-totals-wrapper {
+  border-top: 1px solid var(--color-line-soft);
+}
+body.woocommerce-checkout .wc-block-components-sidebar .wc-block-components-totals-footer-item.wc-block-components-totals-footer-item {
+  font-family: var(--font-heading);
+  font-size: var(--text-body-lg);
+  color: var(--color-ink);
+  padding-top: var(--space-4);
+}
+
+/* Shipping/payment options: Woo absolutely-positions the radio dot at the
+   inline-start edge, but the label group spans the FULL option width, so in
+   RTL the text ran underneath the dot ("التوصيل" rendered as "صيل").
+   Measured live: dot at x=1483, label right edge at x=1503. Reserve the
+   lane instead of letting them share it. */
+/* Measured: the dot sits at inset-inline-start:16px — i.e. the RIGHT edge in
+   RTL — so the lane to reserve is inline-START, not inline-end. (First pass
+   padded the wrong side; padding applied cleanly at 44px and the text still
+   ran under the dot, which is what proved the direction was inverted.) */
+body.woocommerce-checkout .wc-block-components-radio-control .wc-block-components-radio-control__option {
+  padding-inline-start: calc(var(--space-4) + 28px);
+  padding-inline-end: var(--space-4);
+}
+body.woocommerce-checkout .wc-block-components-radio-control .wc-block-components-radio-control__label-group,
+body.woocommerce-checkout .wc-block-components-radio-control .wc-block-components-radio-control__label {
+  display: block;
+  text-align: start;
+}
+/* selected option reads as chosen, not just outlined */
+body.woocommerce-checkout .wc-block-components-radio-control--highlight-checked .wc-block-components-radio-control__option--checked-option-highlighted {
+  background: var(--aqua-50);
+  border-color: var(--aqua-500);
+}
