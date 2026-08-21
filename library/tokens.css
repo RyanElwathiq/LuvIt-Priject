@@ -6878,7 +6878,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v28";
+  content: "CSS v29";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -7812,12 +7812,16 @@ body.woocommerce-cart .wc-block-components-sidebar .wc-block-components-totals-i
 body.woocommerce-cart .wc-block-components-sidebar .wc-block-components-totals-coupon.wc-block-components-totals-coupon {
   padding-inline: 0;
 }
-/* [DOC] the quantity chip in the order summary. Woo sets color:#fff on BOTH
-   spans inside it; 5.4.5 repaints the bubble aqua-50, so the number lands at
-   ~1.06:1 and disappears. The parent's colour cannot fix it. */
-body.woocommerce-checkout .wc-block-components-order-summary-item__quantity.wc-block-components-order-summary-item__quantity span:not(.screen-reader-text) {
-  color: var(--aqua-700, #196B7D);
-}
+/* WITHDRAWN 21 Aug, one hour after it shipped. The audit read this from the
+   captured state file, which never recorded the chip's own background, and
+   assumed 5.4.5 had repainted the bubble aqua-50. MEASURED on the live page
+   after publishing: the bubble computes rgb(25,107,125) — aqua-700, the DARK
+   end. Woo's white numeral was already correct at ~7:1, and setting it to
+   aqua-700 put dark on dark at 1:1. The number vanished.
+
+   Left here as a comment and not deleted, because the next reader will
+   otherwise re-derive the same wrong fix from the same state file.
+   THE RULE: a contrast claim needs BOTH colours measured, not one. */
 
 /* --------------------------------------------------------------------------
    5.26.7 · ONE STEP SEPARATOR, ONE SYSTEM, BOTH BREAKPOINTS
