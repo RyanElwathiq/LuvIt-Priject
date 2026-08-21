@@ -128,7 +128,13 @@
 }
 
 /* ---- Base RTL setup ---- */
-html { direction: rtl; scroll-behavior: smooth; }
+/* NOTE — scroll-behavior is deliberately NOT global. Smooth scrolling is a
+   feature for ANCHOR navigation (the home page nav jumps to #products,
+   #routine, #quiz…). On a long content page it turns a flick into an eased
+   animation: the page appears frozen for a beat, then lurches. Ryan reported
+   exactly that on cart/checkout from his phone, 21 Aug — "بتضللك تعمل سكرول
+   بدون ما يتغير اشي وفجاه بتنزل". So it is opted IN per page below. */
+html { direction: rtl; }
 
 body {
   font-family: var(--font-body);
@@ -6631,4 +6637,23 @@ body.woocommerce-checkout .power-coupons-drawer-button-wrapper,
 body.woocommerce-checkout .power-coupons-drawer-trigger-wrapper,
 body.woocommerce-checkout .power-coupons-view-coupons-btn {
   display: none;
+}
+
+/* ==========================================================================
+   5.10 · SMOOTH SCROLL — opt IN, never global  (21 Aug)
+   --------------------------------------------------------------------------
+   Anchor navigation lives on the home page and on any page we build with
+   in-page sections. Purchase pages have no anchors at all, so smooth
+   scrolling there buys nothing and costs the "frozen then lurch" feel.
+   `:has()` lets us switch it on only where an anchor target actually exists.
+   ========================================================================== */
+html:has([data-nav-bg]),
+html:has(#hero-seq) {
+  scroll-behavior: smooth;
+}
+/* belt and braces: never on the money path, whatever else matches */
+html:has(body.woocommerce-cart),
+html:has(body.woocommerce-checkout),
+html:has(body.woocommerce-account) {
+  scroll-behavior: auto;
 }
