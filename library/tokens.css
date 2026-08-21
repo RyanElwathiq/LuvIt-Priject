@@ -4367,7 +4367,7 @@ body.woocommerce-account .u-columns .col-2 {
        doubling ALONE is not enough. Every override is scoped to its block
        (`.wc-block-cart` / `.wc-block-checkout`) AND doubled, which lands at
        (0,3,0)+ and wins regardless of load order.
-     · Woo declares its inner DOM "private". Selectors marked /* [DOC] */ are
+     · Woo declares its inner DOM "private". Selectors marked "[DOC]" are
        NOT in the markup captured from the live site on 2026-08-21 — they are
        inferred from shipped CSS and must be re-verified on the real page and
        after every WooCommerce update.
@@ -5457,4 +5457,1135 @@ body.woocommerce-checkout .wc-block-components-radio-control .wc-block-component
 body.woocommerce-checkout .wc-block-components-radio-control--highlight-checked .wc-block-components-radio-control__option--checked-option-highlighted {
   background: var(--aqua-50);
   border-color: var(--aqua-500);
+}
+
+/* ============================================================================
+   5.6 · CHECKOUT & CART — DESIGN PASS
+   LUV IT · plasmajo.com · WooCommerce 11 blocks · pure CSS · no DOM changes
+
+   SPECIFICITY CONTRACT
+   Woo ships no CSS custom properties and `cart-rtl.css` loads AFTER this
+   snippet, so a tie loses. Every rule below starts at `body.woocommerce-checkout`
+   / `body.woocommerce-cart` and doubles a class.
+
+   PRESERVED (measured, already solved, do not break)
+   · totals rows stay ROWS. The card lives on the summary BLOCK, never on
+     `.wc-block-components-totals-wrapper`. Only a hairline runs on a wrapper here.
+   · radio geometry: dot at `inset-inline-start: 16px`, label gutter 44px.
+   · `accent-color` is dead (appearance:none). Every control is hand drawn.
+   · Woo already renders the step number inside `__heading-content`. That element
+     is CONVERTED into a badge. No new CSS counter anywhere in this file.
+
+   MOTION CONTRACT
+   transform + opacity only. No backdrop-filter on any purchase page. No WebGL,
+   no external images. Every gradient is inline CSS or an inline SVG data URI.
+
+   MARKER LEGEND
+   A "[DOC]" marker above a rule = that selector is NOT in the measured list;
+   confirm it once in DevTools before trusting it.
+   (Do NOT write the marker's literal comment syntax inside this header: CSS
+   comments do not nest, so it would close this block early and the parser
+   would then swallow the next rule. That exact bug ate the knobs block on
+   first publish, 21 Aug.)
+   ========================================================================== */
+
+
+/* ---------------------------------------------------------------------------
+   5.6.0 · KNOBS
+   WHY on the body and not on `.wc-block-checkout`: the atmosphere layers are
+   `body::before` / `body::after`, and they need these values too. Declaring
+   once on the body lets inheritance carry them to every control below.
+   The two SOLVED radio numbers are restated here so nothing silently desyncs.
+--------------------------------------------------------------------------- */
+body.woocommerce-checkout.woocommerce-checkout,
+body.woocommerce-cart.woocommerce-cart {
+  --luvit-ctl: 22px;                 /* drawn size of ring / box              */
+  --luvit-ring: 2px;                 /* stroke weight of the ring             */
+  --luvit-x: 16px;                   /* inline offset of the radio   (SOLVED) */
+  --luvit-gutter: 44px;              /* reserved label gutter        (SOLVED) */
+  --luvit-halo: 34px;                /* hover water ripple diameter           */
+  --luvit-dot: 10px;                 /* the water bead                        */
+
+  --luvit-badge: 32px;               /* step number badge                     */
+  --luvit-step-pt: var(--space-5, 1.5rem);   /* step padding-block-start       */
+  --luvit-rail: calc(var(--luvit-badge) / 2);/* centre of the badge = thread x */
+  --luvit-thumb-radius: 12px;        /* product thumbnail in the receipt      */
+
+  --luvit-ease: var(--ease-out-soft, cubic-bezier(0.16, 0.4, 0.3, 1));
+  --luvit-plop: cubic-bezier(0.34, 1.45, 0.64, 1);  /* bead lands, settles    */
+  --luvit-dur: 200ms;
+}
+
+
+/* ===========================================================================
+   5.6.1 · ATMOSPHERE  ·  SHALLOW WATER
+   Two `position: fixed` layers behind everything. Fixed, not scrolling, so the
+   water never streaks past a form the eye is trying to read. Static by default:
+   a page where money changes hands must not move on its own.
+
+   Layer A (::before) carries an OPAQUE base wash plus blooms, crossed light
+   rays and a tiled bubble field. Layer B (::after) is grain, and its only job
+   is dithering the wash so wide gradients do not band on cheap panels.
+
+   WHY the page had to darken at all: canvas #FAFCFD against a #FFF card is a
+   difference of almost nothing, so the cards dissolved. The wash now travels
+   canvas -> mist -> aqua-50 while the cards stay pure paper. That gap is the
+   whole reason the cards read as floating.
+   =========================================================================== */
+
+/* WHY transparent: the fixed layers sit at z-index -1, so any paint on the body
+   itself would cover them. `background-image: none` also clears theme washes. */
+body.woocommerce-checkout.woocommerce-checkout,
+body.woocommerce-cart.woocommerce-cart {
+  background-color: transparent;
+  background-image: none;
+}
+
+/* WHY: the theme wrapper must not paint over the water either. */
+body.woocommerce-checkout.woocommerce-checkout main,
+body.woocommerce-cart.woocommerce-cart main {
+  background-color: transparent;
+}
+
+body.woocommerce-checkout.woocommerce-checkout::before,
+body.woocommerce-checkout.woocommerce-checkout::after,
+body.woocommerce-cart.woocommerce-cart::before,
+body.woocommerce-cart.woocommerce-cart::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* WHY `background-color` as its own declaration: if a browser rejects
+   `color-mix`, the whole `background-image` list is dropped, and this colour is
+   the parachute that keeps the page from falling back to theme white.
+   WHY `color-mix` instead of new rgba() values: the palette stays the palette.
+   No hex is invented anywhere in this file. */
+body.woocommerce-checkout.woocommerce-checkout::before,
+body.woocommerce-cart.woocommerce-cart::before {
+  background-color: var(--color-canvas, #FAFCFD);
+  background-image:
+    /* crossed light rays. repeating-linear-gradient tiles internally, so this
+       is the cheapest possible way to paint them. Kept faint (paper at 34%)
+       because a checkout form is dense text, not a hero. */
+    repeating-linear-gradient(102deg,
+      transparent 0 52px,
+      color-mix(in oklab, var(--color-paper, #FFF) 34%, transparent) 72px,
+      transparent 94px 168px),
+    repeating-linear-gradient(-14deg,
+      transparent 0 72px,
+      color-mix(in oklab, var(--aqua-500, #29A9C0) 5%, transparent) 96px,
+      transparent 124px 224px),
+
+    /* bubbles drawn as RINGS, not blobs: aqua edge plus a white highlight.
+       A filled dot reads as dust; a ring reads as air under water. */
+    radial-gradient(circle 9px at 22% 16%,
+      transparent 0 44%,
+      color-mix(in oklab, var(--aqua-500, #29A9C0) 18%, transparent) 56%,
+      color-mix(in oklab, var(--color-paper, #FFF) 90%, transparent) 65%,
+      color-mix(in oklab, var(--aqua-500, #29A9C0) 8%, transparent) 74%,
+      transparent 80%),
+    radial-gradient(circle 5px at 71% 52%,
+      transparent 0 40%,
+      color-mix(in oklab, var(--aqua-500, #29A9C0) 22%, transparent) 55%,
+      color-mix(in oklab, var(--color-paper, #FFF) 86%, transparent) 68%,
+      transparent 78%),
+    radial-gradient(circle 14px at 38% 79%,
+      transparent 0 50%,
+      color-mix(in oklab, var(--aqua-500, #29A9C0) 11%, transparent) 60%,
+      color-mix(in oklab, var(--color-paper, #FFF) 70%, transparent) 68%,
+      transparent 80%),
+
+    /* blooms. The bright focus sits top-INLINE-END because the page reads RTL
+       and the eye enters from there. Written as percentages of the viewport, so
+       it holds on a 360px phone and on a 1920px desktop alike. */
+    radial-gradient(78% 52% at 88% -6%,
+      color-mix(in oklab, var(--color-paper, #FFF) 92%, transparent) 0%,
+      transparent 62%),
+    radial-gradient(62% 46% at 92% 8%,
+      color-mix(in oklab, var(--aqua-400, #4CC5DA) 20%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(58% 48% at 4% 34%,
+      color-mix(in oklab, var(--aqua-500, #29A9C0) 13%, transparent) 0%,
+      transparent 72%),
+    radial-gradient(150% 62% at 50% 112%,
+      color-mix(in oklab, var(--aqua-500, #29A9C0) 22%, transparent) 0%,
+      transparent 60%),
+
+    /* the opaque base wash. LAST in the stack = bottom of the stack. */
+    linear-gradient(180deg,
+      var(--color-canvas, #FAFCFD) 0%,
+      var(--color-mist, #F2F7F9) 44%,
+      var(--aqua-50, #EAFAFD) 100%);
+  background-size:
+    100% 100%, 100% 100%,
+    340px 430px, 235px 290px, 520px 610px,
+    100% 100%, 100% 100%, 100% 100%, 100% 100%,
+    100% 100%;
+  background-repeat: repeat;
+}
+
+/* WHY grain: four overlapping wide gradients WILL band on 6-bit panels. This
+   is a dither, not a texture. 4% is the ceiling before it reads as dirt. */
+body.woocommerce-checkout.woocommerce-checkout::after,
+body.woocommerce-cart.woocommerce-cart::after {
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
+  background-repeat: repeat;
+}
+
+/* WHY: printed receipts and High Contrast mode both discard decoration. Leaving
+   the layers in wastes ink in one and paints nothing in the other. */
+@media print {
+  body.woocommerce-checkout.woocommerce-checkout::before,
+  body.woocommerce-checkout.woocommerce-checkout::after,
+  body.woocommerce-cart.woocommerce-cart::before,
+  body.woocommerce-cart.woocommerce-cart::after { display: none; }
+}
+@media (forced-colors: active) {
+  body.woocommerce-checkout.woocommerce-checkout::before,
+  body.woocommerce-checkout.woocommerce-checkout::after,
+  body.woocommerce-cart.woocommerce-cart::before,
+  body.woocommerce-cart.woocommerce-cart::after { display: none; }
+}
+
+
+/* ===========================================================================
+   5.6.2 · THE CARDS THAT FLOAT ON IT
+   Pure paper on a tinted wash. The lift comes from a long soft drop plus an
+   inset top highlight, which is the honest way to fake a lit edge without a
+   single filter. Never `backdrop-filter`: this is a purchase page.
+   =========================================================================== */
+
+body.woocommerce-checkout .wc-block-components-main.wc-block-components-main,
+body.woocommerce-checkout .wp-block-woocommerce-checkout-order-summary-block.wp-block-woocommerce-checkout-order-summary-block,
+body.woocommerce-cart .wp-block-woocommerce-cart-order-summary-block.wp-block-woocommerce-cart-order-summary-block {
+  background-color: var(--color-paper, #FFFFFF);
+  border: 1px solid var(--card-border, #E1E9EC);
+  border-radius: var(--card-radius, 16px);
+  padding: var(--space-5, 1.5rem);
+  box-shadow:
+    inset 0 1px 0 var(--color-paper, #FFFFFF),
+    var(--card-shadow, 0 1px 2px rgba(26, 37, 41, 0.04)),
+    0 18px 40px -26px rgba(12, 51, 60, 0.34);
+}
+
+/* WHY the sidebar column and not the block: the sticky/offset behaviour belongs
+   to the column, the paper belongs to the block above. Keeping them apart stops
+   a second nested card from appearing. */
+body.woocommerce-checkout .wc-block-components-sidebar.wc-block-components-sidebar,
+body.woocommerce-cart .wc-block-components-sidebar.wc-block-components-sidebar {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+body.woocommerce-checkout .wc-block-components-sidebar-layout.wc-block-components-sidebar-layout,
+body.woocommerce-cart .wc-block-components-sidebar-layout.wc-block-components-sidebar-layout {
+  gap: var(--space-5, 1.5rem);
+}
+
+
+/* ===========================================================================
+   5.6.3 · CORNERS  ·  every 4px becomes --radius-md
+   WHY this exists as its own block: Woo's 4px is the single loudest tell that a
+   page is stock WooCommerce. 16px is the project's card radius, so one number
+   now governs cards, fields, options and buttons alike.
+   The controls are excluded on purpose: the ring is a circle and the checkbox
+   keeps its own 7px squircle, because a 16px radius on a 22px box is a circle.
+   =========================================================================== */
+
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input,
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input input,
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input select,
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input textarea,
+body.woocommerce-checkout .wc-block-components-radio-control.wc-block-components-radio-control,
+body.woocommerce-checkout .wc-block-components-address-card.wc-block-components-address-card,
+body.woocommerce-checkout .wc-block-components-address-form.wc-block-components-address-form,
+body.woocommerce-checkout .wc-block-components-button.wc-block-components-button,
+body.woocommerce-checkout .wc-block-components-quantity-selector.wc-block-components-quantity-selector,
+body.woocommerce-checkout .wc-block-components-order-summary-item.wc-block-components-order-summary-item,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input input,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input select,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input textarea,
+body.woocommerce-cart .wc-block-components-radio-control.wc-block-components-radio-control,
+body.woocommerce-cart .wc-block-components-address-card.wc-block-components-address-card,
+body.woocommerce-cart .wc-block-components-button.wc-block-components-button,
+body.woocommerce-cart .wc-block-components-quantity-selector.wc-block-components-quantity-selector,
+body.woocommerce-cart .wc-block-components-order-summary-item.wc-block-components-order-summary-item {
+  border-radius: var(--radius-md, 16px);
+}
+
+/* WHY 16px on the field and not 15: anything under 16px makes iOS Safari zoom
+   the viewport on focus, which throws the customer out of the layout mid form.
+   52px of height is the project field token, comfortably over the 44px floor. */
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input input,
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input select,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input input,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input select {
+  min-block-size: var(--field-h, 52px);
+  font-family: var(--font-body, "IBM Plex Sans Arabic", system-ui, sans-serif);
+  font-size: var(--field-fs, 16px);
+  color: var(--color-ink, #1A2529);
+  background-color: var(--field-bg, #FFFFFF);
+  border: 1px solid var(--field-border, #E1E9EC);
+  box-shadow: inset 0 1px 2px rgba(12, 51, 60, 0.05);
+  transition: border-color var(--luvit-dur) var(--luvit-ease),
+              box-shadow var(--luvit-dur) var(--luvit-ease);
+}
+
+body.woocommerce-checkout .wc-block-components-text-input.wc-block-components-text-input input:focus,
+body.woocommerce-cart .wc-block-components-text-input.wc-block-components-text-input input:focus {
+  outline: none;
+  border-color: var(--aqua-500, #29A9C0);
+  box-shadow: inset 0 1px 2px rgba(12, 51, 60, 0.05),
+              0 0 0 4px color-mix(in oklab, var(--aqua-500, #29A9C0) 18%, transparent);
+}
+
+
+/* ===========================================================================
+   5.6.4 · RADIO  ·  "water drop"
+   `accent-color` cannot help here: it only paints a browser-drawn control, and
+   `appearance: none` is already live on these inputs. That is the literal
+   reason the circles render naked. Every pixel below is drawn by hand.
+   =========================================================================== */
+
+/* WHY the ROW is the tap target and not the 22px circle: 56px clears the 44px
+   minimum without inflating the drawn ring. `position: relative` anchors the
+   halo; the reserved gutter is the SOLVED 44px. */
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-block-size: 56px;
+  padding-block: var(--space-3, 0.75rem);
+  padding-inline: var(--luvit-gutter) var(--space-4, 1rem);
+  border-radius: var(--radius-md, 16px);
+  cursor: pointer;
+  font-size: var(--text-body, 1rem);
+  transition: background-color var(--luvit-dur) var(--luvit-ease),
+              box-shadow var(--luvit-dur) var(--luvit-ease);
+}
+
+/* WHY the halo lives on the OPTION and not on the input: it has to sit BEHIND
+   the ring and still scale freely. transform + opacity only. This is the
+   "drop hitting still water" cue on hover and on selection. */
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option::before,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inline-size: var(--luvit-halo);
+  block-size: var(--luvit-halo);
+  inset-inline-start: calc(var(--luvit-x) - (var(--luvit-halo) - var(--luvit-ctl)) / 2);
+  inset-block-start: 50%;
+  margin-block-start: calc(var(--luvit-halo) / -2);
+  border-radius: 50%;
+  background: var(--aqua-100, #D0F3F9);
+  opacity: 0;
+  transform: scale(0.55);
+  pointer-events: none;
+  transition: transform 260ms var(--luvit-ease), opacity 260ms var(--luvit-ease);
+}
+
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option:hover::before,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option:hover::before {
+  opacity: 0.5;
+  transform: scale(0.85);
+}
+
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:checked)::before,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:checked)::before {
+  opacity: 0.75;
+  transform: scale(1);
+}
+
+/* WHY `box-shadow: inset` and not `border`: a border eats into the 22px box and
+   shifts the centre whenever its width changes between states. An inset shadow
+   never moves the geometry, so the bead inside can never drift.
+   The linear-gradient is a static specular sheen: a wet bead of glass with no
+   filter at all. `margin-block-start` centres it so `transform` stays free for
+   the press feedback. The 16px offset is the SOLVED position. */
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"],
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  inline-size: var(--luvit-ctl);
+  block-size: var(--luvit-ctl);
+  inset-inline-start: var(--luvit-x);
+  inset-block-start: 50%;
+  margin-block-start: calc(var(--luvit-ctl) / -2);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: var(--color-paper, #FFFFFF);
+  background-image: linear-gradient(180deg,
+    color-mix(in oklab, var(--color-paper, #FFF) 95%, transparent) 0%,
+    transparent 58%);
+  box-shadow: inset 0 0 0 var(--luvit-ring) var(--color-line, #E1E9EC);
+  transition: box-shadow var(--luvit-dur) var(--luvit-ease),
+              transform 120ms var(--luvit-ease);
+}
+
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option:hover input[type="radio"],
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option:hover input[type="radio"] {
+  box-shadow: inset 0 0 0 var(--luvit-ring) var(--aqua-400, #4CC5DA);
+}
+
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"]:checked,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"]:checked {
+  box-shadow: inset 0 0 0 var(--luvit-ring) var(--aqua-500, #29A9C0);
+}
+
+/* WHY: physical press feedback. A 6% dip for 120ms is the only honest way to
+   tell a thumb "I registered that" on a control this small. */
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"]:active,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"]:active {
+  transform: scale(0.94);
+}
+
+/* WHY THE BEAD sits on the input's own `::after`: `inset: 0; margin: auto`
+   centres it, which makes it immune to text direction. A bead has no start and
+   no end. Firefox renders pseudo-elements on radio inputs precisely BECAUSE
+   `appearance: none` is set, so this is cross-browser. It inflates from the
+   centre with a slight overshoot, so it lands like a drop instead of switching
+   on like a lamp. */
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"]::after,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  inline-size: var(--luvit-dot);
+  block-size: var(--luvit-dot);
+  border-radius: 50%;
+  background-image:
+    radial-gradient(circle at 34% 26%,
+      color-mix(in oklab, var(--color-paper, #FFF) 85%, transparent) 0 16%,
+      transparent 44%),
+    linear-gradient(160deg, var(--aqua-400, #4CC5DA), var(--aqua-600, #1E869C));
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 260ms var(--luvit-plop), opacity 140ms var(--luvit-ease);
+}
+
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"]:checked::after,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option input[type="radio"]:checked::after {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* WHY: a hairline pre-echo of the bead on hover, the surface tension before the
+   drop breaks. Costs nothing: same element, same two properties. */
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option:hover input[type="radio"]:not(:checked)::after,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option:hover input[type="radio"]:not(:checked)::after {
+  transform: scale(0.42);
+  opacity: 0.4;
+}
+
+body.woocommerce-checkout .wc-block-components-radio-control__label-group.wc-block-components-radio-control__label-group,
+body.woocommerce-cart .wc-block-components-radio-control__label-group.wc-block-components-radio-control__label-group {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-body, "IBM Plex Sans Arabic", system-ui, sans-serif);
+  font-size: var(--text-body, 1rem);
+  line-height: var(--leading-body, 1.7);
+}
+
+body.woocommerce-checkout .wc-block-components-radio-control__label.wc-block-components-radio-control__label,
+body.woocommerce-cart .wc-block-components-radio-control__label.wc-block-components-radio-control__label {
+  color: var(--color-ink, #1A2529);
+  transition: color var(--luvit-dur) var(--luvit-ease);
+}
+
+
+/* ===========================================================================
+   5.6.5 · CHECKBOX  ·  a tick that gets DRAWN
+   =========================================================================== */
+
+/* WHY the wrapper becomes the positioning context: an absolutely positioned
+   child resolves against the PADDING box, so `inset-inline-start: 0` lands the
+   box at the very start of the reserved gutter while the text still flows from
+   34px in. No markup change needed. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox {
+  position: relative;
+  min-block-size: 44px;
+  padding-block: 10px;
+  padding-inline-start: 34px;
+  padding-inline-end: 0;
+}
+
+/* WHY the negative margin: 44px of TAP, 22px of PAINT. The target grows without
+   pushing the layout around. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox label, /* [DOC] */
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox label {   /* [DOC] */
+  display: block;
+  min-block-size: 24px;
+  padding-block: 10px;
+  margin-block: -10px;
+  cursor: pointer;
+  font-family: var(--font-body, "IBM Plex Sans Arabic", system-ui, sans-serif);
+  font-size: var(--text-body, 1rem);
+  line-height: 24px;
+  color: var(--color-ink, #1A2529);
+}
+
+/* WHY: Woo ships its own SVG tick. Leaving it in gives two stacked checkmarks.
+   Same class of bug as double step numbering. Kill the duplicate, never add a
+   second one. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox .wc-block-components-checkbox__mark, /* [DOC] */
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox .wc-block-components-checkbox__mark {   /* [DOC] */
+  display: none;
+}
+
+/* WHY 7px and not 16px: a squircle that belongs to the same family as the 16px
+   cards without looking like a shrunken card. Same inset-ring trick as the
+   radio, so state changes never move the box the tick is drawn inside. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"],
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  inline-size: var(--luvit-ctl);
+  block-size: var(--luvit-ctl);
+  inset-inline-start: 0;
+  inset-block-start: 11px;          /* centres on the first 24px text line */
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  background-color: var(--color-paper, #FFFFFF);
+  background-image: linear-gradient(180deg,
+    color-mix(in oklab, var(--color-paper, #FFF) 95%, transparent) 0%,
+    transparent 60%);
+  box-shadow: inset 0 0 0 var(--luvit-ring) var(--color-line, #E1E9EC);
+  transition: background-color 180ms var(--luvit-ease),
+              box-shadow 180ms var(--luvit-ease),
+              transform 120ms var(--luvit-ease);
+}
+
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox:hover input[type="checkbox"],
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox:hover input[type="checkbox"] {
+  box-shadow: inset 0 0 0 var(--luvit-ring) var(--aqua-400, #4CC5DA);
+}
+
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]:active,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]:active {
+  transform: scale(0.92);
+}
+
+/* WHY the fill floods first: the tick needs something to be drawn ON. The white
+   sheen is cleared so it cannot wash out the aqua. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]:checked,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]:checked {
+  background-color: var(--aqua-500, #29A9C0);
+  background-image: linear-gradient(160deg,
+    var(--aqua-400, #4CC5DA) 0%,
+    var(--aqua-600, #1E869C) 100%);
+  box-shadow: inset 0 0 0 var(--luvit-ring) var(--aqua-500, #29A9C0);
+}
+
+/* WHY TWO STROKES AND NOT ONE GLYPH: a single rotated border-box can only pop
+   in. Two independent bars can be drawn in sequence with `transform: scaleX`,
+   which is a real pen stroke and still transform-only.
+   `transform-origin: 0 50%` makes each bar grow from its own starting end.
+   Coordinates are PHYSICAL `left`/`top` on purpose: a checkmark is a glyph, not
+   text, and must never mirror in RTL. Both bars live inside the input's own
+   22px box, so page direction cannot reach them. No `dir` attribute is read
+   anywhere in this file. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]::before,
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]::after,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]::before,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  display: block;
+  block-size: 2.4px;
+  border-radius: 2px;
+  background: var(--color-paper, #FFFFFF);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+/* Short stroke: the down-stroke into the elbow. Drawn FIRST on check. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]::before,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]::before {
+  left: 5px;
+  top: 10.5px;
+  inline-size: 5.6px;
+  transform: rotate(45deg) scaleX(0);
+  transition: transform 110ms var(--luvit-ease) 130ms;   /* out: leaves last  */
+}
+
+/* Long stroke: the up-stroke out of the elbow. Drawn SECOND on check. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]::after,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]::after {
+  left: 8.2px;
+  top: 14.2px;
+  inline-size: 11.6px;
+  transform: rotate(-45deg) scaleX(0);
+  transition: transform 170ms var(--luvit-ease) 0ms;     /* out: leaves first */
+}
+
+/* WHY the delays flip on check: short bar leads, long bar follows 90ms later.
+   That 90ms IS the illusion. The eye reads a pen, not a fade. On uncheck the
+   delays above run the same pen backwards. */
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]:checked::before,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]:checked::before {
+  transform: rotate(45deg) scaleX(1);
+  transition: transform 110ms var(--luvit-ease) 40ms;
+}
+
+body.woocommerce-checkout .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]:checked::after,
+body.woocommerce-cart .wc-block-components-checkbox.wc-block-components-checkbox input[type="checkbox"]:checked::after {
+  transform: rotate(-45deg) scaleX(1);
+  transition: transform 190ms var(--luvit-plop) 130ms;
+}
+
+
+/* ===========================================================================
+   5.6.6 · CHECKOUT STEPS  ·  badge plus rail
+   Woo ALREADY prints the step number inside `__heading-content`. That element
+   is converted into a badge. A CSS counter is never introduced: it would render
+   a second number next to the first.
+   =========================================================================== */
+
+/* WHY the step becomes the positioning context: the badge is lifted out of the
+   heading line and parked at the start of the padding box, and the rail hangs
+   off the same origin. One containing block keeps badge and rail on one axis.
+   The inline padding reserves the rail column so no text ever sits under it. */
+body.woocommerce-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step {
+  position: relative;
+  padding-block: var(--luvit-step-pt) var(--space-5, 1.5rem);
+  padding-inline-start: calc(var(--luvit-badge) + var(--space-5, 1.5rem));
+  padding-inline-end: 0;
+  border: 0;
+}
+
+/* WHY a gradient hairline and not a grey border: a flat 1px grey rule is the
+   loudest generic-form signal there is. This one fades in and out at both ends,
+   so it reads as a water line rather than a divider. Quiet on purpose. */
+body.woocommerce-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step + .wc-block-components-checkout-step {
+  border-block-start: 1px solid transparent;
+  border-image: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--aqua-500, #29A9C0) 26%, transparent) 22%,
+    color-mix(in oklab, var(--aqua-500, #29A9C0) 26%, transparent) 78%,
+    transparent 100%) 1;
+}
+
+/* WHY the heading must be static: if the theme or Woo positions it, the badge
+   would resolve against the heading instead of the step and the rail would no
+   longer line up with it. */
+body.woocommerce-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step .wc-block-components-checkout-step__heading { /* [DOC] */
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  margin-block: 0 var(--space-3, 0.75rem);
+  padding-inline-start: 0;
+}
+
+/* WHY THE BADGE: the number Woo already renders is turned into a 32px disc.
+   Jost carries the Latin numerals and `tabular-nums` keeps 1 and 2 the same
+   width, so the rail stays dead centre under every badge in the column.
+   `place-items` centres the digit without touching line-height. */
+body.woocommerce-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step .wc-block-components-checkout-step__heading-content {
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: 0;
+  inset-block-start: calc(var(--luvit-step-pt) - 2px);
+  display: grid;
+  place-items: center;
+  inline-size: var(--luvit-badge);
+  block-size: var(--luvit-badge);
+  border-radius: 50%;
+  background-color: var(--aqua-50, #EAFAFD);
+  background-image: linear-gradient(180deg,
+    color-mix(in oklab, var(--color-paper, #FFF) 70%, transparent) 0%,
+    transparent 62%);
+  border: 1px solid var(--aqua-200, #A6E7F1);
+  box-shadow: inset 0 1px 0 var(--color-paper, #FFFFFF),
+              0 2px 6px -3px color-mix(in oklab, var(--aqua-600, #1E869C) 50%, transparent);
+  color: var(--aqua-700, #196B7D);
+  font-family: var(--font-latin, "Jost", system-ui, sans-serif);
+  font-size: var(--text-body-sm, 0.9375rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  /* WHY explicit: this element carries Latin numerals, and `text-align: start`
+     under `direction: ltr` resolves to LEFT, which is not centre. */
+  text-align: center;
+}
+
+/* WHY THE RAIL: it starts below the badge and runs to the step's bottom edge,
+   so it visually arrives at the next badge. It fades downward, which reads as
+   depth rather than as a table border. 1px wide, centred on the badge. */
+body.woocommerce-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inline-size: 1px;
+  inset-inline-start: calc(var(--luvit-rail) - 0.5px);
+  inset-block-start: calc(var(--luvit-step-pt) + var(--luvit-badge) + 6px);
+  inset-block-end: 0;
+  background-image: linear-gradient(180deg,
+    var(--aqua-200, #A6E7F1) 0%,
+    color-mix(in oklab, var(--aqua-200, #A6E7F1) 12%, transparent) 100%);
+  pointer-events: none;
+}
+
+/* WHY `:has(~ ...)` and not `:last-of-type`: the last step is usually followed
+   by the actions block, so `:last-of-type` would still paint a rail that leads
+   nowhere. This asks the only question that matters: is another step coming? */
+body.woocommerce-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step:not(:has(~ .wc-block-components-checkout-step))::before {
+  display: none;
+}
+
+body.woocommerce-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step .wc-block-components-title { /* [DOC] */
+  font-family: var(--font-heading, "El Messiri", serif);
+  font-size: var(--text-h4, 1.125rem);
+  line-height: var(--leading-heading, 1.3);
+  color: var(--color-ink, #1A2529);
+  margin: 0;
+}
+
+
+/* ===========================================================================
+   5.6.7 · THE CHOSEN OPTION  ·  three signals, not one
+   A 10px bead is invisible from arm's length on a phone. Selection is therefore
+   said three times at once: an edge, a wash, and a glow that lifts the row off
+   the card. `:has(input:checked)` is the live source of truth; Woo's own
+   highlight class is kept as the belt-and-braces fallback in case the block
+   re-renders before the pseudo-class settles.
+   =========================================================================== */
+
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:checked),
+body.woocommerce-checkout .wc-block-components-radio-control__option--checked-option-highlighted.wc-block-components-radio-control__option--checked-option-highlighted,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:checked),
+body.woocommerce-cart .wc-block-components-radio-control__option--checked-option-highlighted.wc-block-components-radio-control__option--checked-option-highlighted {
+  /* signal 1: the wash. Aqua-50 over pure paper is a real step, not a whisper */
+  background-color: var(--aqua-50, #EAFAFD);
+  background-image: linear-gradient(180deg,
+    color-mix(in oklab, var(--color-paper, #FFF) 55%, transparent) 0%,
+    transparent 70%);
+  /* signal 2: the edge, drawn as an inset ring so the row never shifts by 1px
+     when it becomes selected.
+     signal 3: the glow, a soft aqua drop that lifts the row off the card. */
+  box-shadow:
+    inset 0 0 0 1px var(--aqua-500, #29A9C0),
+    inset 0 1px 0 var(--color-paper, #FFFFFF),
+    0 8px 22px -14px color-mix(in oklab, var(--aqua-600, #1E869C) 70%, transparent);
+}
+
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:checked) .wc-block-components-radio-control__label,
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:checked) .wc-block-components-radio-control__label {
+  color: var(--aqua-700, #196B7D);
+  font-weight: 600;
+}
+
+
+/* ===========================================================================
+   5.6.8 · THE SUMMARY AS A RECEIPT
+   The dashed rule is the one culturally loaded mark on this page: it is the
+   tear line on a paper receipt, and it says "everything above adds up to this"
+   without a word of copy.
+   PRESERVED: the card stays on the summary BLOCK. Every totals-wrapper remains
+   a ROW. Only a hairline is added to one of them.
+   =========================================================================== */
+
+body.woocommerce-checkout .wc-block-components-totals-wrapper.wc-block-components-totals-wrapper:has(.wc-block-components-totals-footer-item),
+body.woocommerce-cart .wc-block-components-totals-wrapper.wc-block-components-totals-wrapper:has(.wc-block-components-totals-footer-item) {
+  border-block-start: 1px dashed var(--aqua-200, #A6E7F1);
+  padding-block-start: var(--space-4, 1rem);
+  margin-block-start: var(--space-3, 0.75rem);
+}
+
+body.woocommerce-checkout .wc-block-components-totals-footer-item.wc-block-components-totals-footer-item,
+body.woocommerce-cart .wc-block-components-totals-footer-item.wc-block-components-totals-footer-item {
+  font-family: var(--font-heading, "El Messiri", serif);
+  font-size: var(--text-h4, 1.125rem);
+  color: var(--color-ink, #1A2529);
+}
+
+/* WHY Jost plus tabular-nums on money: prices are compared vertically, and
+   proportional digits make a column of numbers wobble. `unicode-bidi: isolate`
+   keeps the currency glued to its number inside an RTL line. */
+body.woocommerce-checkout .wc-block-components-formatted-money-amount.wc-block-components-formatted-money-amount,
+body.woocommerce-cart .wc-block-components-formatted-money-amount.wc-block-components-formatted-money-amount {
+  font-family: var(--font-latin, "Jost", system-ui, sans-serif);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  unicode-bidi: isolate;
+}
+
+body.woocommerce-checkout .wc-block-components-totals-footer-item.wc-block-components-totals-footer-item .wc-block-components-formatted-money-amount,
+body.woocommerce-cart .wc-block-components-totals-footer-item.wc-block-components-totals-footer-item .wc-block-components-formatted-money-amount {
+  color: var(--aqua-700, #196B7D);
+  font-size: var(--text-body-lg, 1.125rem);
+}
+
+body.woocommerce-checkout .wc-block-components-totals-item.wc-block-components-totals-item,
+body.woocommerce-cart .wc-block-components-totals-item.wc-block-components-totals-item {
+  font-size: var(--text-body-sm, 0.9375rem);
+  color: var(--color-ink-soft, #47555B);
+}
+
+/* WHY 12px and not the 16px card radius: the thumbnail is a small object inside
+   a 16px card. Matching the parent radius on a 64px image makes it read as a
+   pill; 12px keeps it in the same family one size down. */
+body.woocommerce-checkout .wc-block-components-order-summary-item.wc-block-components-order-summary-item img,
+body.woocommerce-cart .wc-block-components-order-summary-item.wc-block-components-order-summary-item img {
+  border-radius: var(--luvit-thumb-radius);
+  border: 1px solid var(--color-line-soft, #EDF2F4);
+  background-color: var(--color-mist, #F2F7F9);
+}
+
+body.woocommerce-checkout .wc-block-components-order-summary-item.wc-block-components-order-summary-item,
+body.woocommerce-cart .wc-block-components-order-summary-item.wc-block-components-order-summary-item {
+  padding-block: var(--space-3, 0.75rem);
+  border-block-end: 1px solid var(--color-line-soft, #EDF2F4);
+}
+
+body.woocommerce-checkout .wc-block-components-order-summary-item.wc-block-components-order-summary-item:last-child,
+body.woocommerce-cart .wc-block-components-order-summary-item.wc-block-components-order-summary-item:last-child {
+  border-block-end: 0;
+}
+
+body.woocommerce-checkout .wc-block-components-product-name.wc-block-components-product-name,
+body.woocommerce-cart .wc-block-components-product-name.wc-block-components-product-name {
+  font-family: var(--font-body, "IBM Plex Sans Arabic", system-ui, sans-serif);
+  font-size: var(--text-body-sm, 0.9375rem);
+  font-weight: 600;
+  color: var(--color-ink, #1A2529);
+  text-decoration: none;
+}
+
+body.woocommerce-checkout .wc-block-components-order-summary.wc-block-components-order-summary,
+body.woocommerce-cart .wc-block-components-order-summary.wc-block-components-order-summary {
+  border: 0;
+}
+
+
+/* ===========================================================================
+   5.6.9 · PLACE ORDER  ·  the peak moment
+   This is the single most important pixel on the site. It gets the deepest
+   fill, the widest footprint and the only light sweep on the page, and nothing
+   else here is allowed to compete with it.
+   =========================================================================== */
+
+body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button {
+  position: relative;
+  isolation: isolate;      /* keeps the sweep inside the button */
+  overflow: hidden;        /* clips the sweep to the pill shape */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  inline-size: 100%;
+  min-block-size: 56px;    /* above --btn-min-height: this one outranks them */
+  padding: var(--btn-pad-y, 14px) var(--btn-pad-x, 32px);
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
+
+  background-color: var(--btn-fill-top, #1E869C);   /* parachute if gradients fail */
+  background-image:
+    linear-gradient(180deg, var(--btn-gloss, rgba(255,255,255,0.16)) 0%, transparent 55%),
+    linear-gradient(180deg, var(--btn-fill-top, #1E869C) 0%, var(--btn-fill-bottom, #196B7D) 100%);
+
+  color: var(--color-paper, #FFFFFF);
+  font-family: var(--font-body, "IBM Plex Sans Arabic", system-ui, sans-serif);
+  font-size: var(--text-body-lg, 1.125rem);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+
+  box-shadow:
+    var(--btn-shadow, 0 4px 14px rgba(12, 51, 60, 0.18)),
+    inset 0 1px 0 var(--btn-sheen-top, rgba(255,255,255,0.45)),
+    inset 0 -1px 0 var(--btn-bezel-bottom, rgba(0,0,0,0.20));
+
+  transition:
+    transform var(--duration-instant, 180ms) var(--luvit-ease),
+    box-shadow var(--duration-instant, 180ms) var(--luvit-ease),
+    background-color var(--duration-instant, 180ms) var(--luvit-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* WHY the sweep is parked off-screen at negative `left` and NOT at
+   `inset-inline-start`: direction is deliberately not consulted here. Reading
+   `dir` is a burned trap, and a specular sweep is symmetric enough that its
+   travel direction carries no meaning. One keyframe, both directions, zero
+   direction detection. */
+body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;             /* behind the label, above the fill */
+  top: -50%;
+  bottom: -50%;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg,
+    transparent 0%,
+    var(--btn-sweep, rgba(255,255,255,0.30)) 50%,
+    transparent 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes luvit-checkout-sweep {
+  0%   { opacity: 0; transform: translateX(0)    skewX(-18deg); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(340%) skewX(-18deg); }
+}
+
+/* WHY gated on a fine pointer: a hover state that latches on a touch screen
+   leaves the button looking permanently pressed after the tap. */
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:hover {
+    transform: translateY(-2px);
+    background-image:
+      linear-gradient(180deg, var(--btn-gloss, rgba(255,255,255,0.16)) 0%, transparent 55%),
+      linear-gradient(180deg, var(--btn-fill-top-hover, #196B7D) 0%, var(--btn-fill-bottom-hover, #196B7D) 100%);
+    box-shadow:
+      var(--btn-shadow-hover, 0 10px 26px rgba(12, 51, 60, 0.26)),
+      inset 0 1px 0 var(--btn-sheen-top, rgba(255,255,255,0.45)),
+      inset 0 -1px 0 var(--btn-bezel-bottom, rgba(0,0,0,0.20));
+  }
+  body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:hover::before {
+    animation: luvit-checkout-sweep 620ms var(--ease-out, cubic-bezier(0.22, 0.61, 0.36, 1)) 1;
+  }
+}
+
+body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* WHY the secondary buttons are stripped back: if the coupon button and the
+   place-order button carry the same weight, there is no peak. */
+body.woocommerce-cart .wc-block-components-button.wc-block-components-button:not(.wc-block-components-checkout-place-order-button),
+body.woocommerce-checkout .wc-block-components-button.wc-block-components-button:not(.wc-block-components-checkout-place-order-button) {
+  min-block-size: var(--btn-min-height, 48px);
+  font-family: var(--font-body, "IBM Plex Sans Arabic", system-ui, sans-serif);
+  font-size: var(--text-body, 1rem);
+}
+
+
+/* ===========================================================================
+   5.6.10 · FOCUS, DISABLED, FORCED COLORS
+   =========================================================================== */
+
+/* WHY `outline` and never box-shadow: an outline is painted outside the box
+   model, so it cannot shift the ring, the bead, the tick or the badge by a
+   single pixel. `:focus-visible` only, so a mouse click leaves nothing behind. */
+body.woocommerce-checkout .wc-block-checkout.wc-block-checkout input[type="radio"]:focus-visible,
+body.woocommerce-checkout .wc-block-checkout.wc-block-checkout input[type="checkbox"]:focus-visible,
+body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:focus-visible,
+body.woocommerce-cart .wc-block-cart.wc-block-cart input[type="radio"]:focus-visible,
+body.woocommerce-cart .wc-block-cart.wc-block-cart input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 3px;
+}
+
+/* WHY the row reacts too: keyboard users navigate the ROW, not the 22px dot.
+   A focus ring floating with no context is a ring with no meaning. */
+body.woocommerce-checkout .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:focus-visible),
+body.woocommerce-cart .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:focus-visible) {
+  background-color: var(--aqua-50, #EAFAFD);
+}
+
+body.woocommerce-checkout .wc-block-checkout.wc-block-checkout input[type="radio"]:disabled,
+body.woocommerce-checkout .wc-block-checkout.wc-block-checkout input[type="checkbox"]:disabled,
+body.woocommerce-cart .wc-block-cart.wc-block-cart input[type="radio"]:disabled,
+body.woocommerce-cart .wc-block-cart.wc-block-cart input[type="checkbox"]:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background-image: none;
+}
+
+/* WHY: Windows High Contrast discards every background and box-shadow. Without
+   a real border the control disappears completely. */
+@media (forced-colors: active) {
+  body.woocommerce-checkout .wc-block-checkout.wc-block-checkout input[type="radio"],
+  body.woocommerce-checkout .wc-block-checkout.wc-block-checkout input[type="checkbox"],
+  body.woocommerce-cart .wc-block-cart.wc-block-cart input[type="radio"],
+  body.woocommerce-cart .wc-block-cart.wc-block-cart input[type="checkbox"] {
+    border: 2px solid CanvasText;
+  }
+  body.woocommerce-checkout .wc-block-checkout.wc-block-checkout input:checked::after,
+  body.woocommerce-checkout .wc-block-checkout.wc-block-checkout input:checked::before,
+  body.woocommerce-cart .wc-block-cart.wc-block-cart input:checked::after,
+  body.woocommerce-cart .wc-block-cart.wc-block-cart input:checked::before {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+  body.woocommerce-checkout .wc-block-components-checkout-step.wc-block-components-checkout-step .wc-block-components-checkout-step__heading-content {
+    border: 1px solid CanvasText;
+  }
+}
+
+
+/* ===========================================================================
+   5.6.11 · prefers-reduced-motion
+   WHY `!important` lives here and nowhere else in this file: this is an
+   accessibility override, not a specificity fight.
+   Durations collapse to 1ms instead of 0 so transitionend handling stays
+   identical, and every END STATE is left untouched: the bead, the tick, the
+   badge and the selected wash are all still fully visible. Only travel is
+   removed. The atmosphere is already static, so there is nothing to stop there.
+   =========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  body.woocommerce-checkout .wc-block-checkout.wc-block-checkout *,
+  body.woocommerce-checkout .wc-block-checkout.wc-block-checkout *::before,
+  body.woocommerce-checkout .wc-block-checkout.wc-block-checkout *::after,
+  body.woocommerce-cart .wc-block-cart.wc-block-cart *,
+  body.woocommerce-cart .wc-block-cart.wc-block-cart *::before,
+  body.woocommerce-cart .wc-block-cart.wc-block-cart *::after {
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button:hover {
+    transform: none !important;
+  }
+  body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
+
+/* ===========================================================================
+   5.6.12 · VERIFY BEFORE YOU TRUST IT
+   Paste in the console on the LIVE checkout. A local preview cannot confirm any
+   of this: it does not run WooCommerce markup or the theme stylesheet.
+
+   -- pseudo-elements must exist on the input. If either width reads 0px, this
+      browser refused them and the tick is invisible:
+      const i = document.querySelector('.wc-block-components-checkbox input');
+      [getComputedStyle(i,'::before').width, getComputedStyle(i,'::after').width]
+
+   -- read the COMPUTED direction, never the `dir` attribute:
+      getComputedStyle(i).direction
+
+   -- Woo's own SVG tick must be gone (no double checkmark):
+      document.querySelectorAll('.wc-block-components-checkbox__mark').length
+      && getComputedStyle(document.querySelector('.wc-block-components-checkbox__mark')).display
+
+   -- exactly ONE number per step. Two means a counter crept back in:
+      [...document.querySelectorAll('.wc-block-components-checkout-step')]
+        .map(s => s.innerText.trim().slice(0, 24))
+
+   -- the badge must be a circle, not a pill. Both must read 32px:
+      const b = document.querySelector('.wc-block-components-checkout-step__heading-content');
+      [b.offsetWidth, b.offsetHeight]
+
+   -- the rail must sit on the badge centre. These two must match:
+      const s = b.closest('.wc-block-components-checkout-step');
+      [getComputedStyle(s,'::before').insetInlineStart,
+       b.getBoundingClientRect().width / 2 - 0.5]
+
+   -- the atmosphere must actually paint. `none` means color-mix was rejected
+      and only the flat parachute colour is showing:
+      getComputedStyle(document.body,'::before').backgroundImage.slice(0, 40)
+
+   -- the cards must NOT dissolve. These two must differ:
+      [getComputedStyle(document.body,'::before').backgroundColor,
+       getComputedStyle(document.querySelector('.wc-block-components-main')).backgroundColor]
+
+   -- totals rows must still be rows, not four floating cards:
+      [...document.querySelectorAll('.wc-block-components-totals-wrapper')]
+        .map(w => getComputedStyle(w).boxShadow)
+
+   -- count CHECKED INPUTS, not elements, or the number lies:
+      document.querySelectorAll('.wc-block-components-radio-control input:checked').length
+   =========================================================================== */
+/* ==========================================================================
+   5.7 · DESIGN PASS — LIVE CORRECTIONS  (21 Aug, measured after publishing)
+   --------------------------------------------------------------------------
+   1. The research assumed Woo renders the step number inside
+      `__heading-content`. FALSE on WooCommerce 11.0.1 here: measured live,
+      that span holds zero text and zero children, so the badge rendered as an
+      empty aqua circle. Because it is genuinely empty, a CSS counter is now
+      SAFE (the "double numbers" risk only existed if Woo printed one).
+   2. The option cards measured `border: 0px` — core draws their outline, and
+      our rule removed ours without supplying a replacement, so the payment
+      card showed a broken doubled edge. Draw the border explicitly.
+   ========================================================================== */
+
+/* ---- 1 · number the steps ourselves ---- */
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-form {
+  counter-reset: luvit-step;
+}
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step {
+  counter-increment: luvit-step;
+}
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step__heading-content::before {
+  content: counter(luvit-step);
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--aqua-700);
+  line-height: 1;
+}
+
+/* ---- 2 · give the option cards a real edge of our own ---- */
+body.woocommerce-checkout .wc-block-components-radio-control .wc-block-components-radio-control__option.wc-block-components-radio-control__option {
+  border: 1px solid var(--color-line);
+  background: var(--card-bg);
+}
+body.woocommerce-checkout .wc-block-components-radio-control .wc-block-components-radio-control__option--checked-option-highlighted.wc-block-components-radio-control__option--checked-option-highlighted,
+body.woocommerce-checkout .wc-block-components-radio-control .wc-block-components-radio-control__option.wc-block-components-radio-control__option:has(input:checked) {
+  border-color: var(--aqua-500);
+  background: var(--aqua-50);
+  box-shadow: 0 0 0 3px var(--aqua-100);
+}
+
+/* ---- 5.7 continued · badge belongs on the TITLE, not on __heading-content.
+   Measured live: only 1 of 5 steps even HAS a __heading-content element, so a
+   badge there could never number the flow. Every step has a __title. ---- */
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step__heading-content {
+  display: none;   /* empty on every step measured — was rendering as a bare circle */
+}
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step__title.wc-block-components-checkout-step__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step__title.wc-block-components-checkout-step__title::before {
+  content: counter(luvit-step);
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--luvit-badge);
+  block-size: var(--luvit-badge);
+  border-radius: 50%;
+  background: var(--aqua-50);
+  border: 1px solid var(--aqua-200);
+  color: var(--aqua-700);
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  line-height: 1;
 }
