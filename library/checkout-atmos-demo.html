@@ -1,0 +1,307 @@
+<!doctype html>
+<!-- ⚠️ مختبر محلي بس · مش للإلمنتور (العلامة الفارقة: فيه doctype).
+     مخرج عميل «أجواء رخيصة» من ورشة مرحلة ٥.ب · انحفظ قبل ما يوقف على حد
+     الاستخدام ٢١ آب. فيه معمار الجو المائي الفاتح (بلومات + أشعة + فقاعات)
+     بطبقات fixed وبلا backdrop-filter. لسا ما اندمج بـtokens.css. -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUV IT · جو الشيك أوت — مختبر</title>
+<style>
+/* ==========================================================================
+   LUVIT · SHALLOW WATER  —  جو مائي لصفحات الشراء
+   التوأم الفاتح لـ.luvit-deep. نفس المعمار (بلومات + أشعة + فقاعات)
+   بس: طبقات fixed (ما بتكبر مع الصفحة) · بلا حركة افتراضياً · بلا backdrop-filter
+   ========================================================================== */
+:root{
+  --color-paper:#FFFFFF; --color-canvas:#FAFCFD; --color-mist:#F2F7F9;
+  --color-ink:#1A2529; --color-ink-soft:#47555B; --color-ink-faint:#869399;
+  --color-line:#E1E9EC;
+  --aqua-50:#EAFAFD; --aqua-100:#D0F3F9; --aqua-500:#29A9C0; --aqua-brand:#4CC5DA;
+  --fuchsia:#D02D86;
+  --radius-card:16px; --radius-field:16px; --radius-pill:999px;
+  --font-heading:'El Messiri',serif; --font-body:'IBM Plex Sans Arabic',system-ui,sans-serif;
+  --font-latin:'Jost',system-ui,sans-serif;
+}
+
+/* ---- الأساس: اللون على html، وbody شفاف عشان z-index:-1 يشتغل ---- */
+html{ background-color:var(--color-canvas); }
+body{ background:transparent; }
+
+/* ---- الطبقات الثلاث · كلها fixed وكلها z-index:-1 ----
+   ترتيب الرسم = ترتيب الشجرة: html::before ثم html::after ثم body::before */
+html::before, html::after, body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+}
+
+/* ===== طبقة ١ · شبكة العمق (mesh) — بؤرة الضوء أعلى-يمين لأن القراءة RTL ===== */
+html::before{
+  background:
+    radial-gradient(78% 52% at 88% -6%,  rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 62%),
+    radial-gradient(62% 46% at 92%  8%,  rgba(76,197,218,.22)  0%, rgba(76,197,218,0)  70%),
+    radial-gradient(58% 48% at  4% 34%,  rgba(41,169,192,.16)  0%, rgba(41,169,192,0)  72%),
+    radial-gradient(150% 62% at 50% 112%,rgba(41,169,192,.26)  0%, rgba(41,169,192,0)  60%),
+    linear-gradient(180deg in oklab, #FAFCFD 0%, #F1FAFD 46%, #E6F7FB 100%);
+}
+/* فولباك للمتصفحات بلا oklab */
+@supports not (background:linear-gradient(in oklab,#000,#fff)){
+  html::before{ background-image:
+    radial-gradient(78% 52% at 88% -6%,  rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 62%),
+    radial-gradient(62% 46% at 92%  8%,  rgba(76,197,218,.22)  0%, rgba(76,197,218,0)  70%),
+    radial-gradient(58% 48% at  4% 34%,  rgba(41,169,192,.16)  0%, rgba(41,169,192,0)  72%),
+    radial-gradient(150% 62% at 50% 112%,rgba(41,169,192,.26)  0%, rgba(41,169,192,0)  60%),
+    linear-gradient(180deg, #FAFCFD 0%, #F1FAFD 46%, #E6F7FB 100%); }
+}
+
+/* ===== طبقة ٢ · أشعة متقاطعة + حقل فقاعات مبلّط ===== */
+html::after{
+  background-image:
+    /* أشعة: repeating-linear = أرخص إشي بالقائمة، بتبلّط داخلياً */
+    repeating-linear-gradient(102deg,
+      rgba(255,255,255,0) 0 46px, rgba(255,255,255,.55) 64px, rgba(255,255,255,0) 84px 152px),
+    repeating-linear-gradient(-14deg,
+      rgba(41,169,192,0) 0 64px,  rgba(41,169,192,.055) 86px, rgba(41,169,192,0) 112px 204px),
+    /* فقاعات: حلقات مش بقع — حافة تركوازية + لمعة بيضا */
+    radial-gradient(circle 9px at 22% 16%,
+      rgba(41,169,192,0) 0 44%, rgba(41,169,192,.22) 56%, rgba(255,255,255,.95) 65%,
+      rgba(41,169,192,.10) 74%, rgba(41,169,192,0) 80%),
+    radial-gradient(circle 5px at 71% 52%,
+      rgba(41,169,192,0) 0 40%, rgba(41,169,192,.26) 55%, rgba(255,255,255,.90) 68%,
+      rgba(41,169,192,0) 78%),
+    radial-gradient(circle 14px at 38% 79%,
+      rgba(41,169,192,0) 0 50%, rgba(41,169,192,.14) 60%, rgba(255,255,255,.75) 68%,
+      rgba(41,169,192,.07) 76%, rgba(41,169,192,0) 82%),
+    radial-gradient(circle 7px at 88% 30%,
+      rgba(41,169,192,0) 0 44%, rgba(41,169,192,.20) 57%, rgba(255,255,255,.88) 66%,
+      rgba(41,169,192,0) 78%);
+  background-size:
+    100% 100%, 100% 100%,
+    340px 430px, 235px 290px, 520px 610px, 180px 225px;
+  background-repeat: repeat;
+}
+
+/* ===== طبقة ٣ · حبيبات — وظيفتها الحقيقية dither ضد التشريط ===== */
+body::before{
+  opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:120px 120px;
+  background-repeat:repeat;
+}
+
+/* ---- مفتاح الإطفاء للمقارنة ---- */
+html.no-atmos::before, html.no-atmos::after, html.no-atmos body::before{ display:none; }
+html.no-atmos{ background:#FAFCFD; }
+
+/* ---- الطباعة وinverted colors: الجو بينطفي ---- */
+@media print{ html::before, html::after, body::before{ display:none; } }
+@media (forced-colors: active){ html::before, html::after, body::before{ display:none; } }
+
+/* ==========================================================================
+   الفورم — نسخة مبسّطة من ماركب wc-block عشان نفحص القراءة فوق الجو
+   ========================================================================== */
+*{box-sizing:border-box;}
+body{
+  margin:0; font-family:var(--font-body); color:var(--color-ink);
+  font-size:16px; line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+.wrap{ max-width:1080px; margin:0 auto; padding:40px 20px 120px; }
+h1{ font-family:var(--font-heading); font-size:32px; margin:0 0 4px; }
+.sub{ color:var(--color-ink-soft); margin:0 0 28px; font-size:15px; }
+.cols{ display:grid; gap:24px; grid-template-columns:1fr; }
+@media (min-width:900px){ .cols{ grid-template-columns:1.35fr .95fr; align-items:start; } }
+
+/* البطاقة الزجاجية — بلا backdrop-filter · الحافة هي اللي بتقرأ كزجاج */
+.card{
+  position:relative;
+  border-radius:var(--radius-card);
+  background:
+    linear-gradient(168deg, rgba(255,255,255,.94) 0%, rgba(255,255,255,.78) 100%),
+    rgba(255,255,255,.62);
+  border:1px solid rgba(41,169,192,.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 0 0 1px rgba(255,255,255,.45),
+    0 1px 2px rgba(26,37,41,.04),
+    0 18px 40px -26px rgba(12,51,60,.34);
+  padding:24px;
+}
+.card + .card{ margin-top:20px; }
+
+/* خطوة الشيك أوت — فصل بصري بخط ماء مش border رمادي */
+.step{ padding-block:22px; }
+.step + .step{
+  border-top:1px solid transparent;
+  border-image:linear-gradient(90deg,
+    rgba(41,169,192,0) 0%, rgba(41,169,192,.30) 22%,
+    rgba(41,169,192,.30) 78%, rgba(41,169,192,0) 100%) 1;
+}
+.step__h{ font-family:var(--font-heading); font-size:20px; margin:0 0 14px;
+  display:flex; align-items:center; gap:10px; }
+.step__n{
+  inline-size:28px; block-size:28px; border-radius:var(--radius-pill);
+  display:grid; place-items:center; font-family:var(--font-latin); font-size:14px;
+  background:linear-gradient(180deg,var(--aqua-brand),var(--aqua-500));
+  color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 4px 10px -4px rgba(41,169,192,.7);
+  flex:none;
+}
+
+label.f{ display:block; margin-bottom:14px; }
+label.f > span{ display:block; font-size:14px; color:var(--color-ink-soft); margin-bottom:6px; }
+input[type=text], input[type=tel]{
+  inline-size:100%; min-block-size:48px; padding:12px 14px;
+  font-family:inherit; font-size:16px; color:var(--color-ink);
+  background:rgba(255,255,255,.86);
+  border:1px solid var(--color-line); border-radius:var(--radius-field);
+  box-shadow:inset 0 1px 2px rgba(12,51,60,.05);
+  transition:border-color .18s, box-shadow .18s;
+}
+input:focus{ outline:none; border-color:var(--aqua-500);
+  box-shadow:inset 0 1px 2px rgba(12,51,60,.05), 0 0 0 4px rgba(41,169,192,.18); }
+.row2{ display:grid; gap:0 14px; grid-template-columns:1fr 1fr; }
+
+/* خيارات الشحن/الدفع — 16px مش 4px، ولمس 44px+ */
+.opt{
+  display:flex; align-items:center; gap:12px;
+  min-block-size:56px; padding:12px 16px; margin-bottom:10px;
+  border:1px solid var(--color-line); border-radius:var(--radius-field);
+  background:rgba(255,255,255,.72); cursor:pointer;
+  transition:border-color .18s, background .18s, box-shadow .18s;
+}
+.opt:has(input:checked){
+  border-color:var(--aqua-500);
+  background:linear-gradient(180deg, rgba(234,250,253,.95), rgba(255,255,255,.85));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 6px 18px -12px rgba(41,169,192,.6);
+}
+.opt input{ appearance:none; -webkit-appearance:none; margin:0; flex:none;
+  inline-size:22px; block-size:22px; border-radius:var(--radius-pill);
+  border:1.5px solid #B9C7CC; background:rgba(255,255,255,.9);
+  box-shadow:inset 0 1px 2px rgba(12,51,60,.08); position:relative; cursor:pointer;
+  transition:border-color .18s, box-shadow .18s; }
+/* قطرة الماء: الحلقة + اللؤلؤة الداخلية بلمعة */
+.opt input:checked{ border-color:var(--aqua-500);
+  box-shadow:inset 0 1px 2px rgba(12,51,60,.06), 0 0 0 4px rgba(41,169,192,.14); }
+.opt input:checked::after{ content:""; position:absolute; inset:4px;
+  border-radius:var(--radius-pill);
+  background:radial-gradient(circle at 32% 28%, #8FE2F0 0%, var(--aqua-500) 62%, #1B8298 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.75); }
+.opt input:focus-visible{ outline:2px solid var(--aqua-500); outline-offset:3px; }
+.opt__t{ flex:1; font-size:15px; }
+.opt__t b{ display:block; font-weight:600; }
+.opt__t i{ font-style:normal; font-size:13px; color:var(--color-ink-faint); }
+.opt__p{ font-family:var(--font-latin); font-weight:600; direction:ltr; unicode-bidi:isolate; }
+
+/* ملخّص الطلب — حافة موجية بـmask (قص، مش شريط فوق) */
+.summary{
+  --wave-h:34px;
+  padding-block-start:calc(var(--wave-h) + 14px);
+  -webkit-mask-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath d='M0,60 L0,30 C150,6 340,4 500,26 C670,50 850,54 1030,32 C1100,23 1155,20 1200,23 L1200,60 Z' fill='%23000'/%3E%3C/svg%3E"),
+    linear-gradient(#000 0 0);
+  mask-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath d='M0,60 L0,30 C150,6 340,4 500,26 C670,50 850,54 1030,32 C1100,23 1155,20 1200,23 L1200,60 Z' fill='%23000'/%3E%3C/svg%3E"),
+    linear-gradient(#000 0 0);
+  -webkit-mask-size:100% var(--wave-h), 100% calc(100% - var(--wave-h) + 1px);
+  mask-size:100% var(--wave-h), 100% calc(100% - var(--wave-h) + 1px);
+  -webkit-mask-position:top center, bottom center;
+  mask-position:top center, bottom center;
+  -webkit-mask-repeat:no-repeat, no-repeat;
+  mask-repeat:no-repeat, no-repeat;
+  -webkit-mask-composite:source-over;
+  mask-composite:add;
+  border:0; /* الماسك بياكل الحدود فحطينا الحافة داخلياً */
+  box-shadow:none;
+  background:
+    linear-gradient(168deg, rgba(255,255,255,.96) 0%, rgba(240,251,253,.88) 100%);
+}
+.sum-row{ display:flex; justify-content:space-between; gap:12px; padding:9px 0; font-size:15px; }
+.sum-row.total{ font-size:18px; font-weight:700; padding-top:14px; margin-top:6px;
+  border-top:1px solid rgba(41,169,192,.22); }
+.sum-row span:last-child{ font-family:var(--font-latin); direction:ltr; unicode-bidi:isolate; font-variant-numeric:tabular-nums; }
+
+.btn{
+  display:block; inline-size:100%; min-block-size:52px; margin-top:18px;
+  border:0; border-radius:var(--radius-pill); cursor:pointer;
+  font-family:var(--font-body); font-weight:600; font-size:17px; color:#fff;
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--aqua-brand) 0%, var(--aqua-500) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 12px 26px -14px rgba(41,169,192,.9);
+}
+
+/* لوحة الفحص */
+.hud{ position:fixed; inset-block-start:10px; inset-inline-start:10px; z-index:99;
+  background:rgba(10,40,46,.9); color:#dff; font-family:var(--font-latin),monospace;
+  font-size:12px; padding:8px 10px; border-radius:10px; line-height:1.6; direction:ltr; }
+.hud button{ font:inherit; margin-top:4px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="hud">
+  <div id="fps">fps: —</div>
+  <button onclick="document.documentElement.classList.toggle('no-atmos')">toggle atmosphere</button>
+</div>
+
+<div class="wrap">
+  <h1>إتمام الطلب</h1>
+  <p class="sub">الدفع عند الاستلام · التوصيل لكل مناطق المملكة</p>
+
+  <div class="cols">
+    <div>
+      <div class="card">
+        <div class="step">
+          <h2 class="step__h"><span class="step__n">1</span> معلومات التواصل</h2>
+          <label class="f"><span>الاسم الكامل</span><input type="text" value="سارة العبدالله"></label>
+          <label class="f"><span>رقم الموبايل</span><input type="tel" value="0790000000"></label>
+        </div>
+
+        <div class="step">
+          <h2 class="step__h"><span class="step__n">2</span> عنوان التوصيل</h2>
+          <div class="row2">
+            <label class="f"><span>المحافظة</span><input type="text" value="عمّان"></label>
+            <label class="f"><span>المنطقة</span><input type="text" value="خلدا"></label>
+          </div>
+          <label class="f"><span>تفاصيل العنوان</span><input type="text" value="شارع وصفي التل، عمارة 12"></label>
+        </div>
+
+        <div class="step">
+          <h2 class="step__h"><span class="step__n">3</span> طريقة الشحن</h2>
+          <label class="opt"><input type="radio" name="ship" checked>
+            <span class="opt__t"><b>توصيل عادي</b><i>٢ إلى ٤ أيام عمل</i></span>
+            <span class="opt__p">2.00 JOD</span></label>
+          <label class="opt"><input type="radio" name="ship">
+            <span class="opt__t"><b>توصيل سريع</b><i>خلال ٢٤ ساعة داخل عمّان</i></span>
+            <span class="opt__p">4.50 JOD</span></label>
+        </div>
+
+        <div class="step">
+          <h2 class="step__h"><span class="step__n">4</span> طريقة الدفع</h2>
+          <label class="opt"><input type="radio" name="pay" checked>
+            <span class="opt__t"><b>الدفع عند الاستلام</b><i>بتدفعي للمندوب لما يوصلك الطلب</i></span></label>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card summary">
+        <h2 class="step__h" style="margin-bottom:10px">ملخّص الطلب</h2>
+        <div class="sum-row"><span>سيروم فيتامين سي</span><span>18.00 JOD</span></div>
+        <div class="sum-row"><span>غسول لطيف</span><span>12.00 JOD</span></div>
+        <div class="sum-row"><span>الشحن</span><span>2.00 JOD</span></div>
+        <div class="sum-row total"><span>الإجمالي</span><span>32.00 JOD</span></div>
+        <button class="btn">تأكيد الطلب</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:900px"></div>
+  <p style="text-align:center;color:var(--color-ink-soft)">مساحة تمرير لفحص ثبات الطبقات</p>
+</div>
+
+<script>
+let n=0,t0=performance.now();
+function loop(t){ n++; if(t-t0>=1000){ document.getElementById('fps').textContent='fps: '+n+'  h:'+innerHeight; n=0; t0=t; } requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
