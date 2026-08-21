@@ -1271,17 +1271,59 @@ function luvitCartCount() {
   var painted = null;   /* last value actually written, so we repaint nothing */
   var settled = false;  /* true once one real reading has landed */
 
+  var srRegion = null;   /* polite region, created once, OUTSIDE the link */
+
+  /* Arabic counts in four buckets, not two: 1 singular, 2 dual, 3-10 plural of
+     paucity, 11+ singular as tamyiz. The line we shipped was right only for
+     3 to 10 and said "11 قطع" for everything above. Bucket on n % 100 so 103
+     lands in the 3-10 bucket and 111 in the 11+ one. */
+  function countPhrase(n) {
+    if (n === 1) return 'قطعة واحدة';
+    if (n === 2) return 'قطعتان';
+    var tail = n % 100;
+    if (tail >= 3 && tail <= 10) return n + ' قطع';
+    return n + ' قطعة';
+  }
+
+  /* WHY the name moves onto the LINK: the badge is a bare <span>, which maps to
+     role `generic`, and ARIA 1.2 prohibits naming a generic. Chrome, Firefox
+     and Safari all DROP an aria-label there, so what a screen reader actually
+     announced was the bare digit. The link is nameable; the span is not. */
   function paint(n) {
     if (typeof n !== 'number' || n === painted) return;
+    var first = (painted === null);
     painted = n;
     settled = true;
+
     for (var i = 0; i < nodes.length; i++) {
       nodes[i].textContent = String(n);
       /* hide a zero badge rather than advertise an empty cart.
          tokens.css carries `.luvit-nav__count[hidden]{display:none}` because our
          own `display:block` would otherwise beat the UA rule for [hidden]. */
       nodes[i].hidden = (n === 0);
-      nodes[i].setAttribute('aria-label', n === 1 ? 'قطعة واحدة بالسلة' : n + ' قطع بالسلة');
+      nodes[i].setAttribute('aria-hidden', 'true');
+      nodes[i].removeAttribute('aria-label');
+      var link = nodes[i].closest('a, button');
+      if (link) {
+        link.setAttribute('aria-label',
+          'سلة التسوّق، ' + (n === 0 ? 'فارغة' : countPhrase(n)));
+      }
+    }
+
+    var host = nodes[0].closest('a, button');
+    if (!srRegion && host && host.parentNode) {
+      srRegion = host.parentNode.querySelector('.luvit-nav__count-sr');
+      if (!srRegion) {
+        srRegion = document.createElement('span');
+        srRegion.className = 'luvit-sr-only luvit-nav__count-sr';
+        srRegion.setAttribute('role', 'status');
+        host.insertAdjacentElement('afterend', srRegion);
+      }
+    }
+    /* silent on first paint: nobody asked, so nobody is told */
+    if (srRegion && !first) {
+      srRegion.textContent =
+        (n === 0 ? 'السلة صارت فارغة' : countPhrase(n) + ' بالسلة');
     }
   }
 
@@ -1355,6 +1397,45 @@ if (document.readyState === 'loading') {
 window.LUVIT.cartCount = { init: luvitCartCount };
 
 /* --------------------------------------------------------------------------
+   11.b · The totals are recalculating, and someone should be told.
+
+   The visible half of this is 5.24-5: Woo's placeholder bars, repainted so they
+   can actually be seen. This is the other half. Under prefers-reduced-motion
+   the sweep is off, so a static bar is the only signal there is, and a static
+   bar says nothing to a screen reader at all.
+
+   The region hangs off <body>, outside every React root, so reconciliation can
+   never drop it. A MutationObserver and not the `wc-blocks_*` events, because
+   those were measured on 21 Aug and only one of them fires. Coalesced through
+   rAF: a bare observer on the checkout subtree fires on every React render.
+   -------------------------------------------------------------------------- */
+(function luvitTotalsBusy() {
+  var b = document.body;
+  if (!b) return;
+  if (!b.classList.contains('woocommerce-cart') &&
+      !b.classList.contains('woocommerce-checkout')) return;
+
+  var region = document.createElement('div');
+  region.className = 'luvit-sr-only';
+  region.setAttribute('role', 'status');
+  region.setAttribute('aria-live', 'polite');
+  b.appendChild(region);
+
+  var busy = false, queued = false;
+  function sync() {
+    queued = false;
+    var loading = !!document.querySelector('.wc-block-components-skeleton__element');
+    if (loading === busy) return;
+    busy = loading;
+    region.textContent = loading ? 'يتم تحديث الإجمالي' : 'تم تحديث الإجمالي';
+  }
+  function schedule() { if (!queued) { queued = true; requestAnimationFrame(sync); } }
+  new MutationObserver(schedule).observe(b, { childList: true, subtree: true });
+  sync();
+})();
+
+
+/* --------------------------------------------------------------------------
    12. Checkout field hints — 21 Aug, at Ryan's request.
 
    "يكون جوا المربع بكلام خفيف grayed out انه حط الايميل"
@@ -1406,6 +1487,19 @@ function luvitFieldHints() {
       if (el.required && el.getAttribute('aria-required') !== 'true') {
         el.setAttribute('aria-required', 'true');
       }
+    }
+
+    /* MEASURED: #email carries autocomplete="section-contact contact email".
+       Woo builds that string in JS and the contact group passes type='contact'.
+       In the HTML autofill grammar the token before the field name has to be
+       shipping, billing, or a contact-mode token — `contact` is none of those,
+       so the whole hint fails to parse and the email drops out of the address
+       autofill group. One extra tap per order, on a phone.
+       Scoped to that one exact value: billing inputs parse fine and must keep
+       their own section, and autocomplete="off" must never be rewritten. */
+    var mail = document.getElementById('email');
+    if (mail && mail.getAttribute('autocomplete') === 'section-contact contact email') {
+      mail.setAttribute('autocomplete', 'section-shipping shipping email');
     }
   }
 
