@@ -6589,3 +6589,46 @@ body.woocommerce-checkout .wc-block-checkout .wc-block-components-checkout-step_
   font-weight: 600;
   line-height: 1;
 }
+
+/* ==========================================================================
+   5.8 · NARROW-CARD BUTTONS  (21 Aug — Ryan caught this on the HOME page)
+   --------------------------------------------------------------------------
+   Same defect already fixed for the shop grid at ~3819, never generalised:
+   a two-up mobile grid gives each card ~160px, the button's 32px inline
+   padding leaves ~110px of text room, and «أضيفي إلى السلة» wraps to two
+   lines — measured live at 86px tall against a 48px min-height.
+   Fix the CAUSE (inline padding on a narrow card), not the symptom.
+   ========================================================================== */
+@media (max-width: 480px) {
+  .luvit-card .luvit-btn,
+  .luvit-card__footer .luvit-btn {
+    font-size: 14px;
+    padding-inline: var(--space-3);
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   5.9 · POWER COUPONS — hide its trigger, keep the plugin alive
+   --------------------------------------------------------------------------
+   Ryan's call, 21 Aug. WHY hidden and not deactivated: coupons themselves are
+   NATIVE WooCommerce (verified: `Enable the use of coupon codes` is on, and
+   the «إضافة قسيمة» field on cart/checkout is Woo's own block). This plugin
+   only adds ADVANCED rules — auto-apply, cart incentives — plus a browse
+   drawer. The store has ZERO coupons right now (verified via wc/v3/coupons:
+   empty array), so that drawer opens an empty English panel on the money
+   path and buys nothing.
+
+   Hiding the trigger removes the noise today and keeps the plugin ready for
+   the day real promotions exist. TO BRING IT BACK: delete this block, then
+   translate + skin the drawer properly.
+   ⚠️ Visual only — the drawer markup stays in the DOM, unreachable by design.
+   ========================================================================== */
+body.woocommerce-cart .power-coupons-drawer-button-wrapper,
+body.woocommerce-cart .power-coupons-drawer-trigger-wrapper,
+body.woocommerce-cart .power-coupons-view-coupons-btn,
+body.woocommerce-checkout .power-coupons-drawer-button-wrapper,
+body.woocommerce-checkout .power-coupons-drawer-trigger-wrapper,
+body.woocommerce-checkout .power-coupons-view-coupons-btn {
+  display: none;
+}
