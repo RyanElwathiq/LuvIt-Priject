@@ -3535,6 +3535,18 @@ body.woocommerce-page.woocommerce-page {
   background: var(--woo-page-bg);
 }
 
+/* ---- 5.0 · breathing room: home sections carry their own padding, Woo
+   pages don't — so the floating nav buried the page title (48px overlap,
+   measured live) and the footer WAVE (which rises ABOVE the footer box,
+   per the wave rules) swallowed the last card row on mobile (Ryan's phone
+   screenshots, 21 Aug). Top clears the fixed nav pill; bottom clears the
+   wave crest + a luxury gap. ---- */
+body.woocommerce-page main.main,
+body.woocommerce-page main {
+  padding-top: 112px;
+  padding-bottom: 150px;
+}
+
 /* ---- 5.0 · NAVBAR FIX — Woo pages have no [data-nav-bg] sections, so
    motion.js luvitNavTheme() returns early (checked: motion.js:672) and the
    bar stays in its dark-hero default over a light page. Force the exact
