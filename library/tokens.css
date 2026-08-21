@@ -6878,7 +6878,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v29";
+  content: "CSS v32";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -8214,5 +8214,188 @@ body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-component
 @media (hover: hover) and (pointer: fine) {
   body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button:hover {
     color: var(--aqua-600, #1E869C);
+  }
+}
+
+/* ==========================================================================
+   5.27 · THE COUPON BLOCK  (21 Aug — Ryan sent two screenshots of it)
+   --------------------------------------------------------------------------
+   "زبط تصميم هاي الجزئيه واوزنها سوائا عسطح المكتب او الموبايل"
+
+   MEASURED live on both pages, panel expanded:
+
+     button "تطبيق"   background transparent
+                      border  rgb(204, 51, 102)
+                      color   rgb(204, 51, 102)
+                      disabled = TRUE while the field is empty
+
+   #CC3366 is not our fuchsia, and it is not our anything. It is WooCommerce's
+   own stock accent, which means this button was never dressed at all: grep for
+   `totals-coupon__button` in this file returned nothing before today. And the
+   state Ryan photographed is the DISABLED one — the very first thing anyone
+   sees when the panel opens, because the field starts empty.
+
+   Second defect, checkout only. The form is
+   `display:flex; gap:8px; align-items: normal`, which resolves to stretch:
+
+     checkout   label "إدخال الكود" 20px + input 52px  ->  column 78px
+                button stretched to 78px, 26px taller than the field
+     cart       no label, so both come out 52px and it happens to look right
+
+   So the two pages disagreed, and the page that disagreed is the one with the
+   money on it. Bottom-align the row and the label can be there or not.
+
+   WHY tonal and not our primary fill: "تطبيق" sits a few hundred pixels above
+   "تقديم طلب". Two solid aqua buttons on one screen and neither one is the
+   answer to the page. This one carries the brand without claiming the CTA.
+   ========================================================================== */
+
+/* ---- 1 · the row: bottom-aligned, and the field takes the slack ---- */
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3, 0.75rem);
+  /* CORRECTED after publishing v30: Woo keeps `flex-wrap: wrap` here, and it
+     wrapped at EVERY width, not just narrow ones. Measured on the cart at
+     375px: field 250 wide on one row, button 67 on the next, bottoms 64px
+     apart. The stack override below is the only place wrapping is wanted. */
+  flex-wrap: nowrap;
+}
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input {
+  /* basis 0, not auto: Woo writes an explicit `width: 250.4px` on this wrapper,
+     so `flex-basis: auto` made it demand the entire row before shrinking. */
+  flex: 1 1 0;
+  inline-size: auto;
+  min-inline-size: 0;    /* a flex item's automatic minimum is min-content */
+  margin-block-end: 0;
+}
+/* CORRECTED after seeing it rendered. 5.25 moves every field label above its
+   box, and that is right for an address form where each label names a distinct
+   thing. Here it is wrong twice over: the disclosure directly above already
+   says «إضافة قسيمة», so «إدخال الكود» repeats it, and stacking a label on a
+   52px row inside a 250px column crushes both lines.
+
+   The label stays in the accessibility tree and leaves the picture. The hint
+   inside the box is set from motion.js §12, because `placeholder` is an
+   attribute and CSS cannot write one. */
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input label,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- 2 · the button, in the brand's own voice ---- */
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* the same 52px the field computes to, so the row reads as one control */
+  min-block-size: var(--field-h, 52px);
+  block-size: var(--field-h, 52px);
+  padding-inline: var(--space-4, 1rem);
+  border: 1.5px solid var(--aqua-200, #A6E7F1);
+  border-radius: var(--field-radius, 16px);
+  background-color: var(--aqua-50, #EAFAFD);
+  color: var(--aqua-700, #196B7D);   /* 5.9:1 on aqua-50 */
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: none;
+  transition:
+    background-color 180ms var(--ease-out-soft, ease),
+    border-color 180ms var(--ease-out-soft, ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:hover:not(:disabled),
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:hover:not(:disabled) {
+    background-color: var(--aqua-100, #D0F3F9);
+    border-color: var(--aqua-400, #4CC5DA);
+  }
+}
+
+/* ---- 3 · the empty state, which is the one she actually meets first.
+   Woo disables the button until something is typed but styles nothing, so it
+   was announcing itself in a colour it never earned. Quiet, still legible,
+   and honest about not being clickable yet. ---- */
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:disabled,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:disabled {
+  background-color: var(--color-mist, #F2F7F9);
+  border-color: var(--color-line, #E1E9EC);
+  color: var(--color-ink-soft, #47555B);
+  cursor: not-allowed;
+}
+
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:focus-visible,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* ---- 4 · the disclosure row above it.
+   MEASURED 44px tall and full width with the chevron pushed to the far edge,
+   which is right for a tap target and wrong for a line of text: at 327px on
+   desktop the gap between «إضافة قسيمة» and its own arrow is most of the row.
+   Pull them together and let the row keep its height. ---- */
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-2, 0.5rem);
+  inline-size: auto;
+  max-inline-size: 100%;
+  min-block-size: 44px;
+  padding-inline: 0;
+}
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button svg,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button svg {
+  flex: 0 0 auto;
+  margin-inline: 0;
+  fill: currentColor;
+}
+
+/* ---- 5 · the panel's own box.
+   It measured `padding: 16px 0` inside a card that already pads itself, and
+   sat between two totals rows with no line of its own, so the coupon read as a
+   totals row rather than as an action. One hairline above, and the block owns
+   its space instead of borrowing it. ---- */
+body.woocommerce-checkout .wc-block-components-totals-coupon.wc-block-components-totals-coupon,
+body.woocommerce-cart .wc-block-components-totals-coupon.wc-block-components-totals-coupon {
+  padding-block: var(--space-4, 1rem);
+  border-block-start: 1px solid var(--color-line-soft, #EDF2F4);
+}
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__content,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__content {
+  padding-block: var(--space-3, 0.75rem) 0;
+  padding-inline: 0;
+}
+
+/* ---- 6 · phones: below ~320px of column the pair cannot both keep a usable
+   width on one line, so the button takes its own row at full width rather than
+   shrinking to a stub. Measured: at a 375px viewport the column is 250px, the
+   field lands at 158 and the button at 85 — the last width where the pair is
+   still comfortable. Under that, stack. ---- */
+@media (max-width: 359px) {
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form,
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form {
+    flex-wrap: wrap;
+  }
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button,
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button {
+    flex: 1 0 100%;
   }
 }

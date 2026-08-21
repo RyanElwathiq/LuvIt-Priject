@@ -1429,7 +1429,9 @@ window.LUVIT.cartCount = { init: luvitCartCount };
     busy = loading;
     region.textContent = loading ? 'يتم تحديث الإجمالي' : 'تم تحديث الإجمالي';
   }
-  function schedule() { if (!queued) { queued = true; requestAnimationFrame(sync); } }
+  /* same reasoning as §12: a timer, not rAF, so a background tab still keeps
+     the live region honest. */
+  function schedule() { if (!queued) { queued = true; setTimeout(sync, 32); } }
   new MutationObserver(schedule).observe(b, { childList: true, subtree: true });
   sync();
 })();
@@ -1471,7 +1473,10 @@ function luvitFieldHints() {
     'shipping-city':       { ph: 'عمّان' },
     'billing-city':        { ph: 'عمّان' },
     'shipping-postcode':   { ph: '11118', im: 'numeric' },
-    'billing-postcode':    { ph: '11118', im: 'numeric' }
+    'billing-postcode':    { ph: '11118', im: 'numeric' },
+    /* the coupon box: 5.27 hides its visible label because the disclosure right
+       above it already reads «إضافة قسيمة». This is what stands in its place. */
+    'wc-block-components-totals-coupon__input-coupon': { ph: 'كود الخصم' }
   };
 
   function apply() {
@@ -1505,15 +1510,24 @@ function luvitFieldHints() {
 
   apply();
 
-  var form = document.querySelector('.wc-block-checkout, .wc-block-cart');
-  if (!form || typeof MutationObserver !== 'function') return;
+  /* CORRECTED 21 Aug: this used to observe `.wc-block-checkout, .wc-block-cart`.
+     Both are rendered by React, so on a cold load neither exists yet when this
+     runs, the function returned early, and no observer was ever installed.
+     Measured on the cart: the coupon field opened with no placeholder because
+     nothing was watching for it. `body` is always there. */
+  if (typeof MutationObserver !== 'function') return;
 
+  /* setTimeout and not requestAnimationFrame. rAF is tied to painting, and a
+     tab that is not compositing never runs it — measured 21 Aug, when the
+     coupon field kept opening with no placeholder while calling the same
+     function by hand set it instantly. A timer still coalesces the burst of
+     mutations React fires, and it runs whether or not anyone is looking. */
   var queued = false;
   new MutationObserver(function () {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(function () { queued = false; apply(); });
-  }).observe(form, { childList: true, subtree: true });
+    setTimeout(function () { queued = false; apply(); }, 32);
+  }).observe(document.body, { childList: true, subtree: true });
 }
 
 if (document.readyState === 'loading') {
