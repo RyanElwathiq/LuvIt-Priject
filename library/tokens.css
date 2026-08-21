@@ -6878,7 +6878,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v33";
+  content: "CSS v34";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -8420,5 +8420,209 @@ body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-pa
   body.woocommerce-checkout .wc-block-components-checkout-place-order-button.wc-block-components-checkout-place-order-button {
     font-size: 15px;
     letter-spacing: -0.01em;
+  }
+}
+
+/* ==========================================================================
+   5.29 · THE GOVERNORATE SELECT  (21 Aug)
+   --------------------------------------------------------------------------
+   Ryan: «زبط تصميم المحافظة وتحديد المحافظة وزبط تصميم اللي لما تضغط»
+
+   The governorate list landed today and arrived wearing WooCommerce's clothes.
+   MEASURED side by side with the city field that sits right next to it:
+
+                        المحافظة (select)      المدينة (input)
+       border-radius    4px                    16px
+       border           dark oklab             #C7D7DD
+       background       transparent            #FFF
+       padding          16px 8.67px 0          14px 16px
+       height           50                     52
+       label            INSIDE the box         above it
+
+   Six differences on two fields on the same line. 5.25 never reached it: the
+   wrapper here is `wc-blocks-components-select__container`, a different class
+   from the `.wc-block-components-text-input` every other field uses, so none
+   of the field rules applied.
+
+   The arrow is Woo's own 24px SVG, absolutely positioned inside the container.
+   Keep it, recolour it, and give the box room so text never runs under it.
+   ========================================================================== */
+
+/* ---- 1 · the container becomes a column so the label can go first ---- */
+body.woocommerce-checkout .wc-blocks-components-select__container,
+body.woocommerce-cart .wc-blocks-components-select__container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+body.woocommerce-checkout .wc-blocks-components-select .wc-blocks-components-select__label,
+body.woocommerce-cart .wc-blocks-components-select .wc-blocks-components-select__label {
+  order: -1;
+  position: static;
+  transform: none;
+  inline-size: auto;
+  max-inline-size: none;
+  padding: 0;
+  margin-block-end: var(--field-gap, 6px);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-ink);
+  text-align: start;
+  overflow: visible;
+  transition: none;
+}
+
+/* ---- 2 · the box itself, matched to the text fields it stands beside.
+   Every value below is the one the city input computes to, not a new one. ---- */
+body.woocommerce-checkout .wc-blocks-components-select .wc-blocks-components-select__select.wc-blocks-components-select__select,
+body.woocommerce-cart .wc-blocks-components-select .wc-blocks-components-select__select.wc-blocks-components-select__select {
+  -webkit-appearance: none;
+          appearance: none;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: auto;
+  min-block-size: var(--field-h, 52px);
+  padding-block: 14px;
+  padding-inline: var(--field-pad-x, 16px);
+  /* room for Woo's 24px arrow plus the gutter it sits in */
+  padding-inline-end: calc(var(--field-pad-x, 16px) + 24px + var(--space-2, 0.5rem));
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--field-radius, 16px);
+  background-color: var(--field-bg, #FFF);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--field-fs, 16px);   /* 16px floor: below it iOS zooms on focus */
+  line-height: 1.4;
+  text-align: start;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-instant, 120ms) var(--ease-out-soft, ease),
+    box-shadow var(--duration-instant, 120ms) var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-checkout .wc-blocks-components-select .wc-blocks-components-select__select:hover,
+  body.woocommerce-cart .wc-blocks-components-select .wc-blocks-components-select__select:hover {
+    border-color: var(--field-border-hover, var(--aqua-300, #74D6E7));
+  }
+}
+body.woocommerce-checkout .wc-blocks-components-select .wc-blocks-components-select__select:focus,
+body.woocommerce-cart .wc-blocks-components-select .wc-blocks-components-select__select:focus {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+  border-color: var(--aqua-600, #1E869C);
+}
+
+/* ---- 3 · Woo's arrow, in the brand's ink and parked where the padding
+   above reserved space for it. It is absolutely positioned in the container,
+   which is why the container keeps `position: relative`. ---- */
+body.woocommerce-checkout .wc-blocks-components-select__container > svg,
+body.woocommerce-cart .wc-blocks-components-select__container > svg {
+  position: absolute;
+  inset-inline-end: var(--field-pad-x, 16px);
+  inset-block-start: auto;
+  inset-block-end: 14px;
+  inline-size: 20px;
+  block-size: 20px;
+  fill: var(--aqua-600, #1E869C);
+  pointer-events: none;
+  transition: transform 180ms var(--ease-out-soft, ease);
+}
+
+/* ==========================================================================
+   5.29.b · AND THE LIST THAT DROPS DOWN
+   --------------------------------------------------------------------------
+   Ryan asked for the open list too, and until recently the honest answer was
+   "the operating system draws that, CSS cannot touch it".
+
+   MEASURED on his own browser: CSS.supports('appearance', 'base-select')
+   returns TRUE. Chrome now hands the popup over as a real, styleable element
+   through ::picker(select), so the list can wear the same water the rest of
+   the page does.
+
+   This is opt-in per element and strictly progressive: a browser that does not
+   know `base-select` drops the declaration and keeps everything in 5.29 above,
+   including the native popup. Nothing to detect, nothing to break. Safari and
+   Firefox get the styled box and the system list, which is exactly what they
+   get today.
+
+   `@supports` is not needed for correctness — an unknown value is discarded on
+   its own — but it keeps the whole opt-in in one visible block so the next
+   reader knows this is a Chrome-only layer and not a rule that quietly failed.
+   ========================================================================== */
+@supports (appearance: base-select) {
+
+  body.woocommerce-checkout .wc-blocks-components-select .wc-blocks-components-select__select.wc-blocks-components-select__select,
+  body.woocommerce-cart .wc-blocks-components-select .wc-blocks-components-select__select.wc-blocks-components-select__select {
+    appearance: base-select;
+  }
+
+  /* the select's own arrow is Woo's SVG in the container; base-select adds a
+     second one of its own inside the button, so that one goes */
+  body.woocommerce-checkout .wc-blocks-components-select__select::picker-icon,
+  body.woocommerce-cart .wc-blocks-components-select__select::picker-icon {
+    display: none;
+  }
+
+  body.woocommerce-checkout .wc-blocks-components-select__select::picker(select),
+  body.woocommerce-cart .wc-blocks-components-select__select::picker(select) {
+    appearance: base-select;
+    box-sizing: border-box;
+    margin-block-start: var(--space-2, 0.5rem);
+    padding: var(--space-2, 0.5rem);
+    max-block-size: 40vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--aqua-100, #D0F3F9);
+    border-radius: var(--radius-md, 16px);
+    background-color: var(--color-paper, #FFF);
+    box-shadow:
+      0 1px 2px rgba(12, 51, 60, 0.06),
+      0 18px 40px -12px rgba(12, 51, 60, 0.22);
+    font-family: var(--font-body);
+  }
+
+  body.woocommerce-checkout .wc-blocks-components-select__select option,
+  body.woocommerce-cart .wc-blocks-components-select__select option {
+    display: flex;
+    align-items: center;
+    min-block-size: 44px;          /* a governorate is picked with a thumb */
+    padding-inline: var(--space-3, 0.75rem);
+    padding-block: var(--space-2, 0.5rem);
+    border-radius: var(--radius-sm, 10px);
+    color: var(--color-ink);
+    font-size: var(--text-body, 1rem);
+    line-height: 1.4;
+    cursor: pointer;
+  }
+  /* base-select draws a checkmark column in front of every option. We mark the
+     chosen one with the wash instead, which is what the radio cards do. */
+  body.woocommerce-checkout .wc-blocks-components-select__select option::checkmark,
+  body.woocommerce-cart .wc-blocks-components-select__select option::checkmark {
+    display: none;
+  }
+  body.woocommerce-checkout .wc-blocks-components-select__select option:hover,
+  body.woocommerce-cart .wc-blocks-components-select__select option:hover {
+    background-color: var(--aqua-50, #EAFAFD);
+  }
+  body.woocommerce-checkout .wc-blocks-components-select__select option:checked,
+  body.woocommerce-cart .wc-blocks-components-select__select option:checked {
+    background-color: var(--aqua-50, #EAFAFD);
+    color: var(--aqua-700, #196B7D);
+    font-weight: 600;
+  }
+  /* keyboard travel has to be visible, and the OS highlight is gone now */
+  body.woocommerce-checkout .wc-blocks-components-select__select option:focus,
+  body.woocommerce-cart .wc-blocks-components-select__select option:focus {
+    outline: 2px solid var(--aqua-600, #1E869C);
+    outline-offset: -2px;
+    background-color: var(--aqua-100, #D0F3F9);
+  }
+  /* the placeholder row is an instruction, not a choice */
+  body.woocommerce-checkout .wc-blocks-components-select__select option[value=""],
+  body.woocommerce-cart .wc-blocks-components-select__select option[value=""] {
+    color: var(--field-placeholder, #8A9AA0);
   }
 }
