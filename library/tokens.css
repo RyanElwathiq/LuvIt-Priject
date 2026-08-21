@@ -1505,9 +1505,13 @@ h1, h2, h3, h4, .luvit-heading {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* Top padding clears the floating pill, which stays visible above. */
+  /* Top padding clears the floating pill, which stays visible above.
+     WAS --space-5: that left exactly 2px between the pill's box and the
+     first link (measured live, 21 Aug) — and the pill casts a shadow below
+     its box, so "الرئيسية" read as tucked UNDER the bar on Ryan's phone.
+     --space-7 gives a real 26px of air. */
   padding:
-    calc(var(--nav-h) + var(--nav-inset) * 2 + var(--space-5))
+    calc(var(--nav-h) + var(--nav-inset) * 2 + var(--space-7))
     var(--space-6)
     calc(var(--dock-h) + var(--space-7));
   visibility: hidden;
@@ -1565,6 +1569,13 @@ h1, h2, h3, h4, .luvit-heading {
   flex-direction: column;
   gap: var(--space-2);
   overflow-y: auto;
+  /* THE FIX (21 Aug, Ryan's phone): a flex item defaults to min-height:auto,
+     so it REFUSES to shrink below its content and overflows instead of
+     scrolling. With justify-content:center on the parent, that overflow
+     splits top and bottom — pushing the first link up behind the nav pill.
+     min-height:0 lets it shrink, so overflow-y actually scrolls. */
+  min-height: 0;
+  overscroll-behavior: contain;
 }
 
 .luvit-drawer__link {
