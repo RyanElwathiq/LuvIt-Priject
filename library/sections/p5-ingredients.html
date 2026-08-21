@@ -1,0 +1,81 @@
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات · سكشن 5 من ٨ · شو جوّا العبوة
+  ============================================================================
+  مصدر التعليمات: _خطة/خطة-صفحة-المنتجات.md · القسم «5 · شو جوّا العبوة».
+  سكشن جديد لصفحة /products/ · مش مولّد من home-preview.html.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : ingredients       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ✅ النِسَب الأربعة مثبتة من عبوة LUV IT نفسها · مش أمثلة، وهي الأرقام الوحيدة
+     المسموحة بهالصفحة:
+     10% Vitamin C · 2% Niacinamide · 2% Hyaluronic acid · 2% Panthenol
+
+  ⚠ 🔴 وهاي نِسَب «سيروم فيتامين سي» تحديداً، مش كل التشكيلة. الكوبي الرسمي
+     بالخطة ما بيسمّي المنتج، فلما ينزل أكثر من SKU لازم السكشن يسمّيه بالنص
+     أو ينقسم · وإلا بيقرأ كأن كل التشكيلة بنفس النِسَب. قرار لريّان.
+
+  ⚠ ولا سعر ولا صورة ولا تقييم ولا أي رقم تاني بهالسكشن · وهاد مقصود.
+  ⚠ الرابط الوحيد: /ingredients · لازم الصفحة تكون موجودة قبل ما ينشر السكشن.
+
+  ⚠ ناقص بـtokens.css: `.luvit-ing` بتضل عامود واحد تحت 720px، والخطة بدها
+     2×2 على الموبايل. القاعدة بدها تنضاف بـtokens.css · ممنوع تنكتب inline هون.
+  ============================================================================
+-->
+
+<section class="luvit-section band-mist" data-nav-bg="light" id="ingredients">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">What's inside</p>
+      <h2 class="luvit-section__title">شو جوّا العبوة بالضبط</h2>
+      <p class="luvit-section__sub">نِسَب مكتوبة على العبوة نفسها، مش بالإعلان بس.</p>
+    </div>
+
+    <div class="luvit-ing" data-luvit="stagger">
+
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">10%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">فيتامين سي · <bdi>Vitamin C</bdi></p>
+          <p class="luvit-ing__note">يوحّد لون البشرة ويعطيها إشراقة تدريجية.</p>
+        </div>
+      </div>
+
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">نياسيناميد · <bdi>Niacinamide</bdi></p>
+          <p class="luvit-ing__note">يقلّل ظهور المسام ويوازن إفراز الدهون.</p>
+        </div>
+      </div>
+
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">حمض الهيالورونيك · <bdi>Hyaluronic acid</bdi></p>
+          <p class="luvit-ing__note">يسحب الماء لطبقات البشرة ويحبسه فيها.</p>
+        </div>
+      </div>
+
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">بانثينول · <bdi>Panthenol</bdi></p>
+          <p class="luvit-ing__note">يهدّي الاحمرار ويدعم حاجز البشرة.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;margin-block-start:var(--space-7)">
+      <a href="/ingredients" class="luvit-btn luvit-btn--ghost">اقرأي كل المكوّنات</a>
+    </p>
+  </div>
+</section>

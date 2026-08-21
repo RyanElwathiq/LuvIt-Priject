@@ -1,0 +1,62 @@
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات (/products/) · سكشن ١ من ٨ · الترويسة
+  ============================================================================
+  مصدر النص: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» بند ١ · النص حرفي.
+  سكشن جديد لصفحة المنتجات · مش مولّد من library/home-preview.html.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : page-head       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الشريط انقلب من band-mist لـband-mist بمراجعة الصفحة الثمانية كاملة.
+     الإيقاع الصح للصفحة:
+       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
+     بالترتيب القديم كان سكشن ٤ وسكشن ٥ الاثنين mist ورا بعض.
+     والسبب إن الطبقة البيضا لازم تقع على القماش الصح:
+       .luvit-card و.luvit-ing__row و.luvit-acc__item كلهم --color-paper،
+       و.luvit-option كمان --field-bg أبيض. فالكروت بتقعد على light
+       (نفس ما بتعمل الرئيسية بـhome-preview.html:1513)، والبلاطات وصفوف
+       المكوّنات والأكورديون بيقعدوا على mist.
+
+  ✅ ولا سعر ولا رقم ولا صورة ولا ادعاء بهاد السكشن · نص بس · جاهز يوم واحد
+  ✅ الرابط الوحيد `/` · وهو المسار الوحيد الراجع للرئيسية بكل الصفحة
+
+  🔴 مسار التنقّل نزل بلا كلاس · ما في `.luvit-breadcrumb` بـtokens.css
+     ولا تستعمل `.luvit-section__eyebrow` بداله: جوّاه `--tracking-caption`
+     ومكتوب جنبه بـtokens.css:103 إنه للكابشنات اللاتينية بس، ولا مرة على العربي.
+     القاعدة الناقصة:
+       .luvit-breadcrumb { font-size: var(--text-caption); color: var(--color-ink-faint); margin: 0 0 var(--space-2); }
+       .luvit-breadcrumb a { color: var(--color-ink-faint); text-decoration: none; }
+       .luvit-breadcrumb a:hover { color: var(--aqua-700); }
+     لازم تنضاف لـtokens.css قبل النشر، وبعدها حط الكلاس على الـnav.
+  🔴 `.band-mist` و`.band-mist` ما لقيتهم بـtokens.css · معرّفين جوّا
+     home-preview.html (سطر 33 و34) وproducts-preview.html (سطر 38 و39) بس.
+     لازم ينتقلوا لسنيبت CSS بـWPCode وإلا كل شرائط الصفحة بتطلع شفافة
+     على الموقع الحي. هاد بيخص السكاشن الثمانية مش هاد بس.
+  🔴 الصفحة بدها `luvit-nav-offset` على غلاف الصفحة (مش على هالسكشن) ·
+     `.luvit-nav` ثابت (position:fixed) ورح يغطّي مسار التنقّل بلاها.
+  ============================================================================
+-->
+
+<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">المنتجات</span>
+      </nav>
+
+      <h1 class="luvit-section__title">التشكيلة كاملة، والنِسَب مكتوبة</h1>
+      <p class="luvit-section__sub">اختاري بكج جاهز أو منتج مفرد · وادفعي لمّا يوصلك.</p>
+
+    </div>
+  </div>
+</section>

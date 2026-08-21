@@ -1,0 +1,172 @@
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات · سكشن 2 · رِف البكجات
+  ============================================================================
+  مولّد من library/products-preview.html · لا تعدّل هون، عدّل بالمعاينة وأعد التوليد.
+
+  ---------------------------------------------------------------------------
+  🔴🔴🔴 بوابة النشر · الرِف ما بينزل أصلاً لحد ما يصير في ٣ منتجات مؤكدة
+  ---------------------------------------------------------------------------
+  خطة-صفحة-المنتجات.md ← «3 · THE EMPTY-SHELF PROBLEM» بتقول بالحرف:
+     «Ships only when 3 confirmed SKUs exist … Until then the rail does not
+      render and section 4 moves to position 2.»
+  يعني لحد ما تنعمل الـ٣ منتجات بووكومرس:
+     · هاد السكشن ما بينحط على الصفحة
+     · وسكشن ٤ «المنتجات المفردة» بيصير رقم ٢، وبياخد band-light مكانه
+  ولا تنزّله بمنتج واحد ولا باثنين · رِف نص فاضي بيبيّن المتجر أفقر من الحقيقة.
+
+  🔴 ورابط «كل البكجات» بيوصل لـ/shop/?product_cat=packages، وتصنيف «بكجات»
+     لساه مش موجود بووكومرس (قرار ريّان رقم ٣ بالخطة، لسا ما انعمل).
+     ما تنشر السكشن قبل ما ينعمل التصنيف · الرابط بيوقع على أرشيف فاضي.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : packages       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الشريط انقلب من band-light لـband-light بمراجعة الصفحة الثمانية كاملة
+     (كان سكشن ٤ وسكشن ٥ الاثنين mist ورا بعض). الإيقاع الصح:
+       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
+     و.luvit-card خلفيته --color-paper، فمكانه الطبيعي على light · نفس ما
+     بتعمل الرئيسية بـhome-preview.html:1513.
+
+  بيعتمد على:
+  · tokens.css  → قسم 5.31 (luvit-rail) · لازم يكون منشور بسنيبت WPCode
+  · motion.js   → قسم 13 (luvitRails) · هو اللي بيبني الشيبس ويشغّل الأسهم
+  ⚠ .luvit-rail__chips لازم تضل فاضية بالماركب · موشن جي إس بيعبّيها من
+    data-rail-label تبع كل بطاقة. إذا كتبت فيها إشي بإيدك بينضاف فوقه.
+
+  ---------------------------------------------------------------------------
+  🔴 الأسعار: انشالت من الـHTML · ولا رقم بينكتب هون
+  ---------------------------------------------------------------------------
+  كانت مكتوبة ٢٧ و٣٦ و٤٦ دينار كـplaceholder. انشالت.
+  قاعدة الصفحة بالخطة (سطر 27) مطلقة: «Every price on the page comes from
+  WooCommerce, never typed into HTML» · وسكشن ٤ ماشي عليها أصلاً، فما بينفع
+  سكشنين بنفس الصفحة يختلفوا عليها.
+  كل بكج بيصير منتج WooCommerce من نوع simple بسعر ثابت واحد، وووكومرس بيطبع
+  .luvit-card__price بمكان السلوت المعلّم تحت.
+  ولا مرة Grouped · بيكسر سطر الشحن الواحد تبع الدفع عند الاستلام.
+
+  🔴 باقي المحتوى مؤقت بالكامل · ولا كلمة منه بتنشر زي ما هي
+  ⚠ أسماء البكجات الثلاثة placeholder
+  ⚠ محتويات كل بكج placeholder (بأسماء منتجات هي كمان placeholder)
+  ⚠ سطر «لمين» placeholder
+  ⚠ الصور placeholder SVG · مافي تصوير لسا
+  ⚠ زر «أضيفي إلى السلة» شكل بس · بدله فورم add-to-cart تبع ووكومرس
+  ⚠ عنوان البكج مش رابط · لأن الخطة ما سمّت مسار صفحة البكج الواحد.
+    لما تنعمل منتجات البكجات، لُفّ العنوان بـ
+    <a class="luvit-card__link" href="/product/…"> زي 05-products.
+  ⚠ مافي نسبة توفير مكتوبة هون · الخطة بتقول تنحسب live من مجموع أسعار
+    القطع، عشان تضل صحيحة لما تتغيّر الأسعار.
+  ⚠ مافي عدّاد ظاهر جنب الأسهم (الخطة بتطلبه) · لأنه ما في كلاس إله
+    بـtokens.css. بده كلاس جديد قبل ما ينضاف.
+  ⚠ تناقض كوبي لريّان: السطر التمهيدي بيقول «شو جوّاه» والبطاقات بتقول
+    «شو جوّاها» · الاثنين حرفياً من الخطة. اختار وحدة وثبّتها.
+  ============================================================================
+-->
+
+<section class="luvit-section band-light" data-nav-bg="light" id="packages">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Packages</p>
+      <h2 class="luvit-section__title">بكجات جاهزة، بلا حيرة</h2>
+      <p class="luvit-section__sub">كل بكج فيه خطوات الروتين كاملة، وإنتِ شايفة شو جوّاه بالضبط.</p>
+    </div>
+
+    <div class="luvit-rail" data-luvit="reveal">
+
+      <div class="luvit-rail__track" role="group" aria-label="رِف البكجات">
+
+        <div class="luvit-rail__item" data-rail-label="بكج البداية">
+          <article class="luvit-card luvit-card--product">
+            <div class="luvit-card__media">
+              <img loading="lazy" decoding="async" alt="بكج البداية"
+                   src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='pk1' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23pk1)'/><rect x='96' y='172' width='96' height='228' rx='18' fill='rgb(255,255,255)' opacity='.94'/><rect x='120' y='132' width='48' height='44' rx='11' fill='rgb(255,255,255)'/><rect x='214' y='252' width='104' height='148' rx='20' fill='rgb(255,255,255)' opacity='.82'/><rect x='240' y='224' width='52' height='32' rx='9' fill='rgb(255,255,255)'/></svg>">
+            </div>
+            <div class="luvit-card__body">
+              <p class="luvit-card__eyebrow">Duo</p>
+              <h3 class="luvit-card__title">بكج البداية</h3>
+              <p class="luvit-card__text"><strong>شو جوّاها:</strong> منظّف هيدرا اللطيف · كريم الترطيب المكثّف</p>
+              <p class="luvit-card__text"><strong>لمين:</strong> إذا لسا بتبلّشي وبدك أقل عدد خطوات.</p>
+              <div class="luvit-card__footer">
+                <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+                <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="luvit-rail__item" data-rail-label="بكج الإشراقة">
+          <article class="luvit-card luvit-card--product">
+            <div class="luvit-card__media">
+              <img loading="lazy" decoding="async" alt="بكج الإشراقة"
+                   src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='pk2' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23pk2)'/><rect x='104' y='192' width='88' height='208' rx='16' fill='rgb(166,101,42)' opacity='.85'/><rect x='126' y='126' width='44' height='68' rx='12' fill='rgb(255,255,255)'/><rect x='214' y='262' width='108' height='138' rx='22' fill='rgb(255,255,255)' opacity='.9'/><rect x='236' y='238' width='64' height='26' rx='8' fill='rgb(255,255,255)'/></svg>">
+            </div>
+            <div class="luvit-card__body">
+              <p class="luvit-card__eyebrow">Duo</p>
+              <h3 class="luvit-card__title">بكج الإشراقة</h3>
+              <p class="luvit-card__text"><strong>شو جوّاها:</strong> سيروم فيتامين سي · كريم الترطيب المكثّف</p>
+              <p class="luvit-card__text"><strong>لمين:</strong> إذا عندك روتين وبدك تضيفي عليه سيروم.</p>
+              <div class="luvit-card__footer">
+                <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+                <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="luvit-rail__item" data-rail-label="بكج الروتين اليومي">
+          <article class="luvit-card luvit-card--product">
+            <div class="luvit-card__media">
+              <img loading="lazy" decoding="async" alt="بكج الروتين اليومي"
+                   src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='pk3' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23pk3)'/><rect x='58' y='198' width='84' height='202' rx='16' fill='rgb(255,255,255)' opacity='.94'/><rect x='80' y='160' width='40' height='40' rx='10' fill='rgb(255,255,255)'/><rect x='158' y='162' width='84' height='238' rx='16' fill='rgb(166,101,42)' opacity='.8'/><rect x='180' y='118' width='40' height='46' rx='10' fill='rgb(255,255,255)'/><rect x='258' y='242' width='84' height='158' rx='18' fill='rgb(255,255,255)' opacity='.82'/><rect x='280' y='216' width='40' height='28' rx='8' fill='rgb(255,255,255)'/></svg>">
+            </div>
+            <div class="luvit-card__body">
+              <p class="luvit-card__eyebrow">Trio</p>
+              <h3 class="luvit-card__title">بكج الروتين اليومي</h3>
+              <p class="luvit-card__text"><strong>شو جوّاها:</strong> منظّف هيدرا اللطيف · سيروم فيتامين سي · كريم الترطيب المكثّف</p>
+              <p class="luvit-card__text"><strong>لمين:</strong> إذا بدك الثلاث خطوات مع بعض: تنظيف، سيروم، ترطيب.</p>
+              <div class="luvit-card__footer">
+                <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+                <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+
+      <div class="luvit-rail__controls">
+
+        <!-- 🔴 تضل فاضية · motion.js قسم 13 بيبني الشيبس من data-rail-label -->
+        <div class="luvit-rail__chips"></div>
+
+        <div class="luvit-rail__arrows">
+          <button type="button" class="luvit-rail__arrow" data-rail="prev" aria-label="البكج السابق">
+            <!-- بيأشّر على بداية السطر · والصفحة RTL يعني عاليمين -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m9 6 6 6-6 6"/>
+            </svg>
+          </button>
+          <button type="button" class="luvit-rail__arrow" data-rail="next" aria-label="البكج التالي">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m15 6-6 6 6 6"/>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <p style="text-align:center;margin-block-start:var(--space-7)">
+      <a href="/shop/?product_cat=packages" class="luvit-btn luvit-btn--ghost">كل البكجات</a>
+    </p>
+
+  </div>
+</section>

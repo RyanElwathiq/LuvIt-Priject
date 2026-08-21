@@ -6885,7 +6885,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v39";
+  content: "CSS v43";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -9239,4 +9239,271 @@ body.woocommerce-page .woocommerce-result-count {
 @media (prefers-reduced-motion: reduce) {
   .luvit-rail__track { scroll-behavior: auto; }
   .luvit-rail__dot::before { transition: none; }
+}
+
+/* ==========================================================================
+   5.33 · THE COLOUR BANDS HAVE NEVER EXISTED ON THE LIVE SITE  (21 Aug)
+   --------------------------------------------------------------------------
+   Found while auditing the eight new sections of the المنتجات page: they all
+   declare `band-light` / `band-mist`, and so do ten sections of the home page
+   that have been live for weeks.
+
+   `grep "band-light" tokens.css` returns ZERO. The three rules exist only
+   inside the two preview harnesses, `home-preview.html:33-35` and
+   `products-preview.html`. So they render in the preview and nowhere else.
+
+   MEASURED on the live home page, walking the whole ancestor chain of a
+   .band-mist section:
+
+       section.luvit-section.band-mist ......... rgba(0,0,0,0)
+       div.elementor-element-5db08dc ........... rgba(0,0,0,0)
+       div.elementor-element-31335d4 ........... rgba(0,0,0,0)
+       div.elementor.elementor-40 .............. rgba(0,0,0,0)
+       div.page-content ........................ rgba(0,0,0,0)
+       main.site-main .......................... rgba(0,0,0,0)
+       body .................................... rgb(255,255,255)
+
+   Transparent the whole way up. Seven banded sections on that page, and every
+   one of them has been sitting on flat white. The alternating rhythm the
+   preview shows was designed, reviewed, approved, and never shipped.
+
+   It is a three-rule fix and the values are the ones the preview already uses,
+   so the live page will finally look like the thing Ryan signed off on. The
+   change is deliberately gentle: mist is #FAFCFD against paper's #FFFFFF, and
+   the live page carries no band-dark at all, so nothing flips from light to
+   dark today.
+
+   WHY IT BELONGS HERE AND NOT IN THE PREVIEW: a section file is pasted into an
+   Elementor HTML widget, and the widget is the only thing that travels. Any
+   style the section depends on has to live in the stylesheet that ships, or it
+   is preview-only decoration by construction.
+   ========================================================================== */
+
+.band-light { background-color: var(--color-paper, #FFFFFF); }
+.band-mist  { background-color: var(--color-canvas, #FAFCFD); }
+.band-dark {
+  background-color: #0C333C;
+  background-image:
+    radial-gradient(120% 80% at 50% -10%, rgba(76, 197, 218, .24), rgba(76, 197, 218, 0) 60%),
+    linear-gradient(180deg, #0C333C 0%, #124D5A 60%, #0B9198 100%);
+}
+
+/* WITHDRAWN twenty minutes after it was written, by the preview it was written
+   for. It said `inline-size: 100%` on the section, as insurance against a padded
+   Elementor container.
+
+   MEASURED on the assembled page: every one of the seven sections rendered
+   1561px wide inside a 1521px viewport, and the page grew 40px of horizontal
+   scroll — the exact axis 5.26.2 spent a whole section making inert.
+
+   `.luvit-section` is `box-sizing: content-box` with `padding: 104px 20px 48px`.
+   So `inline-size: 100%` sizes the CONTENT box to the full parent width and
+   then ADDS 40px of padding on top of it. 1520.8 + 40 = 1560.8.
+
+   A block-level section is already full width. The insurance was never needed
+   and the rule only ever did harm. Left as a comment rather than deleted,
+   because `inline-size: 100%` looks harmless and someone will write it again. */
+
+
+/* ==========================================================================
+   5.34 · TWO GRIDS THAT ONLY BREAK WHEN A NEW PAGE USES THEM  (21 Aug)
+   --------------------------------------------------------------------------
+   Both were correct for the home page and wrong for المنتجات, which is how
+   they survived: neither is a bug until a section with a different item count
+   lands on it.
+
+   (a) `.luvit-ing` is ONE column below 720px. On the home page that section is
+       near the bottom and the extra height costs little. On المنتجات it is
+       section 5 of 8, and four stacked rows on a phone adds roughly 400px to a
+       page whose whole budget is 2500 to 3500px. The plan asks for 2×2.
+       720px was never a content breakpoint, it was just the desktop switch.
+
+   (b) `.luvit-trust` is 2-up then 4-up. The delivery section on المنتجات has
+       THREE items, so it renders 2+1 on a phone and 3-of-4 on desktop, both of
+       which look like something failed to load. A three-item row needs its own
+       track count, not a fourth empty column.
+
+   Neither can be fixed inside a section file, which is exactly why they are
+   here and not there.
+   ========================================================================== */
+
+/* (a) two ingredient rows abreast from the narrowest real phone up */
+@media (min-width: 360px) and (max-width: 719px) {
+  .luvit-ing {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3, 0.75rem);
+  }
+  /* at half width the row cannot keep the icon beside the text */
+  .luvit-ing__row {
+    flex-direction: column;
+    gap: var(--space-2, 0.5rem);
+  }
+}
+
+/* (b) a trust row sized by what is in it, not by what used to be in it.
+   `:has()` scoped to one component, never to `html` or `body` — the rule the
+   home page's waves taught us on 21 Aug. */
+@media (min-width: 760px) {
+  .luvit-trust:has(> .luvit-trust__item:nth-child(3):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 759px) {
+  .luvit-trust:has(> .luvit-trust__item:nth-child(3):last-child) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+/* ==========================================================================
+   5.35 · THE SECTION FOOT  (21 Aug)
+   --------------------------------------------------------------------------
+   Six sections of the new page each carried
+   `style="text-align:center; margin-block-start: ..."` on the little row that
+   holds the onward link. Six inline styles saying the same thing is a class
+   that was never written.
+
+   Inline styles also cannot be themed, cannot respond to a breakpoint, and are
+   invisible to anyone reading the stylesheet to learn what the page can do.
+   ========================================================================== */
+.luvit-section__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3, 0.75rem);
+  margin-block-start: var(--space-6, 2rem);
+  text-align: center;
+}
+.luvit-section__foot .luvit-btn { margin: 0; }
+
+/* ==========================================================================
+   5.36 · TWO THINGS THE ASSEMBLED PAGE SHOWED THAT NO SECTION COULD  (21 Aug)
+   --------------------------------------------------------------------------
+   Both appeared the first time the eight sections were rendered together, and
+   neither is visible in any single file. This is why the preview exists.
+
+   ---- 1 · THE RAIL PUSHED THE WHOLE PAGE SIDEWAYS ----
+   MEASURED at a 1521px viewport:
+
+       documentElement.clientWidth ......... 1521
+       documentElement.scrollWidth ......... 1561   🔴 40px of sideways scroll
+       .luvit-rail          width 1536, left -28
+       .luvit-section       width 1561, left -40
+
+   `100vw` is 1536 here and the usable width is 1521, because vw INCLUDES the
+   scrollbar. The rail asked for 1536, the sections stretched to contain it, and
+   the page grew a horizontal scrollbar. On the page paid traffic lands on, and
+   on the same axis 5.26.2 spent a whole section making inert.
+
+   `overflow-x: clip`, not `hidden`. `hidden` turns the element into a scroll
+   container, which silently breaks `position: sticky` on anything inside it and
+   changes what `scroll-behavior` applies to. `clip` just clips. Scoped with
+   `:has()` to sections that actually contain a rail, never to html or body —
+   the rule the home page's waves taught us the same day.
+
+   ---- 2 · THE FIRST HEADING SAT UNDER THE NAVIGATION ----
+   MEASURED: `.luvit-nav` is `position: fixed` and its bottom edge is at 90px.
+   The first section's top was 0 with 48px of padding, so the H1 rendered
+   BEHIND the pill.
+
+   The home page never hit this because its first element is the pinned hero,
+   which is designed to sit under the bar. Every other page needs the offset,
+   and hard-coding 90 would go stale the first time the bar changes height, so
+   it is composed from the same two values the bar itself uses.
+   ========================================================================== */
+
+/* 1 · a section that carries a rail clips its own overflow */
+.luvit-section:has(.luvit-rail) {
+  overflow-x: clip;
+}
+
+/* 2 · the first band on a page whose first element is not the hero.
+   `--nav-inset` and the bar's own height are what position the pill, so the
+   offset tracks it instead of guessing at it. */
+.luvit-page-top {
+  padding-block-start: calc(
+    var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-6, 2rem)
+  );
+}
+@media (max-width: 767px) {
+  .luvit-page-top {
+    padding-block-start: calc(
+      var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-5, 1.5rem)
+    );
+  }
+}
+
+/* ==========================================================================
+   5.37 · .luvit-option AS A LINK  (21 Aug)
+   --------------------------------------------------------------------------
+   The skin-type row on المنتجات reuses `.luvit-optiongrid` and `.luvit-option`,
+   which were built for the quiz: a <label> wrapping a radio. Here each tile is
+   an <a> going to a routine page, and an anchor brings its own user-agent
+   styling that a label never had.
+
+   MEASURED on the assembled preview:
+
+       a.luvit-option   color            rgb(0, 0, 238)   ← the browser's blue
+                        text-decoration  underline
+       its <svg>        stroke           rgb(0, 0, 238)   ← inherited
+
+   Four tiles in the middle of an aqua page, in 1996 hyperlink blue with the
+   icons dragged along by `currentColor`. The component was never wrong; it was
+   asked to be something it had not been taught to be.
+
+   This is the modifier the audit predicted would be missing. It teaches the
+   tile to be a link and changes nothing about the radio version.
+   ========================================================================== */
+
+a.luvit-option {
+  color: var(--color-ink, #1A2529);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* the icon rides currentColor, so it is set here and nowhere else */
+a.luvit-option svg {
+  color: var(--aqua-500, #29A9C0);
+  stroke: currentColor;
+  fill: none;
+}
+
+/* the label under the icon: it is the accessible name of the tile, so it keeps
+   the ink and takes the weight instead of an underline */
+a.luvit-option .luvit-option__label,
+a.luvit-option > span:last-child {
+  color: var(--color-ink, #1A2529);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.luvit-option:hover {
+    border-color: var(--aqua-300, #74D6E7);
+  }
+  a.luvit-option:hover svg {
+    color: var(--aqua-600, #1E869C);
+  }
+}
+
+a.luvit-option:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 3px;
+}
+
+/* MEASURED on the same pass: the grid resolved to
+   `291px 291px 291px 291px 0px 0px 0px` — four sized tracks and three empty
+   ones, because `repeat(auto-fit, minmax(min(100%,150px), 1fr))` keeps
+   generating tracks for a container this wide. Harmless at four tiles and
+   wrong the moment a fifth is added. Cap it where the design caps it. */
+.luvit-optiongrid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  max-inline-size: 100%;
+}
+@media (min-width: 900px) {
+  .luvit-optiongrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 480px) and (max-width: 899px) {
+  .luvit-optiongrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

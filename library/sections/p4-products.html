@@ -1,0 +1,131 @@
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات (/products/) · سكشن ٤ من ٨ · المنتجات المفردة
+  ============================================================================
+  المرجع: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» ← البند ٤
+  ستايل البيت: library/sections/05-products.html · الكلاسات من library/tokens.css
+
+  🔴 هذا البلوك كله PLACEHOLDER · الويدجت بيستبدله
+  ---------------------------------------------------------------------------
+  بالإلمنتور هذا السكشن بيصير Elementor Products widget (حلقة ووكومرس حيّة).
+  الكروت الثلاثة اللي تحت موجودة عشان تثبّت شكل الشبكة والحواف بس، وبينحذفوا
+  لحظة ما ينزل الويدجت. ولا سطر منهم بينشر لصفحة حيّة زي ما هو.
+
+  إعدادات الويدجت (من الخطة، البند ٤):
+    · Columns: ٤ على ≥1000px · ٣ على 700-999px · ٢ على الموبايل · ١ تحت 360px
+      (وهاد بالضبط سلوك .luvit-card-grid بـtokens.css:1052-1072، فما بده تعديل)
+    · Star Rating: OFF · ولا سلوت تقييم، ولا صف نجوم، ولا عدد آراء
+    · Price: من ووكومرس · ممنوع يتكتب سعر بالـHTML، والخطة قاطعة فيها
+    · Sale Badge / Best seller: OFF · صفر طلبات لحد الآن
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله (أو ويدجت Products مباشرة)
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : products       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الشريط انقلب من band-light لـband-light بمراجعة الصفحة الثمانية كاملة ·
+     كان هاد السكشن وسكشن ٥ الاثنين mist ورا بعض. الإيقاع الصح:
+       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
+     و.luvit-card خلفيته --color-paper، ونفس الشغلة ماشية على الرئيسية
+     (home-preview.html:1513 · شبكة المنتجات على band-light).
+
+  ---------------------------------------------------------------------------
+  🔴 انشال نوع البشرة من فوق كل كرت · وما بينرجع بتخمين
+  ---------------------------------------------------------------------------
+  كان مكتوب «البشرة المختلطة» و«البشرة الدهنية» و«البشرة الجافة» فوق الكروت
+  الثلاثة. انشالوا كلهم.
+  خطة-صفحة-المنتجات.md ← «5 · WHAT NEEDS RYAN» بتقول بالحرف إن تصنيف نوع
+  البشرة لكل منتج بيجي من صاحب العلامة، وإن تخمينه «same category as a fake
+  review». يعني تعليمه placeholder بتعليق ما بيشرّعه · شرعنة الـplaceholder
+  بالتعليق بتنطبق على الأسعار بس، ولا مرة على الحقائق.
+  ⤷ لما يسلّم صاحب العلامة التصنيف: رجّع <p class="luvit-card__eyebrow">
+    بمكان السلوت المعلّم، وقبلها ضيف قاعدة عربية للـeyebrow بـtokens.css،
+    لأن .luvit-card__eyebrow (سطر 759) عليه font-latin وuppercase
+    و--tracking-caption · وtokens.css:103 مكتوب جنبه إن الـtracking
+    للكابشنات اللاتينية بس ولا مرة على العربي.
+
+  ⚠ اللي لازم ينتبهله المُجمّع
+  ---------------------------------------------------------------------------
+  · 🔴 أسماء المنتجات والوصف placeholder · الأسماء الحقيقية والصور
+    بتيجي من صاحب العلامة (مرحلة ٨).
+  · ⚠ وحّد إملاء الأسماء مع سكشن ٢ · هون «منظف» وهناك «منظّف».
+  · ولا رابط منتج مكتوب هون · الخطة بتقول «each card → its product page» بس
+    ما بتسمّي مسار، وقاعدة «صفر روابط ميتة» سارية. ووكومرس بيولّد الروابط لحاله،
+    فالعنوان تُرك نصاً بلا <a> بدل ما ينحط رابط مخترع.
+  · الرابط الوحيد بالسكشن: «كل المنتجات» ← /shop/ · وهو من الخطة حرفياً.
+  · الصور data:image/svg+xml بلوحة العلامة · نفس تقنية 05-products.html.
+  · ثلاث كروت بشبكة أربع أعمدة بتترك خانة فاضية على الديسكتوب · الحلقة الحيّة
+    بتعبّيها. ولا تعبّيها بكرت رابع مكتوب بالإيد.
+  ============================================================================
+-->
+
+<section class="luvit-section band-light" data-nav-bg="light" id="products">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <h2 class="luvit-section__title">المنتجات المفردة</h2>
+      <p class="luvit-section__sub">كل منتج بنِسَبه مكتوبة، وبتقدري تضيفيه للسلة من هون.</p>
+    </div>
+
+    <div class="luvit-card-grid" data-luvit="stagger">
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="منظف هيدرا اللطيف"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p1' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p1)'/><rect x='152' y='150' width='96' height='250' rx='20' fill='rgb(255,255,255)' opacity='.94'/><rect x='180' y='108' width='40' height='50' rx='11' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
+          <h3 class="luvit-card__title">منظف هيدرا اللطيف</h3>
+          <p class="luvit-card__text">رغوة ناعمة تنظّف دون أن تجفّف.</p>
+          <div class="luvit-card__footer">
+            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="سيروم فيتامين سي"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p2' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p2)'/><rect x='158' y='170' width='84' height='230' rx='16' fill='rgb(166,101,42)' opacity='.85'/><rect x='176' y='104' width='48' height='70' rx='12' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
+          <h3 class="luvit-card__title">سيروم فيتامين سي</h3>
+          <p class="luvit-card__text">قوام سائل خفيف مع فيتامين سي ونياسيناميد.</p>
+          <div class="luvit-card__footer">
+            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="كريم الترطيب المكثّف"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p3' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p3)'/><path d='M168 150 h64 v240 a12 12 0 0 1 -12 12 h-40 a12 12 0 0 1 -12 -12 z' fill='rgb(255,255,255)' opacity='.94'/><rect x='176' y='120' width='48' height='34' rx='8' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
+          <h3 class="luvit-card__title">كريم الترطيب المكثّف</h3>
+          <p class="luvit-card__text">قوام خفيف بينشرب بسرعة وما بيترك لزوجة.</p>
+          <div class="luvit-card__footer">
+            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <p style="text-align:center;margin-block-start:var(--space-7)">
+      <a class="luvit-btn luvit-btn--ghost" href="/shop/">كل المنتجات</a>
+    </p>
+
+  </div>
+</section>

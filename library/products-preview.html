@@ -139,7 +139,864 @@
 <main id="main">
 <span id="top"></span>
 
-<!-- LUVIT:SECTIONS -->
+
+<!-- ===== p1-header.html ===== -->
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات (/products/) · سكشن ١ من ٨ · الترويسة
+  ============================================================================
+  مصدر النص: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» بند ١ · النص حرفي.
+  سكشن جديد لصفحة المنتجات · مش مولّد من library/home-preview.html.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : page-head       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الشريط انقلب من band-mist لـband-mist بمراجعة الصفحة الثمانية كاملة.
+     الإيقاع الصح للصفحة:
+       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
+     بالترتيب القديم كان سكشن ٤ وسكشن ٥ الاثنين mist ورا بعض.
+     والسبب إن الطبقة البيضا لازم تقع على القماش الصح:
+       .luvit-card و.luvit-ing__row و.luvit-acc__item كلهم --color-paper،
+       و.luvit-option كمان --field-bg أبيض. فالكروت بتقعد على light
+       (نفس ما بتعمل الرئيسية بـhome-preview.html:1513)، والبلاطات وصفوف
+       المكوّنات والأكورديون بيقعدوا على mist.
+
+  ✅ ولا سعر ولا رقم ولا صورة ولا ادعاء بهاد السكشن · نص بس · جاهز يوم واحد
+  ✅ الرابط الوحيد `/` · وهو المسار الوحيد الراجع للرئيسية بكل الصفحة
+
+  🔴 مسار التنقّل نزل بلا كلاس · ما في `.luvit-breadcrumb` بـtokens.css
+     ولا تستعمل `.luvit-section__eyebrow` بداله: جوّاه `--tracking-caption`
+     ومكتوب جنبه بـtokens.css:103 إنه للكابشنات اللاتينية بس، ولا مرة على العربي.
+     القاعدة الناقصة:
+       .luvit-breadcrumb { font-size: var(--text-caption); color: var(--color-ink-faint); margin: 0 0 var(--space-2); }
+       .luvit-breadcrumb a { color: var(--color-ink-faint); text-decoration: none; }
+       .luvit-breadcrumb a:hover { color: var(--aqua-700); }
+     لازم تنضاف لـtokens.css قبل النشر، وبعدها حط الكلاس على الـnav.
+  🔴 `.band-mist` و`.band-mist` ما لقيتهم بـtokens.css · معرّفين جوّا
+     home-preview.html (سطر 33 و34) وproducts-preview.html (سطر 38 و39) بس.
+     لازم ينتقلوا لسنيبت CSS بـWPCode وإلا كل شرائط الصفحة بتطلع شفافة
+     على الموقع الحي. هاد بيخص السكاشن الثمانية مش هاد بس.
+  🔴 الصفحة بدها `luvit-nav-offset` على غلاف الصفحة (مش على هالسكشن) ·
+     `.luvit-nav` ثابت (position:fixed) ورح يغطّي مسار التنقّل بلاها.
+  ============================================================================
+-->
+
+<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">المنتجات</span>
+      </nav>
+
+      <h1 class="luvit-section__title">التشكيلة كاملة، والنِسَب مكتوبة</h1>
+      <p class="luvit-section__sub">اختاري بكج جاهز أو منتج مفرد · وادفعي لمّا يوصلك.</p>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== p2-packages.html ===== -->
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات · سكشن 2 · رِف البكجات
+  ============================================================================
+  مولّد من library/products-preview.html · لا تعدّل هون، عدّل بالمعاينة وأعد التوليد.
+
+  ---------------------------------------------------------------------------
+  🔴🔴🔴 بوابة النشر · الرِف ما بينزل أصلاً لحد ما يصير في ٣ منتجات مؤكدة
+  ---------------------------------------------------------------------------
+  خطة-صفحة-المنتجات.md ← «3 · THE EMPTY-SHELF PROBLEM» بتقول بالحرف:
+     «Ships only when 3 confirmed SKUs exist … Until then the rail does not
+      render and section 4 moves to position 2.»
+  يعني لحد ما تنعمل الـ٣ منتجات بووكومرس:
+     · هاد السكشن ما بينحط على الصفحة
+     · وسكشن ٤ «المنتجات المفردة» بيصير رقم ٢، وبياخد band-light مكانه
+  ولا تنزّله بمنتج واحد ولا باثنين · رِف نص فاضي بيبيّن المتجر أفقر من الحقيقة.
+
+  🔴 ورابط «كل البكجات» بيوصل لـ/shop/?product_cat=packages، وتصنيف «بكجات»
+     لساه مش موجود بووكومرس (قرار ريّان رقم ٣ بالخطة، لسا ما انعمل).
+     ما تنشر السكشن قبل ما ينعمل التصنيف · الرابط بيوقع على أرشيف فاضي.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : packages       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الشريط انقلب من band-light لـband-light بمراجعة الصفحة الثمانية كاملة
+     (كان سكشن ٤ وسكشن ٥ الاثنين mist ورا بعض). الإيقاع الصح:
+       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
+     و.luvit-card خلفيته --color-paper، فمكانه الطبيعي على light · نفس ما
+     بتعمل الرئيسية بـhome-preview.html:1513.
+
+  بيعتمد على:
+  · tokens.css  → قسم 5.31 (luvit-rail) · لازم يكون منشور بسنيبت WPCode
+  · motion.js   → قسم 13 (luvitRails) · هو اللي بيبني الشيبس ويشغّل الأسهم
+  ⚠ .luvit-rail__chips لازم تضل فاضية بالماركب · موشن جي إس بيعبّيها من
+    data-rail-label تبع كل بطاقة. إذا كتبت فيها إشي بإيدك بينضاف فوقه.
+
+  ---------------------------------------------------------------------------
+  🔴 الأسعار: انشالت من الـHTML · ولا رقم بينكتب هون
+  ---------------------------------------------------------------------------
+  كانت مكتوبة ٢٧ و٣٦ و٤٦ دينار كـplaceholder. انشالت.
+  قاعدة الصفحة بالخطة (سطر 27) مطلقة: «Every price on the page comes from
+  WooCommerce, never typed into HTML» · وسكشن ٤ ماشي عليها أصلاً، فما بينفع
+  سكشنين بنفس الصفحة يختلفوا عليها.
+  كل بكج بيصير منتج WooCommerce من نوع simple بسعر ثابت واحد، وووكومرس بيطبع
+  .luvit-card__price بمكان السلوت المعلّم تحت.
+  ولا مرة Grouped · بيكسر سطر الشحن الواحد تبع الدفع عند الاستلام.
+
+  🔴 باقي المحتوى مؤقت بالكامل · ولا كلمة منه بتنشر زي ما هي
+  ⚠ أسماء البكجات الثلاثة placeholder
+  ⚠ محتويات كل بكج placeholder (بأسماء منتجات هي كمان placeholder)
+  ⚠ سطر «لمين» placeholder
+  ⚠ الصور placeholder SVG · مافي تصوير لسا
+  ⚠ زر «أضيفي إلى السلة» شكل بس · بدله فورم add-to-cart تبع ووكومرس
+  ⚠ عنوان البكج مش رابط · لأن الخطة ما سمّت مسار صفحة البكج الواحد.
+    لما تنعمل منتجات البكجات، لُفّ العنوان بـ
+    <a class="luvit-card__link" href="/product/…"> زي 05-products.
+  ⚠ مافي نسبة توفير مكتوبة هون · الخطة بتقول تنحسب live من مجموع أسعار
+    القطع، عشان تضل صحيحة لما تتغيّر الأسعار.
+  ⚠ مافي عدّاد ظاهر جنب الأسهم (الخطة بتطلبه) · لأنه ما في كلاس إله
+    بـtokens.css. بده كلاس جديد قبل ما ينضاف.
+  ⚠ تناقض كوبي لريّان: السطر التمهيدي بيقول «شو جوّاه» والبطاقات بتقول
+    «شو جوّاها» · الاثنين حرفياً من الخطة. اختار وحدة وثبّتها.
+  ============================================================================
+-->
+
+<section class="luvit-section band-light" data-nav-bg="light" id="packages">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Packages</p>
+      <h2 class="luvit-section__title">بكجات جاهزة، بلا حيرة</h2>
+      <p class="luvit-section__sub">كل بكج فيه خطوات الروتين كاملة، وإنتِ شايفة شو جوّاه بالضبط.</p>
+    </div>
+
+    <div class="luvit-rail" data-luvit="reveal">
+
+      <div class="luvit-rail__track" role="group" aria-label="رِف البكجات">
+
+        <div class="luvit-rail__item" data-rail-label="بكج البداية">
+          <article class="luvit-card luvit-card--product">
+            <div class="luvit-card__media">
+              <img loading="lazy" decoding="async" alt="بكج البداية"
+                   src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='pk1' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23pk1)'/><rect x='96' y='172' width='96' height='228' rx='18' fill='rgb(255,255,255)' opacity='.94'/><rect x='120' y='132' width='48' height='44' rx='11' fill='rgb(255,255,255)'/><rect x='214' y='252' width='104' height='148' rx='20' fill='rgb(255,255,255)' opacity='.82'/><rect x='240' y='224' width='52' height='32' rx='9' fill='rgb(255,255,255)'/></svg>">
+            </div>
+            <div class="luvit-card__body">
+              <p class="luvit-card__eyebrow">Duo</p>
+              <h3 class="luvit-card__title">بكج البداية</h3>
+              <p class="luvit-card__text"><strong>شو جوّاها:</strong> منظّف هيدرا اللطيف · كريم الترطيب المكثّف</p>
+              <p class="luvit-card__text"><strong>لمين:</strong> إذا لسا بتبلّشي وبدك أقل عدد خطوات.</p>
+              <div class="luvit-card__footer">
+                <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+                <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="luvit-rail__item" data-rail-label="بكج الإشراقة">
+          <article class="luvit-card luvit-card--product">
+            <div class="luvit-card__media">
+              <img loading="lazy" decoding="async" alt="بكج الإشراقة"
+                   src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='pk2' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23pk2)'/><rect x='104' y='192' width='88' height='208' rx='16' fill='rgb(166,101,42)' opacity='.85'/><rect x='126' y='126' width='44' height='68' rx='12' fill='rgb(255,255,255)'/><rect x='214' y='262' width='108' height='138' rx='22' fill='rgb(255,255,255)' opacity='.9'/><rect x='236' y='238' width='64' height='26' rx='8' fill='rgb(255,255,255)'/></svg>">
+            </div>
+            <div class="luvit-card__body">
+              <p class="luvit-card__eyebrow">Duo</p>
+              <h3 class="luvit-card__title">بكج الإشراقة</h3>
+              <p class="luvit-card__text"><strong>شو جوّاها:</strong> سيروم فيتامين سي · كريم الترطيب المكثّف</p>
+              <p class="luvit-card__text"><strong>لمين:</strong> إذا عندك روتين وبدك تضيفي عليه سيروم.</p>
+              <div class="luvit-card__footer">
+                <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+                <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="luvit-rail__item" data-rail-label="بكج الروتين اليومي">
+          <article class="luvit-card luvit-card--product">
+            <div class="luvit-card__media">
+              <img loading="lazy" decoding="async" alt="بكج الروتين اليومي"
+                   src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='pk3' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(234,250,253)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23pk3)'/><rect x='58' y='198' width='84' height='202' rx='16' fill='rgb(255,255,255)' opacity='.94'/><rect x='80' y='160' width='40' height='40' rx='10' fill='rgb(255,255,255)'/><rect x='158' y='162' width='84' height='238' rx='16' fill='rgb(166,101,42)' opacity='.8'/><rect x='180' y='118' width='40' height='46' rx='10' fill='rgb(255,255,255)'/><rect x='258' y='242' width='84' height='158' rx='18' fill='rgb(255,255,255)' opacity='.82'/><rect x='280' y='216' width='40' height='28' rx='8' fill='rgb(255,255,255)'/></svg>">
+            </div>
+            <div class="luvit-card__body">
+              <p class="luvit-card__eyebrow">Trio</p>
+              <h3 class="luvit-card__title">بكج الروتين اليومي</h3>
+              <p class="luvit-card__text"><strong>شو جوّاها:</strong> منظّف هيدرا اللطيف · سيروم فيتامين سي · كريم الترطيب المكثّف</p>
+              <p class="luvit-card__text"><strong>لمين:</strong> إذا بدك الثلاث خطوات مع بعض: تنظيف، سيروم، ترطيب.</p>
+              <div class="luvit-card__footer">
+                <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+                <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+
+      <div class="luvit-rail__controls">
+
+        <!-- 🔴 تضل فاضية · motion.js قسم 13 بيبني الشيبس من data-rail-label -->
+        <div class="luvit-rail__chips"></div>
+
+        <div class="luvit-rail__arrows">
+          <button type="button" class="luvit-rail__arrow" data-rail="prev" aria-label="البكج السابق">
+            <!-- بيأشّر على بداية السطر · والصفحة RTL يعني عاليمين -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m9 6 6 6-6 6"/>
+            </svg>
+          </button>
+          <button type="button" class="luvit-rail__arrow" data-rail="next" aria-label="البكج التالي">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m15 6-6 6 6 6"/>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <p style="text-align:center;margin-block-start:var(--space-7)">
+      <a href="/shop/?product_cat=packages" class="luvit-btn luvit-btn--ghost">كل البكجات</a>
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ===== p3-skin-types.html ===== -->
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات · سكشن 3 · تسوّقي حسب نوع بشرتك
+  ============================================================================
+  مولّد من library/products-preview.html · لا تعدّل هون، عدّل بالمعاينة وأعد التوليد.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : skin-types       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الشريط انقلب من band-mist لـband-mist بمراجعة الصفحة الثمانية كاملة.
+     غير إنه بيصلّح الإيقاع، هو الأصح بصرياً: .luvit-option خلفيته
+     --field-bg (#FFFFFF)، فعلى band-mist (#FFFFFF) البلاطة ما بيبيّنها
+     غير الحد. على mist (#FAFCFD) بتقرا كبلاطة فعلاً.
+
+  ---------------------------------------------------------------------------
+  🔴 بوابتان · ولا وحدة منهم بتنفتح لحالها
+  ---------------------------------------------------------------------------
+  ١ · ولا بلاطة بتنزل قبل ما تكون صفحتها موجودة فعلاً. أربع صفحات لازم
+      تكون منشورة أول:
+        /routines/oily · /routines/dry · /routines/combination · /routines/sensitive
+      (خطة صفحة المنتجات · قسم 3 · «بلاطة بتودّي على ولا مكان وعد مكسور»)
+  ٢ · وسطر الكويز وزر «اكتشفي روتينك» ما بينزلوا قبل ما تكون صفحة /quiz
+      موجودة · نفس البوابة اللي على سكشن ٨.
+
+  🔴 انشال رقم «أربع أسئلة» من سطر الكويز.
+     الرقم ما إله مصدر، وبيناقض اللي منشور فعلاً: 04-quiz.html سطر 73
+     مكتوب فيه «أقل من دقيقة · ٥ أسئلة بس». وحدة منهم غلط، و/quiz لسا
+     ما انبنت أصلاً فما في مصدر يحسم.
+     ⤷ لما تنبني الصفحة: ثبّت العدد الحقيقي، وحدّث 04-quiz.html وسكشن ٨
+       بنفس اللحظة، وإلا بيصير عندك رقمين على نفس الموقع.
+
+  🔴 وانغيّر «مش متأكدة من نوعها؟» لـ«مش متأكدة من نوع بشرتك؟».
+     الأصل بالخطة مكتوب «نوعها» (غايب) وباقي الجملة كلها مخاطبة.
+     ⤷ تعديل على كوبي منصوص بالخطة · بده موافقة ريّان.
+
+  ⚠ الكلاس luvit-option--link انشال · ما إله وجود بـtokens.css أصلاً
+     (فحص grep: صفر نتيجة). وما بده كلاس جديد من الأساس، لأن البلاطات
+     روابط. القاعدة الناقصة اللي لازم تنضاف لـtokens.css جنب بلوك
+     OPTION CARDS (سطر ~2067):
+
+       a.luvit-option { text-decoration: none; color: var(--color-ink); }
+       a.luvit-option .luvit-option__icon { color: var(--aqua-500); }
+       .luvit-option__icon svg { width: 64px; height: 64px; display: block; }
+       a.luvit-option:hover { border-color: var(--aqua-400); }
+       a.luvit-option:hover::after { transform: translateY(0); }
+       a.luvit-option:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--color-ring); }
+
+     🔴 بلا هالقاعدة البلاطات بتطلع مسطّرة وبلون رابط المتصفح، والأيقونات
+        بتطلع زرقا لأنها stroke=currentColor. وأهم من الشكل: الحالات
+        التفاعلية الأربع الموجودة بـtokens.css كلها معلّقة على
+        :has(input:checked) و:has(input:focus-visible)، وما في input
+        بنسخة الرابط · يعني ما في حلقة تركيز للكيبورد. هاي مشكلة وصول،
+        مش تلميع.
+
+  ✅ ولا سعر ولا رقم ولا ادعاء بهذا السكشن · نص وأيقونات بس
+  ⚠ الروابط هون بلا شرطة أخيرة (/routines) وبالترويسة معها (/routines/).
+     ووردبريس بيعمل 301 لوحدة منهم · وحّدها قبل ما تشتري إعلانات.
+  ============================================================================
+-->
+
+<section class="luvit-section band-mist" data-nav-bg="light" id="skin-types">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow"><bdi>Skin type</bdi></p>
+      <h2 class="luvit-section__title">تسوّقي حسب نوع بشرتك</h2>
+      <p class="luvit-section__sub">اختاري نوعك ومنوديكي على الروتين اللي إله.</p>
+    </div>
+
+    <div class="luvit-optiongrid" data-luvit="stagger">
+
+      <!-- دهنية · لمعة على انحناءة الخد -->
+      <a class="luvit-option" href="/routines/oily">
+        <span class="luvit-option__icon" aria-hidden="true">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 8C13 22 12 42 23 54c6 6 15 7 23 3"/>
+            <path d="M23 22c6-3 13-3 19 0"/>
+            <path d="M22 32c7-3.5 15-3.5 22 0"/>
+            <path d="M24 42c6-3 12.5-3 18 0"/>
+          </svg>
+        </span>
+        <span class="luvit-option__label">البشرة الدهنية</span>
+      </a>
+
+      <!-- جافة · قطرة -->
+      <a class="luvit-option" href="/routines/dry">
+        <span class="luvit-option__icon" aria-hidden="true">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 9c0 0 14 16.5 14 27a14 14 0 0 1-28 0C18 25.5 32 9 32 9z"/>
+            <path d="M25.5 38.5a6.5 6.5 0 0 0 4.5 7"/>
+          </svg>
+        </span>
+        <span class="luvit-option__label">البشرة الجافة</span>
+      </a>
+
+      <!-- مختلطة · انقسام: نص فيه قطرة ونص فيه لمعة -->
+      <a class="luvit-option" href="/routines/combination">
+        <span class="luvit-option__icon" aria-hidden="true">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="32" cy="32" r="22"/>
+            <path d="M32 10v44"/>
+            <path d="M21 25.5c0 0 5 6.2 5 9.6a5 5 0 0 1-10 0c0-3.4 5-9.6 5-9.6z"/>
+            <path d="M39 28c3-1.6 6.2-1.6 9.2 0"/>
+            <path d="M39 37c3-1.6 6.2-1.6 9.2 0"/>
+          </svg>
+        </span>
+        <span class="luvit-option__label">البشرة المختلطة</span>
+      </a>
+
+      <!-- حسّاسة · احمرار منتشر · حلقات بتخفّ لبرّا -->
+      <a class="luvit-option" href="/routines/sensitive">
+        <span class="luvit-option__icon" aria-hidden="true">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="32" cy="32" r="6.5"/>
+            <circle cx="32" cy="32" r="13.5" stroke-dasharray="3.5 5.5"/>
+            <circle cx="32" cy="32" r="20.5" stroke-dasharray="3 7.5"/>
+          </svg>
+        </span>
+        <span class="luvit-option__label">البشرة الحسّاسة</span>
+      </a>
+
+    </div>
+
+    <p style="text-align:center;margin-top:var(--space-6)">مش متأكدة من نوع بشرتك؟ جاوبي على كم سؤال ومنقلّك.</p>
+
+    <p style="text-align:center;margin-top:var(--space-4)">
+      <a class="luvit-btn" href="/quiz">اكتشفي روتينك</a>
+      <a class="luvit-btn luvit-btn--ghost" href="/routines">كل الروتينات</a>
+    </p>
+  </div>
+</section>
+
+
+<!-- ===== p4-products.html ===== -->
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات (/products/) · سكشن ٤ من ٨ · المنتجات المفردة
+  ============================================================================
+  المرجع: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» ← البند ٤
+  ستايل البيت: library/sections/05-products.html · الكلاسات من library/tokens.css
+
+  🔴 هذا البلوك كله PLACEHOLDER · الويدجت بيستبدله
+  ---------------------------------------------------------------------------
+  بالإلمنتور هذا السكشن بيصير Elementor Products widget (حلقة ووكومرس حيّة).
+  الكروت الثلاثة اللي تحت موجودة عشان تثبّت شكل الشبكة والحواف بس، وبينحذفوا
+  لحظة ما ينزل الويدجت. ولا سطر منهم بينشر لصفحة حيّة زي ما هو.
+
+  إعدادات الويدجت (من الخطة، البند ٤):
+    · Columns: ٤ على ≥1000px · ٣ على 700-999px · ٢ على الموبايل · ١ تحت 360px
+      (وهاد بالضبط سلوك .luvit-card-grid بـtokens.css:1052-1072، فما بده تعديل)
+    · Star Rating: OFF · ولا سلوت تقييم، ولا صف نجوم، ولا عدد آراء
+    · Price: من ووكومرس · ممنوع يتكتب سعر بالـHTML، والخطة قاطعة فيها
+    · Sale Badge / Best seller: OFF · صفر طلبات لحد الآن
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله (أو ويدجت Products مباشرة)
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : products       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الشريط انقلب من band-light لـband-light بمراجعة الصفحة الثمانية كاملة ·
+     كان هاد السكشن وسكشن ٥ الاثنين mist ورا بعض. الإيقاع الصح:
+       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
+     و.luvit-card خلفيته --color-paper، ونفس الشغلة ماشية على الرئيسية
+     (home-preview.html:1513 · شبكة المنتجات على band-light).
+
+  ---------------------------------------------------------------------------
+  🔴 انشال نوع البشرة من فوق كل كرت · وما بينرجع بتخمين
+  ---------------------------------------------------------------------------
+  كان مكتوب «البشرة المختلطة» و«البشرة الدهنية» و«البشرة الجافة» فوق الكروت
+  الثلاثة. انشالوا كلهم.
+  خطة-صفحة-المنتجات.md ← «5 · WHAT NEEDS RYAN» بتقول بالحرف إن تصنيف نوع
+  البشرة لكل منتج بيجي من صاحب العلامة، وإن تخمينه «same category as a fake
+  review». يعني تعليمه placeholder بتعليق ما بيشرّعه · شرعنة الـplaceholder
+  بالتعليق بتنطبق على الأسعار بس، ولا مرة على الحقائق.
+  ⤷ لما يسلّم صاحب العلامة التصنيف: رجّع <p class="luvit-card__eyebrow">
+    بمكان السلوت المعلّم، وقبلها ضيف قاعدة عربية للـeyebrow بـtokens.css،
+    لأن .luvit-card__eyebrow (سطر 759) عليه font-latin وuppercase
+    و--tracking-caption · وtokens.css:103 مكتوب جنبه إن الـtracking
+    للكابشنات اللاتينية بس ولا مرة على العربي.
+
+  ⚠ اللي لازم ينتبهله المُجمّع
+  ---------------------------------------------------------------------------
+  · 🔴 أسماء المنتجات والوصف placeholder · الأسماء الحقيقية والصور
+    بتيجي من صاحب العلامة (مرحلة ٨).
+  · ⚠ وحّد إملاء الأسماء مع سكشن ٢ · هون «منظف» وهناك «منظّف».
+  · ولا رابط منتج مكتوب هون · الخطة بتقول «each card → its product page» بس
+    ما بتسمّي مسار، وقاعدة «صفر روابط ميتة» سارية. ووكومرس بيولّد الروابط لحاله،
+    فالعنوان تُرك نصاً بلا <a> بدل ما ينحط رابط مخترع.
+  · الرابط الوحيد بالسكشن: «كل المنتجات» ← /shop/ · وهو من الخطة حرفياً.
+  · الصور data:image/svg+xml بلوحة العلامة · نفس تقنية 05-products.html.
+  · ثلاث كروت بشبكة أربع أعمدة بتترك خانة فاضية على الديسكتوب · الحلقة الحيّة
+    بتعبّيها. ولا تعبّيها بكرت رابع مكتوب بالإيد.
+  ============================================================================
+-->
+
+<section class="luvit-section band-light" data-nav-bg="light" id="products">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <h2 class="luvit-section__title">المنتجات المفردة</h2>
+      <p class="luvit-section__sub">كل منتج بنِسَبه مكتوبة، وبتقدري تضيفيه للسلة من هون.</p>
+    </div>
+
+    <div class="luvit-card-grid" data-luvit="stagger">
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="منظف هيدرا اللطيف"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p1' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(76,197,218)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p1)'/><rect x='152' y='150' width='96' height='250' rx='20' fill='rgb(255,255,255)' opacity='.94'/><rect x='180' y='108' width='40' height='50' rx='11' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
+          <h3 class="luvit-card__title">منظف هيدرا اللطيف</h3>
+          <p class="luvit-card__text">رغوة ناعمة تنظّف دون أن تجفّف.</p>
+          <div class="luvit-card__footer">
+            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="سيروم فيتامين سي"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p2' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(208,243,249)'/><stop offset='1' stop-color='rgb(41,169,192)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p2)'/><rect x='158' y='170' width='84' height='230' rx='16' fill='rgb(166,101,42)' opacity='.85'/><rect x='176' y='104' width='48' height='70' rx='12' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
+          <h3 class="luvit-card__title">سيروم فيتامين سي</h3>
+          <p class="luvit-card__text">قوام سائل خفيف مع فيتامين سي ونياسيناميد.</p>
+          <div class="luvit-card__footer">
+            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="كريم الترطيب المكثّف"
+               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><defs><linearGradient id='p3' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='rgb(214,245,251)'/><stop offset='1' stop-color='rgb(30,134,156)'/></linearGradient></defs><rect width='400' height='500' fill='url(%23p3)'/><path d='M168 150 h64 v240 a12 12 0 0 1 -12 12 h-40 a12 12 0 0 1 -12 -12 z' fill='rgb(255,255,255)' opacity='.94'/><rect x='176' y='120' width='48' height='34' rx='8' fill='rgb(255,255,255)'/></svg>">
+        </div>
+        <div class="luvit-card__body">
+          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
+          <h3 class="luvit-card__title">كريم الترطيب المكثّف</h3>
+          <p class="luvit-card__text">قوام خفيف بينشرب بسرعة وما بيترك لزوجة.</p>
+          <div class="luvit-card__footer">
+            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
+            <button type="button" class="luvit-btn">أضيفي إلى السلة</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <p style="text-align:center;margin-block-start:var(--space-7)">
+      <a class="luvit-btn luvit-btn--ghost" href="/shop/">كل المنتجات</a>
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ===== p5-ingredients.html ===== -->
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات · سكشن 5 من ٨ · شو جوّا العبوة
+  ============================================================================
+  مصدر التعليمات: _خطة/خطة-صفحة-المنتجات.md · القسم «5 · شو جوّا العبوة».
+  سكشن جديد لصفحة /products/ · مش مولّد من home-preview.html.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : ingredients       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ✅ النِسَب الأربعة مثبتة من عبوة LUV IT نفسها · مش أمثلة، وهي الأرقام الوحيدة
+     المسموحة بهالصفحة:
+     10% Vitamin C · 2% Niacinamide · 2% Hyaluronic acid · 2% Panthenol
+
+  ⚠ 🔴 وهاي نِسَب «سيروم فيتامين سي» تحديداً، مش كل التشكيلة. الكوبي الرسمي
+     بالخطة ما بيسمّي المنتج، فلما ينزل أكثر من SKU لازم السكشن يسمّيه بالنص
+     أو ينقسم · وإلا بيقرأ كأن كل التشكيلة بنفس النِسَب. قرار لريّان.
+
+  ⚠ ولا سعر ولا صورة ولا تقييم ولا أي رقم تاني بهالسكشن · وهاد مقصود.
+  ⚠ الرابط الوحيد: /ingredients · لازم الصفحة تكون موجودة قبل ما ينشر السكشن.
+
+  ⚠ ناقص بـtokens.css: `.luvit-ing` بتضل عامود واحد تحت 720px، والخطة بدها
+     2×2 على الموبايل. القاعدة بدها تنضاف بـtokens.css · ممنوع تنكتب inline هون.
+  ============================================================================
+-->
+
+<section class="luvit-section band-mist" data-nav-bg="light" id="ingredients">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">What's inside</p>
+      <h2 class="luvit-section__title">شو جوّا العبوة بالضبط</h2>
+      <p class="luvit-section__sub">نِسَب مكتوبة على العبوة نفسها، مش بالإعلان بس.</p>
+    </div>
+
+    <div class="luvit-ing" data-luvit="stagger">
+
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">10%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">فيتامين سي · <bdi>Vitamin C</bdi></p>
+          <p class="luvit-ing__note">يوحّد لون البشرة ويعطيها إشراقة تدريجية.</p>
+        </div>
+      </div>
+
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">نياسيناميد · <bdi>Niacinamide</bdi></p>
+          <p class="luvit-ing__note">يقلّل ظهور المسام ويوازن إفراز الدهون.</p>
+        </div>
+      </div>
+
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">حمض الهيالورونيك · <bdi>Hyaluronic acid</bdi></p>
+          <p class="luvit-ing__note">يسحب الماء لطبقات البشرة ويحبسه فيها.</p>
+        </div>
+      </div>
+
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct">2%</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">بانثينول · <bdi>Panthenol</bdi></p>
+          <p class="luvit-ing__note">يهدّي الاحمرار ويدعم حاجز البشرة.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;margin-block-start:var(--space-7)">
+      <a href="/ingredients" class="luvit-btn luvit-btn--ghost">اقرأي كل المكوّنات</a>
+    </p>
+  </div>
+</section>
+
+
+<!-- ===== p6-delivery.html ===== -->
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات (/products/) · سكشن 6 من ٨ · كيف بتوصلك الطلبية
+  ============================================================================
+  ملف مستقل لصفحة /products/ · مش مولّد من library/home-preview.html.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : delivery       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ---------------------------------------------------------------------------
+  🔴🔴🔴 قفل ١ · بند «أيام العمل» ممنوع ينزل بقيمة · GATED
+  ---------------------------------------------------------------------------
+  البند الثالث بينزل بعنوانه وقيمته **فاضية عن قصد**. شركة التوصيل لسا ما ردّت.
+
+  ممنوع تكتب أي يوم، ولا أي جدول، ولا «من الأحد للخميس»، ولا أي قاعدة عن يوم
+  الجمعة، قبل ما **ريّان** يأكّد بالنص أيام العمل الفعلية وقاعدة الجمعة.
+  السؤال اللي لازم ينسأل حرفياً:
+     «أيام التوصيل عندنا شو بالضبط، ومنيّن لوين، وهل فيه توصيل يوم الجمعة؟»
+
+  🔴 إذا الصفحة رح تنزل قبل التأكيد: **احذف البند الثالث كامل**، ولا تعبّيه
+     بتخمين ولا بنص عام.
+  🔴 وإذا انحذف: «ثلاث أشياء» بالسطر التمهيدي لازم تصير «إشيين».
+  🔴 والقيمة الفاضية بتخلّي البطاقة الثالثة أقصر شوي من أخواتها · هاد مقصود
+     ومقبول، مش باغ تصميم يتصلّح بنص وهمي.
+
+  ---------------------------------------------------------------------------
+  🔴 قفل ٢ · أجرة التوصيل placeholder · ممنوع تنكتب بالـHTML
+  ---------------------------------------------------------------------------
+  «[X] د.أ ثابتة» نص مؤقت للبناء بس.
+  الرقم لازم **ينطبع من ووكومرس** (نسخة الـFlat rate الوحيدة على زون JO)
+  عبر شورت كود أو سنيبت بيحط السعر محل [X]، ولا مرة ينكتب رقم ثابت هون،
+  عشان السكشن والشيك أوت وشريط الترويسة ما يقدروا يتناقضوا.
+  والرقم اللي بالزون حالياً placeholder كمان · صاحب الموقع بيسلّم الرقم الحقيقي.
+
+  ---------------------------------------------------------------------------
+  ⚠ ملاحظات بناء
+  ---------------------------------------------------------------------------
+  · ولا رابط بهالسكشن عن قصد. «الشحن والتوصيل» → /shipping ما بينحط إلا لما
+    الصفحة تنبني فعلياً (بند ٧.٢ لسا ☐). ولا href="#" بينزل.
+  · ممنوع هون أي وعد عن سرعة التوصيل بأي صياغة · ولا مدة · ولا نسبة · ولا رقم RTO.
+  · .luvit-trust حالياً عمودين على الموبايل وأربعة على ≥760px، وهالسكشن ٣ بنود.
+    بده قاعدة ٣-أعمدة بـtokens.css (مكتوبة بملاحظات التسليم) وإلا بتطلع
+    ٢+١ على الموبايل و٣-من-٤ على الديسكتوب.
+  ============================================================================
+-->
+
+<section class="luvit-section band-light" data-nav-bg="light" id="delivery">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Delivery</p>
+      <h2 class="luvit-section__title">كيف بتوصلك الطلبية</h2>
+      <p class="luvit-section__sub">ثلاث أشياء بس بتحتاجي تعرفيها قبل ما تطلبي.</p>
+    </div>
+
+    <div class="luvit-trust" data-luvit="stagger">
+
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/>
+          </svg>
+        </span>
+        <p class="luvit-trust__title">الدفع عند الاستلام</p>
+        <p class="luvit-trust__note">ادفعي لمّا يوصلك</p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="6" width="14" height="11" rx="2"/><path d="M15 9h4l3 3v5h-7z"/>
+            <circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/>
+          </svg>
+        </span>
+        <p class="luvit-trust__title">توصيل لكل محافظات الأردن</p>
+        <!-- 🔴 placeholder · الرقم بينطبع من ووكومرس · ممنوع يتكتب رقم ثابت هون -->
+        <p class="luvit-trust__note"><bdi>[X]</bdi> د.أ ثابتة</p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/>
+          </svg>
+        </span>
+        <p class="luvit-trust__title">أيام العمل</p>
+        <!-- 🔴🔴🔴 مقفول · فاضي عن قصد · ممنوع تعبّيه قبل ما ريّان يأكّد الأيام وقاعدة الجمعة · اقرأ رأس الملف -->
+        <p class="luvit-trust__note"></p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== p7-faq.html ===== -->
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات · سكشن ٧ من ٨ · أسئلة بتتكرر
+  ============================================================================
+  المصدر: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» ← بند ٧.
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|light
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : products-faq       ← Advanced ← CSS ID
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الشريط بيضل band-mist · صح بالإيقاع وصح للمكوّن
+     (.luvit-acc__item خلفيته --color-paper فبده canvas تحته).
+     إيقاع الصفحة الثمانية بعد المراجعة:
+       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
+
+  🔴 انغيّر السطر التمهيدي · «الأسئلة اللي بتوصلنا أكثر شي» انشالت.
+     المتجر صفر طلبات وما انطلق بعد، يعني ولا سؤال «وصلنا» لحد الآن.
+     هاد ادعاء مخترع من نفس فصيلة شارة «الأكثر مبيعًا» اللي الخطة أمرت
+     بشيلها من 05-products.html:52 لنفس السبب بالضبط.
+     البديل بيوصف محتوى السكشن، وهو صحيح من أول يوم.
+
+  🔴 ثلاث وعود ممنوعة هون · اقرأها قبل ما تعدّل أي كلمة:
+
+  · «بتفحصي الطلب وبعدها بتدفعي» ممنوعة تماماً.
+    الجملة هاي موجودة بـ11-faq.html سطر 49 وهي **غير مؤكدة**: صحيحة بس إذا
+    شركة التوصيل بتسمح بفتح الطرد قبل الدفع، وهاد ما انسأل عنه لحد الآن.
+    جواب «كيف بدفع؟» هون بيوعد بالدفع عند الاستلام **بس**، ولا بيلمّح للفحص.
+    ⤷ انفتح؟ ارجع لخطة الصفحة «5 · WHAT NEEDS RYAN» قبل ما تزيد أي كلمة.
+
+  · ولا رقم لمدة التوصيل · لا ساعات ولا أيام ولا وعد بالسرعة.
+    أيام العمل لسا ما تأكدت مع شركة التوصيل (نفس البند المعلّق بسكشن ٦).
+    جواب «متى بتوصل؟» مكتوب عشان يضل صحيح بلا رقم.
+    ⤷ تأكدت الأيام؟ استبدل الجملة الأخيرة برقم مثبّت، وحدّث سكشن ٦ بنفس اللحظة.
+
+  · جواب «إذا ما ناسبتني؟» مؤقت · نص سياسة الإرجاع لساته ما انكتب
+    (بند ٧.٣ بـ_خطة/خطة-الإطلاق.md · الموجود حالياً مسوّدة إنجليزية).
+    ⤷ انكتبت السياسة؟ بدّل الجواب وضيف رابط صفحتها.
+
+  ⚠ ولا رابط بهاد السكشن · terminal section بالتصميم (نص الخطة: "Onward link:
+    none"). و«تواصلي معنا» مكتوبة بلا anchor عن قصد، لأن ما في مسار تواصل
+    مسمّى بالخطة، وولا href="#" بينشر.
+    🔴 بس انتبه: هيك الصفحة بتطلب منها تتواصل وما بتعطيها طريقة. أول ما
+    ينثبّت مسار (/contact أو رابط واتساب) هاي الجملة هي مكانه.
+
+  ✅ ولا رقم ولا تقييم ولا عدد آراء ولا سعر بهاد الملف.
+  ============================================================================
+-->
+
+<section class="luvit-section band-mist" data-nav-bg="light" id="products-faq">
+  <div class="luvit-section__inner" style="max-inline-size:820px">
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">FAQ</p>
+      <h2 class="luvit-section__title">أسئلة بتتكرر</h2>
+      <p class="luvit-section__sub">الدفع، والتوصيل، والإرجاع، وكيف بتطلبي.</p>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <details class="luvit-acc__item" open>
+        <summary class="luvit-acc__q">
+          كيف بدفع؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>الدفع عند الاستلام · بتدفعي للمندوب لمّا يوصلك الطلب. ما في دفع مسبق ولا بطاقة على الموقع، والخدمة متاحة لكل محافظات الأردن.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          متى بتوصل؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>أول ما يوصلنا طلبك منجهّزه ومنسلّمه لشركة التوصيل، والتوصيل لكل محافظات الأردن. أما مدة التوصيل بالضبط بأيام العمل، منكتبها هون لمّا نثبّتها مع شركة التوصيل · ما منحكيلك رقم قبل ما نتأكد منه.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          إذا ما ناسبتني؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>سياسة الإرجاع والاستبدال لسّا بتتكتب، وأول ما تجهز بتلاقيها كاملة بصفحتها. ولحد ذاك الوقت، إذا المنتج ما ناسب بشرتك تواصلي معنا وقوليلنا شو صار ومنشوف معك · وما منوعدك بإشي قبل ما ينكتب.</p></div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كيف بطلب؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>اختاري البكج أو المنتج وأضيفيه للسلة. بعدها بصفحة الطلب بتكتبي اسمك ورقم تلفونك وعنوانك وبتأكّدي الطلب · وبتدفعي عند الاستلام.</p></div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== p8-cta.html ===== -->
+<!--
+  ============================================================================
+  LUVIT · صفحة المنتجات · سكشن 8 من 8 · CTA الختامي
+  ============================================================================
+  مصدر النص: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» ← بند 8
+
+  كيف بينركّب:
+  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
+  2. الصق كل اللي تحت
+  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
+       data-nav-bg|dark
+     ⚠ الفاصل خط عامودي | مش يساوي =
+  CSS ID  : ما بده
+  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+  ⚠ الموجة: هاد السكشن غامق وقبله سكشن ٧ «أسئلة بتتكرر» فاتح (band-dark)، يعني
+    الانتقال فاتح-لغامق، فلازم luvit-cut-top على الغامق نفسه. ولازم يجي مباشرة
+    بعد سكشن ٧ بلا كونتينر فاصل، وإلا بتصير الموجة شريطاً قائماً بذاته.
+
+  ⚠ luvit-cut-top بياكل ٧٠px من أعلى العنصر، والتعويض معمول أصلاً بـtokens.css
+    (سطر 2737): .luvit-cut-top.luvit-cut-top { padding-block-start:
+    calc(var(--cut-pad) + var(--cut-h)) } · ما تضيف padding inline هون ولا تعيد
+    حلها بطريقة تانية. والماسك ما بيلوّن إشي (سطر 2714)، فهو شغّال مع أي شريط فوقه.
+
+  ⚠ هاد السكشن ما بياخد كلاس band · .luvit-cta بيرسم مياهه الغامقة بحاله.
+    إيقاع الصفحة بعد المراجعة:
+      ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
+
+  🔴 انشال رقم «أربع أسئلة» من السطر التمهيدي.
+     الرقم ما إله مصدر، وبيناقض اللي منشور فعلاً: 04-quiz.html سطر 73
+     مكتوب فيه «أقل من دقيقة · ٥ أسئلة بس». وكان نفس الرقم مكرر بسكشن ٣،
+     يعني الصفحة كانت رح تنشر نفس الرقم غير المؤكد مرتين.
+     ⤷ لما تنبني /quiz: ثبّت العدد الحقيقي، وحدّث سكشن ٣ و04-quiz.html
+       بنفس اللحظة.
+
+  ⚠ الزر بيوصل لـ/quiz · ما بينشر قبل ما تكون صفحة الكويز موجودة فعلاً
+    (خطة الإطلاق · بوابة الروابط الميتة: ولا رابط فاضي بينشر).
+
+  ⚠ وسكشن ٣ كمان بيعرض نفس الرابط بنفس نص الزر «اكتشفي روتينك» ·
+    الخطة سامحة بالاثنين، بس الصفحة بتقرا كحلقة مقفلة إذا ضل النصان
+    متطابقين حرفياً. غيّر نص واحد منهم.
+
+  ✅ ولا رقم ولا سعر ولا ادعاء بهاد السكشن بعد التعديل · نص بس.
+  ============================================================================
+-->
+
+<section class="luvit-cta luvit-deep luvit-cut-top" data-nav-bg="dark" data-luvit-bubbles="16">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-cta__panel" data-luvit="reveal">
+    <h2 class="luvit-cta__title luvit-cta__accent">لسا محتارة؟</h2>
+    <p class="luvit-cta__sub">جاوبي على كم سؤال عن بشرتك، ومنبنيلك روتين على قدّك · والدفع عند الاستلام.</p>
+    <a href="/quiz" class="luvit-btn luvit-btn--arrow">اكتشفي روتينك</a>
+  </div>
+</section>
 
 </main>
 
