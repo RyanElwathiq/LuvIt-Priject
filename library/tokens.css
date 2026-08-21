@@ -6797,3 +6797,65 @@ html:root {
     scroll-behavior: auto;
   }
 }
+
+/* ==========================================================================
+   5.14 · STICKY SIDEBAR: GONE EVERYWHERE  (21 Aug — second screen recording)
+   --------------------------------------------------------------------------
+   The width-gated version (5.11) measures correct in every browser available
+   here: at 375px the sidebar computes `static`. Ryan's phone still shows the
+   summary frozen while the form scrolls behind it — two recordings, frames
+   00:14 and 00:21 pixel-identical in the summary region while his finger
+   moves. Something about that device resolves the gate differently, and
+   guessing at it has already cost more than the feature is worth.
+
+   So the gate is removed. Sticky was a small desktop nicety: keeping the
+   total in view beside a scrolling item list. It is not worth a broken phone
+   checkout, and the phone is where the customers are.
+
+   No media query, no container query, no `is-sticky` class from core can
+   revive it — every known selector is pinned to static.
+   ========================================================================== */
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-sidebar.wc-block-components-sidebar,
+body.woocommerce-checkout .wc-block-checkout__sidebar.wc-block-checkout__sidebar,
+body.woocommerce-checkout .wc-block-checkout__sidebar.is-sticky,
+body.woocommerce-cart .wc-block-cart .wc-block-components-sidebar.wc-block-components-sidebar,
+body.woocommerce-cart .wc-block-cart__sidebar.wc-block-cart__sidebar,
+body.woocommerce-cart .wc-block-cart__sidebar.is-sticky {
+  position: static;
+  inset-block-start: auto;
+  top: auto;
+}
+
+/* ==========================================================================
+   5.15 · ATMOSPHERE: CHEAP MODE ON PHONES  (21 Aug)
+   --------------------------------------------------------------------------
+   Re-reading the second recording frame by frame showed the page IS moving —
+   about 50px across seven seconds of swiping. Not frozen: RESISTANT. That is
+   the signature of dropped frames, not a layout bug, and it explains why
+   every static measurement here came back clean.
+
+   The prime cost: the SHALLOW WATER layers. `position: fixed`, full viewport,
+   ten gradients on ::before (mesh blooms + two repeating ray fields + three
+   tiled bubble fields) and a tiled feTurbulence PNG on ::after. A desktop GPU
+   swallows that. A phone repaints it against every scroll frame.
+
+   On phones the atmosphere drops to the base wash only — the part that
+   actually does the work (cards read as floating because the ground is
+   darker than they are). Rays, bubbles and grain are desktop garnish.
+   ========================================================================== */
+@media (max-width: 1023px) {
+  body.woocommerce-checkout.woocommerce-checkout::before,
+  body.woocommerce-cart.woocommerce-cart::before {
+    background-image: linear-gradient(180deg,
+      var(--color-canvas, #FAFCFD) 0%,
+      var(--color-mist, #F2F7F9) 44%,
+      var(--aqua-50, #EAFAFD) 100%);
+    background-size: 100% 100%;
+  }
+  /* the grain layer exists only to dither wide gradients on 8-bit desktop
+     panels; phones do not band the same way and it is pure paint cost */
+  body.woocommerce-checkout.woocommerce-checkout::after,
+  body.woocommerce-cart.woocommerce-cart::after {
+    display: none;
+  }
+}
