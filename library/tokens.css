@@ -6665,3 +6665,33 @@ body.woocommerce-checkout .power-coupons-view-coupons-btn {
    via `scrollIntoView({behavior:'smooth'})` in motion.js. That needs the
    motion.js snippet republished, so it is a separate, deliberate change.
    ========================================================================== */
+
+/* ==========================================================================
+   5.11 · NO STICKY SIDEBAR ON SMALL SCREENS  (21 Aug — Ryan, from his phone)
+   --------------------------------------------------------------------------
+   Reported: while the form scrolls, the order-summary box (coupon / subtotal
+   / shipping / total) stays pinned in place. Two sources found:
+
+     · ours   → @media (min-width: 1024px)  ✅ correctly guarded
+     · WOO CORE → `.wc-block-checkout__sidebar.is-sticky`
+                  @media (min-width: 700px) 🔴 fires far too early, and the
+                  `is-sticky` class is added by Woo's own JS
+
+   Sticky is a DESKTOP pattern: it keeps the total visible beside a scrolling
+   list. In a single-column phone layout it just nails a block to the top and
+   lets the page slide underneath — which is exactly what Ryan saw.
+
+   Note: Woo blocks drive 34 CONTAINER queries off `container-type:
+   inline-size`, so container width and viewport width can disagree. This
+   block therefore kills sticky outright below the desktop breakpoint instead
+   of trying to out-guess which rule fired.
+   ========================================================================== */
+@media (max-width: 1023px) {
+  body.woocommerce-checkout .wc-block-checkout .wc-block-components-sidebar.wc-block-components-sidebar,
+  body.woocommerce-checkout .wc-block-checkout__sidebar.wc-block-checkout__sidebar,
+  body.woocommerce-cart .wc-block-cart .wc-block-components-sidebar.wc-block-components-sidebar,
+  body.woocommerce-cart .wc-block-cart__sidebar.wc-block-cart__sidebar {
+    position: static;
+    inset-block-start: auto;
+  }
+}
