@@ -3977,3 +3977,376 @@ body.woocommerce-page nav.woocommerce-pagination .page-numbers li .page-numbers.
   border-color: var(--color-ink);
   color: #fff;
 }
+
+
+/* ==========================================================================
+   5.2 · ACCOUNT  (/my-account · classic markup)
+   --------------------------------------------------------------------------
+   Selectors captured live 21 Aug from dashboard / orders / edit-address /
+   edit-account. The login + register forms could NOT be captured (a
+   credentials:'omit' fetch returns the Coming Soon page), BUT they reuse the
+   same row/input/button families we did capture on edit-account
+   (woocommerce-form-row, woocommerce-Input, woocommerce-Button), so those
+   are covered by proof. Login-only wrappers are tagged [DOC] and must be
+   verified the day the site goes live.
+   ========================================================================== */
+
+/* ---- layout: nav rail + content. Woo floats these; we grid them. ---- */
+@media (min-width: 860px) {
+  body.woocommerce-account .woocommerce.woocommerce {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+  /* Woo core puts a clearfix ::before/::after on this wrapper. In a grid
+     those pseudos become ITEMS and eat cells — measured live: the nav
+     landed in column 2 (848px) and the content wrapped to row 2 (260px).
+     Kill them, then place both panels explicitly so nothing can drift. */
+  body.woocommerce-account .woocommerce.woocommerce::before,
+  body.woocommerce-account .woocommerce.woocommerce::after { display: none; }
+  body.woocommerce-account .woocommerce-MyAccount-navigation.woocommerce-MyAccount-navigation {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  body.woocommerce-account .woocommerce-MyAccount-content.woocommerce-MyAccount-content {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+body.woocommerce-account .woocommerce-MyAccount-navigation.woocommerce-MyAccount-navigation {
+  float: none;
+  width: auto;
+  margin: 0 0 var(--space-5);
+}
+body.woocommerce-account .woocommerce-MyAccount-content.woocommerce-MyAccount-content {
+  float: none;
+  width: auto;
+  margin: 0;
+}
+
+/* ---- nav rail: a card of pills, not a bare bullet list ---- */
+body.woocommerce-account .woocommerce-MyAccount-navigation ul {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+body.woocommerce-account .woocommerce-MyAccount-navigation li { margin: 0; }
+body.woocommerce-account .woocommerce-MyAccount-navigation li a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;               /* touch target */
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--color-ink-soft);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--duration-instant) var(--ease-out-soft),
+              color var(--duration-instant) var(--ease-out-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-account .woocommerce-MyAccount-navigation li a:hover {
+    background: var(--aqua-50);
+    color: var(--color-ink);
+  }
+}
+/* current tab: aqua wash + ink text. Woo marks it with .is-active */
+body.woocommerce-account .woocommerce-MyAccount-navigation li.is-active a {
+  background: var(--aqua-100);
+  color: var(--color-ink);
+}
+/* logout is a destination, not a tab — keep it quiet and set apart */
+body.woocommerce-account .woocommerce-MyAccount-navigation li.woocommerce-MyAccount-navigation-link--customer-logout {
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--color-line-soft);
+  padding-top: var(--space-2);
+}
+body.woocommerce-account .woocommerce-MyAccount-navigation li.woocommerce-MyAccount-navigation-link--customer-logout a {
+  color: var(--color-ink-faint);
+  font-weight: 500;
+}
+
+/* ---- content surface ---- */
+body.woocommerce-account .woocommerce-MyAccount-content.woocommerce-MyAccount-content {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--space-6);
+  color: var(--color-ink-soft);
+  line-height: 1.8;               /* Arabic body copy */
+}
+body.woocommerce-account .woocommerce-MyAccount-content p { margin: 0 0 var(--space-4); }
+body.woocommerce-account .woocommerce-MyAccount-content p:last-child { margin-bottom: 0; }
+body.woocommerce-account .woocommerce-MyAccount-content a {
+  color: var(--aqua-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- orders table: on phones Woo's responsive table stacks rows and uses
+   the th label via ::before — we give each row card treatment ---- */
+body.woocommerce-account table.woocommerce-orders-table.shop_table {
+  width: 100%;
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0;
+  font-size: var(--text-body-sm);
+}
+body.woocommerce-account table.woocommerce-orders-table th {
+  background: var(--color-mist);
+  color: var(--color-ink-soft);
+  font-family: var(--font-body);
+  font-weight: 600;
+  text-align: start;
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+}
+body.woocommerce-account table.woocommerce-orders-table th:first-child {
+  border-start-start-radius: var(--radius-md);
+}
+body.woocommerce-account table.woocommerce-orders-table th:last-child {
+  border-start-end-radius: var(--radius-md);
+}
+body.woocommerce-account table.woocommerce-orders-table td.woocommerce-orders-table__cell {
+  padding: var(--space-4);
+  border: 0;
+  border-bottom: 1px solid var(--color-line-soft);
+  color: var(--color-ink);
+  vertical-align: middle;
+}
+/* order number + total are Latin runs inside RTL — isolate them */
+body.woocommerce-account .woocommerce-orders-table__cell-order-number,
+body.woocommerce-account .woocommerce-orders-table__cell-order-total {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+  font-family: var(--font-latin);
+  font-variant-numeric: tabular-nums;
+}
+/* the "view" action button */
+body.woocommerce-account .woocommerce-orders-table__cell-order-actions a.button,
+body.woocommerce-account .woocommerce-MyAccount-content a.button.woocommerce-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--aqua-500);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--aqua-700);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--duration-instant) var(--ease-out-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-account .woocommerce-orders-table__cell-order-actions a.button:hover {
+    background: var(--aqua-50);
+  }
+}
+
+/* ---- addresses (edit-address): Woo's u-columns is a float pair ---- */
+body.woocommerce-account .woocommerce-Addresses.u-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+}
+@media (min-width: 700px) {
+  body.woocommerce-account .woocommerce-Addresses.u-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+body.woocommerce-account .woocommerce-Addresses .woocommerce-Address {
+  float: none;
+  width: auto;
+  padding: var(--space-5);
+  background: var(--color-canvas);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+}
+body.woocommerce-account .woocommerce-Address-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-3);
+}
+body.woocommerce-account .woocommerce-Address-title h2,
+body.woocommerce-account .woocommerce-Address-title h3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  color: var(--color-ink);
+  margin: 0;
+}
+body.woocommerce-account .woocommerce-Address address {
+  font-style: normal;
+  line-height: 1.9;
+  color: var(--color-ink-soft);
+}
+
+/* ---- forms: edit-account, edit-address, AND (by shared classes) the
+   login / register forms. All these class families are captured. ---- */
+body.woocommerce-account .woocommerce-form-row,
+body.woocommerce-account .form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+}
+/* Woo's two-up rows are floats; grid them without touching markup */
+@media (min-width: 640px) {
+  body.woocommerce-account form .form-row-first,
+  body.woocommerce-account form .form-row-last {
+    float: none;
+    width: calc(50% - (var(--space-4) / 2));
+    display: inline-flex;
+    vertical-align: top;
+  }
+  body.woocommerce-account form .form-row-first { margin-inline-end: var(--space-4); }
+}
+body.woocommerce-account .form-row-wide { width: 100%; }
+
+body.woocommerce-account .woocommerce-MyAccount-content label {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+body.woocommerce-account .woocommerce-Input.input-text,
+body.woocommerce-account .woocommerce-MyAccount-content input.input-text,
+body.woocommerce-account .woocommerce-MyAccount-content input[type="password"],
+body.woocommerce-account .woocommerce-MyAccount-content select,
+body.woocommerce-account .woocommerce-MyAccount-content textarea {
+  width: 100%;
+  min-height: var(--field-h);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--field-radius);
+  background: #fff;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--field-fs);     /* 16px — never lower: iOS zooms below it */
+  transition: border-color var(--duration-instant) var(--ease-out-soft),
+              box-shadow var(--duration-instant) var(--ease-out-soft);
+}
+body.woocommerce-account .woocommerce-MyAccount-content textarea { padding: var(--space-3) var(--space-4); min-height: 120px; }
+body.woocommerce-account .woocommerce-MyAccount-content input:focus,
+body.woocommerce-account .woocommerce-MyAccount-content select:focus,
+body.woocommerce-account .woocommerce-MyAccount-content textarea:focus {
+  outline: none;
+  border-color: var(--aqua-500);
+  box-shadow: 0 0 0 3px var(--aqua-100);
+}
+/* email + password are Latin fields inside an RTL page */
+body.woocommerce-account .woocommerce-Input--email,
+body.woocommerce-account .woocommerce-Input--password,
+body.woocommerce-account .woocommerce-MyAccount-content input[type="email"],
+body.woocommerce-account .woocommerce-MyAccount-content input[type="password"],
+body.woocommerce-account .woocommerce-MyAccount-content input[type="tel"] {
+  direction: ltr;
+  text-align: start;
+}
+/* the show/hide password eye Woo injects */
+body.woocommerce-account .password-input {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+body.woocommerce-account .show-password-input {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: var(--space-3);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+/* primary submit inside account forms (Save changes / Log in / Register) */
+body.woocommerce-account .woocommerce-Button.button,
+body.woocommerce-account .woocommerce-MyAccount-content button.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--btn-min-height);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--btn-fill-top);
+  background-image:
+    linear-gradient(180deg, var(--btn-gloss) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--btn-fill-top) 0%, var(--btn-fill-bottom) 100%);
+  color: #FFFFFF !important;      /* same sanctioned exception as .luvit-btn */
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body);
+  cursor: pointer;
+  box-shadow: var(--btn-shadow), inset 0 1px 0 var(--btn-sheen-top),
+              inset 0 -1px 0 var(--btn-bezel-bottom);
+  transition: transform var(--duration-instant) var(--ease-out-soft),
+              box-shadow var(--duration-instant) var(--ease-out-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-account .woocommerce-Button.button:hover,
+  body.woocommerce-account .woocommerce-MyAccount-content button.button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--btn-shadow-hover), inset 0 1px 0 var(--btn-sheen-top),
+                inset 0 -1px 0 var(--btn-bezel-bottom);
+  }
+}
+body.woocommerce-account .woocommerce-Button.button:active,
+body.woocommerce-account .woocommerce-MyAccount-content button.button:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* legend/fieldset used by the password-change section */
+body.woocommerce-account .woocommerce-MyAccount-content fieldset {
+  margin: var(--space-5) 0 0;
+  padding: var(--space-5);
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-md);
+  background: var(--color-canvas);
+}
+body.woocommerce-account .woocommerce-MyAccount-content legend {
+  padding: 0 var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--text-body-lg);
+  color: var(--color-ink);
+}
+
+/* ---- [DOC] login / register page. These wrappers were NOT capturable
+   (logged-out requests hit Coming Soon). Their INNER rows and inputs are
+   already covered above by shared classes; this only lays the two columns
+   out. Verify the day the site goes live. ---- */
+body.woocommerce-account .u-columns.col2-set {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+}
+@media (min-width: 760px) {
+  body.woocommerce-account .u-columns.col2-set {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+body.woocommerce-account .u-columns .col-1,
+body.woocommerce-account .u-columns .col-2 {
+  float: none;
+  width: auto;
+  padding: var(--space-6);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
