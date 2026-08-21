@@ -1537,3 +1537,254 @@ if (document.readyState === 'loading') {
 }
 
 window.LUVIT.fieldHints = { init: luvitFieldHints };
+
+/* --------------------------------------------------------------------------
+   13. The rail — a shelf you can push. It drifts on a desktop, and only there.
+
+   Ryan settled this on 21 Aug after reading the evidence:
+     «التحرك التلقاي الفكره منه جماليه مش اكثر ومش الهدف منها انه الناس تقرا ·
+      وعالموبايل اختار افضل حل يكون سريع · عادي لو تلغيه كله»
+
+   That resolves the one place the research argued against the brief. Baymard's
+   prohibition is specifically about TOUCH: with no hover there is no pause, and
+   a card that moves mid-tap opens the wrong product — on the page paid traffic
+   lands on. NN/g's case is about READING: a participant missed the single
+   biggest offer on a page because rotation left it visible about a fifth of the
+   time. Neither objection touches a slow drift on a mouse-driven screen that
+   nobody is trying to read, which is exactly what Ryan asked for.
+
+   So the gate is `(hover: hover) and (pointer: fine)` — the capability, never
+   the viewport width and never the user agent. A touch laptop reports coarse
+   pointer and gets no timer, which is the case Baymard actually forbids and the
+   case a width breakpoint would get wrong.
+
+   Everything else the browser already does well is left to the browser: the
+   rail is a native scroll-snap scroller (5.31). Momentum, touch, trackpad,
+   wheel and keyboard are its job, not ours. This file adds a mouse drag, the
+   controls, and that one desktop drift.
+
+   RTL: `scrollLeft` disagrees between engines in a right-to-left scroller, so
+   nothing here reads its sign or magnitude. Direction comes from
+   `getComputedStyle().direction` and never from the `dir` attribute — that
+   mistake is already in CLAUDE.md, from the day motion.js read `dir` and
+   shipped a mirrored bug that only showed up on WordPress.
+   -------------------------------------------------------------------------- */
+function luvitRails() {
+  var rails = document.querySelectorAll('.luvit-rail');
+  if (!rails.length) return;
+
+  var reduced = window.matchMedia &&
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* the capability gate, evaluated once */
+  var pointerFine = window.matchMedia &&
+                    window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  Array.prototype.forEach.call(rails, function (root) {
+    var track = root.querySelector('.luvit-rail__track');
+    if (!track) return;
+
+    var items = Array.prototype.slice.call(track.querySelectorAll('.luvit-rail__item'));
+    if (items.length < 2) return;
+
+    var prevBtn = root.querySelector('[data-rail="prev"]');
+    var nextBtn = root.querySelector('[data-rail="next"]');
+    var chipsWrap = root.querySelector('.luvit-rail__chips');
+
+    /* MEASURED, never assumed: which way is "forward" in this scroller */
+    var forward = getComputedStyle(track).direction === 'rtl' ? -1 : 1;
+
+    var behaviour = reduced ? 'auto' : 'smooth';
+
+    /* ---- geometry ---------------------------------------------------------
+       offsetLeft is measured from the left edge in every engine, so all the
+       maths below happens in that one stable coordinate space and only the
+       final scroll call is flipped. ---- */
+    function maxScroll() { return track.scrollWidth - track.clientWidth; }
+
+    function scrollToLeft(px) {
+      var clamped = Math.max(0, Math.min(px, maxScroll()));
+      track.scrollTo({ left: forward === 1 ? clamped : -(maxScroll() - clamped), behavior: behaviour });
+    }
+    function readLeft() {
+      return forward === 1 ? track.scrollLeft : maxScroll() + track.scrollLeft;
+    }
+
+    function step() {
+      if (items.length < 2) return items[0].offsetWidth;
+      return Math.abs(items[1].offsetLeft - items[0].offsetLeft) || items[0].offsetWidth;
+    }
+
+    function currentIndex() {
+      var mid = readLeft() + track.clientWidth / 2;
+      var best = 0, bestDist = Infinity;
+      for (var i = 0; i < items.length; i++) {
+        var d = Math.abs(items[i].offsetLeft + items[i].offsetWidth / 2 - mid);
+        if (d < bestDist) { bestDist = d; best = i; }
+      }
+      return best;
+    }
+
+    function atStart() { return readLeft() < 2; }
+    function atEnd() { return readLeft() >= maxScroll() - 2; }
+
+    function go(dir) { scrollToLeft(readLeft() + dir * step()); }
+
+    function goTo(i) {
+      var t = items[i];
+      if (!t) return;
+      scrollToLeft(t.offsetLeft - (track.clientWidth - t.offsetWidth) / 2);
+    }
+
+    /* ---- controls.
+       Named chips, not anonymous dots: a dot says "there is more" and nothing
+       else, while a chip carrying the package name says WHICH more. Falls back
+       to a numbered label when an item has no `data-rail-label`. ---- */
+    var chips = [];
+    if (chipsWrap) {
+      items.forEach(function (item, i) {
+        var label = item.getAttribute('data-rail-label');
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'luvit-rail__chip' + (label ? '' : ' luvit-rail__chip--dot');
+        b.textContent = label || '';
+        b.setAttribute('aria-label', label
+          ? label
+          : 'اذهبي إلى البطاقة ' + (i + 1) + ' من ' + items.length);
+        b.addEventListener('click', function () { halt(); goTo(i); });
+        chipsWrap.appendChild(b);
+        chips.push(b);
+      });
+    }
+
+    function sync() {
+      var i = currentIndex();
+      chips.forEach(function (c, n) {
+        c.setAttribute('aria-current', n === i ? 'true' : 'false');
+      });
+      if (prevBtn) prevBtn.disabled = atStart();
+      if (nextBtn) nextBtn.disabled = atEnd();
+    }
+
+    var syncQueued = false;
+    track.addEventListener('scroll', function () {
+      if (syncQueued) return;
+      syncQueued = true;
+      /* a timer and not rAF: a tab that is not compositing never runs rAF, and
+         the controls would then lie about where the rail is. Measured 21 Aug. */
+      setTimeout(function () { syncQueued = false; sync(); }, 90);
+    }, { passive: true });
+
+    if (prevBtn) prevBtn.addEventListener('click', function () { halt(); go(-1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { halt(); go(1); });
+
+    /* ---- mouse drag. Touch scrolls natively; this exists only because a
+       desktop pointer cannot fling a scroller. ---- */
+    var dragging = false, startX = 0, startScroll = 0, moved = 0;
+
+    track.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      dragging = true; moved = 0;
+      startX = e.clientX;
+      startScroll = track.scrollLeft;
+      track.classList.add('is-dragging');
+      halt();
+    });
+
+    track.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - startX;
+      moved = Math.abs(dx);
+      track.scrollLeft = startScroll - dx;
+    });
+
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      track.classList.remove('is-dragging');
+      /* a drag that crossed a link must not also open it */
+      if (moved > 6 && e && e.target && e.target.closest && e.target.closest('a, button')) {
+        window.addEventListener('click', function kill(ev) {
+          ev.preventDefault(); ev.stopPropagation();
+        }, { capture: true, once: true });
+      }
+      goTo(currentIndex());   /* snapping was off during the drag */
+      sync();
+    }
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
+      track.addEventListener(ev, endDrag);
+    });
+
+    /* ---- the drift.
+       Desktop only, slow, and it never comes back once she has touched it.
+       6000ms because Ryan's purpose is decorative: the eye should catch a
+       change, not be asked to keep up with one. ---- */
+    var timer = null;
+    var stoppedForGood = false;
+    var DWELL = 6000;
+    var eligible = pointerFine && !reduced;
+
+    function drift() {
+      if (document.hidden || dragging) return;
+      if (atEnd()) { goTo(0); } else { go(1); }
+    }
+    function start() {
+      if (!eligible || stoppedForGood || timer) return;
+      timer = setInterval(drift, DWELL);
+    }
+    function pause() {
+      if (!timer) return;
+      clearInterval(timer);
+      timer = null;
+    }
+    /* an interaction is a decision. After it, the rail is hers. */
+    function halt() { stoppedForGood = true; pause(); }
+
+    if (eligible) {
+      root.addEventListener('pointerenter', pause);
+      root.addEventListener('pointerleave', function () { if (!dragging) start(); });
+      ['pointerdown', 'keydown', 'wheel'].forEach(function (ev) {
+        root.addEventListener(ev, halt, { passive: true });
+      });
+      root.addEventListener('focusin', halt);
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) pause(); else start();
+      });
+
+      /* and only while it is on screen. A drift nobody can see is a battery
+         bill and a needless repaint. */
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) { en.isIntersecting ? start() : pause(); });
+        }, { threshold: 0.35 }).observe(root);
+      } else {
+        start();
+      }
+    }
+
+    /* ---- a rail that does not overflow is a grid wearing a rail's clothes.
+       Hide the controls rather than ship two dead buttons and a chip row that
+       cannot go anywhere. ---- */
+    function fit() {
+      var overflows = track.scrollWidth > track.clientWidth + 2;
+      root.classList.toggle('is-static', !overflows);
+      if (!overflows) { halt(); }
+    }
+    fit();
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(function () { fit(); sync(); }).observe(track);
+    } else {
+      window.addEventListener('resize', function () { fit(); sync(); });
+    }
+
+    sync();
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', luvitRails);
+} else {
+  luvitRails();
+}
+
+window.LUVIT.rails = { init: luvitRails };

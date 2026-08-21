@@ -6885,7 +6885,7 @@ body.woocommerce-cart::marker { content: ""; }
 
 body.woocommerce-checkout .wc-block-checkout::after,
 body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v38";
+  content: "CSS v39";
   position: fixed;
   inset-block-end: 84px;
   inset-inline-start: 10px;
@@ -8984,4 +8984,259 @@ body.woocommerce-page .woocommerce-result-count {
   body.woocommerce-page .woocommerce-ordering select.orderby.orderby {
     appearance: base-select;
   }
+}
+
+/* ==========================================================================
+   5.31 · THE RAIL  ·  a shelf you can push
+   --------------------------------------------------------------------------
+   Ryan asked for it on 21 Aug:
+     «منتجات بتتحرك بشكل تلقائي او بالسحب ماخذه الصفحه العرضيه كلها زي كروت»
+
+   and then settled the hard part himself, after reading what the research says:
+     «التحرك التلقاي الفكره منه جماليه مش اكثر · وعالموبايل اختار افضل حل
+      يكون سريع · عادي لو تلغيه كله»
+
+   So it drifts on a mouse-driven screen and never on a touch one. The gate in
+   motion.js is the CAPABILITY, (hover:hover) and (pointer:fine), not a width
+   breakpoint. A touch laptop reports a coarse pointer and gets no timer, which
+   is precisely the case Baymard forbids and the case a width query gets wrong.
+
+   THE EVIDENCE, since this is the one place the research argued with the brief:
+     · Baymard is unconditional about touch — no hover means no pause, and a
+       card that moves mid-tap opens the wrong product, on the page paid traffic
+       lands on.
+     · NN/g documented a participant missing the largest offer on a page because
+       a five second rotation left it visible about a fifth of the time.
+     · What we must NOT claim: that auto-rotation reduces clicks. Runyon's one
+       auto-rotating site had his highest click rate. The honest claim is only
+       that on touch it risks mistaps and hides content.
+   Ryan's answer resolves all three: decoration on desktop, nothing on mobile.
+
+   The library already has ONE carousel, luvit-testimonials, and it is a stack:
+   cards piled on each other, one drag advances one. Right for a quote, wrong
+   for a shelf. This is the other kind.
+
+   WHY NATIVE SCROLL AND NOT TRANSFORMS
+   The browser already knows how to fling a scroller with momentum, snap it,
+   read a trackpad and a shift-wheel, and land a screen reader's focus inside
+   it. Rebuilding that on transforms means reimplementing all of it and getting
+   the last fifth wrong on somebody's phone. So the rail is a real scroller with
+   scroll-snap, and motion.js adds only what scrolling has no opinion about: a
+   mouse drag, the controls, and that one desktop drift.
+
+   It also keeps the performance promise in CLAUDE.md: no per-frame JS on the
+   main thread while it moves. The compositor scrolls it.
+
+   FULL BLEED: the rail escapes its container so cards can run to both edges of
+   the screen, while its padding keeps the first card aligned with the page's
+   text column. Nothing is ever clipped at the start.
+   ========================================================================== */
+
+.luvit-rail {
+  /* one place to retune the whole component */
+  --rail-card: 300px;
+  --rail-gap: var(--space-5, 1.5rem);
+  --rail-edge: max(var(--space-5, 1.5rem), calc((100vw - var(--container, 1140px)) / 2));
+
+  position: relative;
+  margin-inline: calc(50% - 50vw);   /* full bleed out of any container */
+  inline-size: 100vw;
+  max-inline-size: 100vw;
+}
+
+.luvit-rail__track {
+  display: flex;
+  gap: var(--rail-gap);
+  padding-inline: var(--rail-edge);
+  padding-block: var(--space-2, 0.5rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: inline mandatory;
+  /* start, not centre: with centre the first card sits half a screen in and
+     the rail opens looking like it has already been scrolled. scroll-padding
+     puts the snap line on the text column instead of the viewport edge. */
+  scroll-padding-inline-start: var(--rail-edge);
+  scroll-behavior: smooth;
+  overscroll-behavior-inline: contain;   /* a fling here never turns the page */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.luvit-rail__track::-webkit-scrollbar { display: none; }
+
+/* while a mouse drag is in progress the smooth behaviour would fight the
+   pointer, so motion.js flips this class on for the duration */
+.luvit-rail__track.is-dragging {
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+}
+
+.luvit-rail__item {
+  flex: 0 0 var(--rail-card);
+  inline-size: var(--rail-card);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;   /* a hard fling still stops on a card, not past four */
+}
+
+/* ---- the controls -------------------------------------------------------- */
+.luvit-rail__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4, 1rem);
+  margin-block-start: var(--space-4, 1rem);
+  padding-inline: var(--rail-edge);
+}
+
+.luvit-rail__arrows {
+  display: flex;
+  gap: var(--space-2, 0.5rem);
+}
+
+.luvit-rail__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 0;
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: 50%;
+  background-color: var(--color-paper, #FFF);
+  color: var(--aqua-700, #196B7D);
+  cursor: pointer;
+  transition:
+    background-color 180ms var(--ease-out-soft, ease),
+    border-color 180ms var(--ease-out-soft, ease),
+    transform 140ms var(--ease-out-soft, ease);
+}
+.luvit-rail__arrow svg { inline-size: 20px; block-size: 20px; }
+@media (hover: hover) and (pointer: fine) {
+  .luvit-rail__arrow:hover {
+    background-color: var(--aqua-50, #EAFAFD);
+    border-color: var(--aqua-200, #A6E7F1);
+    transform: translateY(-1px);
+  }
+}
+.luvit-rail__arrow:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 3px;
+}
+.luvit-rail__arrow[disabled] {
+  opacity: .4;
+  cursor: default;
+  transform: none;
+}
+
+/* ---- the chips.
+   Named, not anonymous. A dot says "there is more"; a chip carrying the package
+   name says WHICH more, and named thumbnails measure about twice the use of any
+   other carousel control. The dot shape survives as a fallback for a rail whose
+   items carry no label. ---- */
+.luvit-rail__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+}
+.luvit-rail__chip {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 40px;
+  padding-inline: var(--space-3, 0.75rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-pill, 999px);
+  background-color: var(--color-paper, #FFF);
+  color: var(--color-ink-soft, #47555B);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 200ms var(--ease-out-soft, ease),
+    border-color 200ms var(--ease-out-soft, ease),
+    color 200ms var(--ease-out-soft, ease);
+}
+.luvit-rail__chip[aria-current="true"] {
+  border-color: var(--aqua-200, #A6E7F1);
+  background-color: var(--aqua-50, #EAFAFD);
+  color: var(--aqua-700, #196B7D);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-rail__chip:hover { border-color: var(--aqua-300, #74D6E7); }
+}
+.luvit-rail__chip:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+}
+
+/* the fallback shape, for a rail whose items were given no label */
+.luvit-rail__chip--dot {
+  inline-size: 24px;
+  min-inline-size: 24px;
+  block-size: 40px;
+  min-block-size: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+  justify-content: center;
+}
+.luvit-rail__chip--dot::before {
+  content: "";
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 999px;
+  background-color: var(--color-line, #E1E9EC);
+  transition:
+    inline-size 220ms var(--ease-out-soft, ease),
+    background-color 220ms var(--ease-out-soft, ease);
+}
+.luvit-rail__chip--dot[aria-current="true"] {
+  background: none;
+}
+.luvit-rail__chip--dot[aria-current="true"]::before {
+  inline-size: 24px;
+  background-color: var(--aqua-500, #29A9C0);
+}
+
+/* ---- a rail that fits is not a rail.
+   motion.js measures the track and sets this when nothing overflows, which is
+   exactly where LUV IT starts: three packages on a 1200px screen. Two dead
+   arrows and a chip row that cannot go anywhere are worse than no controls. ---- */
+.luvit-rail.is-static .luvit-rail__controls { display: none; }
+.luvit-rail.is-static .luvit-rail__track {
+  justify-content: center;
+  scroll-snap-type: none;
+  overflow-x: visible;
+}
+
+/* ---- the card that rides the rail.
+   Taller and quieter than the grid card: it is competing with a moving
+   neighbour, so it wins on one image and one price, not on paragraphs. ---- */
+.luvit-rail .luvit-card {
+  block-size: 100%;
+  margin: 0;
+}
+
+/* ---- phones: a card that fills most of the screen but still shows the edge
+   of the next one, which is the only honest way to say "this scrolls". ---- */
+@media (max-width: 767px) {
+  .luvit-rail {
+    --rail-card: min(78vw, 320px);
+    --rail-gap: var(--space-4, 1rem);
+    --rail-edge: var(--space-4, 1rem);
+  }
+  .luvit-rail__controls {
+    justify-content: center;
+  }
+  /* arrows are a desktop affordance; on a touch screen the thumb is the arrow */
+  .luvit-rail__arrows { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-rail__track { scroll-behavior: auto; }
+  .luvit-rail__dot::before { transition: none; }
 }
