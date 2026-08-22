@@ -10124,3 +10124,273 @@ body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-d
 @media (prefers-reduced-motion: reduce) {
   .luvit-quiz__fill { transition: none; }
 }
+
+/* ==========================================================================
+   5.44 · THE JOURNAL — ARTICLE TYPOGRAPHY AND LISTING  (22 Aug)
+   --------------------------------------------------------------------------
+   The blog did not exist before today: no page assigned to posts, /blog gave
+   a 404, and the only post was WordPress's own hello-world. So this is built
+   from nothing rather than retrofitted, which is the reason it can be done
+   properly.
+
+   THE PART THAT MATTERS MOST IS `.luvit-prose`.
+
+   Every other component on this site is markup we wrote, so its classes are
+   ours. An article body is the opposite: it comes out of the WordPress editor
+   as bare <p>, <h2>, <ul>, <blockquote>, <figure> with no classes at all, and
+   whoever writes the next article will not add any. So the styling has to
+   attach to the ELEMENTS, scoped inside one wrapper.
+
+   That makes this the one place on the site where descendant element
+   selectors are correct rather than lazy.
+
+   ── ARABIC LONG-FORM IS NOT LATIN LONG-FORM ──────────────────────────────
+
+   Three differences drive the numbers below, and none of them are taste:
+
+   1. Arabic has no capital letters, so a line of Arabic gives the eye fewer
+      landmarks than a line of Latin. It needs MORE leading, not less.
+      Body copy here runs 1.9, where a Latin article would sit near 1.6.
+
+   2. Arabic glyphs carry marks above and below the baseline. Tight leading
+      collides them, and the collision reads as noise long before a reader
+      can name what is wrong.
+
+   3. `ch` is the width of the digit zero, which is a poor proxy in a script
+      with no fixed-width character. Measure is set in `rem` here so the line
+      length is predictable regardless of the font that actually loads.
+   ========================================================================== */
+
+/* ---- the article body --------------------------------------------------- */
+.luvit-prose {
+  --prose-measure: 38rem;
+  max-inline-size: var(--prose-measure);
+  margin-inline: auto;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.9;
+}
+
+.luvit-prose > * { margin-block: 0 var(--space-5); }
+.luvit-prose > *:last-child { margin-block-end: 0; }
+
+.luvit-prose h2,
+.luvit-prose h3,
+.luvit-prose h4 {
+  font-family: var(--font-heading);
+  color: var(--color-ink);
+  line-height: 1.45;
+  /* space above a heading belongs to the heading, and it is larger than the
+     space below it — that asymmetry is what groups a heading with its own
+     paragraph instead of letting it float between two blocks */
+  margin-block: var(--space-7) var(--space-3);
+}
+.luvit-prose > h2:first-child,
+.luvit-prose > h3:first-child { margin-block-start: 0; }
+
+.luvit-prose h2 { font-size: clamp(1.5rem, 3vw, 1.875rem); }
+.luvit-prose h3 { font-size: clamp(1.25rem, 2.4vw, 1.5rem); }
+.luvit-prose h4 { font-size: 1.125rem; }
+
+.luvit-prose a {
+  color: var(--aqua-600);
+  text-decoration: underline;
+  /* the underline sits clear of the descenders and of the Arabic marks that
+     hang below the baseline; the browser default cuts straight through them */
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+}
+.luvit-prose a:hover { color: var(--aqua-700); text-decoration-thickness: 2px; }
+
+.luvit-prose strong { font-weight: 600; color: var(--color-ink); }
+
+.luvit-prose ul,
+.luvit-prose ol { padding-inline-start: var(--space-6); }
+.luvit-prose li { margin-block-end: var(--space-3); }
+.luvit-prose li::marker { color: var(--aqua-500); }
+
+/* 🔴 the rule is on the INLINE START edge, which is the right side in Arabic.
+   A quote bordered on the physical left in an RTL article reads as a stray
+   line down the far edge of the text, not as a quote. */
+.luvit-prose blockquote {
+  margin-inline: 0;
+  padding-inline-start: var(--space-5);
+  border-inline-start: 3px solid var(--aqua-300);
+  color: var(--color-ink-soft);
+  font-size: 1.125rem;
+  line-height: 1.85;
+}
+
+.luvit-prose figure { margin-inline: 0; }
+.luvit-prose img,
+.luvit-prose figure img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--radius-md);
+}
+.luvit-prose figcaption {
+  margin-block-start: var(--space-3);
+  font-size: 0.875rem;
+  color: var(--color-ink-soft);
+  text-align: center;
+}
+
+.luvit-prose hr {
+  border: 0;
+  block-size: 1px;
+  background: var(--color-line);
+  margin-block: var(--space-7);
+}
+
+.luvit-prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  background: var(--aqua-50);
+  /* code is Latin even inside an Arabic paragraph, and without this it
+     reverses at the boundaries */
+  direction: ltr;
+  unicode-bidi: embed;
+  display: inline-block;
+}
+
+/* a wide image or table may break the measure on purpose */
+.luvit-prose .luvit-prose__wide {
+  max-inline-size: min(100%, 56rem);
+  margin-inline: calc((var(--prose-measure) - min(100%, 56rem)) / 2);
+}
+
+/* ---- the article header ------------------------------------------------- */
+.luvit-article__head {
+  max-inline-size: var(--prose-measure, 38rem);
+  margin-inline: auto;
+  text-align: center;
+}
+.luvit-article__title {
+  font-family: var(--font-display, var(--font-heading));
+  font-size: clamp(1.875rem, 5vw, 3rem);
+  line-height: 1.3;
+  color: var(--color-ink);
+  margin: var(--space-4) 0 var(--space-4);
+}
+.luvit-article__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  justify-content: center;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--color-ink-soft);
+}
+/* a dot between meta items, drawn by CSS so the markup carries no separators
+   that a screen reader would read aloud */
+.luvit-article__meta > * + *::before {
+  content: "·";
+  margin-inline-end: var(--space-4);
+  color: var(--color-line);
+}
+/* the date is digits; it reads left to right even here */
+.luvit-article__meta time { direction: ltr; unicode-bidi: embed; }
+
+.luvit-article__cover {
+  max-inline-size: min(100%, 56rem);
+  margin: var(--space-7) auto 0;
+}
+.luvit-article__cover img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---- the listing card --------------------------------------------------- */
+/* reuses .luvit-card and .luvit-card-grid; this only adds what an article
+   card needs and a product card does not */
+/* 🔴 نسبة الغلاف · وهاد أول سطر لازم ينكتب مش آخره.
+
+   `--card-media-ratio` الافتراضية **4/5 طولية**، وهي مضبوطة لعبوة منتج
+   واقفة. غلاف مقال عريض، فبلا هالسطر البطاقة طلعت **٧١٠px** ارتفاعها
+   والصورة لحالها ٤٧٨ · يعني الغلاف بياخد الشاشة والعنوان بينزل تحت الطيّة.
+
+   والمكتبة أصلاً فيها النمط: `.luvit-card--routine { 16/9 }` و
+   `.luvit-card--product { 4/5 }`. الفجوة كانت إني عرّفت نوع بطاقة جديد
+   وما عرّفتله نسبته. */
+.luvit-card--post { --card-media-ratio: 16 / 9; }
+
+.luvit-card--post .luvit-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.luvit-card--post .luvit-card__title { font-size: 1.125rem; line-height: 1.5; }
+.luvit-card--post .luvit-card__text {
+  color: var(--color-ink-soft);
+  /* three lines, then an ellipsis — an excerpt of unpredictable length must
+     not make one card taller than the rest of its row */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.luvit-card--post .luvit-card__meta {
+  margin-block-start: auto;
+  padding-block-start: var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--color-ink-soft);
+}
+
+/* ---- empty state -------------------------------------------------------- */
+/* shown when a category has no posts yet. It exists because a listing that
+   renders nothing at all reads as a broken page rather than an empty one. */
+.luvit-journal__empty {
+  max-inline-size: 34rem;
+  margin-inline: auto;
+  padding: var(--space-7) var(--space-6);
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--color-ink-soft);
+}
+
+/* ---- pagination --------------------------------------------------------- */
+.luvit-pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+  margin-block-start: var(--space-8);
+}
+.luvit-pager a,
+.luvit-pager span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+.luvit-pager a:hover {
+  border-color: var(--aqua-400);
+  color: var(--aqua-700);
+}
+.luvit-pager .current {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .luvit-prose { font-size: 1rem; line-height: 1.85; }
+  .luvit-prose .luvit-prose__wide { margin-inline: 0; }
+}

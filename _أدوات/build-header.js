@@ -160,7 +160,7 @@ if (orphan) throw new Error('وسم إغلاق يتيم: ' + orphan.join(' '));
 
 /* كل رابط باقٍ بالـDOM لازم يكون على صفحة حية · مقيس ٢١ آب بكود الحالة */
 const LIVE = ['/', '/shop', '/products', '/cart', '/checkout', '/my-account', '/track',
-              '/routines', '/quiz', '/shipping', '/faq'];
+              '/routines', '/quiz', '/shipping', '/faq', '/journal'];
 const domHrefs = [];
 h.replace(/<!--[\s\S]*?-->/g, '').replace(/href="(\/[^"]*)"/g, (m, u) => { domHrefs.push(u); return m; });
 const dead = [...new Set(domHrefs)].filter(u => !LIVE.includes(u));

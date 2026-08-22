@@ -1,0 +1,279 @@
+<!-- ══════════════════════════════════════════════════════════════════════
+     تواصلي معنا · /contact
+     ══════════════════════════════════════════════════════════════════════
+     الترتيب:
+
+       ١. ترويسة الصفحة (فتات الخبز · h1 · جملة وصف)
+       ٢. الفورم · قلب الصفحة · luvit-form بماركب المكتبة
+       ٣. قبل ما تكتبيلنا · أكورديون بيوجّه السؤال لصفحته
+       ٤. الدرزة · سكشن غامق قصير + الموجة
+
+     كيف بينركّب بإلمنتور:
+       ١. لكل سكشن ويدجت HTML جوّا كونتينر لحاله
+       ٢. الصق نص السكشن
+       ٣. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes:
+              data-nav-bg|light   أو   data-nav-bg|dark   حسب المكتوب بالوسم
+          ⚠ الفاصل خط عامودي | مش يساوي =
+       ٤. CSS ID لكل كونتينر = قيمة id المكتوبة بالوسم
+       ٥. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴 قفل ١ · ولا قناة تواصل بهالصفحة · وهاد سبب وجودها أصلاً
+     ══════════════════════════════════════════════════════════════════════
+     ما في ولا قناة مثبتة: ولا رقم تلفون، ولا واتساب، ولا حساب سوشال، ولا
+     إيميل (الدومين بلا سجل MX فما بيستقبل إيميل أصلاً).
+
+     فالصفحة **ما بتعرض ولا واحد منهم**. الفورم هو البديل، مش الإضافة.
+
+     ⤷ انثبّت رقم أو واتساب أو إيميل؟ **هون مكانه** · بينزاد سكشن بين
+       الفورم والأكورديون، وبنفس اللحظة بينحدّث:
+         · s1-shipping.html · «قفل ٣» بيقول إن ما في صفحة /contact أصلاً
+         · p7-faq.html · جملة «تواصلي معنا» المكتوبة بلا رابط عن قصد
+         · 13-footer.html · إذا فيه مكان لقنوات التواصل
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴 قفل ٢ · ولا وعد بوقت رد · ولا كلمة إن الرسالة بتوصل على إيميل
+     ══════════════════════════════════════════════════════════════════════
+     ممنوع بهالملف: «منرد خلال ٢٤ ساعة» · «منرد بسرعة» · «بنفس اليوم» ·
+     «رسالتك بتوصلنا على الإيميل» · وأي صياغة بتوعد بوقت.
+
+     المكتوب هو اللي بيصير فعلاً: **الرسالة بتتسجّل عندنا**. ولا كلمة زيادة.
+     ⤷ انربط الفورم بمسار وصول مؤكد (بند لاحق)؟ الجملة بسكشن ٢ هي مكانها.
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴 قفل ٣ · ولا سطر جافاسكربت بهالملف
+     ══════════════════════════════════════════════════════════════════════
+     الربط بينعمل بخطوة لاحقة. اللي موجود هون **ماركب وبس**:
+       · data-luvit-contact  ← معلّم للخطوة الجاية · ما بيعمل إشي لحاله
+       · <div class="luvit-form__status" data-contact-status hidden>
+         ← الصندوق اللي بتنكتب فيه رسالة النتيجة. فاضي عن قصد.
+     ⚠ و motion.js بيربط كل .luvit-form لحاله (التحقق بالعربي · حالة التحميل
+       على زر الإرسال · وصندوق الحالة). فما بده ولا سطر هون.
+     ⚠ و novalidate مقصودة: بدونها المتصفح بيعرض رسائله هو بلغته قبل ما
+       يشتغل motion.js، فبتضيع رسائل الخطأ العربية اللي المكتبة كاتبتها.
+       (نفس اللي معمول بـforms-demo.html.)
+
+     ══════════════════════════════════════════════════════════════════════
+     ملاحظات بناء
+     ══════════════════════════════════════════════════════════════════════
+     · الروابط: / و/track و/faq و/quiz و/shipping و/products · كلها حية.
+       ولا رابط فاضي (الشباك المجرّد).
+     · h1 واحد بالضبط · بسكشن ١.
+     · كل حقل: for على الليبل = id على الحقل، و<p class="luvit-field__error">
+       بتضل **فاضية** لأن motion.js بيكتب فيها الرسالة العربية.
+     · الشريط: ١ mist · ٢ light · ٣ mist · ٤ غامق.
+       والفورم على band-light لأن خلفية الحقول #FFFFFF وحدودها #C7D7DD،
+       فبتبيّن على الورق الأبيض بحدّها مش بلونها.
+     · max-inline-size:560px على inner سكشن ٢ = نفس max-width تبع .luvit-form،
+       فالفورم بيتوسّط بلا ما نكتب margin عليه.
+     · الموجة الأخيرة منسوخة حرفياً من r1-oily.html وs1-shipping.html.
+     · وكل كلاس بهالملف متفحوص إنه موجود بـtokens.css.
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<!-- ═══════════════ ١ · ترويسة الصفحة ═══════════════ -->
+<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
+         data-nav-bg="light" id="page-head">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">تواصلي معنا</span>
+      </nav>
+
+      <p class="luvit-section__eyebrow">Contact</p>
+      <h1 class="luvit-section__title">تواصلي معنا</h1>
+      <p class="luvit-section__sub">
+        اكتبيلنا من الفورم اللي تحت · وتحته أربع أسئلة بتتكرر كثير،
+        يمكن سؤالك واحد منهم وجوابه جاهز بصفحته.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٢ · الفورم ═══════════════
+     🔴 اقرأ «قفل ٢» و«قفل ٣» بأول الملف قبل ما تلمس كلمة هون.
+     ⚠ الحقول الأربعة مقصودة بهالترتيب: الاسم · التلفون · الموضوع · الرسالة.
+       وما في حقل إيميل عن قصد، لأننا ما منقدر نرد على إيميل أصلاً.
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-section band-light" data-nav-bg="light" id="contact-form">
+  <div class="luvit-section__inner" style="max-inline-size:560px">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Message</p>
+      <h2 class="luvit-section__title">اكتبيلنا</h2>
+      <p class="luvit-section__sub">أربع خانات وبتخلصي.</p>
+      <!-- 🔴 الجملة الجاية هي كل اللي منقدر نوعد فيه · اقرأ «قفل ٢» -->
+      <p class="luvit-section__sub">
+        رسالتك بتتسجّل عندنا لمّا تبعثيها · وما رح نحكيلك وقتاً للرد
+        لأننا ما منعرفه لحد الآن.
+      </p>
+    </div>
+
+    <form class="luvit-form" data-luvit-contact method="post" novalidate>
+
+      <div class="luvit-field">
+        <label class="luvit-field__label" for="c-name">
+          الاسم <span class="luvit-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="luvit-field__control">
+          <input class="luvit-input" id="c-name" name="name" type="text"
+                 autocomplete="name" required placeholder="مثال: سارة">
+        </div>
+        <!-- 🔴 اتركها فاضية · motion.js بيكتب فيها رسالة الخطأ بالعربي -->
+        <p class="luvit-field__error"></p>
+      </div>
+
+      <div class="luvit-field">
+        <label class="luvit-field__label" for="c-phone">
+          رقم التلفون <span class="luvit-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="luvit-field__control luvit-field__control--prefix">
+          <span class="luvit-field__prefix">+962</span>
+          <input class="luvit-input" id="c-phone" name="phone" type="tel"
+                 inputmode="numeric" autocomplete="tel" required
+                 pattern="[0-9]{9,10}" placeholder="7XXXXXXXX">
+        </div>
+        <p class="luvit-field__hint">٩ أرقام بعد مفتاح الدولة</p>
+        <p class="luvit-field__error"></p>
+      </div>
+
+      <div class="luvit-field">
+        <label class="luvit-field__label" for="c-topic">الموضوع</label>
+        <div class="luvit-field__control">
+          <select class="luvit-select" id="c-topic" name="topic">
+            <option value="">اختاري…</option>
+            <option>سؤال عن منتج</option>
+            <option>طلبي وين وصل</option>
+            <option>الشحن والتوصيل</option>
+            <option>شي تاني</option>
+          </select>
+        </div>
+        <p class="luvit-field__hint">اختياري · بس بيوفّر علينا وقت</p>
+      </div>
+
+      <div class="luvit-field">
+        <label class="luvit-field__label" for="c-msg">
+          الرسالة <span class="luvit-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="luvit-field__control">
+          <textarea class="luvit-textarea" id="c-msg" name="message" rows="5"
+                    required placeholder="اكتبي سؤالك هون"></textarea>
+        </div>
+        <p class="luvit-field__hint">كل ما تكتبي تفاصيل أكثر، كل ما فهمنا أسرع</p>
+        <p class="luvit-field__error"></p>
+      </div>
+
+      <div class="luvit-section__foot">
+        <button type="submit" class="luvit-btn">ابعثي الرسالة</button>
+      </div>
+
+      <!-- 🔴 فاضي عن قصد · هون بتطلع رسالة النتيجة بالخطوة الجاية -->
+      <div class="luvit-form__status" data-contact-status hidden></div>
+
+    </form>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٣ · قبل ما تكتبيلنا ═══════════════
+     ⚠ الفكرة إن نص اللي بيوصل سؤاله مجاوب أصلاً بصفحة موجودة · فكل جواب
+       هون بيوجّه لصفحته الحية بدل ما يعيد شرحها.
+     🔴 وجواب «الشحن والتوصيل» ما بيحمل مدة ولا رقم أجرة · نفس أقفال
+        s1-shipping.html بالضبط.
+     ⚠ الشريط band-mist مقصود · .luvit-acc__item خلفيته --color-paper فبده
+       canvas تحته.
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="before-you-write">
+  <div class="luvit-section__inner" style="max-inline-size:820px">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">First</p>
+      <h2 class="luvit-section__title">قبل ما تكتبيلنا</h2>
+      <p class="luvit-section__sub">أربع أسئلة بتتكرر · وكل وحدة إلها صفحة جاهزة.</p>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <details class="luvit-acc__item" open>
+        <summary class="luvit-acc__q">
+          وين طلبي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            من صفحة <a href="/track">تتبّع الطلب</a> · بتكتبي رقم الطلب
+            والإيميل اللي طلبتِ فيه، وبتشوفي حالته بلا ما تستنّي حدا يرد عليكِ.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كيف أطلب؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            الخطوات مشروحة بصفحة <a href="/faq">الأسئلة الشائعة</a> ·
+            من إضافة المنتج للسلة لحد الدفع عند الاستلام.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          شو بيناسب بشرتي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            <a href="/quiz">اختبار البشرة</a> بيسألك كم سؤال قصير وبيدلّك
+            على الروتين الأقرب لنوع بشرتك · وبتقدري تشوفي
+            <a href="/routines">كل الروتينات</a> بحالها كمان.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          الشحن والتوصيل
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            كل اللي منعرفه مكتوب بصفحة <a href="/shipping">الشحن والتوصيل</a> ·
+            الشحن جوّا الأردن، والدفع عند الاستلام، وأجرة التوصيل بتبيّن
+            بصفحة إتمام الطلب.
+          </p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٤ · الدرزة ═══════════════
+     ⚠ هاد السكشن ما بياخد كلاس band · .luvit-cta بيرسم مياهه الغامقة بحاله.
+     ⚠ luvit-cut-top بياكل ٧٠px من أعلى العنصر · وهاد مقصود عشان يقص الشريط
+       اللي فوقه بدل ما ينحط شريط لون قائم بذاته.
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-cta luvit-deep luvit-cut-top" data-nav-bg="dark"
+         data-luvit-bubbles="12" id="contact-cta">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-cta__panel" data-luvit="reveal">
+    <h2 class="luvit-cta__title luvit-cta__accent">لقيتِ جوابك فوق؟</h2>
+    <p class="luvit-cta__sub">كملي من هون · وإذا لسا في سؤال، الفورم فوق مفتوح.</p>
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--arrow" href="/products">شوفي المنتجات</a>
+      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/quiz">اعملي الاختبار</a>
+    </div>
+  </div>
+</section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
