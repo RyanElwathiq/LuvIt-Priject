@@ -96,6 +96,18 @@ const dockNew = [
 '  </a>'].join('\n');
 sub(dockOld, dockNew, 'دوك · الروتين←المنتجات');
 
+/* ── ٣.ب · المقالات · انضافت ٢٢ آب لما انبنت /journal ─────────────────
+   بالشريط **وبالدرج**. بالشريط لأنها وجهة قائمة بذاتها مش صفحة خدمية،
+   وبالدرج بمجموعة الروابط الرئيسية مش بالصغيرة تحت الفاصل.
+   والدوك ما بينلمس · أربع خانات وهي ممتلئة، وخامسة بتكسر التوزيع. */
+const NAV_PRODUCTS = '<a class="luvit-nav__link" href="/products">المنتجات</a>';
+const NAV_JOURNAL  = '<a class="luvit-nav__link" href="/journal">المقالات</a>';
+sub(NAV_PRODUCTS, NAV_PRODUCTS + '\n    ' + NAV_JOURNAL, 'شريط · زيادة المقالات');
+
+const DRW_PRODUCTS = '<a class="luvit-drawer__link" href="/products">المنتجات</a>';
+const DRW_JOURNAL  = '<a class="luvit-drawer__link" href="/journal">المقالات</a>';
+sub(DRW_PRODUCTS, DRW_PRODUCTS + '\n    ' + DRW_JOURNAL, 'درج · زيادة المقالات');
+
 /* ── ٤ · الروابط اللي صفحاتها ما انبنت ────────────────────────────────
    🔴 بتنعلّق، ما بتنخفى بالـCSS. `display:none` بيخفي الرابط عن **الناس**:
    بيضل بالـDOM، وبالـHTML اللي بتقراه الزواحف، وبيضل وعداً بصفحة بترجّع
@@ -105,7 +117,9 @@ sub(dockOld, dockNew, 'دوك · الروتين←المنتجات');
    أحذفهم أصلاً. وبناء أي صفحة بيضل تعديل سطر: احذف علامتي التعليق. */
 /* 🔴 هاي القائمة **بتنقص** كل ما تنبني صفحة · مش قائمة ثابتة.
    /track انشالت منها ٢٢ آب لما انعملت صفحة 210 وانفحصت 200. */
-const DEAD = ['/about', '/contact'];
+/* 🔴 القائمة فضيت ٢٢ آب · كل صفحات القائمة صارت موجودة.
+   بتضل هون كآلية: أي رابط جديد لصفحة ما انبنت بينحط فيها وبينعلّق آلياً. */
+const DEAD = [];
 
 /* عدّ كم رابط بالماركب بيشير على مسار ميت · قبل ما نلمس إشي.
    هاد هو العدد اللي لازم ينعلّق، وأي فرق معناه إن سطراً ما انطابق. */
@@ -160,7 +174,8 @@ if (orphan) throw new Error('وسم إغلاق يتيم: ' + orphan.join(' '));
 
 /* كل رابط باقٍ بالـDOM لازم يكون على صفحة حية · مقيس ٢١ آب بكود الحالة */
 const LIVE = ['/', '/shop', '/products', '/cart', '/checkout', '/my-account', '/track',
-              '/routines', '/quiz', '/shipping', '/faq', '/journal'];
+              '/routines', '/quiz', '/shipping', '/faq', '/journal',
+              '/about', '/contact'];
 const domHrefs = [];
 h.replace(/<!--[\s\S]*?-->/g, '').replace(/href="(\/[^"]*)"/g, (m, u) => { domHrefs.push(u); return m; });
 const dead = [...new Set(domHrefs)].filter(u => !LIVE.includes(u));
