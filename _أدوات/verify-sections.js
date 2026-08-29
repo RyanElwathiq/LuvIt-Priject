@@ -69,10 +69,58 @@ console.log(allOk ? 'كل الملفات متوازنة الوسوم.' : '🔴 �
 
 // فحص إضافي: كل ملف لازم يكون فيه data-nav-bg بالتعليمات وبالماركب
 console.log('\nفحص data-nav-bg بالماركب:');
+let missingNavBg = 0;
 for (const f of files) {
   const src = fs.readFileSync(DIR + f, 'utf8');
   const body = src.replace(/<!--[\s\S]*?-->/g, '');
   const has = /data-nav-bg\s*=/.test(body);
   const val = (body.match(/data-nav-bg\s*=\s*["']([^"']+)["']/) || [])[1] || '—';
+  if (!has) missingNavBg++;
   console.log('  ' + f.padEnd(24) + (has ? '✅ ' + val : '🔴 ناقص بالماركب'));
 }
+
+/* ── فحص الروابط الداخلية · انضاف بالدمج ٣٠ آب ────────────────────────
+   السكاشن بتنلصق بالإلمنتور يدوياً، فما في بوابة بناء بتمرّ عليها كلها ·
+   وهيك ضلّت أربع بلاطات بـp3-skin-types بتوديّ على صفحات بترجّع ٤٠٤
+   لأسابيع بلا ما يحكي حدا.
+   🔴 والقائمة هون **لازم تطابق** _أدوات/build-page.js · لو اختلفوا صار
+      عندك مصدرا حقيقة، وهاد بيرجّعنا لنفس الفخ. */
+const LIVE = new Set([
+  '/', '/products', '/cart', '/checkout', '/my-account', '/track',
+  '/routines', '/quiz', '/shipping', '/faq', '/journal', '/about', '/contact', '/returns',
+  '/routines/hydration', '/routines/glow', '/routines/clarify',
+]);
+const RETIRED = ['/shop', '/routines/oily', '/routines/dry',
+                 '/routines/combination', '/routines/sensitive'];
+
+/* ⚠️ ملفات سكاشن **صفحاتها انقفلت** · بتنستثنى من فحص الروابط لأنها ما
+   بتنشحن، وبقاؤها بالفحص بيخلي المخرَج أحمر دايماً — والفاحص اللي بيضل
+   أحمر بينتجاهل، وهاي أسوأ نتيجة ممكنة.
+   🔴 وهي **مرشّحة للحذف** · انتظار قرار ريّان، مش قراري.
+      وصفحاتها مقيسة: /routines/oily و/dry و/combination بترجّع ٤٠٤،
+      و/routines/sensitive مسوّدة اسمها «(متقاعدة)». */
+const RETIRED_FILES = ['r1-oily.html', 'r2-dry.html', 'r3-combination.html', 'r4-sensitive.html'];
+
+console.log('\nفحص الروابط الداخلية:');
+console.log('  ⚠️ مستثنى · سكاشن صفحاتها انقفلت: ' + RETIRED_FILES.join(' · '));
+let deadTotal = 0;
+for (const f of files) {
+  if (RETIRED_FILES.includes(f)) continue;
+  const src = fs.readFileSync(DIR + f, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+  const hrefs = [...src.matchAll(/href="(\/[^"#?]*)/g)]
+    .map((m) => m[1].replace(/\/$/, '') || '/');
+  const dead = [...new Set(hrefs)].filter((u) => !LIVE.has(u) && !u.startsWith('/product/'));
+  if (!dead.length) continue;
+  deadTotal += dead.length;
+  const retired = dead.filter((u) => RETIRED.includes(u));
+  console.log('  🔴 ' + f.padEnd(24) + dead.join(' · ') +
+              (retired.length ? '   ← متقاعد بالدمج' : ''));
+}
+if (!deadTotal) console.log('  ✅ ولا رابط ميت بالـ' + files.length + ' ملف');
+
+/* 🔴 وهالسكربت كان **ما فيه process.exit أبداً** · بيطبع 🔴 وبيرجّع صفر،
+   يعني أي أوتوميشن بيقرا نجاحاً. انصلح بالدمج ٣٠ آب · وهاد أخطر من
+   فاحص بينكسر، لأن الأخضر الكاذب بيوقّف البحث. */
+const failed = (allOk ? 0 : 1) + missingNavBg + deadTotal;
+console.log('\n' + (failed ? '🔴 المجموع: ' + failed + ' مشكلة' : '✅ كل الفحوصات نضيفة'));
+process.exit(failed ? 1 : 0);

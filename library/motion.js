@@ -1937,10 +1937,17 @@ function luvitNavCurrent() {
      🔴 '/order-received/' was wrong and never matched once: WooCommerce nests
      the thank-you page under the checkout page, at /checkout/order-received/…,
      so nothing ever starts with it. The prefix below is the real one. */
+  /* 🔴 الثلاثة الأوائل كانوا بيستعيروا '/shop'، وبالدمج (٣٠ آب) انشال رابط
+     /shop من الهيدر كلياً وصارت الوجهة الموحّدة /products. لو ضلّوا على
+     /shop، الدالة بتستعير مساراً **ما إله رابط بالقائمة** فما بتلاقي ولا
+     تطابق · النتيجة: كل صفحة منتج وكل أرشيف فئة أو وسم بيوقفوا بلا أي
+     تمييز بالقائمة، **وبلا ولا خطأ بالكونسول**. نفس باغ ٢١ آب راجعاً من
+     الباب الخلفي، وما كان حدا رح يمسكه إلا بالعين. */
   var ALIAS = [
-    { when: '/product/',           use: '/shop' },
-    { when: '/product-category/',  use: '/shop' },
-    { when: '/product-tag/',       use: '/shop' },
+    { when: '/product/',           use: '/products' },
+    { when: '/product-category/',  use: '/products' },
+    { when: '/product-tag/',       use: '/products' },
+    { when: '/shop',               use: '/products' },   /* التحويل ٣٠١ · احتياط */
     { when: '/checkout/order-received', use: '/cart' }
   ];
 

@@ -6926,11 +6926,26 @@ body.woocommerce-cart .wc-block-cart::after {
    looks near-identical over our pale water ground and costs nothing.
    Desktop keeps the real glass: it has the GPU headroom.
    ========================================================================== */
+/* 🔴 تحديث الدمج · ٣٠ آب
+   المتجر الموحّد صار على `/products`، وهي **صفحة عادية مش صفحة ووكومرس**
+   (لازم تكون هيك: أي صفحة تتعيّن shop page بيتمسح محتواها ويتركّب مكانه
+   الأرشيف). ومعناها إنها **ما بتاخد كلاس `woocommerce-shop`** — فالإصلاح
+   اللي تحت كان بيطفي على أطول صفحة تصفّح بالموقع، ويرجع نفس باغ ٢١ آب:
+   بلَران دائمان فوق وتحت بيعيدوا حساب كل شي خلفهم بكل فريم سكرول.
+
+   فانضافوا مرساتان بدل وحدة:
+     · `.luvit-shop-root`  — كلاس بنحطه إحنا على أول سكشن بالصفحة الموحّدة.
+       `:has()` مدعومة بكل المتصفحات الحديثة، وفشلها بيرجّعنا للسلوك
+       الحالي مش لأسوأ منه.
+     · `body.page-id-206` — احتياط ثابت من ووردبريس نفسه.
+       ⚠️ ٢٠٦ هو رقم صفحة «المنتجات» · لو انبنت الصفحة من جديد بيتغيّر. */
 @media (max-width: 1023px) {
   body.woocommerce-checkout .luvit-nav .luvit-nav__bar,
   body.woocommerce-cart .luvit-nav .luvit-nav__bar,
   body.woocommerce-account .luvit-nav .luvit-nav__bar,
-  body.woocommerce-shop .luvit-nav .luvit-nav__bar {
+  body.woocommerce-shop .luvit-nav .luvit-nav__bar,
+  body.page-id-206 .luvit-nav .luvit-nav__bar,
+  body:has(.luvit-shop-root) .luvit-nav .luvit-nav__bar {
     -webkit-backdrop-filter: none;
             backdrop-filter: none;
     background-color: rgba(255, 255, 255, 0.94);
@@ -6938,7 +6953,9 @@ body.woocommerce-cart .wc-block-cart::after {
   body.woocommerce-checkout .luvit-dock,
   body.woocommerce-cart .luvit-dock,
   body.woocommerce-account .luvit-dock,
-  body.woocommerce-shop .luvit-dock {
+  body.woocommerce-shop .luvit-dock,
+  body.page-id-206 .luvit-dock,
+  body:has(.luvit-shop-root) .luvit-dock {
     -webkit-backdrop-filter: none;
             backdrop-filter: none;
     background-color: rgba(12, 51, 60, 0.96);
