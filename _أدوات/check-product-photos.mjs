@@ -21,7 +21,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'صور-المنتجات');
+const BASE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'صور-المنتجات');
+/* المفروزة لو موجودة · وإلا الجذر. الأصل الخام بينتخطّى دايماً. */
+const SORTED = path.join(BASE, 'مرتّبة');
+const ROOT = fs.existsSync(SORTED) ? SORTED : BASE;
 
 /* الزوم بيموت تحت هالرقم · ووكومرس بيتجاهل الزوم لما الأصل مش أكبر من مقاس العرض */
 const MIN_PX = 1200;
