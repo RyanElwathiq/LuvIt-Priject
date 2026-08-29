@@ -43,9 +43,19 @@ http.createServer((req, res) => {
 
   fs.readFile(full, (err, data) => {
     if (err) { res.writeHead(404, { 'Content-Type': 'text/plain' }).end('404 ' + rel); return; }
+    /* 🔴 CORS · انضاف ٣٠ آب لسبب عملي واحد:
+       تحديث سنيبتات WPCode كان بينعمل **لصقاً يدوياً**، و`tokens.css` صار
+       ٤٧٠ كيلوبايت — يعني ما بينتنقل بمكالمة أداة ولا بينلصق بلا ما يضيع.
+       بهالترويسة، صفحة الأدمن على plasmajo.com بتقدر تعمل fetch مباشرة على
+       `http://localhost:4322/library/tokens.css` وتاخد الملف كما هو.
+
+       ⚠️ ومتصفح كروم بيسمح بهاد رغم إن الموقع HTTPS، لأن `localhost` عنده
+          **أصل موثوق** ومستثنى من حظر المحتوى المختلط.
+       ⚠️ والسيرفر بيسمع على هالجهاز بس · `*` هون ما بتفتح شي للخارج. */
     res.writeHead(200, {
       'Content-Type': TYPES[path.extname(full).toLowerCase()] || 'application/octet-stream',
-      'Cache-Control': 'no-cache'
+      'Cache-Control': 'no-cache',
+      'Access-Control-Allow-Origin': '*'
     });
     res.end(data);
   });

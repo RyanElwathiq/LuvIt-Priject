@@ -85,6 +85,24 @@ sub('<a class="luvit-drawer__link" href="/offers">العروض</a>',
     '<a class="luvit-drawer__link" href="/journal">المقالات</a>',
     'درج · العروض←المقالات');
 
+/* ── ١.ب · اللوجو ────────────────────────────────────────────────────
+   🔴 هالخطوة انضافت ٣٠ آب لأن **اللوجو كان بيضيع**.
+
+   انحط على الموقع مباشرة ٢٩ آب (استبدال نص «Luv it!» بصورة) وما رجع لا
+   للمدخل الخام ولا لهالسكربت · فصار `library/header-79.html` **مرآة
+   كاذبة**: ستايل اللوجو موجود بـtokens.css من نفس اليوم، والماركب مفقود.
+   وأول مرة انبنى الهيدر بعدها كان رح يدهس اللوجو ويرجّع النص، بلا ولا
+   رسالة — انمسكت بمقارنة sha بين الملف والموقع قبل الكتابة.
+
+   ⚠️ واللوجو **لوجو وكالة وممنوع يتعدّل** · لا الملف ولا ألوانه. تكيّفه
+   مع الخلفيات الغامقة كله بـtokens.css قسم 5.45 بلا لمس الصورة. */
+const BRAND_TEXT = '<a class="luvit-nav__brand" href="/">Luv it!</a>';
+const BRAND_LOGO = '<a class="luvit-nav__brand" href="/" aria-label="Luv it! Jordan">' +
+  '<img class="luvit-nav__logo" ' +
+  'src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-logo.png" ' +
+  'alt="Luv it! Jordan" width="417" height="220" decoding="async"></a>';
+sub(BRAND_TEXT, BRAND_LOGO, 'العلامة · نص ← لوجو');
+
 /* ── ٢ · شيل aria-current الثابتة ──────────────────────────────────────
    القواعد بـtokens.css بتستعمل [aria-current] **بلا قيمة**، يعني حتى
    aria-current="false" بتطابق وبتلوّن الرابط. فالتصليح لازم يكون شيلاً
@@ -199,6 +217,9 @@ const MUST = [
   ['luvit-skip', 'رابط تخطّي المحتوى'],
   ['href="/products"', 'رابط المتجر الموحّد'],
   ['>المتجر<', 'تسمية المتجر'],
+  /* 🔴 اللوجو بالفحوصات الإلزامية · ضاع مرة وما بيضيع تانية */
+  ['class="luvit-nav__logo"', 'صورة اللوجو'],
+  ['luvit-logo.png', 'مسار ملف اللوجو'],
 ];
 const missing = MUST.filter(([needle]) => !h.includes(needle)).map(([, name]) => name);
 if (missing.length) throw new Error('ناقص من المخرج: ' + missing.join(' · '));
