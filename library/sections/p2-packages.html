@@ -1,177 +1,73 @@
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات · سكشن 2 · رِف البكجات
-  ============================================================================
-  مولّد من library/products-preview.html · لا تعدّل هون، عدّل بالمعاينة وأعد التوليد.
+  LUVIT · صفحة المتجر (/products/) · سكشن ٢ من ٨ · الروتينات الجاهزة
+  🔴 مولّد · لا تعدّله بالإيد.
 
-  ---------------------------------------------------------------------------
-  🔴🔴🔴 بوابة النشر · الرِف ما بينزل أصلاً لحد ما يصير في ٣ منتجات مؤكدة
-  ---------------------------------------------------------------------------
-  خطة-صفحة-المنتجات.md ← «3 · THE EMPTY-SHELF PROBLEM» بتقول بالحرف:
-     «Ships only when 3 confirmed SKUs exist … Until then the rail does not
-      render and section 4 moves to position 2.»
-  يعني لحد ما تنعمل الـ٣ منتجات بووكومرس:
-     · هاد السكشن ما بينحط على الصفحة
-     · وسكشن ٤ «المنتجات المفردة» بيصير رقم ٢، وبياخد band-light مكانه
-  ولا تنزّله بمنتج واحد ولا باثنين · رِف نص فاضي بيبيّن المتجر أفقر من الحقيقة.
-
-  🔴 ورابط «كل البكجات» بيوصل لـ/shop/?product_cat=packages، وتصنيف «بكجات»
-     لساه مش موجود بووكومرس (قرار ريّان رقم ٣ بالخطة، لسا ما انعمل).
-     ما تنشر السكشن قبل ما ينعمل التصنيف · الرابط بيوقع على أرشيف فاضي.
-
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : packages       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الشريط انقلب من band-light لـband-light بمراجعة الصفحة الثمانية كاملة
-     (كان سكشن ٤ وسكشن ٥ الاثنين mist ورا بعض). الإيقاع الصح:
-       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
-     و.luvit-card خلفيته --color-paper، فمكانه الطبيعي على light · نفس ما
-     بتعمل الرئيسية بـhome-preview.html:1513.
-
-  بيعتمد على:
-  · tokens.css  → قسم 5.31 (luvit-rail) · لازم يكون منشور بسنيبت WPCode
-  · motion.js   → قسم 13 (luvitRails) · هو اللي بيبني الشيبس ويشغّل الأسهم
-  ⚠ .luvit-rail__chips لازم تضل فاضية بالماركب · موشن جي إس بيعبّيها من
-    data-rail-label تبع كل بطاقة. إذا كتبت فيها إشي بإيدك بينضاف فوقه.
-
-  ---------------------------------------------------------------------------
-  🔴 الأسعار: انشالت من الـHTML · ولا رقم بينكتب هون
-  ---------------------------------------------------------------------------
-  كانت مكتوبة ٢٧ و٣٦ و٤٦ دينار كـplaceholder. انشالت.
-  قاعدة الصفحة بالخطة (سطر 27) مطلقة: «Every price on the page comes from
-  WooCommerce, never typed into HTML» · وسكشن ٤ ماشي عليها أصلاً، فما بينفع
-  سكشنين بنفس الصفحة يختلفوا عليها.
-  كل بكج بيصير منتج WooCommerce من نوع simple بسعر ثابت واحد، وووكومرس بيطبع
-  .luvit-card__price بمكان السلوت المعلّم تحت.
-  ولا مرة Grouped · بيكسر سطر الشحن الواحد تبع الدفع عند الاستلام.
-
-  🔴 باقي المحتوى مؤقت بالكامل · ولا كلمة منه بتنشر زي ما هي
-  ⚠ أسماء البكجات الثلاثة placeholder
-  ⚠ محتويات كل بكج placeholder (بأسماء منتجات هي كمان placeholder)
-  ⚠ سطر «لمين» placeholder
-  ⚠ الصور placeholder SVG · مافي تصوير لسا
-  ⚠ زر «أضيفي إلى السلة» شكل بس · بدله فورم add-to-cart تبع ووكومرس
-  ⚠ عنوان البكج مش رابط · لأن الخطة ما سمّت مسار صفحة البكج الواحد.
-    لما تنعمل منتجات البكجات، لُفّ العنوان بـ
-    <a class="luvit-card__link" href="/product/…"> زي 05-products.
-  ⚠ مافي نسبة توفير مكتوبة هون · الخطة بتقول تنحسب live من مجموع أسعار
-    القطع، عشان تضل صحيحة لما تتغيّر الأسعار.
-  ⚠ مافي عدّاد ظاهر جنب الأسهم (الخطة بتطلبه) · لأنه ما في كلاس إله
-    بـtokens.css. بده كلاس جديد قبل ما ينضاف.
-  ⚠ تناقض كوبي لريّان: السطر التمهيدي بيقول «شو جوّاه» والبطاقات بتقول
-    «شو جوّاها» · الاثنين حرفياً من الخطة. اختار وحدة وثبّتها.
-  ============================================================================
+  · أعلى وحدة قيمة بالصفحة فبتيجي أول · وولا واحد من المراجع الخمسة عنده
+    رفّ بكجات حقيقي (كلهم أشرطة منتجات مفردة).
+  · الأسعار من ووكومرس · وهي **بالضبط مجموع القطع**، لأن استراتيجية
+    العلامة بتمنع الخصومات الأونلاين (بتضعف موقف الصيدليات). فالبكج
+    بينباع بالتنسيق مش بالتوفير، والكوبي ما بيدّعي خصماً.
 -->
-
 <section class="luvit-section band-light" data-nav-bg="light" id="packages">
   <div class="luvit-section__inner">
-
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Packages</p>
-      <h2 class="luvit-section__title">بكجات جاهزة، بلا حيرة</h2>
-      <p class="luvit-section__sub">كل بكج فيه خطوات الروتين كاملة، وإنتِ شايفة شو جوّاه بالضبط.</p>
+      <p class="luvit-section__eyebrow">Routines</p>
+      <h2 class="luvit-section__title">روتين كامل بطلبية وحدة</h2>
+      <p class="luvit-section__sub">أربع خطوات مرتّبة بترتيبها الصح · بدل ما تختاري وحدة وحدة وتحتاري إذا بتناسبوا بعض.</p>
     </div>
 
-    <div class="luvit-rail" data-luvit="reveal">
-
-      <div class="luvit-rail__track" role="group" aria-label="رِف البكجات">
-
-        <div class="luvit-rail__item" data-rail-label="بكج الروتين الأساسي">
-          <article class="luvit-card luvit-card--product">
-            <div class="luvit-card__media">
-              <img loading="lazy" decoding="async" alt="بكج الروتين الأساسي"
-                   src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3BrMScgeDE9JzAnIHkxPScwJyB4Mj0nMCcgeTI9JzEnPjxzdG9wIG9mZnNldD0nMCcgc3RvcC1jb2xvcj0ncmdiKDIxNCwyNDUsMjUxKScvPjxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0ncmdiKDc2LDE5NywyMTgpJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzQwMCcgaGVpZ2h0PSc1MDAnIGZpbGw9J3VybCgjcGsxKScvPjxyZWN0IHg9Jzk2JyB5PScxNzInIHdpZHRoPSc5NicgaGVpZ2h0PScyMjgnIHJ4PScxOCcgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nLjk0Jy8+PHJlY3QgeD0nMTIwJyB5PScxMzInIHdpZHRoPSc0OCcgaGVpZ2h0PSc0NCcgcng9JzExJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJy8+PHJlY3QgeD0nMjE0JyB5PScyNTInIHdpZHRoPScxMDQnIGhlaWdodD0nMTQ4JyByeD0nMjAnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknIG9wYWNpdHk9Jy44MicvPjxyZWN0IHg9JzI0MCcgeT0nMjI0JyB3aWR0aD0nNTInIGhlaWdodD0nMzInIHJ4PSc5JyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJy8+PC9zdmc+">
-            </div>
-            <div class="luvit-card__body">
-              <p class="luvit-card__eyebrow">Duo</p>
-              <h3 class="luvit-card__title">بكج الروتين الأساسي</h3>
-              <p class="luvit-card__text"><strong>شو جوّاها:</strong> منظّف هيدرا اللطيف · كريم الترطيب المكثّف</p>
-              <p class="luvit-card__text"><strong>لمين:</strong> إذا لسا بتبلّشي وبدك أقل عدد خطوات.</p>
-              <div class="luvit-card__footer">
-                <span class="luvit-card__price">42.00 د.ا</span>
-                <a href="/?add-to-cart=203" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="203" data-quantity="1"
-                   aria-label="أضيفي بكج الروتين الأساسي إلى السلة">أضيفي إلى السلة</a>
-              </div>
-            </div>
-          </article>
+    <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" width="800" height="800"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-hydration.webp" alt="روتين الترطيب والدعم اليومي">
         </div>
-
-        <div class="luvit-rail__item" data-rail-label="بكج البشرة الدهنية">
-          <article class="luvit-card luvit-card--product">
-            <div class="luvit-card__media">
-              <img loading="lazy" decoding="async" alt="بكج البشرة الدهنية"
-                   src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3BrMicgeDE9JzAnIHkxPScwJyB4Mj0nMCcgeTI9JzEnPjxzdG9wIG9mZnNldD0nMCcgc3RvcC1jb2xvcj0ncmdiKDIwOCwyNDMsMjQ5KScvPjxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0ncmdiKDQxLDE2OSwxOTIpJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzQwMCcgaGVpZ2h0PSc1MDAnIGZpbGw9J3VybCgjcGsyKScvPjxyZWN0IHg9JzEwNCcgeT0nMTkyJyB3aWR0aD0nODgnIGhlaWdodD0nMjA4JyByeD0nMTYnIGZpbGw9J3JnYigxNjYsMTAxLDQyKScgb3BhY2l0eT0nLjg1Jy8+PHJlY3QgeD0nMTI2JyB5PScxMjYnIHdpZHRoPSc0NCcgaGVpZ2h0PSc2OCcgcng9JzEyJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJy8+PHJlY3QgeD0nMjE0JyB5PScyNjInIHdpZHRoPScxMDgnIGhlaWdodD0nMTM4JyByeD0nMjInIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknIG9wYWNpdHk9Jy45Jy8+PHJlY3QgeD0nMjM2JyB5PScyMzgnIHdpZHRoPSc2NCcgaGVpZ2h0PScyNicgcng9JzgnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknLz48L3N2Zz4=">
-            </div>
-            <div class="luvit-card__body">
-              <p class="luvit-card__eyebrow">Duo</p>
-              <h3 class="luvit-card__title">بكج البشرة الدهنية</h3>
-              <p class="luvit-card__text"><strong>شو جوّاها:</strong> سيروم فيتامين سي · كريم الترطيب المكثّف</p>
-              <p class="luvit-card__text"><strong>لمين:</strong> إذا عندك روتين وبدك تضيفي عليه سيروم.</p>
-              <div class="luvit-card__footer">
-                <span class="luvit-card__price">46.00 د.ا</span>
-                <a href="/?add-to-cart=204" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="204" data-quantity="1"
-                   aria-label="أضيفي بكج البشرة الدهنية إلى السلة">أضيفي إلى السلة</a>
-              </div>
-            </div>
-          </article>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a href="/product/hydration-support-routine/">روتين الترطيب والدعم اليومي</a></h3>
+          <p class="luvit-card__text">غسول البشرة الجافة والحساسة · تونر البشرة الجافة والحساسة · سيروم الترطيب المكثّف · كريم الترطيب والترميم</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">60.00</span> د.ا</span>
+            <a href="/?add-to-cart=205" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="205" data-quantity="1"
+               aria-label="أضيفي روتين الترطيب والدعم اليومي إلى السلة">أضيفي إلى السلة</a>
+          </div>
         </div>
-
-        <div class="luvit-rail__item" data-rail-label="بكج البشرة الجافة">
-          <article class="luvit-card luvit-card--product">
-            <div class="luvit-card__media">
-              <img loading="lazy" decoding="async" alt="بكج البشرة الجافة"
-                   src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3BrMycgeDE9JzAnIHkxPScwJyB4Mj0nMCcgeTI9JzEnPjxzdG9wIG9mZnNldD0nMCcgc3RvcC1jb2xvcj0ncmdiKDIzNCwyNTAsMjUzKScvPjxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0ncmdiKDMwLDEzNCwxNTYpJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzQwMCcgaGVpZ2h0PSc1MDAnIGZpbGw9J3VybCgjcGszKScvPjxyZWN0IHg9JzU4JyB5PScxOTgnIHdpZHRoPSc4NCcgaGVpZ2h0PScyMDInIHJ4PScxNicgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nLjk0Jy8+PHJlY3QgeD0nODAnIHk9JzE2MCcgd2lkdGg9JzQwJyBoZWlnaHQ9JzQwJyByeD0nMTAnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknLz48cmVjdCB4PScxNTgnIHk9JzE2Micgd2lkdGg9Jzg0JyBoZWlnaHQ9JzIzOCcgcng9JzE2JyBmaWxsPSdyZ2IoMTY2LDEwMSw0MiknIG9wYWNpdHk9Jy44Jy8+PHJlY3QgeD0nMTgwJyB5PScxMTgnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0Nicgcng9JzEwJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJy8+PHJlY3QgeD0nMjU4JyB5PScyNDInIHdpZHRoPSc4NCcgaGVpZ2h0PScxNTgnIHJ4PScxOCcgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nLjgyJy8+PHJlY3QgeD0nMjgwJyB5PScyMTYnIHdpZHRoPSc0MCcgaGVpZ2h0PScyOCcgcng9JzgnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknLz48L3N2Zz4=">
-            </div>
-            <div class="luvit-card__body">
-              <p class="luvit-card__eyebrow">Trio</p>
-              <h3 class="luvit-card__title">بكج البشرة الجافة</h3>
-              <p class="luvit-card__text"><strong>شو جوّاها:</strong> منظّف هيدرا اللطيف · سيروم فيتامين سي · كريم الترطيب المكثّف</p>
-              <p class="luvit-card__text"><strong>لمين:</strong> إذا بدك الثلاث خطوات مع بعض: تنظيف، سيروم، ترطيب.</p>
-              <div class="luvit-card__footer">
-                <span class="luvit-card__price">44.00 د.ا</span>
-                <a href="/?add-to-cart=205" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="205" data-quantity="1"
-                   aria-label="أضيفي بكج البشرة الجافة إلى السلة">أضيفي إلى السلة</a>
-              </div>
-            </div>
-          </article>
+      </article>
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" width="800" height="800"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-clarify.webp" alt="روتين التنقية والتوازن">
         </div>
-
-      </div>
-
-      <div class="luvit-rail__controls">
-
-        <!-- 🔴 تضل فاضية · motion.js قسم 13 بيبني الشيبس من data-rail-label -->
-        <div class="luvit-rail__chips"></div>
-
-        <div class="luvit-rail__arrows">
-          <button type="button" class="luvit-rail__arrow" data-rail="prev" aria-label="البكج السابق">
-            <!-- بيأشّر على بداية السطر · والصفحة RTL يعني عاليمين -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="m9 6 6 6-6 6"/>
-            </svg>
-          </button>
-          <button type="button" class="luvit-rail__arrow" data-rail="next" aria-label="البكج التالي">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="m15 6-6 6 6 6"/>
-            </svg>
-          </button>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a href="/product/clarify-balance-routine/">روتين التنقية والتوازن</a></h3>
+          <p class="luvit-card__text">غسول البشرة الدهنية · تونر تضييق المسامات · سيروم فيتامين سي · كريم الترطيب والترميم</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">61.00</span> د.ا</span>
+            <a href="/?add-to-cart=204" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="204" data-quantity="1"
+               aria-label="أضيفي روتين التنقية والتوازن إلى السلة">أضيفي إلى السلة</a>
+          </div>
         </div>
-
-      </div>
-
+      </article>
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" width="800" height="800"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-glow.webp" alt="روتين الإشراقة">
+        </div>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a href="/product/brighten-glow-routine/">روتين الإشراقة</a></h3>
+          <p class="luvit-card__text">غسول البشرة الجافة والحساسة · تونر البشرة الجافة والحساسة · سيروم فيتامين سي · كريم الترطيب والترميم</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">61.00</span> د.ا</span>
+            <a href="/?add-to-cart=203" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="203" data-quantity="1"
+               aria-label="أضيفي روتين الإشراقة إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
     </div>
-
   </div>
 </section>

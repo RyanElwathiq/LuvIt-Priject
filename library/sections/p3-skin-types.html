@@ -1,140 +1,32 @@
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات · سكشن 3 · تسوّقي حسب نوع بشرتك
-  ============================================================================
-  مولّد من library/products-preview.html · لا تعدّل هون، عدّل بالمعاينة وأعد التوليد.
-
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : skin-types       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الشريط انقلب من band-mist لـband-mist بمراجعة الصفحة الثمانية كاملة.
-     غير إنه بيصلّح الإيقاع، هو الأصح بصرياً: .luvit-option خلفيته
-     --field-bg (#FFFFFF)، فعلى band-mist (#FFFFFF) البلاطة ما بيبيّنها
-     غير الحد. على mist (#FAFCFD) بتقرا كبلاطة فعلاً.
-
-  ---------------------------------------------------------------------------
-  🔴 بوابتان · ولا وحدة منهم بتنفتح لحالها
-  ---------------------------------------------------------------------------
-  ١ · ولا بلاطة بتنزل قبل ما تكون صفحتها موجودة فعلاً. أربع صفحات لازم
-      تكون منشورة أول:
-        /routines/clarify · /routines/hydration  (الأربع بلاطات بتودّي على روتينَي الهدف)
-      (خطة صفحة المنتجات · قسم 3 · «بلاطة بتودّي على ولا مكان وعد مكسور»)
-  ٢ · وسطر الكويز وزر «اكتشفي روتينك» ما بينزلوا قبل ما تكون صفحة /quiz
-      موجودة · نفس البوابة اللي على سكشن ٨.
-
-  🔴 انشال رقم «أربع أسئلة» من سطر الكويز.
-     الرقم ما إله مصدر، وبيناقض اللي منشور فعلاً: 04-quiz.html سطر 73
-     مكتوب فيه «أقل من دقيقة · ٥ أسئلة بس». وحدة منهم غلط، و/quiz لسا
-     ما انبنت أصلاً فما في مصدر يحسم.
-     ⤷ لما تنبني الصفحة: ثبّت العدد الحقيقي، وحدّث 04-quiz.html وسكشن ٨
-       بنفس اللحظة، وإلا بيصير عندك رقمين على نفس الموقع.
-
-  🔴 وانغيّر «مش متأكدة من نوعها؟» لـ«مش متأكدة من نوع بشرتك؟».
-     الأصل بالخطة مكتوب «نوعها» (غايب) وباقي الجملة كلها مخاطبة.
-     ⤷ تعديل على كوبي منصوص بالخطة · بده موافقة ريّان.
-
-  ⚠ الكلاس luvit-option--link انشال · ما إله وجود بـtokens.css أصلاً
-     (فحص grep: صفر نتيجة). وما بده كلاس جديد من الأساس، لأن البلاطات
-     روابط. القاعدة الناقصة اللي لازم تنضاف لـtokens.css جنب بلوك
-     OPTION CARDS (سطر ~2067):
-
-       a.luvit-option { text-decoration: none; color: var(--color-ink); }
-       a.luvit-option .luvit-option__icon { color: var(--aqua-500); }
-       .luvit-option__icon svg { width: 64px; height: 64px; display: block; }
-       a.luvit-option:hover { border-color: var(--aqua-400); }
-       a.luvit-option:hover::after { transform: translateY(0); }
-       a.luvit-option:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--color-ring); }
-
-     🔴 بلا هالقاعدة البلاطات بتطلع مسطّرة وبلون رابط المتصفح، والأيقونات
-        بتطلع زرقا لأنها stroke=currentColor. وأهم من الشكل: الحالات
-        التفاعلية الأربع الموجودة بـtokens.css كلها معلّقة على
-        :has(input:checked) و:has(input:focus-visible)، وما في input
-        بنسخة الرابط · يعني ما في حلقة تركيز للكيبورد. هاي مشكلة وصول،
-        مش تلميع.
-
-  ✅ ولا سعر ولا رقم ولا ادعاء بهذا السكشن · نص وأيقونات بس
-  ⚠ الروابط هون بلا شرطة أخيرة (/routines) وبالترويسة معها (/routines/).
-     ووردبريس بيعمل 301 لوحدة منهم · وحّدها قبل ما تشتري إعلانات.
-  ============================================================================
+  LUVIT · صفحة المتجر (/products/) · سكشن ٣ من ٨ · بوابات الهدف
+  🔴 مولّد · لا تعدّله بالإيد.
 -->
-
 <section class="luvit-section band-mist" data-nav-bg="light" id="skin-types">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow"><bdi>Skin type</bdi></p>
-      <h2 class="luvit-section__title">تسوّقي حسب نوع بشرتك</h2>
-      <p class="luvit-section__sub">اختاري نوعك ومنوديكي على الروتين اللي إله.</p>
+      <p class="luvit-section__eyebrow">Start here</p>
+      <h2 class="luvit-section__title">مش عارفة من وين تبلّشي؟</h2>
+      <p class="luvit-section__sub">اختاري الهدف، ومنوريكِ الروتين كامل بخطواته.</p>
     </div>
 
-    <div class="luvit-optiongrid" data-luvit="stagger">
-
-      <!-- دهنية · لمعة على انحناءة الخد -->
-      <a class="luvit-option" href="/routines/clarify">
-        <span class="luvit-option__icon" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 8C13 22 12 42 23 54c6 6 15 7 23 3"/>
-            <path d="M23 22c6-3 13-3 19 0"/>
-            <path d="M22 32c7-3.5 15-3.5 22 0"/>
-            <path d="M24 42c6-3 12.5-3 18 0"/>
-          </svg>
-        </span>
-        <span class="luvit-option__label">البشرة الدهنية</span>
-      </a>
-
-      <!-- جافة · قطرة -->
+    <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
       <a class="luvit-option" href="/routines/hydration">
-        <span class="luvit-option__icon" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M32 9c0 0 14 16.5 14 27a14 14 0 0 1-28 0C18 25.5 32 9 32 9z"/>
-            <path d="M25.5 38.5a6.5 6.5 0 0 0 4.5 7"/>
-          </svg>
-        </span>
-        <span class="luvit-option__label">البشرة الجافة</span>
+        <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/></svg></span>
+        <span class="luvit-option__label">ترطيب ودعم<br><small>للبشرة الجافة أو الحسّاسة</small></span>
       </a>
-
-      <!-- مختلطة · انقسام: نص فيه قطرة ونص فيه لمعة -->
       <a class="luvit-option" href="/routines/clarify">
-        <span class="luvit-option__icon" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="32" cy="32" r="22"/>
-            <path d="M32 10v44"/>
-            <path d="M21 25.5c0 0 5 6.2 5 9.6a5 5 0 0 1-10 0c0-3.4 5-9.6 5-9.6z"/>
-            <path d="M39 28c3-1.6 6.2-1.6 9.2 0"/>
-            <path d="M39 37c3-1.6 6.2-1.6 9.2 0"/>
-          </svg>
-        </span>
-        <span class="luvit-option__label">البشرة المختلطة</span>
+        <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20c8 0 15-5 16-16C11 4 4 9 4 20z"/><path d="M4 20c3-5 7-8 11-10"/></svg></span>
+        <span class="luvit-option__label">تنقية وتوازن<br><small>للبشرة الدهنية أو المختلطة</small></span>
       </a>
-
-      <!-- حسّاسة · احمرار منتشر · حلقات بتخفّ لبرّا -->
-      <a class="luvit-option" href="/routines/hydration">
-        <span class="luvit-option__icon" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="32" cy="32" r="6.5"/>
-            <circle cx="32" cy="32" r="13.5" stroke-dasharray="3.5 5.5"/>
-            <circle cx="32" cy="32" r="20.5" stroke-dasharray="3 7.5"/>
-          </svg>
-        </span>
-        <span class="luvit-option__label">البشرة الحسّاسة</span>
+      <a class="luvit-option" href="/routines/glow">
+        <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg></span>
+        <span class="luvit-option__label">إشراقة<br><small>للبهتان وتفاوت اللون</small></span>
       </a>
-
     </div>
 
-    <p style="text-align:center;margin-top:var(--space-6)">مش متأكدة من نوع بشرتك؟ جاوبي على كم سؤال ومنقلّك.</p>
-
-    <p style="text-align:center;margin-top:var(--space-4)">
-      <a class="luvit-btn" href="/quiz">اكتشفي روتينك</a>
-      <a class="luvit-btn luvit-btn--ghost" href="/routines">كل الروتينات</a>
-    </p>
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--ghost" href="/quiz">أو جاوبي كم سؤال ومنختارلك</a>
+    </div>
   </div>
 </section>

@@ -1,62 +1,25 @@
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات (/products/) · سكشن ١ من ٨ · الترويسة
-  ============================================================================
-  مصدر النص: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» بند ١ · النص حرفي.
-  سكشن جديد لصفحة المنتجات · مش مولّد من library/home-preview.html.
+  LUVIT · صفحة المتجر الموحّدة (/products/) · سكشن ١ من ٨ · الوعد والترويسة
+  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد، عدّل المولّد.
 
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : page-head       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الشريط انقلب من band-mist لـband-mist بمراجعة الصفحة الثمانية كاملة.
-     الإيقاع الصح للصفحة:
-       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
-     بالترتيب القديم كان سكشن ٤ وسكشن ٥ الاثنين mist ورا بعض.
-     والسبب إن الطبقة البيضا لازم تقع على القماش الصح:
-       .luvit-card و.luvit-ing__row و.luvit-acc__item كلهم --color-paper،
-       و.luvit-option كمان --field-bg أبيض. فالكروت بتقعد على light
-       (نفس ما بتعمل الرئيسية بـhome-preview.html:1513)، والبلاطات وصفوف
-       المكوّنات والأكورديون بيقعدوا على mist.
-
-  ✅ ولا سعر ولا رقم ولا صورة ولا ادعاء بهاد السكشن · نص بس · جاهز يوم واحد
-  ✅ الرابط الوحيد `/` · وهو المسار الوحيد الراجع للرئيسية بكل الصفحة
-
-  🔴 مسار التنقّل نزل بلا كلاس · ما في `.luvit-breadcrumb` بـtokens.css
-     ولا تستعمل `.luvit-section__eyebrow` بداله: جوّاه `--tracking-caption`
-     ومكتوب جنبه بـtokens.css:103 إنه للكابشنات اللاتينية بس، ولا مرة على العربي.
-     القاعدة الناقصة:
-       .luvit-breadcrumb { font-size: var(--text-caption); color: var(--color-ink-faint); margin: 0 0 var(--space-2); }
-       .luvit-breadcrumb a { color: var(--color-ink-faint); text-decoration: none; }
-       .luvit-breadcrumb a:hover { color: var(--aqua-700); }
-     لازم تنضاف لـtokens.css قبل النشر، وبعدها حط الكلاس على الـnav.
-  🔴 `.band-mist` و`.band-mist` ما لقيتهم بـtokens.css · معرّفين جوّا
-     home-preview.html (سطر 33 و34) وproducts-preview.html (سطر 38 و39) بس.
-     لازم ينتقلوا لسنيبت CSS بـWPCode وإلا كل شرائط الصفحة بتطلع شفافة
-     على الموقع الحي. هاد بيخص السكاشن الثمانية مش هاد بس.
-  🔴 الصفحة بدها `luvit-nav-offset` على غلاف الصفحة (مش على هالسكشن) ·
-     `.luvit-nav` ثابت (position:fixed) ورح يغطّي مسار التنقّل بلاها.
-  ============================================================================
+  · شريط الوعد أول شي بالصفحة **قبل أي سعر** · صفحة متجر بيوتي بوكس تركت
+    نفس المساحة فاضية بالكود، وصفحتها ما فيها ولا كلمة عن الشحن أو الدفع.
+  · luvit-shop-root مرساة CSS · قسم 5.16 بـtokens.css بيستعملها عشان
+    يطفي الـbackdrop-filter بالموبايل على هالصفحة (وهي مش صفحة ووكومرس
+    فما بتاخد كلاس woocommerce-shop).
 -->
+<section class="luvit-section luvit-section--tight band-mist luvit-shop-root" data-nav-bg="light" id="page-head">
+  <div class="luvit-promise">
+    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg> الدفع عند الاستلام</span>
+    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V6h11v10"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg> التوصيل ٢ دنانير لكل محافظات الأردن</span>
+    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6.5L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M7.5 15h9"/></svg> النِسَب مكتوبة على العبوة</span>
+  </div>
 
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-
-      <nav aria-label="مسار التنقّل">
-        <a href="/">الرئيسية</a>
-        <span aria-hidden="true">›</span>
-        <span aria-current="page">المنتجات</span>
-      </nav>
-
+      <p class="luvit-section__eyebrow">Shop</p>
       <h1 class="luvit-section__title">التشكيلة كاملة، والنِسَب مكتوبة</h1>
-      <p class="luvit-section__sub">اختاري بكج جاهز أو منتج مفرد · وادفعي لمّا يوصلك.</p>
-
+      <p class="luvit-section__sub">11 منتجاً مفرداً و3 روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
     </div>
   </div>
 </section>

@@ -34,7 +34,58 @@ const TYPES = {
   '.mp4':  'video/mp4'
 };
 
+/* ===========================================================================
+   الاتجاه الثاني للممر · من المتصفح للقرص
+   ---------------------------------------------------------------------------
+   الـGET مع CORS خلّى الموقع يقرا ملفاتنا. وهاد العكس: صفحة أدمن ووردبريس
+   بتقدر تنزّل بيانات حيّة (منتجات · إعدادات · لقطة قالب) كملف عندنا بدل ما
+   تطلع بمخرَج أداة **مقصوص**.
+
+   POST /__save?name=<اسم>   والجسم هو المحتوى.
+
+   🔴 والحماية بالبنية مش بالنية:
+     · الكتابة **بمجلد واحد بس** · `_وارد/` جوّا المشروع
+     · الاسم بينظّف لحروف وأرقام وشرطات ونقطة وحدة · ولا مسارات ولا `..`
+     · السيرفر بيسمع على هالجهاز، وبينشغّل لما نحتاجه وبينطفي بعدها
+   =========================================================================== */
+const INBOX = path.join(ROOT, '_وارد');
+
 http.createServer((req, res) => {
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }).end();
+    return;
+  }
+
+  if (req.method === 'POST' && req.url.split('?')[0] === '/__save') {
+    const q = new URL(req.url, 'http://localhost').searchParams;
+    const safe = (q.get('name') || '').replace(/[^A-Za-z0-9._-]/g, '').replace(/\.\.+/g, '.');
+    if (!safe || safe.startsWith('.')) {
+      res.writeHead(400, { 'Access-Control-Allow-Origin': '*' }).end('bad name');
+      return;
+    }
+    const chunks = [];
+    req.on('data', (c) => chunks.push(c));
+    req.on('end', () => {
+      try {
+        fs.mkdirSync(INBOX, { recursive: true });
+        const target = path.join(INBOX, safe);
+        if (!target.startsWith(INBOX)) throw new Error('خارج الوارد');
+        const body = Buffer.concat(chunks);
+        fs.writeFileSync(target, body);
+        console.log('  ← استلمت ' + safe + ' · ' + body.length + ' بايت');
+        res.writeHead(200, { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain' })
+           .end('ok ' + body.length);
+      } catch (e) {
+        res.writeHead(500, { 'Access-Control-Allow-Origin': '*' }).end('err ' + e.message);
+      }
+    });
+    return;
+  }
+
   let rel = decodeURIComponent(req.url.split('?')[0]);
   if (rel === '/') rel = '/library/home-preview.html';
 

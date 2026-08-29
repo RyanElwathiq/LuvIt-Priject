@@ -48,38 +48,22 @@
 
 <a class="luvit-skip" href="#main">تخطّي إلى المحتوى</a>
 
-<!-- ==================================================================== -->
-<!-- NAVIGATION — the Water Pill. In Elementor: Theme Builder > Header    -->
-<!-- ==================================================================== -->
 <header class="luvit-nav" id="luvit-nav">
   <div class="luvit-nav__bar">
     <span class="luvit-nav__drop" aria-hidden="true"></span>
 
-    <a class="luvit-nav__brand" href="/">Luv it!</a>
+    <a class="luvit-nav__brand" href="/" aria-label="Luv it! Jordan"><img class="luvit-nav__logo" src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-logo.png" alt="Luv it! Jordan" width="417" height="220" decoding="async"></a>
 
     <nav class="luvit-nav__links" aria-label="التنقل الرئيسي">
-
-      <!-- ⚠️ الحبّة النشطة بالقائمة ما بتبين بهاي المعاينة · وهاد مقصود.
-           motion.js §14 (luvitNavCurrent) بيحدد الصفحة الحالية من
-           window.location.pathname. على localhost المسار بيكون
-           /library/<اسم-الملف>.html فما بيطابق ولا رابط، والدالة بتشيل
-           aria-current من الكل — بما فيها اللي مثبتة بأيدينا تحت.
-
-           ولا تحلها بتعطيل الدالة بالمعاينة ولا بمفتاح تجاوز: وقتها
-           المعاينة بتفحص مساراً غير اللي بيشتغل على الموقع، وهاد بالضبط
-           الفخ اللي وقعنا فيه قبل (ستايل معاينة ما شُحن ولا مرة).
-
-           الفحص الحقيقي للمطابقة بـ _أدوات (محاكي بلا متصفح) وعلى الموقع.
-      -->
       <a class="luvit-nav__link" href="/">الرئيسية</a>
-      <a class="luvit-nav__link" href="/products/" aria-current="page">المتجر</a>
-      <a class="luvit-nav__link" href="/routines/">الروتينات</a>
-      <a class="luvit-nav__link" href="/ingredients/">المكوّنات</a>
-      
+      <a class="luvit-nav__link" href="/products">المتجر</a>
+      <a class="luvit-nav__link" href="/routines">الروتين</a>
+      <a class="luvit-nav__link" href="/journal">المقالات</a>
+      <a class="luvit-nav__link" href="/about">من نحن</a>
     </nav>
 
     <div class="luvit-nav__actions">
-      <a class="luvit-nav__icon-btn" href="/cart/" aria-label="سلة التسوّق">
+      <a class="luvit-nav__icon-btn" href="/cart" aria-label="سلة التسوّق">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
@@ -99,17 +83,22 @@
 <div class="luvit-drawer" id="luvit-drawer" role="dialog" aria-modal="true"
      aria-label="قائمة التنقل" aria-hidden="true">
   <div class="luvit-drawer__water" aria-hidden="true"></div>
+
   <nav class="luvit-drawer__panel" aria-label="قائمة الجوال">
     <a class="luvit-drawer__link" href="/">الرئيسية</a>
-    <a class="luvit-drawer__link" href="/products/" aria-current="page">المتجر</a>
-    <a class="luvit-drawer__link" href="/routines/">الروتينات</a>
-    <a class="luvit-drawer__link" href="/ingredients/">المكوّنات</a>
-    
+    <a class="luvit-drawer__link" href="/products">المتجر</a>
+    <a class="luvit-drawer__link" href="/routines">الروتين</a>
+    <a class="luvit-drawer__link" href="/journal">المقالات</a>
+    <a class="luvit-drawer__link" href="/quiz">اختبار نوع البشرة</a>
+    <a class="luvit-drawer__link" href="/about">من نحن</a>
 
     <div class="luvit-drawer__sep" role="presentation"></div>
 
-    <a class="luvit-drawer__link luvit-drawer__small" href="/my-account/">حسابي</a>
-    <a class="luvit-drawer__link luvit-drawer__small" href="/cart/">سلة المشتريات</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/my-account">حسابي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/track">تتبّع طلبي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/shipping">الشحن والتوصيل</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/faq">الأسئلة الشائعة</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/contact">تواصلي معنا</a>
   </nav>
 </div>
 
@@ -121,21 +110,24 @@
     </svg>
     <span>الرئيسية</span>
   </a>
-  <a class="luvit-dock__item" href="/products/" aria-current="page">
+
+  <a class="luvit-dock__item" href="/products">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/>
     </svg>
     <span>المتجر</span>
   </a>
-  <a class="luvit-dock__item" href="/routines/">
+
+  <a class="luvit-dock__item" href="/routines">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/>
     </svg>
-    <span>الروتينات</span>
+    <span>الروتين</span>
   </a>
-  <a class="luvit-dock__item" href="/cart/">
+
+  <a class="luvit-dock__item" href="/cart">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
@@ -150,876 +142,608 @@
 <script src="motion.js"></script>
 
 <main id="main">
-<span id="top"></span>
 
-
-<!-- ===== p1-header.html ===== -->
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات (/products/) · سكشن ١ من ٨ · الترويسة
-  ============================================================================
-  مصدر النص: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» بند ١ · النص حرفي.
-  سكشن جديد لصفحة المنتجات · مش مولّد من library/home-preview.html.
+  LUVIT · صفحة المتجر الموحّدة (/products/) · سكشن ١ من ٨ · الوعد والترويسة
+  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد، عدّل المولّد.
 
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : page-head       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الشريط انقلب من band-mist لـband-mist بمراجعة الصفحة الثمانية كاملة.
-     الإيقاع الصح للصفحة:
-       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
-     بالترتيب القديم كان سكشن ٤ وسكشن ٥ الاثنين mist ورا بعض.
-     والسبب إن الطبقة البيضا لازم تقع على القماش الصح:
-       .luvit-card و.luvit-ing__row و.luvit-acc__item كلهم --color-paper،
-       و.luvit-option كمان --field-bg أبيض. فالكروت بتقعد على light
-       (نفس ما بتعمل الرئيسية بـhome-preview.html:1513)، والبلاطات وصفوف
-       المكوّنات والأكورديون بيقعدوا على mist.
-
-  ✅ ولا سعر ولا رقم ولا صورة ولا ادعاء بهاد السكشن · نص بس · جاهز يوم واحد
-  ✅ الرابط الوحيد `/` · وهو المسار الوحيد الراجع للرئيسية بكل الصفحة
-
-  🔴 مسار التنقّل نزل بلا كلاس · ما في `.luvit-breadcrumb` بـtokens.css
-     ولا تستعمل `.luvit-section__eyebrow` بداله: جوّاه `--tracking-caption`
-     ومكتوب جنبه بـtokens.css:103 إنه للكابشنات اللاتينية بس، ولا مرة على العربي.
-     القاعدة الناقصة:
-       .luvit-breadcrumb { font-size: var(--text-caption); color: var(--color-ink-faint); margin: 0 0 var(--space-2); }
-       .luvit-breadcrumb a { color: var(--color-ink-faint); text-decoration: none; }
-       .luvit-breadcrumb a:hover { color: var(--aqua-700); }
-     لازم تنضاف لـtokens.css قبل النشر، وبعدها حط الكلاس على الـnav.
-  🔴 `.band-mist` و`.band-mist` ما لقيتهم بـtokens.css · معرّفين جوّا
-     home-preview.html (سطر 33 و34) وproducts-preview.html (سطر 38 و39) بس.
-     لازم ينتقلوا لسنيبت CSS بـWPCode وإلا كل شرائط الصفحة بتطلع شفافة
-     على الموقع الحي. هاد بيخص السكاشن الثمانية مش هاد بس.
-  🔴 الصفحة بدها `luvit-nav-offset` على غلاف الصفحة (مش على هالسكشن) ·
-     `.luvit-nav` ثابت (position:fixed) ورح يغطّي مسار التنقّل بلاها.
-  ============================================================================
+  · شريط الوعد أول شي بالصفحة **قبل أي سعر** · صفحة متجر بيوتي بوكس تركت
+    نفس المساحة فاضية بالكود، وصفحتها ما فيها ولا كلمة عن الشحن أو الدفع.
+  · luvit-shop-root مرساة CSS · قسم 5.16 بـtokens.css بيستعملها عشان
+    يطفي الـbackdrop-filter بالموبايل على هالصفحة (وهي مش صفحة ووكومرس
+    فما بتاخد كلاس woocommerce-shop).
 -->
+<section class="luvit-section luvit-section--tight band-mist luvit-shop-root" data-nav-bg="light" id="page-head">
+  <div class="luvit-promise">
+    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg> الدفع عند الاستلام</span>
+    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V6h11v10"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg> التوصيل ٢ دنانير لكل محافظات الأردن</span>
+    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6.5L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M7.5 15h9"/></svg> النِسَب مكتوبة على العبوة</span>
+  </div>
 
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-
-      <nav aria-label="مسار التنقّل">
-        <a href="/">الرئيسية</a>
-        <span aria-hidden="true">›</span>
-        <span aria-current="page">المنتجات</span>
-      </nav>
-
+      <p class="luvit-section__eyebrow">Shop</p>
       <h1 class="luvit-section__title">التشكيلة كاملة، والنِسَب مكتوبة</h1>
-      <p class="luvit-section__sub">اختاري بكج جاهز أو منتج مفرد · وادفعي لمّا يوصلك.</p>
-
+      <p class="luvit-section__sub">11 منتجاً مفرداً و3 روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
     </div>
   </div>
 </section>
 
-
-<!-- ===== p2-packages.html ===== -->
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات · سكشن 2 · رِف البكجات
-  ============================================================================
-  مولّد من library/products-preview.html · لا تعدّل هون، عدّل بالمعاينة وأعد التوليد.
+  LUVIT · صفحة المتجر (/products/) · سكشن ٢ من ٨ · الروتينات الجاهزة
+  🔴 مولّد · لا تعدّله بالإيد.
 
-  ---------------------------------------------------------------------------
-  🔴🔴🔴 بوابة النشر · الرِف ما بينزل أصلاً لحد ما يصير في ٣ منتجات مؤكدة
-  ---------------------------------------------------------------------------
-  خطة-صفحة-المنتجات.md ← «3 · THE EMPTY-SHELF PROBLEM» بتقول بالحرف:
-     «Ships only when 3 confirmed SKUs exist … Until then the rail does not
-      render and section 4 moves to position 2.»
-  يعني لحد ما تنعمل الـ٣ منتجات بووكومرس:
-     · هاد السكشن ما بينحط على الصفحة
-     · وسكشن ٤ «المنتجات المفردة» بيصير رقم ٢، وبياخد band-light مكانه
-  ولا تنزّله بمنتج واحد ولا باثنين · رِف نص فاضي بيبيّن المتجر أفقر من الحقيقة.
-
-  🔴 ورابط «كل البكجات» بيوصل لـ/shop/?product_cat=packages، وتصنيف «بكجات»
-     لساه مش موجود بووكومرس (قرار ريّان رقم ٣ بالخطة، لسا ما انعمل).
-     ما تنشر السكشن قبل ما ينعمل التصنيف · الرابط بيوقع على أرشيف فاضي.
-
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : packages       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الشريط انقلب من band-light لـband-light بمراجعة الصفحة الثمانية كاملة
-     (كان سكشن ٤ وسكشن ٥ الاثنين mist ورا بعض). الإيقاع الصح:
-       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
-     و.luvit-card خلفيته --color-paper، فمكانه الطبيعي على light · نفس ما
-     بتعمل الرئيسية بـhome-preview.html:1513.
-
-  بيعتمد على:
-  · tokens.css  → قسم 5.31 (luvit-rail) · لازم يكون منشور بسنيبت WPCode
-  · motion.js   → قسم 13 (luvitRails) · هو اللي بيبني الشيبس ويشغّل الأسهم
-  ⚠ .luvit-rail__chips لازم تضل فاضية بالماركب · موشن جي إس بيعبّيها من
-    data-rail-label تبع كل بطاقة. إذا كتبت فيها إشي بإيدك بينضاف فوقه.
-
-  ---------------------------------------------------------------------------
-  🔴 الأسعار: انشالت من الـHTML · ولا رقم بينكتب هون
-  ---------------------------------------------------------------------------
-  كانت مكتوبة ٢٧ و٣٦ و٤٦ دينار كـplaceholder. انشالت.
-  قاعدة الصفحة بالخطة (سطر 27) مطلقة: «Every price on the page comes from
-  WooCommerce, never typed into HTML» · وسكشن ٤ ماشي عليها أصلاً، فما بينفع
-  سكشنين بنفس الصفحة يختلفوا عليها.
-  كل بكج بيصير منتج WooCommerce من نوع simple بسعر ثابت واحد، وووكومرس بيطبع
-  .luvit-card__price بمكان السلوت المعلّم تحت.
-  ولا مرة Grouped · بيكسر سطر الشحن الواحد تبع الدفع عند الاستلام.
-
-  🔴 باقي المحتوى مؤقت بالكامل · ولا كلمة منه بتنشر زي ما هي
-  ⚠ أسماء البكجات الثلاثة placeholder
-  ⚠ محتويات كل بكج placeholder (بأسماء منتجات هي كمان placeholder)
-  ⚠ سطر «لمين» placeholder
-  ⚠ الصور placeholder SVG · مافي تصوير لسا
-  ⚠ زر «أضيفي إلى السلة» شكل بس · بدله فورم add-to-cart تبع ووكومرس
-  ⚠ عنوان البكج مش رابط · لأن الخطة ما سمّت مسار صفحة البكج الواحد.
-    لما تنعمل منتجات البكجات، لُفّ العنوان بـ
-    <a class="luvit-card__link" href="/product/…"> زي 05-products.
-  ⚠ مافي نسبة توفير مكتوبة هون · الخطة بتقول تنحسب live من مجموع أسعار
-    القطع، عشان تضل صحيحة لما تتغيّر الأسعار.
-  ⚠ مافي عدّاد ظاهر جنب الأسهم (الخطة بتطلبه) · لأنه ما في كلاس إله
-    بـtokens.css. بده كلاس جديد قبل ما ينضاف.
-  ⚠ تناقض كوبي لريّان: السطر التمهيدي بيقول «شو جوّاه» والبطاقات بتقول
-    «شو جوّاها» · الاثنين حرفياً من الخطة. اختار وحدة وثبّتها.
-  ============================================================================
+  · أعلى وحدة قيمة بالصفحة فبتيجي أول · وولا واحد من المراجع الخمسة عنده
+    رفّ بكجات حقيقي (كلهم أشرطة منتجات مفردة).
+  · الأسعار من ووكومرس · وهي **بالضبط مجموع القطع**، لأن استراتيجية
+    العلامة بتمنع الخصومات الأونلاين (بتضعف موقف الصيدليات). فالبكج
+    بينباع بالتنسيق مش بالتوفير، والكوبي ما بيدّعي خصماً.
 -->
-
 <section class="luvit-section band-light" data-nav-bg="light" id="packages">
   <div class="luvit-section__inner">
-
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Packages</p>
-      <h2 class="luvit-section__title">بكجات جاهزة، بلا حيرة</h2>
-      <p class="luvit-section__sub">كل بكج فيه خطوات الروتين كاملة، وإنتِ شايفة شو جوّاه بالضبط.</p>
+      <p class="luvit-section__eyebrow">Routines</p>
+      <h2 class="luvit-section__title">روتين كامل بطلبية وحدة</h2>
+      <p class="luvit-section__sub">أربع خطوات مرتّبة بترتيبها الصح · بدل ما تختاري وحدة وحدة وتحتاري إذا بتناسبوا بعض.</p>
     </div>
 
-    <div class="luvit-rail" data-luvit="reveal">
-
-      <div class="luvit-rail__track" role="group" aria-label="رِف البكجات">
-
-        <div class="luvit-rail__item" data-rail-label="بكج الروتين الأساسي">
-          <article class="luvit-card luvit-card--product">
-            <div class="luvit-card__media">
-              <img loading="lazy" decoding="async" alt="بكج الروتين الأساسي"
-                   src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3BrMScgeDE9JzAnIHkxPScwJyB4Mj0nMCcgeTI9JzEnPjxzdG9wIG9mZnNldD0nMCcgc3RvcC1jb2xvcj0ncmdiKDIxNCwyNDUsMjUxKScvPjxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0ncmdiKDc2LDE5NywyMTgpJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzQwMCcgaGVpZ2h0PSc1MDAnIGZpbGw9J3VybCgjcGsxKScvPjxyZWN0IHg9Jzk2JyB5PScxNzInIHdpZHRoPSc5NicgaGVpZ2h0PScyMjgnIHJ4PScxOCcgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nLjk0Jy8+PHJlY3QgeD0nMTIwJyB5PScxMzInIHdpZHRoPSc0OCcgaGVpZ2h0PSc0NCcgcng9JzExJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJy8+PHJlY3QgeD0nMjE0JyB5PScyNTInIHdpZHRoPScxMDQnIGhlaWdodD0nMTQ4JyByeD0nMjAnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknIG9wYWNpdHk9Jy44MicvPjxyZWN0IHg9JzI0MCcgeT0nMjI0JyB3aWR0aD0nNTInIGhlaWdodD0nMzInIHJ4PSc5JyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJy8+PC9zdmc+">
-            </div>
-            <div class="luvit-card__body">
-              <p class="luvit-card__eyebrow">Duo</p>
-              <h3 class="luvit-card__title">بكج الروتين الأساسي</h3>
-              <p class="luvit-card__text"><strong>شو جوّاها:</strong> منظّف هيدرا اللطيف · كريم الترطيب المكثّف</p>
-              <p class="luvit-card__text"><strong>لمين:</strong> إذا لسا بتبلّشي وبدك أقل عدد خطوات.</p>
-              <div class="luvit-card__footer">
-                <span class="luvit-card__price">42.00 د.ا</span>
-                <a href="/?add-to-cart=203" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="203" data-quantity="1"
-                   aria-label="أضيفي بكج الروتين الأساسي إلى السلة">أضيفي إلى السلة</a>
-              </div>
-            </div>
-          </article>
+    <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" width="800" height="800"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-hydration.webp" alt="روتين الترطيب والدعم اليومي">
         </div>
-
-        <div class="luvit-rail__item" data-rail-label="بكج البشرة الدهنية">
-          <article class="luvit-card luvit-card--product">
-            <div class="luvit-card__media">
-              <img loading="lazy" decoding="async" alt="بكج البشرة الدهنية"
-                   src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3BrMicgeDE9JzAnIHkxPScwJyB4Mj0nMCcgeTI9JzEnPjxzdG9wIG9mZnNldD0nMCcgc3RvcC1jb2xvcj0ncmdiKDIwOCwyNDMsMjQ5KScvPjxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0ncmdiKDQxLDE2OSwxOTIpJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzQwMCcgaGVpZ2h0PSc1MDAnIGZpbGw9J3VybCgjcGsyKScvPjxyZWN0IHg9JzEwNCcgeT0nMTkyJyB3aWR0aD0nODgnIGhlaWdodD0nMjA4JyByeD0nMTYnIGZpbGw9J3JnYigxNjYsMTAxLDQyKScgb3BhY2l0eT0nLjg1Jy8+PHJlY3QgeD0nMTI2JyB5PScxMjYnIHdpZHRoPSc0NCcgaGVpZ2h0PSc2OCcgcng9JzEyJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJy8+PHJlY3QgeD0nMjE0JyB5PScyNjInIHdpZHRoPScxMDgnIGhlaWdodD0nMTM4JyByeD0nMjInIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknIG9wYWNpdHk9Jy45Jy8+PHJlY3QgeD0nMjM2JyB5PScyMzgnIHdpZHRoPSc2NCcgaGVpZ2h0PScyNicgcng9JzgnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknLz48L3N2Zz4=">
-            </div>
-            <div class="luvit-card__body">
-              <p class="luvit-card__eyebrow">Duo</p>
-              <h3 class="luvit-card__title">بكج البشرة الدهنية</h3>
-              <p class="luvit-card__text"><strong>شو جوّاها:</strong> سيروم فيتامين سي · كريم الترطيب المكثّف</p>
-              <p class="luvit-card__text"><strong>لمين:</strong> إذا عندك روتين وبدك تضيفي عليه سيروم.</p>
-              <div class="luvit-card__footer">
-                <span class="luvit-card__price">46.00 د.ا</span>
-                <a href="/?add-to-cart=204" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="204" data-quantity="1"
-                   aria-label="أضيفي بكج البشرة الدهنية إلى السلة">أضيفي إلى السلة</a>
-              </div>
-            </div>
-          </article>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a href="/product/hydration-support-routine/">روتين الترطيب والدعم اليومي</a></h3>
+          <p class="luvit-card__text">غسول البشرة الجافة والحساسة · تونر البشرة الجافة والحساسة · سيروم الترطيب المكثّف · كريم الترطيب والترميم</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">60.00</span> د.ا</span>
+            <a href="/?add-to-cart=205" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="205" data-quantity="1"
+               aria-label="أضيفي روتين الترطيب والدعم اليومي إلى السلة">أضيفي إلى السلة</a>
+          </div>
         </div>
-
-        <div class="luvit-rail__item" data-rail-label="بكج البشرة الجافة">
-          <article class="luvit-card luvit-card--product">
-            <div class="luvit-card__media">
-              <img loading="lazy" decoding="async" alt="بكج البشرة الجافة"
-                   src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3BrMycgeDE9JzAnIHkxPScwJyB4Mj0nMCcgeTI9JzEnPjxzdG9wIG9mZnNldD0nMCcgc3RvcC1jb2xvcj0ncmdiKDIzNCwyNTAsMjUzKScvPjxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0ncmdiKDMwLDEzNCwxNTYpJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzQwMCcgaGVpZ2h0PSc1MDAnIGZpbGw9J3VybCgjcGszKScvPjxyZWN0IHg9JzU4JyB5PScxOTgnIHdpZHRoPSc4NCcgaGVpZ2h0PScyMDInIHJ4PScxNicgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nLjk0Jy8+PHJlY3QgeD0nODAnIHk9JzE2MCcgd2lkdGg9JzQwJyBoZWlnaHQ9JzQwJyByeD0nMTAnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknLz48cmVjdCB4PScxNTgnIHk9JzE2Micgd2lkdGg9Jzg0JyBoZWlnaHQ9JzIzOCcgcng9JzE2JyBmaWxsPSdyZ2IoMTY2LDEwMSw0MiknIG9wYWNpdHk9Jy44Jy8+PHJlY3QgeD0nMTgwJyB5PScxMTgnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0Nicgcng9JzEwJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJy8+PHJlY3QgeD0nMjU4JyB5PScyNDInIHdpZHRoPSc4NCcgaGVpZ2h0PScxNTgnIHJ4PScxOCcgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nLjgyJy8+PHJlY3QgeD0nMjgwJyB5PScyMTYnIHdpZHRoPSc0MCcgaGVpZ2h0PScyOCcgcng9JzgnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknLz48L3N2Zz4=">
-            </div>
-            <div class="luvit-card__body">
-              <p class="luvit-card__eyebrow">Trio</p>
-              <h3 class="luvit-card__title">بكج البشرة الجافة</h3>
-              <p class="luvit-card__text"><strong>شو جوّاها:</strong> منظّف هيدرا اللطيف · سيروم فيتامين سي · كريم الترطيب المكثّف</p>
-              <p class="luvit-card__text"><strong>لمين:</strong> إذا بدك الثلاث خطوات مع بعض: تنظيف، سيروم، ترطيب.</p>
-              <div class="luvit-card__footer">
-                <span class="luvit-card__price">44.00 د.ا</span>
-                <a href="/?add-to-cart=205" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="205" data-quantity="1"
-                   aria-label="أضيفي بكج البشرة الجافة إلى السلة">أضيفي إلى السلة</a>
-              </div>
-            </div>
-          </article>
+      </article>
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" width="800" height="800"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-clarify.webp" alt="روتين التنقية والتوازن">
         </div>
-
-      </div>
-
-      <div class="luvit-rail__controls">
-
-        <!-- 🔴 تضل فاضية · motion.js قسم 13 بيبني الشيبس من data-rail-label -->
-        <div class="luvit-rail__chips"></div>
-
-        <div class="luvit-rail__arrows">
-          <button type="button" class="luvit-rail__arrow" data-rail="prev" aria-label="البكج السابق">
-            <!-- بيأشّر على بداية السطر · والصفحة RTL يعني عاليمين -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="m9 6 6 6-6 6"/>
-            </svg>
-          </button>
-          <button type="button" class="luvit-rail__arrow" data-rail="next" aria-label="البكج التالي">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="m15 6-6 6 6 6"/>
-            </svg>
-          </button>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a href="/product/clarify-balance-routine/">روتين التنقية والتوازن</a></h3>
+          <p class="luvit-card__text">غسول البشرة الدهنية · تونر تضييق المسامات · سيروم فيتامين سي · كريم الترطيب والترميم</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">61.00</span> د.ا</span>
+            <a href="/?add-to-cart=204" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="204" data-quantity="1"
+               aria-label="أضيفي روتين التنقية والتوازن إلى السلة">أضيفي إلى السلة</a>
+          </div>
         </div>
-
-      </div>
-
+      </article>
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" width="800" height="800"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-glow.webp" alt="روتين الإشراقة">
+        </div>
+        <div class="luvit-card__body">
+          <h3 class="luvit-card__title"><a href="/product/brighten-glow-routine/">روتين الإشراقة</a></h3>
+          <p class="luvit-card__text">غسول البشرة الجافة والحساسة · تونر البشرة الجافة والحساسة · سيروم فيتامين سي · كريم الترطيب والترميم</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">61.00</span> د.ا</span>
+            <a href="/?add-to-cart=203" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="203" data-quantity="1"
+               aria-label="أضيفي روتين الإشراقة إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
     </div>
-
   </div>
 </section>
 
-
-<!-- ===== p3-skin-types.html ===== -->
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات · سكشن 3 · تسوّقي حسب نوع بشرتك
-  ============================================================================
-  مولّد من library/products-preview.html · لا تعدّل هون، عدّل بالمعاينة وأعد التوليد.
-
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : skin-types       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الشريط انقلب من band-mist لـband-mist بمراجعة الصفحة الثمانية كاملة.
-     غير إنه بيصلّح الإيقاع، هو الأصح بصرياً: .luvit-option خلفيته
-     --field-bg (#FFFFFF)، فعلى band-mist (#FFFFFF) البلاطة ما بيبيّنها
-     غير الحد. على mist (#FAFCFD) بتقرا كبلاطة فعلاً.
-
-  ---------------------------------------------------------------------------
-  🔴 بوابتان · ولا وحدة منهم بتنفتح لحالها
-  ---------------------------------------------------------------------------
-  ١ · ولا بلاطة بتنزل قبل ما تكون صفحتها موجودة فعلاً. أربع صفحات لازم
-      تكون منشورة أول:
-        /routines/oily · /routines/dry · /routines/combination · /routines/sensitive
-      (خطة صفحة المنتجات · قسم 3 · «بلاطة بتودّي على ولا مكان وعد مكسور»)
-  ٢ · وسطر الكويز وزر «اكتشفي روتينك» ما بينزلوا قبل ما تكون صفحة /quiz
-      موجودة · نفس البوابة اللي على سكشن ٨.
-
-  🔴 انشال رقم «أربع أسئلة» من سطر الكويز.
-     الرقم ما إله مصدر، وبيناقض اللي منشور فعلاً: 04-quiz.html سطر 73
-     مكتوب فيه «أقل من دقيقة · ٥ أسئلة بس». وحدة منهم غلط، و/quiz لسا
-     ما انبنت أصلاً فما في مصدر يحسم.
-     ⤷ لما تنبني الصفحة: ثبّت العدد الحقيقي، وحدّث 04-quiz.html وسكشن ٨
-       بنفس اللحظة، وإلا بيصير عندك رقمين على نفس الموقع.
-
-  🔴 وانغيّر «مش متأكدة من نوعها؟» لـ«مش متأكدة من نوع بشرتك؟».
-     الأصل بالخطة مكتوب «نوعها» (غايب) وباقي الجملة كلها مخاطبة.
-     ⤷ تعديل على كوبي منصوص بالخطة · بده موافقة ريّان.
-
-  ⚠ الكلاس luvit-option--link انشال · ما إله وجود بـtokens.css أصلاً
-     (فحص grep: صفر نتيجة). وما بده كلاس جديد من الأساس، لأن البلاطات
-     روابط. القاعدة الناقصة اللي لازم تنضاف لـtokens.css جنب بلوك
-     OPTION CARDS (سطر ~2067):
-
-       a.luvit-option { text-decoration: none; color: var(--color-ink); }
-       a.luvit-option .luvit-option__icon { color: var(--aqua-500); }
-       .luvit-option__icon svg { width: 64px; height: 64px; display: block; }
-       a.luvit-option:hover { border-color: var(--aqua-400); }
-       a.luvit-option:hover::after { transform: translateY(0); }
-       a.luvit-option:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--color-ring); }
-
-     🔴 بلا هالقاعدة البلاطات بتطلع مسطّرة وبلون رابط المتصفح، والأيقونات
-        بتطلع زرقا لأنها stroke=currentColor. وأهم من الشكل: الحالات
-        التفاعلية الأربع الموجودة بـtokens.css كلها معلّقة على
-        :has(input:checked) و:has(input:focus-visible)، وما في input
-        بنسخة الرابط · يعني ما في حلقة تركيز للكيبورد. هاي مشكلة وصول،
-        مش تلميع.
-
-  ✅ ولا سعر ولا رقم ولا ادعاء بهذا السكشن · نص وأيقونات بس
-  ⚠ الروابط هون بلا شرطة أخيرة (/routines) وبالترويسة معها (/routines/).
-     ووردبريس بيعمل 301 لوحدة منهم · وحّدها قبل ما تشتري إعلانات.
-  ============================================================================
+  LUVIT · صفحة المتجر (/products/) · سكشن ٣ من ٨ · بوابات الهدف
+  🔴 مولّد · لا تعدّله بالإيد.
 -->
-
 <section class="luvit-section band-mist" data-nav-bg="light" id="skin-types">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow"><bdi>Skin type</bdi></p>
-      <h2 class="luvit-section__title">تسوّقي حسب نوع بشرتك</h2>
-      <p class="luvit-section__sub">اختاري نوعك ومنوديكي على الروتين اللي إله.</p>
+      <p class="luvit-section__eyebrow">Start here</p>
+      <h2 class="luvit-section__title">مش عارفة من وين تبلّشي؟</h2>
+      <p class="luvit-section__sub">اختاري الهدف، ومنوريكِ الروتين كامل بخطواته.</p>
     </div>
 
-    <div class="luvit-optiongrid" data-luvit="stagger">
-
-      <!-- دهنية · لمعة على انحناءة الخد -->
-      <a class="luvit-option" href="/routines/clarify">
-        <span class="luvit-option__icon" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 8C13 22 12 42 23 54c6 6 15 7 23 3"/>
-            <path d="M23 22c6-3 13-3 19 0"/>
-            <path d="M22 32c7-3.5 15-3.5 22 0"/>
-            <path d="M24 42c6-3 12.5-3 18 0"/>
-          </svg>
-        </span>
-        <span class="luvit-option__label">البشرة الدهنية</span>
-      </a>
-
-      <!-- جافة · قطرة -->
+    <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
       <a class="luvit-option" href="/routines/hydration">
-        <span class="luvit-option__icon" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M32 9c0 0 14 16.5 14 27a14 14 0 0 1-28 0C18 25.5 32 9 32 9z"/>
-            <path d="M25.5 38.5a6.5 6.5 0 0 0 4.5 7"/>
-          </svg>
-        </span>
-        <span class="luvit-option__label">البشرة الجافة</span>
+        <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/></svg></span>
+        <span class="luvit-option__label">ترطيب ودعم<br><small>للبشرة الجافة أو الحسّاسة</small></span>
       </a>
-
-      <!-- مختلطة · انقسام: نص فيه قطرة ونص فيه لمعة -->
       <a class="luvit-option" href="/routines/clarify">
-        <span class="luvit-option__icon" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="32" cy="32" r="22"/>
-            <path d="M32 10v44"/>
-            <path d="M21 25.5c0 0 5 6.2 5 9.6a5 5 0 0 1-10 0c0-3.4 5-9.6 5-9.6z"/>
-            <path d="M39 28c3-1.6 6.2-1.6 9.2 0"/>
-            <path d="M39 37c3-1.6 6.2-1.6 9.2 0"/>
-          </svg>
-        </span>
-        <span class="luvit-option__label">البشرة المختلطة</span>
+        <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20c8 0 15-5 16-16C11 4 4 9 4 20z"/><path d="M4 20c3-5 7-8 11-10"/></svg></span>
+        <span class="luvit-option__label">تنقية وتوازن<br><small>للبشرة الدهنية أو المختلطة</small></span>
       </a>
-
-      <!-- حسّاسة · احمرار منتشر · حلقات بتخفّ لبرّا -->
-      <a class="luvit-option" href="/routines/hydration">
-        <span class="luvit-option__icon" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="32" cy="32" r="6.5"/>
-            <circle cx="32" cy="32" r="13.5" stroke-dasharray="3.5 5.5"/>
-            <circle cx="32" cy="32" r="20.5" stroke-dasharray="3 7.5"/>
-          </svg>
-        </span>
-        <span class="luvit-option__label">البشرة الحسّاسة</span>
+      <a class="luvit-option" href="/routines/glow">
+        <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg></span>
+        <span class="luvit-option__label">إشراقة<br><small>للبهتان وتفاوت اللون</small></span>
       </a>
-
     </div>
 
-    <p style="text-align:center;margin-top:var(--space-6)">مش متأكدة من نوع بشرتك؟ جاوبي على كم سؤال ومنقلّك.</p>
-
-    <p style="text-align:center;margin-top:var(--space-4)">
-      <a class="luvit-btn" href="/quiz">اكتشفي روتينك</a>
-      <a class="luvit-btn luvit-btn--ghost" href="/routines">كل الروتينات</a>
-    </p>
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--ghost" href="/quiz">أو جاوبي كم سؤال ومنختارلك</a>
+    </div>
   </div>
 </section>
 
-
-<!-- ===== p4-products.html ===== -->
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات (/products/) · سكشن ٤ من ٨ · المنتجات المفردة
-  ============================================================================
-  المرجع: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» ← البند ٤
-  ستايل البيت: library/sections/05-products.html · الكلاسات من library/tokens.css
+  LUVIT · صفحة المتجر (/products/) · سكشن ٤ من ٨ · الشبكة الكاملة
+  🔴 مولّد · لا تعدّله بالإيد · وخصوصاً الأسعار: بتنسحب من ووكومرس.
 
-  🔴 هذا البلوك كله PLACEHOLDER · الويدجت بيستبدله
-  ---------------------------------------------------------------------------
-  بالإلمنتور هذا السكشن بيصير Elementor Products widget (حلقة ووكومرس حيّة).
-  الكروت الثلاثة اللي تحت موجودة عشان تثبّت شكل الشبكة والحواف بس، وبينحذفوا
-  لحظة ما ينزل الويدجت. ولا سطر منهم بينشر لصفحة حيّة زي ما هو.
-
-  إعدادات الويدجت (من الخطة، البند ٤):
-    · Columns: ٤ على ≥1000px · ٣ على 700-999px · ٢ على الموبايل · ١ تحت 360px
-      (وهاد بالضبط سلوك .luvit-card-grid بـtokens.css:1052-1072، فما بده تعديل)
-    · Star Rating: OFF · ولا سلوت تقييم، ولا صف نجوم، ولا عدد آراء
-    · Price: من ووكومرس · ممنوع يتكتب سعر بالـHTML، والخطة قاطعة فيها
-    · Sale Badge / Best seller: OFF · صفر طلبات لحد الآن
-
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله (أو ويدجت Products مباشرة)
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : products       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الشريط انقلب من band-light لـband-light بمراجعة الصفحة الثمانية كاملة ·
-     كان هاد السكشن وسكشن ٥ الاثنين mist ورا بعض. الإيقاع الصح:
-       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
-     و.luvit-card خلفيته --color-paper، ونفس الشغلة ماشية على الرئيسية
-     (home-preview.html:1513 · شبكة المنتجات على band-light).
-
-  ---------------------------------------------------------------------------
-  🔴 انشال نوع البشرة من فوق كل كرت · وما بينرجع بتخمين
-  ---------------------------------------------------------------------------
-  كان مكتوب «البشرة المختلطة» و«البشرة الدهنية» و«البشرة الجافة» فوق الكروت
-  الثلاثة. انشالوا كلهم.
-  خطة-صفحة-المنتجات.md ← «5 · WHAT NEEDS RYAN» بتقول بالحرف إن تصنيف نوع
-  البشرة لكل منتج بيجي من صاحب العلامة، وإن تخمينه «same category as a fake
-  review». يعني تعليمه placeholder بتعليق ما بيشرّعه · شرعنة الـplaceholder
-  بالتعليق بتنطبق على الأسعار بس، ولا مرة على الحقائق.
-  ⤷ لما يسلّم صاحب العلامة التصنيف: رجّع <p class="luvit-card__eyebrow">
-    بمكان السلوت المعلّم، وقبلها ضيف قاعدة عربية للـeyebrow بـtokens.css،
-    لأن .luvit-card__eyebrow (سطر 759) عليه font-latin وuppercase
-    و--tracking-caption · وtokens.css:103 مكتوب جنبه إن الـtracking
-    للكابشنات اللاتينية بس ولا مرة على العربي.
-
-  ⚠ اللي لازم ينتبهله المُجمّع
-  ---------------------------------------------------------------------------
-  · 🔴 أسماء المنتجات والوصف placeholder · الأسماء الحقيقية والصور
-    بتيجي من صاحب العلامة (مرحلة ٨).
-  · ⚠ وحّد إملاء الأسماء مع سكشن ٢ · هون «منظف» وهناك «منظّف».
-  · ولا رابط منتج مكتوب هون · الخطة بتقول «each card → its product page» بس
-    ما بتسمّي مسار، وقاعدة «صفر روابط ميتة» سارية. ووكومرس بيولّد الروابط لحاله،
-    فالعنوان تُرك نصاً بلا <a> بدل ما ينحط رابط مخترع.
-  · الرابط الوحيد بالسكشن: «كل المنتجات» ← /shop/ · وهو من الخطة حرفياً.
-  · الصور data:image/svg+xml بلوحة العلامة · نفس تقنية 05-products.html.
-  · ثلاث كروت بشبكة أربع أعمدة بتترك خانة فاضية على الديسكتوب · الحلقة الحيّة
-    بتعبّيها. ولا تعبّيها بكرت رابع مكتوب بالإيد.
-  ============================================================================
+  · الترتيب **بترتيب الاستعمال** مش بالسعر ولا بالأبجدية: غسول ← تونر ←
+    سيروم ← كريم · فالتصفّح نفسه بيعلّم الروتين.
+  · كل بطاقة حاملة رقم خطوتها، ونسبة مادتها الفعّالة البطلة كشارة ·
+    وهاي **بديل النجوم** عندنا: رقم قابل للفحص على العبوة، بينما ولا
+    واحد من المراجع الخمسة عنده دليل اجتماعي على مستوى المنتج أصلاً.
 -->
-
 <section class="luvit-section band-light" data-nav-bg="light" id="products">
   <div class="luvit-section__inner">
-
     <div class="luvit-section__head" data-luvit="reveal">
-      <h2 class="luvit-section__title">المنتجات المفردة</h2>
-      <p class="luvit-section__sub">كل منتج بنِسَبه مكتوبة، وبتقدري تضيفيه للسلة من هون.</p>
+      <p class="luvit-section__eyebrow">All products</p>
+      <h2 class="luvit-section__title">المنتجات بترتيب استعمالها</h2>
+      <p class="luvit-section__sub">من الغسول للكريم · الرقم على كل بطاقة هو مكانها بالروتين.</p>
     </div>
 
     <div class="luvit-card-grid" data-luvit="stagger">
-
       <article class="luvit-card luvit-card--product">
         <div class="luvit-card__media">
-          <img loading="lazy" decoding="async" alt="منظف هيدرا اللطيف"
-               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3AxJyB4MT0nMCcgeTE9JzAnIHgyPScwJyB5Mj0nMSc+PHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPSdyZ2IoMjE0LDI0NSwyNTEpJy8+PHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPSdyZ2IoNzYsMTk3LDIxOCknLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0nNDAwJyBoZWlnaHQ9JzUwMCcgZmlsbD0ndXJsKCNwMSknLz48cmVjdCB4PScxNTInIHk9JzE1MCcgd2lkdGg9Jzk2JyBoZWlnaHQ9JzI1MCcgcng9JzIwJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJyBvcGFjaXR5PScuOTQnLz48cmVjdCB4PScxODAnIHk9JzEwOCcgd2lkdGg9JzQwJyBoZWlnaHQ9JzUwJyByeD0nMTEnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknLz48L3N2Zz4=">
+          <span class="luvit-card__badge"><span dir="ltr">0.5%</span> حمض الساليسيليك</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-1-bottle.webp" alt="غسول البشرة الدهنية">
         </div>
         <div class="luvit-card__body">
-          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
-          <h3 class="luvit-card__title">منظف هيدرا اللطيف</h3>
-          <p class="luvit-card__text">رغوة ناعمة تنظّف دون أن تجفّف.</p>
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">1</span>
+            <p class="luvit-card__spec">
+              <b>تنظيف</b>
+              <span class="luvit-card__vol">200ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/sebum-balancing-gel-cleanser/">غسول البشرة الدهنية</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من SLS وSLES · نباتي ١٠٠٪</p>
           <div class="luvit-card__footer">
-            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
-            <span class="luvit-card__price">12.00 د.ا</span>
+            <span class="luvit-card__price"><span dir="ltr">14.00</span> د.ا</span>
+            <a href="/?add-to-cart=280" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="280" data-quantity="1"
+               aria-label="أضيفي غسول البشرة الدهنية إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge"><span dir="ltr">0.5%</span> حمض هيالورونيك</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-hydrating-gel-cleanser-1-bottle.webp" alt="غسول البشرة الجافة والحساسة">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">1</span>
+            <p class="luvit-card__spec">
+              <b>تنظيف</b>
+              <span class="luvit-card__vol">200ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/hydrating-gel-cleanser/">غسول البشرة الجافة والحساسة</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من SLS وSLES · نباتي ١٠٠٪</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">14.00</span> د.ا</span>
             <a href="/?add-to-cart=201" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="201" data-quantity="1"
-                   aria-label="أضيفي منظف هيدرا اللطيف إلى السلة">أضيفي إلى السلة</a>
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="201" data-quantity="1"
+               aria-label="أضيفي غسول البشرة الجافة والحساسة إلى السلة">أضيفي إلى السلة</a>
           </div>
         </div>
       </article>
-
       <article class="luvit-card luvit-card--product">
         <div class="luvit-card__media">
-          <img loading="lazy" decoding="async" alt="سيروم فيتامين سي"
-               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3AyJyB4MT0nMCcgeTE9JzAnIHgyPScwJyB5Mj0nMSc+PHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPSdyZ2IoMjA4LDI0MywyNDkpJy8+PHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPSdyZ2IoNDEsMTY5LDE5MiknLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0nNDAwJyBoZWlnaHQ9JzUwMCcgZmlsbD0ndXJsKCNwMiknLz48cmVjdCB4PScxNTgnIHk9JzE3MCcgd2lkdGg9Jzg0JyBoZWlnaHQ9JzIzMCcgcng9JzE2JyBmaWxsPSdyZ2IoMTY2LDEwMSw0MiknIG9wYWNpdHk9Jy44NScvPjxyZWN0IHg9JzE3NicgeT0nMTA0JyB3aWR0aD0nNDgnIGhlaWdodD0nNzAnIHJ4PScxMicgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScvPjwvc3ZnPg==">
+          <span class="luvit-card__badge"><span dir="ltr">5% + 0.5%</span> AHA + BHA</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-1-bottle.webp" alt="تونر تضييق المسامات">
         </div>
         <div class="luvit-card__body">
-          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
-          <h3 class="luvit-card__title">سيروم فيتامين سي</h3>
-          <p class="luvit-card__text">قوام سائل خفيف مع فيتامين سي ونياسيناميد.</p>
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">2</span>
+            <p class="luvit-card__spec">
+              <b>توازن</b>
+              <span class="luvit-card__vol">200ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/clarifying-pore-tightening-toner/">تونر تضييق المسامات</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من العطور</p>
           <div class="luvit-card__footer">
-            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
-            <span class="luvit-card__price">22.00 د.ا</span>
-            <a href="/?add-to-cart=191" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="191" data-quantity="1"
-                   aria-label="أضيفي سيروم فيتامين سي إلى السلة">أضيفي إلى السلة</a>
+            <span class="luvit-card__price"><span dir="ltr">13.00</span> د.ا</span>
+            <a href="/?add-to-cart=278" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="278" data-quantity="1"
+               aria-label="أضيفي تونر تضييق المسامات إلى السلة">أضيفي إلى السلة</a>
           </div>
         </div>
       </article>
-
       <article class="luvit-card luvit-card--product">
         <div class="luvit-card__media">
-          <img loading="lazy" decoding="async" alt="كريم الترطيب المكثّف"
-               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0MDAgNTAwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J3AzJyB4MT0nMCcgeTE9JzAnIHgyPScwJyB5Mj0nMSc+PHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPSdyZ2IoMjE0LDI0NSwyNTEpJy8+PHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPSdyZ2IoMzAsMTM0LDE1NiknLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0nNDAwJyBoZWlnaHQ9JzUwMCcgZmlsbD0ndXJsKCNwMyknLz48cGF0aCBkPSdNMTY4IDE1MCBoNjQgdjI0MCBhMTIgMTIgMCAwIDEgLTEyIDEyIGgtNDAgYTEyIDEyIDAgMCAxIC0xMiAtMTIgeicgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nLjk0Jy8+PHJlY3QgeD0nMTc2JyB5PScxMjAnIHdpZHRoPSc0OCcgaGVpZ2h0PSczNCcgcng9JzgnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknLz48L3N2Zz4=">
+          <span class="luvit-card__badge"><span dir="ltr">2%</span> حمض الهيالورونيك 8D</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-1-bottle.webp" alt="تونر البشرة الجافة والحساسة">
         </div>
         <div class="luvit-card__body">
-          <!-- 🔴 سلوت نوع البشرة · فاضي عن قصد · التصنيف بيجي من صاحب العلامة · ممنوع يتخمّن -->
-          <h3 class="luvit-card__title">كريم الترطيب المكثّف</h3>
-          <p class="luvit-card__text">قوام خفيف بينشرب بسرعة وما بيترك لزوجة.</p>
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">2</span>
+            <p class="luvit-card__spec">
+              <b>توازن</b>
+              <span class="luvit-card__vol">200ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/8d-hyaluronic-acid-toner/">تونر البشرة الجافة والحساسة</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من الكحول</p>
           <div class="luvit-card__footer">
-            <!-- سلوت السعر: ووكومرس بيطبع .luvit-card__price هون · ممنوع يتكتب سعر بالـHTML -->
-            <span class="luvit-card__price">15.00 د.ا</span>
+            <span class="luvit-card__price"><span dir="ltr">13.00</span> د.ا</span>
             <a href="/?add-to-cart=202" rel="nofollow"
-                   class="luvit-btn add_to_cart_button ajax_add_to_cart"
-                   data-product_id="202" data-quantity="1"
-                   aria-label="أضيفي تونر الترطيب العميق إلى السلة">أضيفي إلى السلة</a>
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="202" data-quantity="1"
+               aria-label="أضيفي تونر البشرة الجافة والحساسة إلى السلة">أضيفي إلى السلة</a>
           </div>
         </div>
       </article>
-
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge"><span dir="ltr">10% + 2%</span> AHA + BHA</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-1-bottle.webp" alt="سيروم التقشير">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">3</span>
+            <p class="luvit-card__spec">
+              <b>علاج</b>
+              <span class="luvit-card__vol">30ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/aha-bha-peeling-serum/">سيروم التقشير</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من العطور</p>
+          <p class="luvit-card__warn">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 8v5"/><path d="M12 16.5h.01"/><circle cx="12" cy="12" r="9"/></svg>
+            مرتين بالأسبوع · مش يومي
+          </p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">16.00</span> د.ا</span>
+            <a href="/?add-to-cart=279" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="279" data-quantity="1"
+               aria-label="أضيفي سيروم التقشير إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge"><span dir="ltr">10%</span> نياسيناميد</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-1-bottle.webp" alt="سيروم تضييق المسامات">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">3</span>
+            <p class="luvit-card__spec">
+              <b>علاج</b>
+              <span class="luvit-card__vol">30ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/pore-tightening-brightening-serum/">سيروم تضييق المسامات</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من الكحول · خالٍ من الملوّنات</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">16.00</span> د.ا</span>
+            <a href="/?add-to-cart=277" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="277" data-quantity="1"
+               aria-label="أضيفي سيروم تضييق المسامات إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge"><span dir="ltr">5%</span> سنتيلا</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-1-bottle.webp" alt="كريم سنتيلا للبقع">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">3</span>
+            <p class="luvit-card__spec">
+              <b>علاج</b>
+              <span class="luvit-card__vol">50ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/centella-blemish-cream/">كريم سنتيلا للبقع</a></h3>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">18.00</span> د.ا</span>
+            <a href="/?add-to-cart=276" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="276" data-quantity="1"
+               aria-label="أضيفي كريم سنتيلا للبقع إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge"><span dir="ltr">2%</span> حمض هيالورونيك</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-1-bottle.webp" alt="سيروم الترطيب المكثّف">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">3</span>
+            <p class="luvit-card__spec">
+              <b>علاج</b>
+              <span class="luvit-card__vol">30ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/intensive-hydrating-serum/">سيروم الترطيب المكثّف</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من الكحول · خالٍ من الملوّنات</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">18.00</span> د.ا</span>
+            <a href="/?add-to-cart=275" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="275" data-quantity="1"
+               aria-label="أضيفي سيروم الترطيب المكثّف إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge"><span dir="ltr">10%</span> فيتامين سي</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-1-bottle.webp" alt="سيروم فيتامين سي">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">3</span>
+            <p class="luvit-card__spec">
+              <b>علاج</b>
+              <span class="luvit-card__vol">30ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/vitamin-c-serum/">سيروم فيتامين سي</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من الكحول · خالٍ من الملوّنات</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">19.00</span> د.ا</span>
+            <a href="/?add-to-cart=191" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="191" data-quantity="1"
+               aria-label="أضيفي سيروم فيتامين سي إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge"><span dir="ltr">2%</span> ألفا أربوتين</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-2-box-front.webp" alt="سيروم ألفا أربوتين المركّب">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">3</span>
+            <p class="luvit-card__spec">
+              <b>علاج</b>
+              <span class="luvit-card__vol">30ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/alpha-arbutin-complex-serum/">سيروم ألفا أربوتين المركّب</a></h3>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">22.00</span> د.ا</span>
+            <a href="/?add-to-cart=282" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="282" data-quantity="1"
+               aria-label="أضيفي سيروم ألفا أربوتين المركّب إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
+      <article class="luvit-card luvit-card--product">
+        <div class="luvit-card__media">
+          <span class="luvit-card__badge"><span dir="ltr">10%</span> بانثينول</span>
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-1-bottle.webp" alt="كريم الترطيب والترميم">
+        </div>
+        <div class="luvit-card__body">
+          <div class="luvit-card__head">
+            <span class="luvit-card__step" aria-hidden="true">4</span>
+            <p class="luvit-card__spec">
+              <b>ترطيب</b>
+              <span class="luvit-card__vol">75ml</span>
+            </p>
+          </div>
+          <h3 class="luvit-card__title"><a href="/product/moisturizing-repairing-cream/">كريم الترطيب والترميم</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من الكحول</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price"><span dir="ltr">15.00</span> د.ا</span>
+            <a href="/?add-to-cart=281" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="281" data-quantity="1"
+               aria-label="أضيفي كريم الترطيب والترميم إلى السلة">أضيفي إلى السلة</a>
+          </div>
+        </div>
+      </article>
     </div>
-
   </div>
 </section>
 
-
-<!-- ===== p5-ingredients.html ===== -->
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات · سكشن 5 من ٨ · شو جوّا العبوة
-  ============================================================================
-  مصدر التعليمات: _خطة/خطة-صفحة-المنتجات.md · القسم «5 · شو جوّا العبوة».
-  سكشن جديد لصفحة /products/ · مش مولّد من home-preview.html.
+  LUVIT · صفحة المتجر (/products/) · سكشن ٥ من ٨ · المكوّنات
+  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد.
 
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : ingredients       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ✅ النِسَب الأربعة مثبتة من عبوة LUV IT نفسها · مش أمثلة، وهي الأرقام الوحيدة
-     المسموحة بهالصفحة:
-     10% Vitamin C · 2% Niacinamide · 2% Hyaluronic acid · 2% Panthenol
-
-  ⚠ 🔴 وهاي نِسَب «سيروم فيتامين سي» تحديداً، مش كل التشكيلة. الكوبي الرسمي
-     بالخطة ما بيسمّي المنتج، فلما ينزل أكثر من SKU لازم السكشن يسمّيه بالنص
-     أو ينقسم · وإلا بيقرأ كأن كل التشكيلة بنفس النِسَب. قرار لريّان.
-
-  ⚠ ولا سعر ولا صورة ولا تقييم ولا أي رقم تاني بهالسكشن · وهاد مقصود.
-  ⚠ الرابط الوحيد: /ingredients · لازم الصفحة تكون موجودة قبل ما ينشر السكشن.
-
-  ⚠ ناقص بـtokens.css: `.luvit-ing` بتضل عامود واحد تحت 720px، والخطة بدها
-     2×2 على الموبايل. القاعدة بدها تنضاف بـtokens.css · ممنوع تنكتب inline هون.
-  ============================================================================
+  · المواد والنِسَب **مسحوبة من الكتالوج الرسمي** · ولا رقم مكتوب بالإيد.
+  · معروضة المواد اللي بتتكرر بمنتجين فأكثر · لأنها بتوصف الخط كله.
+  · 🔴 والمرساة ingredients **ممنوع تتغيّر**: الفوتر والرئيسية وأربع
+    صفحات روتين بيربطوا /products#ingredients · وكسرها ما بيرمي خطأ.
 -->
-
 <section class="luvit-section band-mist" data-nav-bg="light" id="ingredients">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">What's inside</p>
+      <p class="luvit-section__eyebrow">Inside the bottle</p>
       <h2 class="luvit-section__title">شو جوّا العبوة بالضبط</h2>
-      <p class="luvit-section__sub">نِسَب مكتوبة على العبوة نفسها، مش بالإعلان بس.</p>
+      <p class="luvit-section__sub">المواد الخام كورية والتصنيع بتركيا · والنِسَب مكتوبة على العبوة نفسها، تقدري تقرأيها وتتأكدي قبل ما تشتري.</p>
     </div>
 
     <div class="luvit-ing" data-luvit="stagger">
-
       <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">10%</span>
-        <div class="luvit-ing__body">
-          <p class="luvit-ing__name">فيتامين سي · <bdi>Vitamin C</bdi></p>
-          <p class="luvit-ing__note">يوحّد لون البشرة ويعطيها إشراقة تدريجية.</p>
-        </div>
-      </div>
-
-      <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">2%</span>
-        <div class="luvit-ing__body">
-          <p class="luvit-ing__name">نياسيناميد · <bdi>Niacinamide</bdi></p>
-          <p class="luvit-ing__note">يقلّل ظهور المسام ويوازن إفراز الدهون.</p>
-        </div>
-      </div>
-
-      <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">2%</span>
-        <div class="luvit-ing__body">
-          <p class="luvit-ing__name">حمض الهيالورونيك · <bdi>Hyaluronic acid</bdi></p>
-          <p class="luvit-ing__note">يسحب الماء لطبقات البشرة ويحبسه فيها.</p>
-        </div>
-      </div>
-
-      <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">2%</span>
+        <span class="luvit-ing__pct"><span dir="ltr">10%</span></span>
         <div class="luvit-ing__body">
           <p class="luvit-ing__name">بانثينول · <bdi>Panthenol</bdi></p>
-          <p class="luvit-ing__note">يهدّي الاحمرار ويدعم حاجز البشرة.</p>
+          <p class="luvit-ing__note">تغذية وحماية البشرة · بـ7 منتجات من التشكيلة.</p>
         </div>
       </div>
-
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">10%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">نياسيناميد · <bdi>Niacinamide</bdi></p>
+          <p class="luvit-ing__note">تقليل لمعان البشرة · بـ5 منتجات من التشكيلة.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">2%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">حمض هيالورونيك · <bdi>Hyaluronic acid</bdi></p>
+          <p class="luvit-ing__note">احتفاظ عميق بالرطوبة · بـ5 منتجات من التشكيلة.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">5%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">جلسرين · <bdi>Glycerin</bdi></p>
+          <p class="luvit-ing__note">ترطيب طبقات البشرة · بـ3 منتجات من التشكيلة.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">10% + 2%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">AHA + BHA</p>
+          <p class="luvit-ing__note">تنظيف عميق لمسامات البشرة · بـ2 منتجات من التشكيلة.</p>
+        </div>
+      </div>
     </div>
-
-    <p style="text-align:center;margin-block-start:var(--space-7)">
-      <a href="/ingredients" class="luvit-btn luvit-btn--ghost">اقرأي كل المكوّنات</a>
-    </p>
   </div>
 </section>
 
-
-<!-- ===== p6-delivery.html ===== -->
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات (/products/) · سكشن 6 من ٨ · كيف بتوصلك الطلبية
-  ============================================================================
-  ملف مستقل لصفحة /products/ · مش مولّد من library/home-preview.html.
+  LUVIT · صفحة المتجر (/products/) · سكشن ٦ من ٨ · التوصيل والدفع
+  🔴 مولّد · لا تعدّله بالإيد.
 
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : delivery       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ---------------------------------------------------------------------------
-  🔴🔴🔴 قفل ١ · بند «أيام العمل» ممنوع ينزل بقيمة · GATED
-  ---------------------------------------------------------------------------
-  البند الثالث بينزل بعنوانه وقيمته **فاضية عن قصد**. شركة التوصيل لسا ما ردّت.
-
-  ممنوع تكتب أي يوم، ولا أي جدول، ولا «من الأحد للخميس»، ولا أي قاعدة عن يوم
-  الجمعة، قبل ما **ريّان** يأكّد بالنص أيام العمل الفعلية وقاعدة الجمعة.
-  السؤال اللي لازم ينسأل حرفياً:
-     «أيام التوصيل عندنا شو بالضبط، ومنيّن لوين، وهل فيه توصيل يوم الجمعة؟»
-
-  🔴 إذا الصفحة رح تنزل قبل التأكيد: **احذف البند الثالث كامل**، ولا تعبّيه
-     بتخمين ولا بنص عام.
-  🔴 وإذا انحذف: «ثلاث أشياء» بالسطر التمهيدي لازم تصير «إشيين».
-  🔴 والقيمة الفاضية بتخلّي البطاقة الثالثة أقصر شوي من أخواتها · هاد مقصود
-     ومقبول، مش باغ تصميم يتصلّح بنص وهمي.
-
-  ---------------------------------------------------------------------------
-  🔴 قفل ٢ · أجرة التوصيل placeholder · ممنوع تنكتب بالـHTML
-  ---------------------------------------------------------------------------
-  «[X] د.أ ثابتة» نص مؤقت للبناء بس.
-  الرقم لازم **ينطبع من ووكومرس** (نسخة الـFlat rate الوحيدة على زون JO)
-  عبر شورت كود أو سنيبت بيحط السعر محل [X]، ولا مرة ينكتب رقم ثابت هون،
-  عشان السكشن والشيك أوت وشريط الترويسة ما يقدروا يتناقضوا.
-  والرقم اللي بالزون حالياً placeholder كمان · صاحب الموقع بيسلّم الرقم الحقيقي.
-
-  ---------------------------------------------------------------------------
-  ⚠ ملاحظات بناء
-  ---------------------------------------------------------------------------
-  · ولا رابط بهالسكشن عن قصد. «الشحن والتوصيل» → /shipping ما بينحط إلا لما
-    الصفحة تنبني فعلياً (بند ٧.٢ لسا ☐). ولا href="#" بينزل.
-  · ممنوع هون أي وعد عن سرعة التوصيل بأي صياغة · ولا مدة · ولا نسبة · ولا رقم RTO.
-  · .luvit-trust حالياً عمودين على الموبايل وأربعة على ≥760px، وهالسكشن ٣ بنود.
-    بده قاعدة ٣-أعمدة بـtokens.css (مكتوبة بملاحظات التسليم) وإلا بتطلع
-    ٢+١ على الموبايل و٣-من-٤ على الديسكتوب.
-  ============================================================================
+  · 🔴 الحقيقة الثالثة هي **قلب قيد لميزة**. استراتيجية العلامة بتمنع
+    الخصومات الأونلاين عشان ما تضرب الصيدليات · فبدل ما نخبّيها كقيد،
+    منعلنها كوعد. وهي أصدق من «حتى ٨٠٪» تبع كاشمير اللي حقيقتها ٥٠٪
+    ثابتة على ٢٧٥ من ٢٧٥ منتجاً.
 -->
-
 <section class="luvit-section band-light" data-nav-bg="light" id="delivery">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
       <p class="luvit-section__eyebrow">Delivery</p>
       <h2 class="luvit-section__title">كيف بتوصلك الطلبية</h2>
-      <p class="luvit-section__sub">ثلاث أشياء بس بتحتاجي تعرفيها قبل ما تطلبي.</p>
     </div>
 
     <div class="luvit-trust" data-luvit="stagger">
-
       <div class="luvit-trust__item">
-        <span class="luvit-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/>
-          </svg>
-        </span>
+        <span class="luvit-trust__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg></span>
         <p class="luvit-trust__title">الدفع عند الاستلام</p>
-        <p class="luvit-trust__note">ادفعي لمّا يوصلك</p>
+        <p class="luvit-trust__note">ادفعي للمندوب لمّا يوصلك · ما في دفع مسبق</p>
       </div>
-
       <div class="luvit-trust__item">
-        <span class="luvit-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="6" width="14" height="11" rx="2"/><path d="M15 9h4l3 3v5h-7z"/>
-            <circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/>
-          </svg>
-        </span>
-        <p class="luvit-trust__title">توصيل لكل محافظات الأردن</p>
-        <!-- 🔴 placeholder · الرقم بينطبع من ووكومرس · ممنوع يتكتب رقم ثابت هون -->
-        <p class="luvit-trust__note"><bdi>[X]</bdi> د.أ ثابتة</p>
+        <span class="luvit-trust__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V6h11v10"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>
+        <p class="luvit-trust__title">التوصيل ٢ دنانير</p>
+        <p class="luvit-trust__note">نفس السعر لكل محافظات الأردن</p>
       </div>
-
       <div class="luvit-trust__item">
-        <span class="luvit-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/>
-          </svg>
-        </span>
-        <p class="luvit-trust__title">أيام العمل</p>
-        <!-- 🔴🔴🔴 مقفول · فاضي عن قصد · ممنوع تعبّيه قبل ما ريّان يأكّد الأيام وقاعدة الجمعة · اقرأ رأس الملف -->
-        <p class="luvit-trust__note"></p>
+        <span class="luvit-trust__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v6c0 4.5 3 7.8 7 9 4-1.2 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <p class="luvit-trust__title">سعر الصيدلية نفسه</p>
+        <p class="luvit-trust__note">ما منرفع وما منّزل · نفس المنتج ونفس السعر</p>
       </div>
+    </div>
 
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--ghost" href="/shipping">تفاصيل الشحن والتوصيل</a>
     </div>
   </div>
 </section>
 
-<!-- ===== p7-faq.html ===== -->
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات · سكشن ٧ من ٨ · أسئلة بتتكرر
-  ============================================================================
-  المصدر: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» ← بند ٧.
-
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : products-faq       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الشريط بيضل band-mist · صح بالإيقاع وصح للمكوّن
-     (.luvit-acc__item خلفيته --color-paper فبده canvas تحته).
-     إيقاع الصفحة الثمانية بعد المراجعة:
-       ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
-
-  🔴 انغيّر السطر التمهيدي · «الأسئلة اللي بتوصلنا أكثر شي» انشالت.
-     المتجر صفر طلبات وما انطلق بعد، يعني ولا سؤال «وصلنا» لحد الآن.
-     هاد ادعاء مخترع من نفس فصيلة شارة «الأكثر مبيعًا» اللي الخطة أمرت
-     بشيلها من 05-products.html:52 لنفس السبب بالضبط.
-     البديل بيوصف محتوى السكشن، وهو صحيح من أول يوم.
-
-  🔴 ثلاث وعود ممنوعة هون · اقرأها قبل ما تعدّل أي كلمة:
-
-  · «بتفحصي الطلب وبعدها بتدفعي» ممنوعة تماماً.
-    الجملة هاي موجودة بـ11-faq.html سطر 49 وهي **غير مؤكدة**: صحيحة بس إذا
-    شركة التوصيل بتسمح بفتح الطرد قبل الدفع، وهاد ما انسأل عنه لحد الآن.
-    جواب «كيف بدفع؟» هون بيوعد بالدفع عند الاستلام **بس**، ولا بيلمّح للفحص.
-    ⤷ انفتح؟ ارجع لخطة الصفحة «5 · WHAT NEEDS RYAN» قبل ما تزيد أي كلمة.
-
-  · ولا رقم لمدة التوصيل · لا ساعات ولا أيام ولا وعد بالسرعة.
-    أيام العمل لسا ما تأكدت مع شركة التوصيل (نفس البند المعلّق بسكشن ٦).
-    جواب «متى بتوصل؟» مكتوب عشان يضل صحيح بلا رقم.
-    ⤷ تأكدت الأيام؟ استبدل الجملة الأخيرة برقم مثبّت، وحدّث سكشن ٦ بنفس اللحظة.
-
-  · جواب «إذا ما ناسبتني؟» مؤقت · نص سياسة الإرجاع لساته ما انكتب
-    (بند ٧.٣ بـ_خطة/خطة-الإطلاق.md · الموجود حالياً مسوّدة إنجليزية).
-    ⤷ انكتبت السياسة؟ بدّل الجواب وضيف رابط صفحتها.
-
-  ⚠ ولا رابط بهاد السكشن · terminal section بالتصميم (نص الخطة: "Onward link:
-    none"). و«تواصلي معنا» مكتوبة بلا anchor عن قصد، لأن ما في مسار تواصل
-    مسمّى بالخطة، وولا href="#" بينشر.
-    🔴 بس انتبه: هيك الصفحة بتطلب منها تتواصل وما بتعطيها طريقة. أول ما
-    ينثبّت مسار (/contact أو رابط واتساب) هاي الجملة هي مكانه.
-
-  ✅ ولا رقم ولا تقييم ولا عدد آراء ولا سعر بهاد الملف.
-  ============================================================================
+  LUVIT · صفحة المتجر (/products/) · سكشن ٧ من ٨ · الأسئلة
+  🔴 مولّد · لا تعدّله بالإيد.
 -->
-
 <section class="luvit-section band-mist" data-nav-bg="light" id="products-faq">
-  <div class="luvit-section__inner" style="max-inline-size:820px">
+  <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
       <p class="luvit-section__eyebrow">FAQ</p>
-      <h2 class="luvit-section__title">أسئلة بتتكرر</h2>
-      <p class="luvit-section__sub">الدفع، والتوصيل، والإرجاع، وكيف بتطلبي.</p>
+      <h2 class="luvit-section__title">أسئلة قبل ما تطلبي</h2>
     </div>
 
-    <div class="luvit-acc" data-acc-single>
-
+    <div class="luvit-acc" data-luvit="stagger">
       <details class="luvit-acc__item" open>
         <summary class="luvit-acc__q">
-          كيف بدفع؟
+          كم بتوصل الطلبية؟
           <span class="luvit-acc__sign" aria-hidden="true"></span>
         </summary>
-        <div class="luvit-acc__a"><p>الدفع عند الاستلام · بتدفعي للمندوب لمّا يوصلك الطلب. ما في دفع مسبق ولا بطاقة على الموقع، والخدمة متاحة لكل محافظات الأردن.</p></div>
+        <div class="luvit-acc__a"><p>التوصيل لكل محافظات الأردن بـ٢ دنانير · وبنتواصل معك على الواتساب لتثبيت الطلب قبل ما نرسله.</p></div>
       </details>
-
       <details class="luvit-acc__item">
         <summary class="luvit-acc__q">
-          متى بتوصل؟
+          وإذا المنتج ما ناسب بشرتي؟
           <span class="luvit-acc__sign" aria-hidden="true"></span>
         </summary>
-        <div class="luvit-acc__a"><p>أول ما يوصلنا طلبك منجهّزه ومنسلّمه لشركة التوصيل، والتوصيل لكل محافظات الأردن. أما مدة التوصيل بالضبط بأيام العمل، منكتبها هون لمّا نثبّتها مع شركة التوصيل · ما منحكيلك رقم قبل ما نتأكد منه.</p></div>
+        <div class="luvit-acc__a"><p>المفتوح ما بيرجع، وهاد معيار صناعة مستحضرات التجميل كلها لأسباب صحية · والمعيب بيرجع دايماً. التفاصيل كاملة بصفحة الاستبدال والإرجاع.</p></div>
       </details>
-
       <details class="luvit-acc__item">
         <summary class="luvit-acc__q">
-          إذا ما ناسبتني؟
+          ليش ما في خصومات؟
           <span class="luvit-acc__sign" aria-hidden="true"></span>
         </summary>
-        <div class="luvit-acc__a"><p>سياسة الإرجاع والاستبدال لسّا بتتكتب، وأول ما تجهز بتلاقيها كاملة بصفحتها. ولحد ذاك الوقت، إذا المنتج ما ناسب بشرتك تواصلي معنا وقوليلنا شو صار ومنشوف معك · وما منوعدك بإشي قبل ما ينكتب.</p></div>
+        <div class="luvit-acc__a"><p>سعر الموقع هو نفس سعر الصيدلية بالضبط · ما منرفع وما منّزل. خصم أونلاين بيخلق تضارب أسعار مع الصيدليات اللي بتبيع نفس المنتج.</p></div>
       </details>
-
       <details class="luvit-acc__item">
         <summary class="luvit-acc__q">
-          كيف بطلب؟
+          كيف بعرف إن النِسَب صحيحة؟
           <span class="luvit-acc__sign" aria-hidden="true"></span>
         </summary>
-        <div class="luvit-acc__a"><p>اختاري البكج أو المنتج وأضيفيه للسلة. بعدها بصفحة الطلب بتكتبي اسمك ورقم تلفونك وعنوانك وبتأكّدي الطلب · وبتدفعي عند الاستلام.</p></div>
+        <div class="luvit-acc__a"><p>كل نسبة معروضة هون مكتوبة على العبوة نفسها · تقدري تقرأيها لمّا توصلك وتتأكدي بنفسك.</p></div>
       </details>
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          أشتري روتين كامل ولا منتج واحد؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>لو مبلّشة، الروتين الجاهز بيوفّر عليكِ الاختيار ومرتّب بترتيبه الصح · ولو ناقصك خطوة وحدة بس، المنتج المفرد أوفر.</p></div>
+      </details>
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          بقدر أستعمل أكثر من سيروم؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a"><p>نعم، بس مش بنفس الوقت · وسيروم التقشير تحديداً مرتين بالأسبوع مش يومي. الروتينات الجاهزة مرتّبة بحيث ما يتعارضوا.</p></div>
+      </details>
+    </div>
 
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--ghost" href="/faq">كل الأسئلة الشائعة</a>
     </div>
   </div>
 </section>
 
-
-<!-- ===== p8-cta.html ===== -->
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات · سكشن 8 من 8 · CTA الختامي
-  ============================================================================
-  مصدر النص: _خطة/خطة-صفحة-المنتجات.md ← «1 · SECTION ORDER» ← بند 8
-
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|dark
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : ما بده
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ⚠ الموجة: هاد السكشن غامق وقبله سكشن ٧ «أسئلة بتتكرر» فاتح (band-dark)، يعني
-    الانتقال فاتح-لغامق، فلازم luvit-cut-top على الغامق نفسه. ولازم يجي مباشرة
-    بعد سكشن ٧ بلا كونتينر فاصل، وإلا بتصير الموجة شريطاً قائماً بذاته.
-
-  ⚠ luvit-cut-top بياكل ٧٠px من أعلى العنصر، والتعويض معمول أصلاً بـtokens.css
-    (سطر 2737): .luvit-cut-top.luvit-cut-top { padding-block-start:
-    calc(var(--cut-pad) + var(--cut-h)) } · ما تضيف padding inline هون ولا تعيد
-    حلها بطريقة تانية. والماسك ما بيلوّن إشي (سطر 2714)، فهو شغّال مع أي شريط فوقه.
-
-  ⚠ هاد السكشن ما بياخد كلاس band · .luvit-cta بيرسم مياهه الغامقة بحاله.
-    إيقاع الصفحة بعد المراجعة:
-      ١ mist · ٢ light · ٣ mist · ٤ light · ٥ mist · ٦ light · ٧ mist · ٨ غامق
-
-  🔴 انشال رقم «أربع أسئلة» من السطر التمهيدي.
-     الرقم ما إله مصدر، وبيناقض اللي منشور فعلاً: 04-quiz.html سطر 73
-     مكتوب فيه «أقل من دقيقة · ٥ أسئلة بس». وكان نفس الرقم مكرر بسكشن ٣،
-     يعني الصفحة كانت رح تنشر نفس الرقم غير المؤكد مرتين.
-     ⤷ لما تنبني /quiz: ثبّت العدد الحقيقي، وحدّث سكشن ٣ و04-quiz.html
-       بنفس اللحظة.
-
-  ⚠ الزر بيوصل لـ/quiz · ما بينشر قبل ما تكون صفحة الكويز موجودة فعلاً
-    (خطة الإطلاق · بوابة الروابط الميتة: ولا رابط فاضي بينشر).
-
-  ⚠ وسكشن ٣ كمان بيعرض نفس الرابط بنفس نص الزر «اكتشفي روتينك» ·
-    الخطة سامحة بالاثنين، بس الصفحة بتقرا كحلقة مقفلة إذا ضل النصان
-    متطابقين حرفياً. غيّر نص واحد منهم.
-
-  ✅ ولا رقم ولا سعر ولا ادعاء بهاد السكشن بعد التعديل · نص بس.
-  ============================================================================
+  LUVIT · صفحة المتجر (/products/) · سكشن ٨ من ٨ · الخاتمة
+  🔴 مولّد · لا تعدّله بالإيد.
 -->
-
 <section class="luvit-cta luvit-deep luvit-cut-top" data-nav-bg="dark" data-luvit-bubbles="16">
   <span class="luvit-deep__rays" aria-hidden="true"></span>
   <div class="luvit-cta__panel" data-luvit="reveal">
-    <h2 class="luvit-cta__title luvit-cta__accent">لسا محتارة؟</h2>
-    <p class="luvit-cta__sub">جاوبي على كم سؤال عن بشرتك، ومنبنيلك روتين على قدّك · والدفع عند الاستلام.</p>
+    <h2 class="luvit-cta__title luvit-cta__accent">لسا محتارة بين منتج ومنتج؟</h2>
+    <p class="luvit-cta__sub">جاوبي على كم سؤال عن بشرتك، ومنوريكِ الروتين اللي بيناسبها · والدفع عند الاستلام.</p>
     <a href="/quiz" class="luvit-btn luvit-btn--arrow">اكتشفي روتينك</a>
   </div>
 </section>

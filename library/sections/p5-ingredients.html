@@ -1,92 +1,56 @@
 <!--
-  ============================================================================
-  LUVIT · صفحة المنتجات · سكشن 5 من ٨ · شو جوّا العبوة
-  ============================================================================
-  مصدر التعليمات: _خطة/خطة-صفحة-المنتجات.md · القسم «5 · شو جوّا العبوة».
-  سكشن جديد لصفحة /products/ · مش مولّد من home-preview.html.
+  LUVIT · صفحة المتجر (/products/) · سكشن ٥ من ٨ · المكوّنات
+  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد.
 
-  كيف بينركّب:
-  1. Elementor ← اسحب ويدجت HTML جوّا كونتينر لحاله
-  2. الصق كل اللي تحت
-  3. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes، واكتب:
-       data-nav-bg|light
-     ⚠ الفاصل خط عامودي | مش يساوي =
-  CSS ID  : ingredients       ← Advanced ← CSS ID
-  4. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
-
-  ✅ النِسَب الأربعة مثبتة من عبوة LUV IT نفسها · مش أمثلة، وهي الأرقام الوحيدة
-     المسموحة بهالصفحة:
-     10% Vitamin C · 2% Niacinamide · 2% Hyaluronic acid · 2% Panthenol
-
-  ⚠ 🔴 وهاي نِسَب «سيروم فيتامين سي» تحديداً، مش كل التشكيلة. الكوبي الرسمي
-     بالخطة ما بيسمّي المنتج، فلما ينزل أكثر من SKU لازم السكشن يسمّيه بالنص
-     أو ينقسم · وإلا بيقرأ كأن كل التشكيلة بنفس النِسَب. قرار لريّان.
-
-  ⚠ ولا سعر ولا صورة ولا تقييم ولا أي رقم تاني بهالسكشن · وهاد مقصود.
-  ⚠ الرابط الوحيد: /ingredients · لازم الصفحة تكون موجودة قبل ما ينشر السكشن.
-
-  ⚠ ناقص بـtokens.css: `.luvit-ing` بتضل عامود واحد تحت 720px، والخطة بدها
-     2×2 على الموبايل. القاعدة بدها تنضاف بـtokens.css · ممنوع تنكتب inline هون.
-  ============================================================================
+  · المواد والنِسَب **مسحوبة من الكتالوج الرسمي** · ولا رقم مكتوب بالإيد.
+  · معروضة المواد اللي بتتكرر بمنتجين فأكثر · لأنها بتوصف الخط كله.
+  · 🔴 والمرساة ingredients **ممنوع تتغيّر**: الفوتر والرئيسية وأربع
+    صفحات روتين بيربطوا /products#ingredients · وكسرها ما بيرمي خطأ.
 -->
-
 <section class="luvit-section band-mist" data-nav-bg="light" id="ingredients">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">What's inside</p>
+      <p class="luvit-section__eyebrow">Inside the bottle</p>
       <h2 class="luvit-section__title">شو جوّا العبوة بالضبط</h2>
-      <p class="luvit-section__sub">نِسَب مكتوبة على العبوة نفسها، مش بالإعلان بس.</p>
+      <p class="luvit-section__sub">المواد الخام كورية والتصنيع بتركيا · والنِسَب مكتوبة على العبوة نفسها، تقدري تقرأيها وتتأكدي قبل ما تشتري.</p>
     </div>
 
     <div class="luvit-ing" data-luvit="stagger">
-
       <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">10%</span>
-        <div class="luvit-ing__body">
-          <p class="luvit-ing__name">فيتامين سي · <bdi>Vitamin C</bdi></p>
-          <p class="luvit-ing__note">يوحّد لون البشرة ويعطيها إشراقة تدريجية.</p>
-        </div>
-      </div>
-
-      <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">2%</span>
-        <div class="luvit-ing__body">
-          <p class="luvit-ing__name">نياسيناميد · <bdi>Niacinamide</bdi></p>
-          <p class="luvit-ing__note">يقلّل ظهور المسام ويوازن إفراز الدهون.</p>
-        </div>
-      </div>
-
-      <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">2%</span>
-        <div class="luvit-ing__body">
-          <p class="luvit-ing__name">حمض الهيالورونيك · <bdi>Hyaluronic acid</bdi></p>
-          <p class="luvit-ing__note">يسحب الماء لطبقات البشرة ويحبسه فيها.</p>
-        </div>
-      </div>
-
-      <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">2%</span>
+        <span class="luvit-ing__pct"><span dir="ltr">10%</span></span>
         <div class="luvit-ing__body">
           <p class="luvit-ing__name">بانثينول · <bdi>Panthenol</bdi></p>
-          <p class="luvit-ing__note">يهدّي الاحمرار ويدعم حاجز البشرة.</p>
+          <p class="luvit-ing__note">تغذية وحماية البشرة · بـ7 منتجات من التشكيلة.</p>
         </div>
       </div>
-
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">10%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">نياسيناميد · <bdi>Niacinamide</bdi></p>
+          <p class="luvit-ing__note">تقليل لمعان البشرة · بـ5 منتجات من التشكيلة.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">2%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">حمض هيالورونيك · <bdi>Hyaluronic acid</bdi></p>
+          <p class="luvit-ing__note">احتفاظ عميق بالرطوبة · بـ5 منتجات من التشكيلة.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">5%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">جلسرين · <bdi>Glycerin</bdi></p>
+          <p class="luvit-ing__note">ترطيب طبقات البشرة · بـ3 منتجات من التشكيلة.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">10% + 2%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name">AHA + BHA</p>
+          <p class="luvit-ing__note">تنظيف عميق لمسامات البشرة · بـ2 منتجات من التشكيلة.</p>
+        </div>
+      </div>
     </div>
-
-    <!-- 🔴 كان هون زر «اقرأي كل المكوّنات» بيشير على `/ingredients`، وانشال
-         لسببين مع بعض:
-
-         ١. **الصفحة ما موجودة** · `/ingredients` بترجّع 404 (مقيس ٢٢ آب
-            بفحص كل رابط داخلي بالصفحة). وزر بيوعد ووعده ما بينجاز هو أسوأ
-            من عدم وجود الزر.
-
-         ٢. **والسكشن نفسه هو القائمة الكاملة** · الأربع نِسَب اللي على
-            العبوة كلها معروضة فوق. زر «اقرأي كل المكوّنات» وإنتِ واقفة على
-            كلها بيوعد بإشي زيادة وما في زيادة.
-
-         ولو انضافت صفحة مكوّنات مفصّلة يوماً، بينرجع الزر ووقتها بيكون
-         بيوصل لمكان فيه فعلاً أكثر. -->
-
   </div>
 </section>

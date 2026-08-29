@@ -10553,3 +10553,169 @@ ul.products.products::after,
 body.admin-bar #hero-seq .hero-story__cue {
   bottom: calc(max(26px, env(safe-area-inset-bottom, 0px)) + var(--wp-admin--admin-bar--height, 32px));
 }
+
+/* ==========================================================================
+   5.49 · صفحة المتجر الموحّدة — المكوّنات الجديدة  (30 Aug)
+   --------------------------------------------------------------------------
+   الدمج (ريّان ٣٠ آب: «ندمجهم بصفحة وحدة قوية») خلّى /products هي الوجهة
+   التجارية الوحيدة. وهاي المكوّنات الأربعة اللي ما كانت موجودة بالمكتبة.
+
+   🔴 وأربعة وبس · كل الباقي انبنى على اللي موجود:
+       بطاقة المنتج   → .luvit-card--product  (وفيها __step و__badge أصلاً)
+       بوابات الهدف   → .luvit-option
+       المكوّنات       → .luvit-ing  مع __pct و__name و__note
+       شريط الحقائق   → .luvit-trust
+       الأسئلة        → .luvit-acc
+       الخاتمة        → .luvit-cta.luvit-deep.luvit-cut-top
+   اختراع كلاس جديد لشي موجود هو أسرع طريقة لتفكيك نظام تصميم · فالإضافة
+   هون محصورة باللي ما إله مقابل.
+   ========================================================================== */
+
+/* ---- ١ · شريط الوعد · أول إشي بتقراه الزبونة قبل أي سعر --------------
+   صفحة متجر بيوتي بوكس تركت هالشريط **موجوداً بالكود وفاضي**، فضاعت أثمن
+   مساحة بالموقع. وإحنا عنا جوابان جاهزان للسؤالين اللي بيوقفوا الشراء
+   بالأردن: كيف بدفع، وكم بيكلّف التوصيل. فبينحطوا **قبل أول سعر**.
+
+   ⚠️ ومش sticky · شريط لاصق فوق الهيدر اللاصق بياكل ٪١٢ من شاشة تلفون.
+      بيمرق مرة وبيروح، والحقائق بتنعاد بشكل كامل بسكشن التوصيل تحت. */
+.luvit-promise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4) var(--space-7);
+  padding: var(--space-4) var(--container-gutter);
+  background: var(--aqua-50);
+  border-block-end: 1px solid var(--color-line-soft);
+}
+.luvit-promise__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--aqua-800);
+}
+.luvit-promise__item svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---- ٢ · سطر مواصفات البطاقة · الخطوة والحجم ------------------------
+   🔴 وما استعملت .luvit-card__eyebrow مع إنه موجود · لأنه معرّف
+      `font-family: var(--font-latin)` مع `text-transform: uppercase`.
+      الاثنان مصمّمان للاتيني: Jost ما فيه محارف عربية فبيرتدّ لخط نظام،
+      و`uppercase` ما بتعني إشي بالعربي. النتيجة كانت رح تكون سطراً بخط
+      مختلف عن باقي البطاقة **بلا ما يرمي أي خطأ**.
+
+   ⚠️ والحجم لاتيني جوّا عربي (200ml) · فبينعزل bidi وإلا بينقلب.
+      نفس فخ اسم العلامة اللي انمسك ٩ آب. */
+.luvit-card__spec {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-caption);
+  color: var(--color-ink-soft);
+}
+.luvit-card__spec b {
+  font-weight: 600;
+  color: var(--aqua-800);
+}
+.luvit-card__vol {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-latin);
+  color: var(--color-ink-faint);
+}
+
+/* ---- ٣ · الشهادات · نص صغير مش أيقونات -----------------------------
+   ثلاثة كحد أقصى · من `certs` بالكتالوج الرسمي حرفياً.
+   ⚠️ والمنتجان اللي مش بالكتالوج (سنتيلا وألفا أربوتين) **ما إلهم سطر
+      شهادات أبداً** · الحذف الصادق أنضف من شارة مخترعة. */
+.luvit-card__certs {
+  font-size: var(--text-caption);
+  color: var(--color-ink-faint);
+  margin: 0;
+}
+
+/* ---- ٤ · تنبيه الاستعمال · على البطاقة مش مدفوناً -------------------
+   🔴 سيروم التقشير وحده. استراتيجية العلامة بالكتالوج بتقول صراحةً إن
+      المقشّرات بدها تنبيه واضح وتجنّب تشجيع الاستعمال اليومي العشوائي.
+      وتنبيه مدفون بصفحة المنتج ما بيوصل الزبونة اللي بتشتري من الشبكة. */
+.luvit-card__warn {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-warn-bg);
+  color: var(--color-warn-fg);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  line-height: var(--leading-body);
+}
+
+/* ---- ٥ · قاعدة أمان · أيقونة SVG جوّا سلوت مصمَّم لإيموجي ------------
+   🔴 `.luvit-option__icon` معرّف `font-size: 26px` لأنه انبنى لإيموجي.
+      SVG جوّاه بلا `width`/`height` بينهار لـ**صفر×صفر** · وبتصير بطاقة
+      البوابة فاضية بصرياً **بلا ولا خطأ بالكونسول**. صار فعلاً بأول
+      توليد لصفحة المتجر (٣٠ آب).
+   والمقاس بينكتب صريحاً بالماركب كمان · هاي شبكة أمان مش بديل. */
+.luvit-option__icon svg {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+.luvit-trust__icon svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+/* ---- ٦ · شريط الوعد تحت القائمة الثابتة ----------------------------
+   🔴 `.luvit-nav` معرّفة `position: fixed` · فأول عنصر بالصفحة بيطلع
+      **تحتها**. مقيس بالمعاينة: الشريط من 48 لـ105 والقائمة من 14 لـ90،
+      يعني ٤٢px متغطّية · والنص اللي المفروض يكون أول إشي تقراه الزبونة
+      كان مخفياً وراء القائمة.
+   وباقي السكاشن ما بتعاني لأن حشوتها العلوية كبيرة أصلاً · هالشريط
+   نحيف عن قصد فلازم يزيح حاله. */
+.luvit-shop-root .luvit-promise {
+  padding-block-start: calc(var(--nav-inset) + var(--nav-h) + var(--space-4));
+}
+
+/* ---- ٧ · صور الروتينات الجاهزة مربّعة مش ٤:٥ ------------------------
+   🔴 صور البكجات **2000×2000 مربّعة** (فيها أربع عبوات جنب بعض)، و
+      `--card-media-ratio` الافتراضي `4 / 5` مع `object-fit: cover`
+      بيقصّ ٢٠٪ من العرض · يعني **بينشال عبوة كاملة من الصورة**.
+
+   ⚠️ والقاعدة مقصورة على `#packages` عن قصد: `.luvit-card--feature`
+      مستعمل بتسعة ملفات تانية (الرئيسية · من نحن · الروتينات الثلاثة ·
+      الإرجاع · وغيرها) وصورهم مش مربّعة. تغيير النسبة عالمياً بيصلّح
+      مكاناً ويكسر تسعة. */
+#packages .luvit-card--feature { --card-media-ratio: 1 / 1; }
+
+/* ---- ٨ · خلفية صورة المنتج · العبوة بيضا والخلفية كانت بيضا ---------
+   🔴 مقيس بالمعاينة: صور المنتجات **شفافة الخلفية** (WebP بألفا)،
+      و`--card-media-bg` الافتراضي `rgb(242,247,249)` · يعني عبوة بيضا
+      على شبه أبيض. الصور محمّلة كلها (١١ من ١١ · 2000×2000 · صفر فشل)
+      **بس ما بتبيّن**.
+
+   ⚠️ وهاد مش باغ تقني · ما في خطأ ولا صورة مكسورة. هو **فشل تصميم
+      بيمرق من كل الفحوصات الآلية**، وما بينمسك إلا بالعين.
+
+   والحل بلغة العلامة نفسها: تدرّج ماء خفيف من فوق لتحت · بيعطي العبوة
+   حافة تقف عليها بلا ما يسرق الانتباه منها.
+   وبكجات الروتين مستثناة: صورها أصلاً بخلفية ملوّنة فما بدها. */
+#products .luvit-card--product .luvit-card__media {
+  background-image: linear-gradient(170deg,
+    var(--aqua-50) 0%,
+    var(--aqua-100) 55%,
+    var(--aqua-200) 100%);
+}
