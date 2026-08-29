@@ -20,3 +20,7 @@ Chat's/
 # silently drifts from the real file. Rebuild it with:
 #     node hero-sequence/make-local-preview.js
 hero-sequence/scroll-sequence.local.html
+
+# مخرَجات graphify · بتنبنى محلياً بأمر واحد وبلا كلفة
+# python -m graphify update "D:/Ryan-Work/LUVIT/luvit"
+graphify-out/
