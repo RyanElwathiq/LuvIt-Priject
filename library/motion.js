@@ -2034,16 +2034,45 @@ function luvitQuiz() {
   var nojs     = root.querySelector('.luvit-quiz__nojs');
   if (!steps.length || !result) return;
 
-  var ROUTES = {
-    oily:        { ar: 'البشرة الدهنية',  href: '/routines/oily',
-                   line: 'توازن بلا جفاف · تنظيف لطيف وترطيب خفيف.' },
-    dry:         { ar: 'البشرة الجافة',   href: '/routines/dry',
-                   line: 'ترطيب بطبقات · الماء بينحبس لما تحطي طبقة فوق طبقة.' },
-    combination: { ar: 'البشرة المختلطة', href: '/routines/combination',
-                   line: 'منطقتين بمزاجين · نفس المنتجات والكمية بتختلف.' },
-    sensitive:   { ar: 'البشرة الحسّاسة', href: '/routines/sensitive',
-                   line: 'أقل عدد خطوات · وكل منتج جديد بيتجرّب لحاله.' }
+  /* ═══════════════════════════════════════════════════════════════════════
+     الكويز بيشخّص **نوع البشرة**، والعلامة بتبيع **روتينات حسب الهدف**.
+     فهون طبقتان: `decide()` بترجّع النوع (منطقها مفحوص بـ١٦ حالة ومـا
+     انلمس)، و`route()` بتترجم النوع + الشكوى لروتين.
+
+     الروتينات الثلاثة هي المنشورة على إنستغرام (Highlight «Our Routines»
+     ٢٤ حزيران) — مش اختراعنا.
+     ═══════════════════════════════════════════════════════════════════════ */
+  var TYPES = {
+    oily: 'الدهنية', dry: 'الجافة', combination: 'المختلطة', sensitive: 'الحسّاسة'
   };
+
+  var ROUTES = {
+    hydration: { ar: 'روتين الترطيب والدعم اليومي', href: '/routines/hydration',
+                 line: 'أربع خطوات بتحبس المي بالبشرة · تنظيف، تونر، سيروم، وقفل ترطيب.' },
+    glow:      { ar: 'روتين الإشراقة', href: '/routines/glow',
+                 line: 'نفس الأربع خطوات، بس بفيتامين سي بمكان السيروم · للبهتان وتفاوت اللون.' },
+    clarify:   { ar: 'روتين التنقية والتوازن', href: '/routines/clarify',
+                 line: 'تنظيف موازن للدهون وتونر بيقلّل مظهر المسام · للبشرة الدهنية والمختلطة.' }
+  };
+
+  /* النوع → الروتين. جدول صريح عشان يكون مقروءاً ومراجعاً، مش شرطاً مدفوناً. */
+  var TYPE_TO_ROUTINE = {
+    oily: 'clarify', combination: 'clarify', dry: 'hydration', sensitive: 'hydration'
+  };
+
+  function route(type, concern) {
+    /* 🔴 البشرة الحسّاسة ما بتنساق لروتين الإشراقة مهما كانت الشكوى.
+       استراتيجية العلامة بتقول إن ادعاءات فيتامين سي والحساسية بدها تأكيد
+       رسمي من الشركة الأم، وهو ما إجا. فنفس روح الـoverride تبع decide():
+       **قرار مخاطرة، مش حسبة.** */
+    if (type === 'sensitive') return 'hydration';
+
+    /* الشكوى بتغلب النوع لما تكون «بهتان وتفاوت لون»، لأن الإشراقة هدف
+       مش نوع بشرة — بشرة دهنية بتقدر تكون باهتة وبشرة جافة كمان. */
+    if (concern === 'glow') return 'glow';
+
+    return TYPE_TO_ROUTINE[type] || 'hydration';
+  }
 
   var ARABIC = ['٠', '١', '٢', '٣', '٤', '٥'];
   var at = 0;
@@ -2076,14 +2105,18 @@ function luvitQuiz() {
 
   function score() {
     var tally = { oily: 0, dry: 0, combination: 0, sensitive: 0 };
-    var answered = 0;
+    var answered = 0, concern = null;
     steps.forEach(function (s) {
       var picked = s.querySelector('input[type="radio"]:checked');
       if (!picked) return;
       answered++;
+      /* الشكوى الأساسية بتنقرا من السؤال ١ لحالها. قيمتها ممكن تكون `glow`
+         وهي **مش نوع بشرة**، فـ`hasOwnProperty` تحت بتتجاهلها من الـtally
+         تلقائياً وما بتلوّث التشخيص. */
+      if (s.getAttribute('data-quiz-step') === '1') concern = picked.value;
       if (picked.value !== 'none' && tally.hasOwnProperty(picked.value)) tally[picked.value]++;
     });
-    return { tally: tally, answered: answered };
+    return { tally: tally, answered: answered, concern: concern };
   }
 
   function decide(t) {
@@ -2124,15 +2157,17 @@ function luvitQuiz() {
 
   function finish() {
     var s = score();
-    var key = decide(s.tally);
-    var r = ROUTES[key] || ROUTES.combination;
+    var type = decide(s.tally);                 /* نوع البشرة · منطق مفحوص */
+    var key  = route(type, s.concern);          /* → روتين حسب الهدف */
+    var r    = ROUTES[key] || ROUTES.hydration;
+    var typeAr = TYPES[type] || '';
 
     steps.forEach(function (st) { st.hidden = true; });
     if (progress) progress.hidden = true;
     if (foot) foot.hidden = true;
 
     result.innerHTML =
-      '<p class="luvit-quiz__resultlabel">على حسب إجاباتك</p>' +
+      '<p class="luvit-quiz__resultlabel">على حسب إجاباتك · بشرتك ' + typeAr + '</p>' +
       '<h2 class="luvit-quiz__resulttitle">' + r.ar + '</h2>' +
       '<p class="luvit-quiz__resultline">' + r.line + '</p>' +
       '<div class="luvit-quiz__resultfoot">' +

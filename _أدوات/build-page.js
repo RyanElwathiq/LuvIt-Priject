@@ -37,8 +37,28 @@ if (!outName || !files.length) {
    🔴 هاي القائمة بتكبر كل ما تنبني صفحة · حدّثها وقتها. */
 const LIVE = new Set([
   '/', '/shop', '/products', '/cart', '/checkout', '/my-account', '/track',
-  '/routines', '/routines/oily', '/routines/dry', '/routines/combination',
-  '/routines/sensitive', '/quiz', '/shipping', '/faq', '/journal', '/about', '/contact', '/returns',
+  '/routines', '/quiz', '/shipping', '/faq', '/journal', '/about', '/contact', '/returns',
+
+  /* الروتينات الثلاثة · حسب الهدف (٢٩ آب) */
+  '/routines/hydration', '/routines/glow', '/routines/clarify',
+
+  /* ⚠️ الأربعة القدامى حسب نوع البشرة · بينسحبوا بعد ما ينزل البديل.
+     لسا هون لأنهم لسا صفحات حية بووردبريس. */
+  '/routines/oily', '/routines/dry', '/routines/combination', '/routines/sensitive',
+
+  /* صفحات المنتجات · السلَقات صارت لاتينية ٢٩ آب (كانت عربي مشفّر).
+     🔴 هالقائمة كانت بايتة وما انتبهت إلا لما الفاحص وقف البناء — وهاد
+        بالضبط شغله. */
+  '/product/hydrating-gel-cleanser', '/product/sebum-balancing-gel-cleanser',
+  '/product/8d-hyaluronic-acid-toner', '/product/clarifying-pore-tightening-toner',
+  '/product/vitamin-c-serum', '/product/intensive-hydrating-serum',
+  '/product/pore-tightening-brightening-serum', '/product/aha-bha-peeling-serum',
+  '/product/moisturizing-repairing-cream',
+  '/product/centella-blemish-cream', '/product/alpha-arbutin-complex-serum',
+
+  /* البكجات الثلاثة */
+  '/product/hydration-support-routine', '/product/brighten-glow-routine',
+  '/product/clarify-balance-routine',
 ]);
 
 const blocks = [];

@@ -1,16 +1,10 @@
-<!-- ══════════════════════════════════════════════════════════════════════
-     الروتينات · /routines  ·  الصفحة المحورية
-     ══════════════════════════════════════════════════════════════════════
-     الرئيسية فيها **تشويق** للروتينات (`03-routine.html`) بأربع بطاقات
-     روابطها كانت `#`. هاي الصفحة هي وجهتها، وكل بطاقة فيها بتودّي على
-     صفحة الروتين نفسه.
-
-     🔴 الروابط محسومة سلفاً · صفحة المنتجات الحية (`p3-skin-types`) بتشير
-        على `/routines/oily` و`/dry` و`/combination` و`/sensitive` و`/quiz`.
-        فأي تغيير بالمسارات لازم يتغيّر هناك كمان.
-
-     ⚠️ وكل كلاس هون متفحوص إنه موجود بـtokens.css.
-     ══════════════════════════════════════════════════════════════════════ -->
+<!--
+  ============================================================================
+  الروتينات · /routines
+  ============================================================================
+  ⚠ مولَّد بـ_أدوات/build-routine-pages.mjs · لا تعدّله بالإيد.
+  ============================================================================
+-->
 
 <section class="luvit-section luvit-section--tight band-mist luvit-page-top"
          data-nav-bg="light" id="page-head">
@@ -23,10 +17,11 @@
         <span aria-current="page">الروتينات</span>
       </nav>
 
-      <h1 class="luvit-section__title">روتين على قدّ بشرتك إنتِ</h1>
+      <p class="luvit-section__eyebrow">Our Routines</p>
+      <h1 class="luvit-section__title">تلات روتينات · كل واحد لهدف</h1>
       <p class="luvit-section__sub">
-        مش وصفة وحدة للكل. اختاري نوع بشرتك ومنفرجيكي الخطوات كاملة ·
-        بمكوّنات ونِسَب مكتوبة.
+        كل روتين أربع خطوات بنفس الترتيب · تنظيف، تونر، سيروم، وقفل ترطيب.
+        اللي بيتغيّر هو المنتجات حسب اللي بدك توصليله.
       </p>
 
     </div>
@@ -37,110 +32,68 @@
 <section class="luvit-section band-light" data-nav-bg="light" id="routines">
   <div class="luvit-section__inner">
 
-    <div class="luvit-card-grid luvit-card-grid--wide routine-grid" data-luvit="stagger">
-
-      <!-- ============ ١ · الدهنية ============ -->
-      <article class="luvit-card luvit-card--routine">
-        <div class="luvit-card__media">
-          <img loading="lazy" decoding="async" alt="روتين البشرة الدهنية"
-               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NDAgMzYwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J2dvaWx5JyB4MT0nMCcgeTE9JzAnIHgyPScwJyB5Mj0nMSc+PHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPSdyZ2IoMjM0LDI1MCwyNTMpJy8+PHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPSdyZ2IoMTE2LDIxNCwyMzEpJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzY0MCcgaGVpZ2h0PSczNjAnIGZpbGw9J3VybCglMjNnb2lseSknLz48cmVjdCB4PScyNTAnIHk9JzEyMCcgd2lkdGg9JzU4JyBoZWlnaHQ9JzE3MCcgcng9JzEzJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJyBvcGFjaXR5PScwLjk0Jy8+PHJlY3QgeD0nMzIwJyB5PScxNTAnIHdpZHRoPSc1MicgaGVpZ2h0PScxNDAnIHJ4PScxMycgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nMC44OCcvPjxwYXRoIGQ9J00wIDMyMCBDIDEyMCAzMDAsIDI0MCAzNDAsIDM2MCAzMjAgUyA1NjAgMzAwLCA2NDAgMzE2IEw2NDAgMzYwIEwwIDM2MCBaJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJyBvcGFjaXR5PScuMjInLz48L3N2Zz4=">
-        </div>
+    <div class="luvit-card-grid" data-luvit="stagger">
+      <article class="luvit-card luvit-card--feature">
         <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step">1</span>
-            <p class="luvit-card__eyebrow" style="margin:0">Oily</p>
-          </div>
+          <p class="luvit-card__eyebrow">Hydration & Support</p>
           <h2 class="luvit-card__title">
-            <a class="luvit-card__link" href="/routines/oily">البشرة الدهنية</a>
+            <a class="luvit-card__link" href="/routines/hydration">روتين الترطيب والدعم اليومي</a>
           </h2>
-          <p class="luvit-card__text">توازن بلا جفاف: تنظيف لطيف وترطيب خفيف.</p>
-          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+          <p class="luvit-card__text">روتين يومي يساعد بشرتك تحس براحة وترطيب وتوازن يدوم طول اليوم.</p>
+          <p class="luvit-card__text">مناسب لـ البشرة الجافة والبشرة الحسّاسة.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">60.00 د.أ</span>
+          </div>
         </div>
       </article>
 
-      <!-- ============ ٢ · الجافة ============ -->
-      <article class="luvit-card luvit-card--routine">
-        <div class="luvit-card__media">
-          <img loading="lazy" decoding="async" alt="روتين البشرة الجافة"
-               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NDAgMzYwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J2dkcnknIHgxPScwJyB5MT0nMCcgeDI9JzAnIHkyPScxJz48c3RvcCBvZmZzZXQ9JzAnIHN0b3AtY29sb3I9J3JnYigyMDgsMjQzLDI0OSknLz48c3RvcCBvZmZzZXQ9JzEnIHN0b3AtY29sb3I9J3JnYig0MSwxNjksMTkyKScvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSc2NDAnIGhlaWdodD0nMzYwJyBmaWxsPSd1cmwoJTIzZ2RyeSknLz48cmVjdCB4PScyNDUnIHk9JzEzMCcgd2lkdGg9JzU4JyBoZWlnaHQ9JzE2MCcgcng9JzEzJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJyBvcGFjaXR5PScwLjknLz48cmVjdCB4PSczMTUnIHk9JzExNScgd2lkdGg9JzU0JyBoZWlnaHQ9JzE3NScgcng9JzEzJyBmaWxsPSdyZ2IoMTY2LDEwMSw0MiknIG9wYWNpdHk9JzAuODUnLz48cGF0aCBkPSdNMCAzMjAgQyAxMjAgMzAwLCAyNDAgMzQwLCAzNjAgMzIwIFMgNTYwIDMwMCwgNjQwIDMxNiBMNjQwIDM2MCBMMCAzNjAgWicgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nLjIyJy8+PC9zdmc+">
-        </div>
+      <article class="luvit-card luvit-card--feature">
         <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step">2</span>
-            <p class="luvit-card__eyebrow" style="margin:0">Dry</p>
-          </div>
+          <p class="luvit-card__eyebrow">Brighten & Glow</p>
           <h2 class="luvit-card__title">
-            <a class="luvit-card__link" href="/routines/dry">البشرة الجافة</a>
+            <a class="luvit-card__link" href="/routines/glow">روتين الإشراقة</a>
           </h2>
-          <p class="luvit-card__text">ترطيب يدوم: طبقات تحبس الماء داخل البشرة.</p>
-          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+          <p class="luvit-card__text">لبشرة باهتة وغير متجانسة · يساعد على أن تبدو أكثر إشراقاً وحيوية وتوازناً.</p>
+          <p class="luvit-card__text">مناسب لـ البشرة الباهتة وتفاوت لون البشرة.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">61.00 د.أ</span>
+          </div>
         </div>
       </article>
 
-      <!-- ============ ٣ · المختلطة ============ -->
-      <article class="luvit-card luvit-card--routine">
-        <div class="luvit-card__media">
-          <img loading="lazy" decoding="async" alt="روتين البشرة المختلطة"
-               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NDAgMzYwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J2djb21iaScgeDE9JzAnIHkxPScwJyB4Mj0nMScgeTI9JzEnPjxzdG9wIG9mZnNldD0nMCcgc3RvcC1jb2xvcj0ncmdiKDIwOCwyNDMsMjQ5KScvPjxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0ncmdiKDMwLDEzNCwxNTYpJy8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9JzY0MCcgaGVpZ2h0PSczNjAnIGZpbGw9J3VybCglMjNnY29tYmkpJy8+PHJlY3QgeD0nMjQ4JyB5PScxMjgnIHdpZHRoPSc1NicgaGVpZ2h0PScxNjInIHJ4PScxMycgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nMC45MicvPjxyZWN0IHg9JzMxOCcgeT0nMTQyJyB3aWR0aD0nNTQnIGhlaWdodD0nMTQ4JyByeD0nMTMnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknIG9wYWNpdHk9JzAuOCcvPjxwYXRoIGQ9J00wIDMyMCBDIDEyMCAzMDAsIDI0MCAzNDAsIDM2MCAzMjAgUyA1NjAgMzAwLCA2NDAgMzE2IEw2NDAgMzYwIEwwIDM2MCBaJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJyBvcGFjaXR5PScuMjInLz48L3N2Zz4=">
-        </div>
+      <article class="luvit-card luvit-card--feature">
         <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step">3</span>
-            <p class="luvit-card__eyebrow" style="margin:0">Combination</p>
-          </div>
+          <p class="luvit-card__eyebrow">Clarify & Balance</p>
           <h2 class="luvit-card__title">
-            <a class="luvit-card__link" href="/routines/combination">البشرة المختلطة</a>
+            <a class="luvit-card__link" href="/routines/clarify">روتين التنقية والتوازن</a>
           </h2>
-          <p class="luvit-card__text">منطقة T دهنية والباقي جاف؟ روتين بيوازن الاثنين.</p>
-          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
+          <p class="luvit-card__text">روتين يومي يساعد البشرة الدهنية والمختلطة على أن تبدو أنقى وأكثر توازناً وراحة طول اليوم.</p>
+          <p class="luvit-card__text">مناسب لـ البشرة الدهنية والبشرة المختلطة.</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">61.00 د.أ</span>
+          </div>
         </div>
       </article>
-
-      <!-- ============ ٤ · الحسّاسة ============ -->
-      <article class="luvit-card luvit-card--routine">
-        <div class="luvit-card__media">
-          <img loading="lazy" decoding="async" alt="روتين البشرة الحسّاسة"
-               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NDAgMzYwJz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9J2dzZW5zJyB4MT0nMCcgeTE9JzAnIHgyPScwJyB5Mj0nMSc+PHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPSdyZ2IoMjA4LDI0MywyNDkpJy8+PHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPSdyZ2IoMzAsMTM0LDE1NiknLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0nNjQwJyBoZWlnaHQ9JzM2MCcgZmlsbD0ndXJsKCUyM2dzZW5zKScvPjxjaXJjbGUgY3g9JzMyMCcgY3k9JzE5MCcgcj0nNzgnIGZpbGw9J3JnYigyNTUsMjU1LDI1NSknIG9wYWNpdHk9Jy41Jy8+PHJlY3QgeD0nMjkyJyB5PScxNDAnIHdpZHRoPSc1NicgaGVpZ2h0PScxNTAnIHJ4PScxMycgZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgb3BhY2l0eT0nMC45MicvPjxwYXRoIGQ9J00wIDMyMCBDIDEyMCAzMDAsIDI0MCAzNDAsIDM2MCAzMjAgUyA1NjAgMzAwLCA2NDAgMzE2IEw2NDAgMzYwIEwwIDM2MCBaJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJyBvcGFjaXR5PScuMjInLz48L3N2Zz4=">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step">4</span>
-            <p class="luvit-card__eyebrow" style="margin:0">Sensitive</p>
-          </div>
-          <h2 class="luvit-card__title">
-            <a class="luvit-card__link" href="/routines/sensitive">البشرة الحسّاسة</a>
-          </h2>
-          <p class="luvit-card__text">بلا عطور قاسية: تهدئة أولًا، دائمًا.</p>
-          <div class="luvit-card__footer"><span class="luvit-card__more">اكتشفي الروتين</span></div>
-        </div>
-      </article>
-
     </div>
+
   </div>
 </section>
 
 
-<!-- ══════════════════════════════════════════════════════════════════════
-     مش متأكدة من نوعك · الدرزة للكويز
-     ══════════════════════════════════════════════════════════════════════
-     🔴 `luvit-cut-top` بياكل ٧٠px من أعلى العنصر، فالحشوة العلوية لازم
-        تعوّضها وإلا المحتوى بيلزق بالموجة. والسكشن نفسه بيقص حافته، فلا
-        تحط عنصر `luvit-wave` فوقه · بترجع مشكلة الشريط أحادي اللون.
-     ══════════════════════════════════════════════════════════════════════ -->
-<section class="luvit-section luvit-section--dark luvit-deep luvit-cut-top"
-         data-nav-bg="dark" data-luvit-bubbles="8" id="not-sure">
-  <span class="luvit-deep__rays" aria-hidden="true"></span>
+<section class="luvit-section luvit-section--tight band-mist" data-nav-bg="light" id="unsure">
   <div class="luvit-section__inner">
+
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Skin quiz</p>
       <h2 class="luvit-section__title">مش متأكدة من نوع بشرتك؟</h2>
-      <p class="luvit-section__sub">خمس أسئلة قصيرة ومنوصلك على الروتين اللي إلك.</p>
+      <p class="luvit-section__sub">
+        خمس أسئلة · بنقلّك نوع بشرتك وبنوصّلك للروتين الأنسب.
+      </p>
     </div>
+
     <div class="luvit-section__foot">
-      <a class="luvit-btn luvit-btn--arrow" href="/quiz">اعملي الاختبار</a>
-      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/products">شوفي كل المنتجات</a>
+      <a class="luvit-btn luvit-btn--arrow" href="/quiz">ابدئي الاختبار</a>
+      <a class="luvit-btn luvit-btn--ghost" href="/products">شوفي كل المنتجات</a>
     </div>
+
   </div>
 </section>
-
-<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>

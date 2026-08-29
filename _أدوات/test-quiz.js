@@ -24,6 +24,17 @@ if (from < 0 || to < 0) {
 }
 const decide = new Function('return ' + src.slice(from, to).trim().replace(/^function /, 'function '))();
 
+/* 🔴 و`route()` بتنستخرج كمان · هي اللي بتقرّر لوين بتروح الزبونة فعلاً.
+   `decide()` بتقول نوع البشرة بس، و`route()` بتترجمه لروتين + بتطبّق
+   قفل الحساسية. فحص decide() لحاله صار ناقصاً بعد ٢٩ آب. */
+const rFrom = src.indexOf('  var TYPE_TO_ROUTINE = {');
+const rTo   = src.indexOf('  var ARABIC = [', rFrom);
+if (rFrom < 0 || rTo < 0) {
+  console.error('🔴 ما لقيت TYPE_TO_ROUTINE/route() بـmotion.js');
+  process.exit(2);
+}
+const route = new Function(src.slice(rFrom, rTo) + ' return route;')();
+
 /* كل حالة: النقاط، والنتيجة المتوقعة، وليش */
 const CASES = [
   [{ oily: 4, dry: 0, combination: 0, sensitive: 0 }, 'oily',        'دهنية صافية'],
@@ -75,4 +86,49 @@ console.log('انفحص ' + CASES.length + ' حالة · فشل ' + fail + (fail
 
 /* 🔴 صفر نتيجة = فحص أعمى مش منطق نظيف */
 if (!CASES.length) { console.error('🔴 ولا حالة · الفحص أعمى'); process.exit(2); }
-process.exit(fail ? 1 : 0);
+/* 🔴 كان هون `process.exit(fail ? 1 : 0)` وهو **قطع الفحص الثاني بصمت** —
+   الكتلة تحت انضافت ٢٩ آب وما اشتغلت ولا مرة، والمخرَج كان بيقول «فشل 0»
+   وهو ما فحص التوجيه أصلاً. الخروج انتقل لآخر الملف. */
+if (fail) process.exitCode = 1;
+
+/* ══════════════════════════════════════════════════════════════════════════
+   طبقة التوجيه · النوع + الشكوى → روتين
+   ══════════════════════════════════════════════════════════════════════════ */
+const ROUTE_CASES = [
+  ['oily',        null,        'clarify',   'دهنية بلا شكوى إشراق → التنقية'],
+  ['combination', null,        'clarify',   'مختلطة → التنقية'],
+  ['dry',         null,        'hydration', 'جافة → الترطيب'],
+  ['sensitive',   null,        'hydration', 'حسّاسة → الترطيب'],
+
+  ['oily',        'glow',      'glow',      'الشكوى بتغلب النوع'],
+  ['dry',         'glow',      'glow',      'جافة وباهتة → الإشراقة'],
+  ['combination', 'glow',      'glow',      'مختلطة وباهتة → الإشراقة'],
+
+  /* 🔴 القفل: الحسّاسة ما بتروح للإشراقة أبداً حتى لو هي شكواها،
+     لأن روتين الإشراقة فيه فيتامين سي وادعاءات الحساسية ما انتأكدت رسمياً */
+  ['sensitive',   'glow',      'hydration', 'قفل الحساسية بيغلب الشكوى'],
+
+  ['oily',        'oily',      'clarify',   'شكوى مطابقة للنوع'],
+  ['dry',         'dry',       'hydration', 'شكوى مطابقة للنوع'],
+  ['sensitive',   'sensitive', 'hydration', 'حسّاسة صافية'],
+  ['oily',        'unknown',   'clarify',   'شكوى مش معروفة بتنتجاهل'],
+];
+
+let rPass = 0, rFail = 0;
+console.log('');
+console.log('🔀 توجيه الروتين · ' + ROUTE_CASES.length + ' حالة');
+console.log('─'.repeat(72));
+for (const [type, concern, want, why] of ROUTE_CASES) {
+  const got = route(type, concern);
+  const ok = got === want;
+  if (ok) rPass++; else rFail++;
+  console.log(
+    (ok ? '  ✅ ' : '  🔴 ') +
+    (type + ' + ' + (concern === null ? '—' : concern)).padEnd(24) +
+    '→ ' + String(got).padEnd(11) +
+    (ok ? '' : '(المتوقّع: ' + want + ')  ') + why
+  );
+}
+console.log('─'.repeat(72));
+console.log('توجيه: نجح ' + rPass + ' · فشل ' + rFail);
+if (rFail) process.exitCode = 1;
