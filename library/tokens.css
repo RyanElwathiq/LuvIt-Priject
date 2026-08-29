@@ -10394,3 +10394,55 @@ body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-d
   .luvit-prose { font-size: 1rem; line-height: 1.85; }
   .luvit-prose .luvit-prose__wide { margin-inline: 0; }
 }
+
+/* ==========================================================================
+   5.45  BRAND LOGO IN THE NAV                                     (29 Aug)
+   --------------------------------------------------------------------------
+   The agency logo is a fixed asset: black "Luv it" word-mark, turquoise
+   frame, turquoise "!", black "Jordan". **The file is never edited.**
+
+   The word-mark is black, so it has to go white over the dark hero and stay
+   full colour everywhere else. Two pure-rendering states, no second file.
+
+   🔴 FAIL-SAFE DIRECTION: full colour is the DEFAULT, white is the opt-in.
+   `motion.js:747` returns early on any page with no `[data-nav-bg]` section,
+   so **neither `.is-on-light` nor `.is-on-dark` is ever added there** (shop,
+   product, cart, my-account). Keying white off `.is-on-light` left the logo
+   white on a white bar = invisible. Caught on `/shop` by looking at it, not
+   by reading the CSS.
+   The safe direction is the one whose failure mode is still readable.
+
+   🔴 The class is DOUBLED (`.x.x`): a single class lost the height to a
+   reset the stylesheet scan could not name. Doubling beats it without
+   `!important` — the project's standing rule.
+
+   ⚠ The <a> keeps its type styling on purpose: if the image ever 404s, the
+     alt text "Luv it! Jordan" renders in its place with the bidi fix from
+     `.luvit-nav__brand` still applied, instead of an empty bar.
+
+   ⚠ THIS BLOCK ALSO LIVES INSIDE THE HEADER TEMPLATE (elementor_library 79)
+     as a <style> next to the markup, because WPCode refused the append to
+     snippet 49 twice with no error. **Keep the two copies in step.**
+   ========================================================================== */
+.luvit-nav__logo.luvit-nav__logo {
+  display: block;
+  height: 32px;
+  width: auto;
+  filter: none;
+  transition: filter 260ms var(--ease-out-soft);
+}
+
+.luvit-nav.is-on-dark   .luvit-nav__logo.luvit-nav__logo,
+.luvit-nav.is-over-hero .luvit-nav__logo.luvit-nav__logo {
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 640px) {
+  .luvit-nav__logo.luvit-nav__logo { height: 26px; }
+}
+
+/* The word-mark carries the name now, so collapse the text box it replaced. */
+.luvit-nav__brand:has(.luvit-nav__logo) {
+  font-size: 0;
+  line-height: 0;
+}
