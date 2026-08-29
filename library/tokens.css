@@ -10446,3 +10446,50 @@ body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-d
   font-size: 0;
   line-height: 0;
 }
+
+/* ==========================================================================
+   5.47  WOOCOMMERCE PRODUCT GRID · THE STOLEN CELLS              (30 Aug)
+   --------------------------------------------------------------------------
+   🔴 THE BUG RYAN SAW: "there is room for four products and it always leaves
+      one slot empty and puts three."
+
+   THE CAUSE, measured on /shop:
+      `ul.products` is `display: grid` with `grid-template-columns:
+      261px 261px 261px 261px`, and WooCommerce's classic stylesheet still
+      carries a float-era clearfix:
+
+          ul.products::before,
+          ul.products::after { content: " "; display: table; }
+
+      In a FLEX or GRID container, `::before` and `::after` are not decorative
+      — **they become real grid items.** Each one took a full 261px cell at
+      the row's full height (measured: 498.15px and 477.6px).
+
+      14 products + 2 stolen cells = 16 = four complete rows, and the row
+      counts came out 3 / 4 / 4 / 3 exactly as reported. The first stolen
+      cell sits at the start of row 1 (the RIGHT edge in RTL) and the second
+      at the end of the last row.
+
+   ⚠ `display: none` is the fix, not `content: none` — the theme may re-set
+     `content` later, and a `display:table` box with empty content still
+     occupies its cell.
+
+   ⚠ And this is not unique to `ul.products`: ANY float-era clearfix on a
+     container we later switch to grid/flex will steal cells the same way.
+     If a grid ever comes up one short, look here first.
+   ========================================================================== */
+/* 🔴 الخصوصية مقيسة، مش مخمّنة. ووكومرس بيكتبها:
+       `.woocommerce ul.products::before` (0,2,1) بـwoocommerce-rtl.css
+       و`.woocommerce-page ul.products::before` بـwoocommerce-layout-rtl.css
+   وقاعدتي الأولى كانت `ul.products::before` (0,1,1) — **فخسرت**، والشبكة
+   ضلّت 3/4/4/3 حتى بعد ما القاعدة وصلت الصفحة فعلاً وانقرأت بالـsheet.
+   المضاعفة بتوصلها (0,2,1) وترتيب الورقة (سنيبتنا #46 وووكومرس #16)
+   بيحسم التعادل لصالحنا · بلا `!important`، قاعدة المشروع. */
+ul.products.products::before,
+ul.products.products::after,
+.woocommerce ul.products.products::before,
+.woocommerce ul.products.products::after,
+.woocommerce-page ul.products.products::before,
+.woocommerce-page ul.products.products::after {
+  display: none;
+}

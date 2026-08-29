@@ -269,21 +269,27 @@ ${featureCards(r.benefits, '✦')}
 </section>
 
 
-<section class="luvit-section luvit-section--tight band-light" data-nav-bg="light" id="other">
-  <div class="luvit-section__inner">
-
-    <div class="luvit-section__head" data-luvit="reveal">
-      <h2 class="luvit-section__title">مش هاد روتينك؟</h2>
-      <p class="luvit-section__sub">في تلات روتينات · وكل واحد لهدف مختلف.</p>
-    </div>
-
+<!-- 🔴 الخاتمة الغامقة · نفس نمط باقي صفحات الموقع.
+     أول نسخة انتهت بصف أزرار على خلفية فاتحة على بُعد ٤٨px من الفوتر،
+     وريّان وصفها «الزر ملزوق بالفوتر». **والزر مش هو المشكلة** · كل
+     صفحة تانية بتنتهي بشريط ماء عميق مع موجة تقصّه، وصفحاتي ما كان
+     فيها خاتمة أصلاً. -->
+<section class="luvit-cta luvit-deep luvit-cut-top" data-nav-bg="dark"
+         data-luvit-bubbles="16" id="other">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-cta__panel" data-luvit="reveal">
+    <h2 class="luvit-cta__title luvit-cta__accent">مش هاد روتينك؟</h2>
+    <p class="luvit-cta__sub">
+      في تلات روتينات · وكل واحد لهدف مختلف. وإذا محتارة، خمس أسئلة بتحسمها.
+    </p>
     <div class="luvit-section__foot">
-${others.map((o) => `      <a class="luvit-btn luvit-btn--ghost" href="/routines/${o.key}">${o.ar}</a>`).join('\n')}
       <a class="luvit-btn luvit-btn--arrow" href="/quiz">جرّبي الاختبار</a>
+${others.map((o) => `      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/routines/${o.key}">${o.ar}</a>`).join('\n')}
     </div>
-
   </div>
 </section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
 `;
 }
 
@@ -352,23 +358,22 @@ ${ROUTINES.map((r) => {
 </section>
 
 
-<section class="luvit-section luvit-section--tight band-mist" data-nav-bg="light" id="unsure">
-  <div class="luvit-section__inner">
-
-    <div class="luvit-section__head" data-luvit="reveal">
-      <h2 class="luvit-section__title">مش متأكدة من نوع بشرتك؟</h2>
-      <p class="luvit-section__sub">
-        خمس أسئلة · بنقلّك نوع بشرتك وبنوصّلك للروتين الأنسب.
-      </p>
-    </div>
-
+<section class="luvit-cta luvit-deep luvit-cut-top" data-nav-bg="dark"
+         data-luvit-bubbles="16" id="unsure">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-cta__panel" data-luvit="reveal">
+    <h2 class="luvit-cta__title luvit-cta__accent">مش متأكدة من نوع بشرتك؟</h2>
+    <p class="luvit-cta__sub">
+      خمس أسئلة · بنقلّك نوع بشرتك وبنوصّلك للروتين الأنسب.
+    </p>
     <div class="luvit-section__foot">
       <a class="luvit-btn luvit-btn--arrow" href="/quiz">ابدئي الاختبار</a>
-      <a class="luvit-btn luvit-btn--ghost" href="/products">شوفي كل المنتجات</a>
+      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/products">شوفي كل المنتجات</a>
     </div>
-
   </div>
 </section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
 `;
 }
 

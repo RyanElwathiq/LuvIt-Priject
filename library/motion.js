@@ -1434,7 +1434,11 @@ function luvitCartCount() {
 
   /* ---- B · Store API. Works on every page, including the shop grid. ---- */
   function read() {
-    fetch('/wp-json/wc/store/v1/cart', { credentials: 'include' })
+    /* 🔴 `cache: 'no-store'` + كاسر كاش إلزاميان: هاد طلب GET، وLiteSpeed
+       بيخزّن الـGET. بدونهم الرد بيرجع سلة قديمة، والعدّاد بيرسم 0 فيختفي
+       بالكامل — وهاد بالضبط بلاغ ريّان «لما أحط منتج واحد بتروح بالمرة». */
+    fetch('/wp-json/wc/store/v1/cart?_=' + Date.now(),
+          { credentials: 'include', cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (c) { if (c && typeof c.items_count === 'number') paint(c.items_count); })
       .catch(function () { /* offline or blocked — leave the badge as it is */ });
@@ -1450,6 +1454,25 @@ function luvitCartCount() {
      used to listen for never fired once, which is why the badge sat on a stale
      number while the cart itself updated correctly. ---- */
   window.addEventListener('wc-blocks_store_sync_required', read);
+
+  /* ---- C٢ · 🔴 الحدث اللي كان ناقصاً · بلاغ ريّان ٢٩ آب.
+     كل اللي فوق أحداث **WooCommerce Blocks**، وهي بتطلق بصفحات السلة
+     والشيك أوت بس. **والمتجر والرئيسية بيستعملوا الإضافة الكلاسيكية**
+     (`ajax_add_to_cart` + `wc-add-to-cart.js`)، وهي بتطلق حدث **jQuery**
+     اسمه `added_to_cart` على `document.body` — وهاد ما كان بالقائمة.
+
+     فالنتيجة: الإضافة بتنجح والسلة بتتحدّث فعلاً، **والشارة بتضل على رقمها
+     القديم** لأنها ما سمعت ولا حدث. ولما ريّان ينتقل لصفحة السلة بتتحدّث،
+     فبان له إنها «أحياناً بتشتغل».
+
+     ⚠ وهاد حدث jQuery مش DOM: `addEventListener` **ما بيمسكه**. لازم
+       `jQuery(document.body).on(...)`. ---- */
+  if (window.jQuery) {
+    window.jQuery(document.body).on(
+      'added_to_cart removed_from_cart wc_fragments_refreshed wc_fragments_loaded',
+      function () { read(); }
+    );
+  }
 
   /* the older names cost nothing and still exist on some paths */
   ['wc-blocks_added_to_cart', 'wc-blocks_removed_from_cart', 'wc-blocks_cart_updated']
