@@ -24,3 +24,7 @@ hero-sequence/scroll-sequence.local.html
 # مخرَجات graphify · بتنبنى محلياً بأمر واحد وبلا كلفة
 # python -m graphify update "D:/Ryan-Work/LUVIT/luvit"
 graphify-out/
+
+# صور المنتجات الأصلية · بتنحط بـ D:\Ryan-Work\LUVIT\صور-المنتجات
+# برّا الريبو أصلاً · وهاد السطر عشان لو حدا نسخهم جوّا بالغلط
+صور-المنتجات/
