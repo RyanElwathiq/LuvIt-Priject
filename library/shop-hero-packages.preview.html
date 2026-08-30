@@ -142,21 +142,43 @@
     /* 🔴 ولا قصّ · هون كان مصدر الحافة */
     display: flex; align-items: flex-end; justify-content: center;
   }
+  /* ══ مشهد عمق · لا صفّ على رفّ ═══════════════════════════════════
+     🔴 صفّ عبوات بخط واحد هو أعمّ هيرو بالعناية بالبشرة · كل علامة
+        عاملته، وما بيميّز حدا. واللي عنّا وما عند غيرنا **الماء**.
+
+     فالعبوات بتقف بأعماق مختلفة زي ما بتقف أغراض بمي ضحلة:
+       · اللي قدّام: أكبر · أوطى بالشاشة · أوضح · ظلها أقوى
+       · اللي ورا:  أصغر · أعلى بالشاشة · أزرق أكثر · حافتها أنعم
+     وهاد **منظور جوّي حقيقي** (المسافة بتزرّق وبتضبّب)، مش تنويع شكلي.
+
+     والترتيب مقصود: الغسول والتونر (٢٠٠ مل) ورا لأنهم أكبر جسماً،
+     والسيروم قدّام لأنه بطل الروتين · فالحجم بيخدم الهرمية مش الصدفة. */
   .shop-hero__shelf {
     inline-size: 100%;
     display: flex; align-items: flex-end; justify-content: center;
-    gap: clamp(2px, .6vw, 10px);
+    gap: clamp(0px, .4vw, 8px);
   }
   .shop-hero__slot {
     position: relative; flex: none;
     display: flex; flex-direction: column; align-items: center;
+    /* --d = العمق · 0 قدّام و1 ورا */
+    margin-block-end: calc(var(--d, 0) * 34px);   /* الأبعد بيرتفع بالشاشة */
+    z-index: calc(10 - var(--d, 0) * 10);
+    filter: saturate(calc(1 - var(--d, 0) * .32)) brightness(calc(1 + var(--d, 0) * .05));
+  }
+  /* ضباب أزرق بيزيد مع البعد · منظور جوّي */
+  .shop-hero__slot::after {
+    content: ""; position: absolute; inset: -4% -8%;
+    background: rgba(178, 218, 234, calc(var(--d, 0) * .34));
+    pointer-events: none; border-radius: 40%;
+    filter: blur(14px);
   }
   .shop-hero__bottle {
     display: block; flex: none;
     block-size: calc(var(--shelf-h) * var(--bf, .6));
     inline-size: auto;
-    /* ظل بلون الماء لا أسود · قاعدة العلامة */
-    filter: drop-shadow(0 14px 20px rgba(6, 52, 54, .17));
+    /* ظل بلون الماء لا أسود · وبيخفّ مع البعد */
+    filter: drop-shadow(0 14px 20px rgba(6, 52, 54, calc(.19 - var(--d, 0) * .11)));
     will-change: transform;
   }
   /* نافذة الانعكاس · ارتفاعها ثابت لكل العبوات عشان القواعد تقع
@@ -300,6 +322,93 @@
   .pk__promise b { display: block; font-size: 14.5px; color: var(--ink-900, #1A2529); margin-block-end: 2px; }
   .pk__promise p { margin: 0; font-size: 13px; color: var(--ink-600, #46585E); }
 
+
+  /* ══ مسارات البدء · عائلة تخطيط مختلفة عن البطاقات ═══════════════
+     🔴 السبب: فحص design-taste-frontend طلع إن luvit-card-grid مستعملة
+        بثلاث سكاشن متتالية بصفحة المتجر (البكجات · نوع البشرة · المنتجات)
+        والقاعدة: عائلة تخطيط لكل سكشن.
+     فهاد شريط أفقي بمداخل، مش شبكة بطاقات. */
+  .paths { background: linear-gradient(180deg, #F6FBFD, #EAF4F8); padding-block: clamp(38px, 5vw, 62px); }
+  .paths__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
+  .paths__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-block-end: 22px; }
+  .paths__head h2 {
+    font-family: var(--font-display, inherit); font-size: clamp(20px, 2.6vw, 28px);
+    margin: 0; color: var(--ink-900, #1A2529);
+  }
+  .paths__head p { margin: 0; color: var(--ink-600, #46585E); font-size: 14.5px; }
+  .paths__row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .path {
+    display: flex; align-items: center; gap: 12px;
+    background: #fff; border: 1px solid rgba(26,37,41,.10); border-radius: 100px;
+    padding: 11px 18px 11px 12px; text-decoration: none; color: inherit;
+    transition: transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s;
+    box-shadow: 0 1px 2px rgba(6,52,54,.05);
+  }
+  .path:hover { transform: translateY(-3px); box-shadow: 0 10px 22px -12px rgba(6,52,54,.35); }
+  .path:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+  .path b {
+    flex: none; inline-size: 38px; block-size: 38px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: linear-gradient(160deg, #DCF0F6, #B7E0EC); color: var(--aqua-700, #1E7C8C);
+  }
+  .path span { display: block; font-size: 14.5px; font-weight: 600; color: var(--ink-900, #1A2529); }
+  .path small { display: block; font-size: 12.5px; color: var(--ink-500, #6B7B80); margin-block-start: 1px; }
+
+  /* ══ التشكيلة بترتيب الاستعمال · مجموعات مش كتلة وحدة ══════════════
+     11 بطاقة متطابقة بكتلة 2311 بكسل = «ثلاث بطاقات متطابقة» بمقياس أكبر.
+     التجميع بيعطي إيقاعاً وبيجاوب سؤال «وين مكان هاد بروتيني». */
+  .cat { background: #fff; padding-block: clamp(40px, 5.5vw, 70px); }
+  .cat__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
+  .cat__head { max-width: 60ch; margin-block-end: clamp(24px, 3vw, 36px); }
+  .cat__head h2 {
+    font-family: var(--font-display, inherit); font-size: clamp(23px, 3.2vw, 34px);
+    line-height: 1.24; margin: 0 0 10px; color: var(--ink-900, #1A2529);
+  }
+  .cat__head p { margin: 0; color: var(--ink-600, #46585E); font-size: clamp(15px, 1.5vw, 16.5px); }
+
+  .grp { padding-block-start: clamp(26px, 3vw, 38px); }
+  .grp + .grp { border-block-start: 1px solid rgba(26,37,41,.09); }
+  .grp__bar { display: flex; align-items: center; gap: 14px; margin-block-end: 16px; }
+  .grp__n {
+    flex: none; inline-size: 34px; block-size: 34px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: var(--font-latin, inherit); font-size: 14px; font-weight: 700;
+    background: var(--ink-900, #1A2529); color: #fff;
+  }
+  .grp__t { flex: 1 1 auto; }
+  .grp__t b { display: block; font-family: var(--font-display, inherit); font-size: 18px; color: var(--ink-900, #1A2529); }
+  .grp__t small { display: block; font-size: 13px; color: var(--ink-600, #46585E); margin-block-start: 1px; }
+  .grp__count { flex: none; font-size: 12.5px; color: var(--ink-500, #6B7B80); font-variant-numeric: tabular-nums; }
+
+  .grp__row { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .pc {
+    display: flex; flex-direction: column; overflow: hidden;
+    background: #fff; border: 1px solid rgba(26,37,41,.10); border-radius: 14px;
+    transition: transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s;
+  }
+  .pc:hover { transform: translateY(-4px); box-shadow: 0 16px 30px -20px rgba(6,52,54,.4); }
+  .pc__media { position: relative; aspect-ratio: 4/5; background: linear-gradient(180deg,#F4FBFD,#DCEFF7); }
+  .pc__media img { inline-size: 100%; block-size: 100%; object-fit: contain; padding: 14px; display: block; }
+  .pc__pct {
+    position: absolute; inset-block-start: 10px; inset-inline-start: 10px;
+    background: rgba(255,255,255,.95); border-radius: 99px; padding: 4px 10px;
+    font-size: 11.5px; font-weight: 700; color: var(--aqua-700, #1E7C8C);
+    box-shadow: 0 2px 7px rgba(6,52,54,.12);
+  }
+  .pc__body { display: flex; flex-direction: column; flex: 1; gap: 7px; padding: 14px 15px 16px; }
+  .pc__name { font-family: var(--font-display, inherit); font-size: 15.5px; margin: 0; color: var(--ink-900, #1A2529); line-height: 1.35; }
+  .pc__does { margin: 0; font-size: 12.5px; color: var(--ink-600, #46585E); min-block-size: 2.7em; }
+  /* 🔴 النسبة سطر سند صغير تحت الفايدة · مش شارة فوق الصورة.
+     الفايدة بتقود والنسبة بتبرهن · وهاي قاعدة benefits-not-ingredient-lists. */
+  .pc__proof {
+    margin: 0; font-size: 11.5px; color: var(--aqua-700, #1E7C8C);
+    font-variant-numeric: tabular-nums; opacity: .9;
+  }
+  .pc__foot { margin-block-start: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-block-start: 4px; }
+  .pc__price { font-weight: 700; font-size: 15px; color: var(--ink-900, #1A2529); font-variant-numeric: tabular-nums; }
+  .pc__ml { font-size: 12px; color: var(--ink-500, #6B7B80); }
+  .pc .luvit-btn { inline-size: 100%; justify-content: center; font-size: 13.5px; padding-block: 9px; }
+
   @media (prefers-reduced-motion: reduce) {
     .shop-hero__bottle, .shop-hero__bub { animation: none !important; transition: none !important; }
   }
@@ -385,6 +494,34 @@
   </div>
 </section>
 
+
+<!-- ٣ · مسارات البدء · عائلة تخطيط مختلفة -->
+<section class="paths" id="paths" data-nav-bg="light">
+  <div class="paths__inner">
+    <div class="paths__head">
+      <h2>مش عارفة من وين تبلّشي؟</h2>
+      <p>اختاري من هون وبنوصّلك للمناسب</p>
+    </div>
+    <div class="paths__row" data-luvit="stagger">
+      <a class="path" href="#packages"><b><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v13H3z"/><path d="M3 7l3-4h12l3 4"/><path d="M12 7v13"/></svg></b><span>بدي روتين كامل<small>أربع خطوات جاهزة</small></span></a>
+      <a class="path" href="/quiz"><b><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.1 9a3 3 0 1 1 4.2 2.7c-.8.4-1.3 1.1-1.3 2"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></b><span>مش عارفة بشرتي<small>خمس أسئلة</small></span></a>
+      <a class="path" href="#catalogue"><b><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></b><span>بدوّر على منتج<small>التشكيلة كاملة</small></span></a>
+      <a class="path" href="#catalogue"><b><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8h14"/><path d="M7 13h10"/><path d="M9 18h6"/></svg></b><span>بدي أزيد خطوة<small>على روتيني الحالي</small></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ٤ · التشكيلة بترتيب الاستعمال -->
+<section class="cat" id="catalogue" data-nav-bg="light">
+  <div class="cat__inner">
+    <div class="cat__head">
+      <h2>التشكيلة بترتيب استعمالها</h2>
+      <p>كل مجموعة خطوة بروتينك · فتشوفي مكان كل منتج قبل ما تشتري، مش لائحة بتدبّري حالك فيها.</p>
+    </div>
+    <div id="cats"></div>
+  </div>
+</section>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script type="module">
@@ -399,12 +536,14 @@ var U = 'https://plasmajo.com/wp-content/uploads/2026/08/';
    بالارتفاع بيعطي صندوقاً ٣ مرات أعرض والعبوات بتنكمش لصفر بالفلكس.
    نفس الفخ اللي انحل بالغوص · . */
 var TRIM = 'img/';
+/* h = نسبة الارتفاع · d = العمق (0 قدّام · 1 ورا)
+   الترتيب البصري: أعمق شي بالطرف، والبطل بالوسط قدّام. */
 var SHELF = [
-  { f: 'luvit-hydrating-gel-cleanser-1-bottle.webp',        h: 92 },
-  { f: 'luvit-8d-hyaluronic-acid-toner-1-bottle.webp',      h: 88 },
-  { f: 'luvit-vitamin-c-serum-1-bottle.webp',               h: 66 },
-  { f: 'luvit-moisturizing-repairing-cream-1-bottle.webp',  h: 58 },
-  { f: 'luvit-high-protection-sunscreen-1-bottle.webp',     h: 70 }
+  { f: 'luvit-8d-hyaluronic-acid-toner-1-bottle.webp',      h: 74, d: 1.00 },
+  { f: 'luvit-moisturizing-repairing-cream-1-bottle.webp',  h: 54, d: 0.55 },
+  { f: 'luvit-vitamin-c-serum-1-bottle.webp',               h: 72, d: 0.00 },
+  { f: 'luvit-high-protection-sunscreen-1-bottle.webp',     h: 62, d: 0.35 },
+  { f: 'luvit-hydrating-gel-cleanser-1-bottle.webp',        h: 86, d: 0.85 }
 ];
 
 var PACKS = [
@@ -463,6 +602,9 @@ var AR = function (n) {
     img.className = 'shop-hero__bottle';
     img.src = src; img.alt = ''; img.decoding = 'async';
     slot.style.setProperty('--bf', (b.h / 100).toFixed(3));
+    slot.style.setProperty('--d', b.d);
+    /* الانعكاس بيقصر مع البعد · الأبعد سطحه أضيق بالمنظور */
+    slot.style.setProperty('--mir-h', Math.round(58 - b.d * 26) + 'px');
 
     /* الانعكاس · نفس الصورة مقلوبة جوّا نافذة ثابتة الارتفاع */
     var box = document.createElement('span');
@@ -489,6 +631,90 @@ var AR = function (n) {
       el.dataset.depth = (i % 3) + 1;   /* عمق للبارالاكس · مربوط بالسكرول */
       stage.appendChild(el);
     });
+})();
+
+
+/* ══ التشكيلة بمجموعات · بترتيب الاستعمال ══════════════════════════
+   🔴 الأسعار والأسماء من الكتالوج الرسمي · والفايدة من حقل role
+      بـ_خطة/بيانات-المنتجات-الرسمية.json · ولا رقم مكتوب بالإيد. */
+var U2 = 'https://plasmajo.com/wp-content/uploads/2026/08/';
+var GROUPS = [
+  { n: 1, name: 'المنظّفات', does: 'أول خطوة · بتشيل الزيت والأوساخ بلا ما تشدّ',
+    items: [
+      { id: 201, ar: 'غسول البشرة الجافة والحساسة', img: 'luvit-hydrating-gel-cleanser-1-bottle.webp',
+        pct: '٠٫٥٪ هيالورونيك', ml: '٢٠٠ مل', price: '١٤٫٠٠', does: 'رغوة ناعمة بترطّب وهي بتنضّف' },
+      { id: 280, ar: 'غسول البشرة الدهنية', img: 'luvit-sebum-balancing-gel-cleanser-1-bottle.webp',
+        pct: '٠٫٥٪ ساليسيليك', ml: '٢٠٠ مل', price: '١٤٫٠٠', does: 'بيوازن إفراز الدهون وبيقلّل اللمعان' } ] },
+
+  { n: 2, name: 'التونرات', does: 'بتوازن البشرة وبتحضّرها تمتصّ السيروم',
+    items: [
+      { id: 202, ar: 'تونر البشرة الجافة والحساسة', img: 'luvit-8d-hyaluronic-acid-toner-1-bottle.webp',
+        pct: '٢٪ هيالورونيك 8D', ml: '٢٠٠ مل', price: '١٣٫٠٠', does: 'بيرطّب طبقات البشرة الواحدة ورا التانية' },
+      { id: 278, ar: 'تونر تضييق المسامات', img: 'luvit-clarifying-pore-tightening-toner-1-bottle.webp',
+        pct: '٥٪ AHA + ٠٫٥٪ BHA', ml: '٢٠٠ مل', price: '١٣٫٠٠', does: 'بينضّف المسام ويهدّي' } ] },
+
+  { n: 3, name: 'السيرومات', does: 'الخطوة اللي بتشتغل على همّك إنتِ',
+    items: [
+      { id: 191, ar: 'سيروم فيتامين سي', img: 'luvit-vitamin-c-serum-1-bottle.webp',
+        pct: '١٠٪ فيتامين سي', ml: '٣٠ مل', price: '١٩٫٠٠', does: 'بيوحّد اللون ويعطي إشراقة تدريجية' },
+      { id: 275, ar: 'سيروم الترطيب المكثّف', img: 'luvit-intensive-hydrating-serum-1-bottle.webp',
+        pct: '٢٪ هيالورونيك', ml: '٣٠ مل', price: '١٨٫٠٠', does: 'بيسحب المي لطبقات البشرة ويحبسها' },
+      { id: 277, ar: 'سيروم تضييق المسامات', img: 'luvit-pore-tightening-brightening-serum-1-bottle.webp',
+        pct: '١٠٪ نياسيناميد', ml: '٣٠ مل', price: '١٦٫٠٠', does: 'بيقلّل مظهر المسام ويوازن الدهون' },
+      { id: 282, ar: 'سيروم ألفا أربوتين المركّب', img: 'luvit-alpha-arbutin-complex-serum-2-box-front.webp',
+        pct: '٢٪ ألفا أربوتين', ml: '٣٠ مل', price: '٢٢٫٠٠', does: 'بيشتغل على البقع وتفاوت اللون' } ] },
+
+  { n: 4, name: 'علاج موضعي', does: 'مرتين بالأسبوع · مش يومي',
+    items: [
+      { id: 279, ar: 'سيروم التقشير', img: 'luvit-aha-bha-peeling-serum-1-bottle.webp',
+        pct: '١٠٪ AHA + ٢٪ BHA', ml: '٣٠ مل', price: '١٦٫٠٠', does: 'بيجدّد الملمس · وبيلزمه واقي شمس الصبح', warn: true },
+      { id: 276, ar: 'كريم سنتيلا للبقع', img: 'luvit-centella-blemish-cream-1-bottle.webp',
+        pct: '٥٪ خلاصة سنتيلا', ml: '٥٠ مل', price: '١٨٫٠٠', does: 'بيهدّي الاحمرار وآثار الحبوب' } ] },
+
+  { n: 5, name: 'الترطيب', does: 'آخر خطوة مسا · بتقفل الشغل كله',
+    items: [
+      { id: 281, ar: 'كريم الترطيب والترميم', img: 'luvit-moisturizing-repairing-cream-1-bottle.webp',
+        pct: '٥٪ بانثينول', ml: '٧٥ مل', price: '١٥٫٠٠', does: 'بيثبّت الترطيب ويدعم حاجز البشرة' } ] },
+
+  { n: 6, name: 'الحماية', does: 'آخر خطوة صبح · وبلاها الباقي بيروح',
+    items: [
+      { id: 318, ar: 'واقي الشمس اليومي', img: 'luvit-high-protection-sunscreen-1-bottle.webp',
+        pct: 'SPF50+ · PA++++', ml: '٥٠ مل', price: '١٧٫٩٥', does: 'بيمنع البقع ترجع وبيحمي من الضوء الأزرق' } ] }
+];
+
+(function () {
+  var root = document.getElementById('cats');
+  if (!root) return;
+  GROUPS.forEach(function (g) {
+    var cards = g.items.map(function (it) {
+      return '<article class="pc">' +
+        '<div class="pc__media">' +
+          '<img decoding="async" loading="lazy" width="600" height="750" src="' + U2 + it.img + '" alt="' + it.ar + '">' +
+        '</div>' +
+        '<div class="pc__body">' +
+          '<h3 class="pc__name">' + it.ar + '</h3>' +
+          '<p class="pc__does">' + it.does + '</p>' +
+          /* 🔴 النسبة **برهان تحت الفايدة**، مش شارة فوق الصورة.
+             ريّان: «روح لفوائد المكوّنات مش تذكرها» · و«مش تغلط بموضوع
+             النسب مرة ثانية». فالفايدة بتقود والنسبة بتسند. */
+          '<p class="pc__proof">' + it.pct + '</p>' +
+          '<div class="pc__foot"><span class="pc__price">' + it.price + ' د.أ</span><span class="pc__ml">' + it.ml + '</span></div>' +
+          '<a class="luvit-btn" href="/?add-to-cart=' + it.id + '" rel="nofollow">أضيفي إلى السلة</a>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+
+    var sec = document.createElement('div');
+    sec.className = 'grp';
+    sec.innerHTML =
+      '<div class="grp__bar">' +
+        '<b class="grp__n">' + g.n + '</b>' +
+        '<span class="grp__t"><b>' + g.name + '</b><small>' + g.does + '</small></span>' +
+        '<span class="grp__count">' + g.items.length + ' منتج' + (g.items.length > 2 ? 'ات' : '') + '</span>' +
+      '</div>' +
+      '<div class="grp__row">' + cards + '</div>';
+    root.appendChild(sec);
+  });
 })();
 
 /* ── بناء بطاقات البكجات ────────────────────────────────────────── */
@@ -578,9 +804,11 @@ if (reduced()) {
   /* بيتة ٢ · العبوات بتوصل بترتيب استعمالها · دخول ٦٢٠ملي وتتابع ٤٤٠ */
   var tl = gsap.timeline({ delay: .18 });
   tl.to('.shop-hero__glow', { scale: 1, autoAlpha: 1, duration: .8, ease: 'power2.out' }, 0)
+    /* التتابع من الأعمق للأقرب · فالبطل بيهبط آخر واحد وبياخد النظر */
     .to(bottles, {
       yPercent: 0, autoAlpha: 1, duration: .62,
-      ease: 'back.out(1.45)', stagger: .11
+      ease: 'back.out(1.45)',
+      stagger: { each: .09, from: 'edges' }
     }, .06)
 
     /* 🔴 بيتة ٣ · السكتة قبل الحسم · «stillness before climax» */
