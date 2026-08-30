@@ -339,7 +339,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script>
+<script type="module">
 /* ══════════════════════════════════════════════════════════════════════
    البيانات · كل سعر مقروء من ووكومرس، ولا رقم مكتوب بالإيد.
    والصور من مكتبة وسائط الموقع (عامة · مفحوصة ٢٠٠).
@@ -407,11 +407,11 @@ var AR = function (n) {
     img.className = 'shop-hero__bottle';
     img.src = TRIM + b.f.replace(/.webp$/, '-trim.webp'); img.alt = ''; img.decoding = 'async';
     img.style.setProperty('--b', b.h + '%');
-    img.dataset.i = i;
+    img.dataset.depth = (i % 2) ? 1 : 2;
     shelf.appendChild(img);
   });
 
-  /* فقاعات · عددها ثابت ومواضعها موزّعة، مش عشوائية بالكامل */
+  /* فقاعات ساكنة · زينة خلفية بعمق للبارالاكس، بلا حلقة أبدية */
   var stage = document.querySelector('.shop-hero__stage');
   [[14, 12, 22], [9, 74, 8], [20, 42, 4], [7, 88, 34], [12, 26, 40], [6, 58, 18]]
     .forEach(function (b, i) {
@@ -419,7 +419,7 @@ var AR = function (n) {
       el.className = 'shop-hero__bub';
       el.style.inlineSize = b[0] + 'px'; el.style.blockSize = b[0] + 'px';
       el.style.insetInlineStart = b[1] + '%'; el.style.insetBlockStart = b[2] + '%';
-      el.dataset.i = i;
+      el.dataset.depth = (i % 3) + 1;   /* عمق للبارالاكس · مربوط بالسكرول */
       stage.appendChild(el);
     });
 })();
@@ -466,55 +466,68 @@ var AR = function (n) {
   });
 })();
 
-/* ── الحركة ─────────────────────────────────────────────────────── */
-(function () {
-  if (!window.gsap) return;
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  gsap.registerPlugin(ScrollTrigger);
+/* ══════════════════════════════════════════════════════════════════════
+   الحركة · مبنية بمكتبة توازَن · مش صورة ذكاء اصطناعي.
+   المفردات المستعملة: wordReveal · revealAll · sceneParallax.
 
-  var bottles = gsap.utils.toArray('.shop-hero__bottle');
-  var bubs = gsap.utils.toArray('.shop-hero__bub');
+   🔴 وقرار مبني على «قانون الحركة» (motion-doctrine · Part 2):
+      «Idle sine loops (breathe, float, drift, glow pulse) are BANNED as
+       sustained motion · they read as the video is waiting.»
 
-  if (reduced) {
-    gsap.set(bottles, { y: 0, opacity: 1 });
-    gsap.set(bubs, { opacity: .5 });
-    return;
-  }
+      فالنسخة الأولى كانت غلط: العبوات كانت تهتزّ بـyoyo لا نهائي
+      والفقاعات بتصعد بحلقة أبدية. **الاثنان تعبئة وقت مش حركة.**
 
-  /* الدخول · العبوات بتطلع من تحت بتتابع */
-  gsap.set(bottles, { yPercent: 42, opacity: 0 });
-  gsap.set(bubs, { opacity: 0, scale: .4 });
-  gsap.set('.shop-hero__disc', { scale: .82, opacity: 0 });
+      البديل المعتمد هو مسار **«الكشف المتدرّج»** (Staged reveals):
+      كل بيتة بتزيد معلومة · العبوات بتوصل بترتيب استعمالها، وبعد
+      **سكتة** بتيجي الحقائق. وبعدها المشهد **بيرتاح**.
+      والحياة المستمرة الوحيدة مربوطة بالسكرول (sceneParallax)، يعني
+      الزائرة هي اللي بتسوقها · مش المشهد بيستنى فيها.
 
-  var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-  tl.to('.shop-hero__disc', { scale: 1, opacity: 1, duration: 1.1 }, 0)
-    .to(bottles, { yPercent: 0, opacity: 1, duration: 1.05, stagger: 0.085 }, 0.12)
-    .to(bubs, { opacity: .85, scale: 1, duration: .7, stagger: 0.06 }, 0.5);
+   وقيود التوقيت من نفس المصدر:
+     · دخول العنصر الواحد ≤ ٨٠٠ملي · والتتابع الكلي ≤ ٥٠٠ملي
+     · سكتة ٠٫٣ لـ٠٫٧٥ ثانية قبل البيتة الأخيرة
+     · ممنوع bounce.out وelastic.out · وback.out(1.4-1.7) مسموحة
+   ══════════════════════════════════════════════════════════════════════ */
+import { wordReveal, revealAll, sceneParallax, reduced, EASES }
+  from './tawaazn-motion.js';
 
-  /* العوم المستمر · كل عبوة بمداها هي عشان ما يبيّن نبضاً واحداً */
-  bottles.forEach(function (b, i) {
-    gsap.to(b, {
-      y: '-=' + (7 + (i % 3) * 3),
-      duration: 2.6 + (i % 4) * 0.45,
-      ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.1 + i * 0.14
-    });
-  });
+gsap.registerPlugin(ScrollTrigger);
 
-  /* الفقاعات بتصعد وبتختفي */
-  bubs.forEach(function (b, i) {
-    gsap.to(b, {
-      y: -(60 + i * 14), opacity: 0,
-      duration: 5 + i * 0.7, ease: 'none',
-      repeat: -1, delay: 1.4 + i * 0.9
-    });
-  });
+var bottles = gsap.utils.toArray('.shop-hero__bottle');
+var facts   = gsap.utils.toArray('.shop-hero__fact');
 
-  /* بطاقات البكجات بتدخل مع السكرول */
-  gsap.from('.pkc', {
-    y: 26, opacity: 0, duration: .7, stagger: .08, ease: 'power2.out',
-    scrollTrigger: { trigger: '#packages', start: 'top 78%' }
-  });
-})();
+if (reduced()) {
+  /* القاعدة ٥ بمكتبة توازَن: المحتوى بيظهر ثابتاً، ما بينحجب */
+  gsap.set([bottles, facts, '.shop-hero__disc'], { opacity: 1, y: 0, clearProps: 'transform' });
+} else {
+
+  gsap.set(bottles, { yPercent: 26, autoAlpha: 0 });
+  gsap.set(facts,   { y: 14, autoAlpha: 0 });
+  gsap.set('.shop-hero__disc', { scale: .9, autoAlpha: 0 });
+
+  /* بيتة ١ · العنوان كلمةً كلمة · والتقسيم بالكلمات لأن العربية متصلة */
+  wordReveal('.shop-hero h1', { stagger: .06, dur: .72 });
+
+  /* بيتة ٢ · العبوات بتوصل بترتيب استعمالها · دخول ٦٢٠ملي وتتابع ٤٤٠ */
+  var tl = gsap.timeline({ delay: .18 });
+  tl.to('.shop-hero__disc', { scale: 1, autoAlpha: 1, duration: .7, ease: 'power2.out' }, 0)
+    .to(bottles, {
+      yPercent: 0, autoAlpha: 1, duration: .62,
+      ease: 'back.out(1.45)', stagger: .11
+    }, .06)
+
+    /* 🔴 بيتة ٣ · السكتة قبل الحسم · «stillness before climax» */
+    .to(facts, {
+      y: 0, autoAlpha: 1, duration: .5, ease: 'power2.out', stagger: .06
+    }, '+=0.45');
+
+  /* وبعدها المشهد بيرتاح · ولا حلقة أبدية.
+     الحياة الباقية مربوطة بالسكرول: الزائرة بتسوقها. */
+  sceneParallax('.shop-hero', '[data-depth]');
+}
+
+/* بطاقات البكجات · كشف بالتمرير */
+revealAll('.pkc');
 </script>
 </body>
 </html>
