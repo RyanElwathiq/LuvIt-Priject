@@ -133,7 +133,7 @@ function productCard(p) {
   if (p.active) {
     parts.push(`          <span class="luvit-card__badge">${ltr(p.active.pct)} ${esc(p.active.name)}</span>`);
   }
-  parts.push(`          <img loading="lazy" decoding="async" width="800" height="1000"`);
+  parts.push(`          <img decoding="async" width="800" height="1000"`);
   parts.push(`               src="${esc(img.src)}" alt="${esc(p.name)}">`);
   parts.push('        </div>');
   parts.push('        <div class="luvit-card__body">');
@@ -195,7 +195,7 @@ function packageCard(p) {
   return [
     `      <article class="luvit-card luvit-card--feature"${meta.goal ? ` data-goal="${meta.goal}"` : ''}>`,
     '        <div class="luvit-card__media">',
-    `          <img loading="lazy" decoding="async" width="800" height="800"`,
+    `          <img decoding="async" width="800" height="800"`,
     `               src="${esc(img.src)}" alt="${esc(p.name)}">`,
     '        </div>',
     '        <div class="luvit-card__body">',

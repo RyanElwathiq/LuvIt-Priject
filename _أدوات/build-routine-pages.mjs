@@ -231,7 +231,7 @@ ${r.steps.map(([k, title, role], i) => {
   const p = P[k];
   return `      <div class="luvit-step">
         <div class="luvit-step__media">
-          <img loading="lazy" decoding="async" width="800" height="1000"
+          <img decoding="async" width="800" height="1000"
                src="${p.img}" alt="${p.ar}">
         </div>
         <span class="luvit-step__num">${AR[i + 1]}</span>
@@ -394,7 +394,7 @@ ${ROUTINES.map((r) => {
   pack.img = pack.images[0].src;
   return `      <article class="luvit-card luvit-card--feature" data-goal="${r.key}">
         <div class="luvit-card__media">
-          <img loading="lazy" decoding="async" width="800" height="800"
+          <img decoding="async" width="800" height="800"
                src="${pack.img}" alt="${r.ar}">
         </div>
         <div class="luvit-card__body">
@@ -470,3 +470,28 @@ console.log(`✅ ${'r0-hub.html'.padEnd(22)} الهَب · ${hubClasses} كلا�
 
 console.log('');
 console.log((n + 1) + ' صفحات · متوازنة · بلا روابط ميتة · بلا كلاس مخترع');
+
+/* ══════════════════════════════════════════════════════════════════════
+   محتوى صفحات ووردبريس · جاهز للتركيب
+   ══════════════════════════════════════════════════════════════════════
+   ⚠️ وصفحات الروتينات **بلوك wp:html واحد** بكل سكاشنها · مش بلوك لكل
+      سكشن زي صفحة المتجر. مقيس على الحي: صفحة الهَب بلوك واحد وتلات
+      سكاشن، وكل صفحة روتين بلوك واحد وستة.
+      كتابتها بثمانية بلوكات بتشتغل، بس بتغيّر شكل المحرّر عن اللي
+      ريّان متعوّد عليه بلا سبب.
+   ══════════════════════════════════════════════════════════════════════ */
+const PAGE_IDS = { 'r0-hub.html': 211, 'rt1-hydration.html': 213,
+                   'rt2-glow.html': 214, 'rt3-clarify.html': 212 };
+
+const INBOX = path.join(path.resolve(HERE, '..'), '_وارد');
+fs.mkdirSync(INBOX, { recursive: true });
+let shipped = 0;
+for (const [file, id] of Object.entries(PAGE_IDS)) {
+  const src = fs.readFileSync(path.join(OUT, file), 'utf8');
+  /* تعليق الترويسة بينشال · هو للمطوّر مش للصفحة */
+  const body = src.replace(/^<!--[\s\S]*?-->\s*/, '').trim();
+  const wp = '<!-- wp:html -->\n' + body + '\n<!-- /wp:html -->';
+  fs.writeFileSync(path.join(INBOX, 'page' + id + '-content.html'), wp, 'utf8');
+  shipped++;
+}
+console.log('\n✅ ' + shipped + ' صفحة جاهزة للتركيب بـ_وارد/');
