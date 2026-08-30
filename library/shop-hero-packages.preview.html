@@ -232,6 +232,40 @@
   }
   .shop-hero__wave svg { display: block; inline-size: 100%; block-size: clamp(52px, 7vw, 96px); }
 
+  /* ══ النسيج · حبيبات دقيقة على الأسطح الكبيرة ═════════════════════
+     🔴 الجرد قال: ٨ أسطح لون صلب و١٥ تدرّجاً خطّياً و**شعاعيان بس**.
+        يعني كل شي أملس تماماً · وredesign-existing-projects بيسمّيها
+        «Flat design with zero texture · pure flat vectors feel sterile»
+        و«Perfectly even gradients».
+
+     🔴 وبـbase64 لا utf8 · وهاد مش تفضيل:
+        wptexturize بووردبريس **بيقوّس الاقتباسات** جوّا
+        data:image/svg+xml;utf8, وبيكسر الـSVG. صار فعلاً ٢١ آب وراحت
+        ست صور بصفحة المنتجات. والbase64 ما فيه اقتباس فما في شي يقوّسه.
+        (مفحوص: فُكّ التشفير رجّع SVG سليماً مطابقاً للأصل.)
+
+     والتكلفة صفر تقريباً: صورة ساكنة ١٦٠×١٦٠ بتتكرّر، الـGPU بيركّبها
+     مرة · ولا فلتر حيّ ولا إعادة حساب مع السكرول.                    */
+  /* النسيج معرَّف **مرة وحدة** كمتغيّر · أي طبقة بتحتاجه بتناديه.
+     وهاد مش ترتيباً · نسختان من نفس الـbase64 بتنحرفا بصمت. */
+  :root { --luvit-grain: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIj48ZmlsdGVyIGlkPSJnIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC44NSIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjxmZUNvbG9yTWF0cml4IHR5cGU9InNhdHVyYXRlIiB2YWx1ZXM9IjAiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgZmlsdGVyPSJ1cmwoI2cpIi8+PC9zdmc+"); }
+
+  .luvit-grain { position: relative; isolation: isolate; }
+  .luvit-grain::after {
+    content: ""; position: absolute; inset: 0; z-index: 0;
+    pointer-events: none; border-radius: inherit;
+    background-image: var(--luvit-grain);
+    background-size: 160px 160px;
+    opacity: .09;                 /* لمسة · مش ملمس مرئي */
+    mix-blend-mode: multiply;
+  }
+  /* المحتوى فوق الحبيبات · وإلا الطبقة بتغطّيه */
+  .luvit-grain > * { position: relative; z-index: 1; }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .luvit-grain::after { display: none; }
+  }
+
   /* ── البكجات · «شريط أهداف + لوح مفصّل» ─────────────────────────
      🔴 كانت أربع بطاقات متطابقة بصف · وهاد بالحرف اللي بيسمّيه
         design-taste-frontend و redesign-existing-projects
@@ -466,7 +500,17 @@
         بثلاث سكاشن متتالية بصفحة المتجر (البكجات · نوع البشرة · المنتجات)
         والقاعدة: عائلة تخطيط لكل سكشن.
      فهاد شريط أفقي بمداخل، مش شبكة بطاقات. */
-  .paths { background: linear-gradient(180deg, #F6FBFD, #EAF4F8); padding-block: clamp(38px, 5vw, 62px); }
+  /* 🔴 كان linear-gradient(180deg) مستوياً · شبكة شعاعية بدله
+     عشان يكون في ضوء له مصدر لا انتقال ميكانيكي.
+     والحشوة **بصرية**: السفلى أكبر من العليا · العين بتحسّ التناظر
+     الحسابي كأنه أعلى شوي. */
+  .paths {
+    background:
+      radial-gradient(76% 58% at 88% -6%, rgba(76,197,218,.16), transparent 62%),
+      radial-gradient(64% 52% at 4% 108%, rgba(41,169,192,.12), transparent 66%),
+      linear-gradient(178deg, #F7FCFD, #EAF4F8);
+    padding-block: clamp(38px, 5vw, 62px) clamp(46px, 6vw, 74px);
+  }
   .paths__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
   .paths__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-block-end: 22px; }
   .paths__head h2 {
@@ -523,10 +567,33 @@
   /* نبرة متناوبة · بتمتدّ لعرض الشاشة بحيلة الظل الجانبي عشان ما
      نحتاج حاوية إضافية · والحدّ الناعم بيمنع الحزّ. */
   .grp:nth-child(even) {
-    background: linear-gradient(180deg, #F7FCFD, #F2F9FB);
+    background:
+      radial-gradient(58% 70% at 96% 0%, rgba(76,197,218,.10), transparent 60%),
+      linear-gradient(178deg, #F8FCFD, #F1F8FA);
     box-shadow: 0 0 0 100vmax #F5FBFC;
     clip-path: inset(0 -100vmax);
   }
+  /* 🔴 الشريط المتناوب بيمدّ ظلاً بعرض الشاشة، وهو جوّا .cat__inner
+     اللي z-index:1 · يعني **بيرسم فوق حبيبات السكشن ويطمسها**.
+     مقيس: الانحراف ضل 1.08 مهما رفعنا الشفافية. فالشريط بياخد
+     حبيباته الخاصة. */
+  .grp:nth-child(even) { position: relative; isolation: isolate; }
+  .grp:nth-child(even)::after {
+    content: ""; position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;
+    background-image: var(--luvit-grain);
+    background-size: 160px 160px;
+    opacity: .09; mix-blend-mode: multiply;
+    clip-path: inset(0 -100vmax);
+    box-shadow: 0 0 0 100vmax transparent;
+  }
+  .grp:nth-child(even) > * { position: relative; z-index: 1; }
+  @media (prefers-reduced-transparency: reduce) {
+    .grp:nth-child(even)::after { display: none; }
+  }
+
+  /* الحشوة البصرية · السفلى أكبر */
+  .grp { padding-block: clamp(24px, 3vw, 40px) clamp(30px, 3.6vw, 50px); }
   .grp__wrap { display: grid; gap: clamp(16px, 2.4vw, 34px); }
   @media (min-width: 900px) {
     .grp__wrap { grid-template-columns: minmax(180px, 220px) minmax(0, 1fr); }
@@ -581,7 +648,13 @@
      بتعطي صفر قصّ وصفر إطار **والعبوة بحجمها الطبيعي**.
      كان ٤:٣ مع contain · النتيجة إن المربّعة بتنحشر بالارتفاع
      وبتصغر ٣٤٪ وبتترك هامشين باهتين على جنابها. */
-  .pc__media { background: #F3FAFA; aspect-ratio: 1 / 1; overflow: clip; }
+  /* اللون الأساسي **لازم** يضل #F3FAFA لأنه لون خلفية الصور نفسها
+     المطبوعة جوّاها · والتدرّج الشعاعي بيزيد عمقاً بلا ما يبيّن حدّاً،
+     لأنه بيبدا من نفس اللون. */
+  .pc__media {
+    aspect-ratio: 1 / 1; overflow: clip;
+    background: radial-gradient(78% 62% at 50% 26%, #F8FCFD, #F3FAFA 58%, #ECF6F8 100%);
+  }
   .pc__media img {
     display: block; inline-size: 100%; block-size: 100%;
     object-fit: cover;
@@ -694,7 +767,7 @@
 <!-- ══════════════════════════════════════════════════════════════════
      ٢ · البكجات
      ══════════════════════════════════════════════════════════════════ -->
-<section class="pk" id="packages" data-nav-bg="light">
+<section class="pk luvit-grain" id="packages" data-nav-bg="light">
   <div class="pk__inner">
 
     <div class="pk__head">
@@ -732,7 +805,7 @@
 
 
 <!-- ٣ · مسارات البدء · عائلة تخطيط مختلفة -->
-<section class="paths" id="paths" data-nav-bg="light">
+<section class="paths luvit-grain" id="paths" data-nav-bg="light">
   <div class="paths__inner">
     <div class="paths__head">
       <h2>مش عارفة من وين تبلّشي؟</h2>
@@ -748,7 +821,7 @@
 </section>
 
 <!-- ٤ · التشكيلة بترتيب الاستعمال -->
-<section class="cat" id="catalogue" data-nav-bg="light">
+<section class="cat luvit-grain" id="catalogue" data-nav-bg="light">
   <div class="cat__inner">
     <div class="cat__head">
       <h2>التشكيلة بترتيب استعمالها</h2>
