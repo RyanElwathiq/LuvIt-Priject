@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة · رأس المتجر والبكجات</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* ══════════════════════════════════════════════════════════════════
+     🔴 معاينة فقط · هالكتلة بتنتقل لـtokens.css بعد الموافقة.
+        ما بتنسخ لـWPCode من هون · اللصق من tokens.css وحده.
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* ── رأس المتجر · لوحة واحدة بعمودين ─────────────────────────── */
+  .shop-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 85% 0%, rgba(76,197,218,.20), transparent 62%),
+      linear-gradient(178deg, #F4FBFD 0%, #E2F2F8 58%, #D2E9F3 100%);
+  }
+  .shop-hero__inner {
+    position: relative; z-index: 2;
+    max-width: var(--container, 1200px);
+    margin-inline: auto;
+    padding-inline: var(--space-5);
+    padding-block: clamp(52px, 7vw, 92px) clamp(120px, 13vw, 180px);
+    display: grid; gap: clamp(28px, 4vw, 56px);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .shop-hero__inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); }
+  }
+
+  .shop-hero__eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: var(--font-latin, inherit);
+    font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--aqua-700, #1E7C8C); font-weight: 600;
+    margin: 0 0 16px;
+  }
+  .shop-hero__eyebrow::before {
+    content: ""; inline-size: 26px; block-size: 2px; border-radius: 2px;
+    background: currentColor; opacity: .55;
+  }
+  .shop-hero h1 {
+    font-family: var(--font-display, inherit);
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.16; margin: 0 0 18px;
+    color: var(--ink-900, #1A2529);
+    text-wrap: balance;
+  }
+  .shop-hero h1 em {
+    font-style: normal; position: relative; white-space: nowrap;
+  }
+  /* خط الماء تحت الكلمة المفتاح · بينرسم مع الدخول */
+  .shop-hero h1 em::after {
+    content: ""; position: absolute; inset-inline: -2px; inset-block-end: .06em;
+    block-size: .30em; border-radius: 99px; z-index: -1;
+    background: linear-gradient(90deg, rgba(76,197,218,.55), rgba(41,169,192,.30));
+    transform-origin: right center;
+  }
+  .shop-hero__sub {
+    font-size: clamp(15.5px, 1.6vw, 18px);
+    color: var(--ink-600, #46585E);
+    max-width: 48ch; margin: 0 0 26px;
+  }
+  .shop-hero__cta { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* شريط الحقائق · أرقام مقيسة لا شعارات */
+  .shop-hero__facts {
+    display: flex; flex-wrap: wrap; gap: clamp(18px, 3vw, 38px);
+    margin-block-start: clamp(26px, 3.4vw, 40px);
+    padding-block-start: 22px;
+    border-block-start: 1px solid rgba(26,37,41,.13);
+  }
+  .shop-hero__fact { display: flex; flex-direction: column; gap: 2px; }
+  .shop-hero__fact b {
+    font-family: var(--font-display, inherit);
+    font-size: clamp(21px, 2.5vw, 28px); line-height: 1.1;
+    color: var(--aqua-700, #1E7C8C); font-variant-numeric: tabular-nums;
+  }
+  .shop-hero__fact span { font-size: 13px; color: var(--ink-600, #46585E); }
+
+  /* ── لوح العبوات · العمود الثاني ──────────────────────────────── */
+  .shop-hero__stage {
+    position: relative;
+    block-size: clamp(320px, 34vw, 430px);
+    /* 🔴 القصّ إلزامي · بلاه العبوات بتسرّب على عمود النص وبتقف فوق الأزرار.
+       انمسكت باللقطة أول محاولة. */
+    overflow: hidden;
+    display: grid; place-items: stretch;
+  }
+  .shop-hero__shelf {
+    position: relative; z-index: 1;
+    inline-size: 100%;
+    /* 🔴 ارتفاع **بالبكسل** لا بالنسبة المئوية.
+       النسبة المئوية على أب داخل شبكة ما بتحلّ بشكل متوقّع · جرّبتها
+       مرتين وطلعت مرة عبوات صغيرة ومرة عبوة وحدة عملاقة. */
+    block-size: clamp(300px, 32vw, 390px);
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: clamp(2px, .6vw, 10px);
+    padding-block-end: 7%;
+  }
+  .shop-hero__bottle {
+    display: block; flex: none;
+    /* 🔴 القياس بالارتفاع والعرض بينحسب · وmax-inline-size بتمنع أي عبوة
+       عريضة من دهس جاراتها لما تنقص المساحة. */
+    block-size: var(--b, 62%);
+    inline-size: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 24px rgba(6, 52, 54, .16));
+    will-change: transform;
+  }
+  /* خط الرفّ · ظل ناعم بيوحّد القواعد بدل ما تبيّن عايمة */
+  .shop-hero__shelf::after {
+    content: ""; position: absolute; inset-inline: 8%; inset-block-end: 4%;
+    block-size: 14px; border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(6,52,54,.13), transparent 70%);
+  }
+  /* قرص زجاجي خلف اللوح · نفس لغة الهيرو بالرئيسية */
+  /* 🔴 وهج بلا حافة · القرص بحدّ ظاهر بيبيّن مقصوصاً لما المسرح يقصّ،
+     وانمسك باللقطة مرتين. الوهج ما إله حافة فما بيبيّن قصّه. */
+  .shop-hero__disc {
+    position: absolute; inset-block-start: 2%; inset-inline-start: 50%;
+    inline-size: min(92%, 420px); aspect-ratio: 1;
+    transform: translateX(-50%);
+    border-radius: 50%; z-index: 0; pointer-events: none;
+    background: radial-gradient(circle at 42% 34%, rgba(255,255,255,.92), rgba(226,244,250,.5) 46%, rgba(198,232,244,.16) 66%, transparent 78%);
+  }
+
+  /* فقاعات · زينة صرفة */
+  .shop-hero__bub {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.95), rgba(198,232,244,.5) 60%, rgba(160,214,232,.18));
+    border: 1px solid rgba(255,255,255,.7);
+  }
+
+  /* موجة القاع · بتقصّ لسكشن البكجات */
+  .shop-hero__wave { position: absolute; inset-inline: 0; inset-block-end: -1px; z-index: 3; line-height: 0; }
+  .shop-hero__wave svg { display: block; inline-size: 100%; block-size: clamp(52px, 7vw, 96px); }
+
+  /* ── سكشن البكجات ─────────────────────────────────────────────── */
+  .pk { background: #FFFFFF; padding-block: clamp(40px, 6vw, 72px) clamp(56px, 8vw, 96px); }
+  .pk__inner { max-width: var(--container, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
+
+  .pk__head { max-width: 62ch; margin: 0 0 clamp(26px, 3.4vw, 40px); }
+  .pk__head h2 {
+    font-family: var(--font-display, inherit);
+    font-size: clamp(24px, 3.4vw, 36px); line-height: 1.22; margin: 0 0 12px;
+    color: var(--ink-900, #1A2529); text-wrap: balance;
+  }
+  .pk__head p { margin: 0; color: var(--ink-600, #46585E); font-size: clamp(15px, 1.5vw, 17px); }
+
+  /* شبكة متساوية الارتفاع · وهاد اللي كان مكسوراً */
+  .pk__grid {
+    display: grid; gap: clamp(16px, 2vw, 24px);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  @media (min-width: 640px)  { .pk__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1080px) { .pk__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  .pkc {
+    display: flex; flex-direction: column;
+    background: #fff;
+    border: 1px solid rgba(26,37,41,.11);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(6,52,54,.05), 0 10px 26px -18px rgba(6,52,54,.34);
+    transition: transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s cubic-bezier(.22,.61,.36,1);
+  }
+  .pkc:hover { transform: translateY(-5px); box-shadow: 0 1px 2px rgba(6,52,54,.06), 0 22px 40px -22px rgba(6,52,54,.42); }
+  .pkc:focus-within { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+
+  .pkc__media { position: relative; aspect-ratio: 1; background: linear-gradient(180deg,#F2FAFD,#DCEFF7); }
+  .pkc__media img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  .pkc__tag {
+    position: absolute; inset-block-start: 12px; inset-inline-start: 12px;
+    background: rgba(255,255,255,.94); backdrop-filter: blur(6px);
+    border-radius: 99px; padding: 5px 12px;
+    font-size: 11.5px; font-weight: 600; letter-spacing: .02em;
+    color: var(--aqua-700, #1E7C8C);
+    box-shadow: 0 2px 8px rgba(6,52,54,.12);
+  }
+  .pkc__tag--new { background: var(--ink-900, #1A2529); color: #fff; }
+
+  .pkc__body { display: flex; flex-direction: column; flex: 1; padding: 20px 20px 22px; gap: 12px; }
+  .pkc__goal {
+    font-size: 11.5px; letter-spacing: .11em; text-transform: uppercase;
+    color: var(--aqua-600, #248FA5); font-weight: 700; margin: 0;
+  }
+  .pkc__title {
+    font-family: var(--font-display, inherit);
+    font-size: 19px; line-height: 1.3; margin: 0; color: var(--ink-900, #1A2529);
+  }
+  .pkc__title a { color: inherit; text-decoration: none; }
+  .pkc__title a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .pkc__for { margin: 0; font-size: 13.5px; color: var(--ink-600, #46585E); min-block-size: 3.2em; }
+
+  /* الخطوات · صف مرقّم مضغوط */
+  .pkc__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .pkc__steps li {
+    display: grid; grid-template-columns: 20px 1fr auto; gap: 9px; align-items: baseline;
+    font-size: 13.5px; color: var(--ink-700, #33474D);
+  }
+  .pkc__steps b {
+    font-family: var(--font-latin, inherit); font-size: 11px; font-weight: 700;
+    color: var(--aqua-600, #248FA5); inline-size: 20px; block-size: 20px;
+    display: grid; place-items: center; border-radius: 50%;
+    background: rgba(76,197,218,.15); align-self: center;
+  }
+  .pkc__steps span { color: var(--ink-500, #6B7B80); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .pkc__steps li[data-opt] { color: var(--ink-500, #6B7B80); }
+
+  /* الفاتورة المكشوفة */
+  .pkc__bill {
+    margin-block-start: auto;
+    background: #F5F9FB; border: 1px solid rgba(26,37,41,.08);
+    border-radius: 11px; padding: 12px 14px;
+    font-size: 12.5px; color: var(--ink-600, #46585E);
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .pkc__bill dl { display: flex; justify-content: space-between; gap: 10px; margin: 0; }
+  .pkc__bill dt { margin: 0; }
+  .pkc__bill dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .pkc__bill .free { color: var(--aqua-700, #1E7C8C); font-weight: 700; }
+  .pkc__bill hr { border: none; border-block-start: 1px dashed rgba(26,37,41,.16); margin: 3px 0; }
+  .pkc__bill .tot { font-weight: 700; color: var(--ink-900, #1A2529); font-size: 14.5px; }
+
+  .pkc__buy { display: flex; align-items: center; gap: 10px; }
+  .pkc__buy .luvit-btn { flex: 1; justify-content: center; }
+  .pkc__note { margin: 0; font-size: 11.5px; color: var(--ink-500, #6B7B80); text-align: center; }
+
+  /* شريط الوعد تحت الشبكة */
+  .pk__promise {
+    margin-block-start: clamp(22px, 3vw, 34px);
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    background: linear-gradient(180deg,#F4FBFD,#E9F5F9);
+    border: 1px solid rgba(26,37,41,.09);
+    border-radius: 16px; padding: clamp(18px, 2.4vw, 26px);
+  }
+  .pk__promise div { display: flex; gap: 11px; align-items: flex-start; }
+  .pk__promise svg { flex: none; margin-block-start: 2px; color: var(--aqua-600, #248FA5); }
+  .pk__promise b { display: block; font-size: 14.5px; color: var(--ink-900, #1A2529); margin-block-end: 2px; }
+  .pk__promise p { margin: 0; font-size: 13px; color: var(--ink-600, #46585E); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shop-hero__bottle, .shop-hero__bub { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     ١ · رأس المتجر
+     الحركة: العبوات بتطلع من تحت الموجة بتتابع، والقرص بيتنفّس،
+     والفقاعات بتصعد. كلها transform وopacity · ولا خاصية بتسبب تخطيطاً.
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="shop-hero" id="page-head" data-nav-bg="light">
+  <div class="shop-hero__inner">
+    <div class="shop-hero__copy">
+      <p class="shop-hero__eyebrow">التشكيلة كاملة</p>
+      <h1>كل نسبة <em>مكتوبة</em> على العبوة، مش بالإعلان</h1>
+      <p class="shop-hero__sub">
+        اثنعش منتجاً وأربع روتينات جاهزة، مرتّبة بترتيب استعمالها. تقدري تشوفي
+        مكان كل وحدة بروتينك قبل ما تشتري، وتعرفي بالضبط شو جوّاها.
+      </p>
+      <div class="shop-hero__cta">
+        <a class="luvit-btn" href="#packages">ابدأي بروتين جاهز</a>
+        <a class="luvit-btn luvit-btn--ghost" href="#products">أو شوفي المنتجات وحدة وحدة</a>
+      </div>
+
+      <div class="shop-hero__facts" data-luvit="stagger">
+        <div class="shop-hero__fact"><b>١٢</b><span>منتجاً بالتشكيلة</span></div>
+        <div class="shop-hero__fact"><b>٤</b><span>روتينات جاهزة</span></div>
+        <div class="shop-hero__fact"><b>يوم لِيومين</b><span>توصيل لكل الأردن</span></div>
+        <div class="shop-hero__fact"><b>٢ د.أ</b><span>وبلاش مع أي روتين</span></div>
+      </div>
+    </div>
+
+    <div class="shop-hero__stage" aria-hidden="true">
+      <span class="shop-hero__disc"></span>
+      <div class="shop-hero__shelf" id="shelf"></div>
+    </div>
+  </div>
+
+  <div class="shop-hero__wave" aria-hidden="true">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+      <path d="M0,52 C220,88 380,10 620,32 C860,54 1040,92 1240,64 C1330,52 1390,40 1440,34 L1440,90 L0,90 Z" fill="#FFFFFF"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     ٢ · البكجات
+     ══════════════════════════════════════════════════════════════════ -->
+<section class="pk" id="packages" data-nav-bg="light">
+  <div class="pk__inner">
+
+    <div class="pk__head">
+      <h2>روتين كامل بطلبية وحدة، وبترتيبه الصح</h2>
+      <p>
+        روتينك مش أربع منتجات جنب بعض، هو ترتيب واحد: منظّف بيحضّر البشرة، تونر
+        بيوازنها، سيروم بيشتغل، وكريم بيثبّت الشغل. ولما تاخذي قطعة وحدة، بتضلي
+        تسألي شو الناقص وبأي ترتيب. <b>البكج بينهي السؤال.</b>
+      </p>
+    </div>
+
+    <div class="pk__grid" id="pkgrid"></div>
+
+    <div class="pk__promise">
+      <div>
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="14" height="11" rx="2"/><path d="M15 9h4l3 3v5h-7z"/><circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/></svg>
+        <div><b>التوصيل مجاني مع أي روتين</b><p>ديناران على القطعة المفردة · وصفر لأي طلبية فيها روتين.</p></div>
+      </div>
+      <div>
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>
+        <div><b>سعر واحد، بالموقع وبالصيدلية</b><p>ما منرفع السعر عشان ننزّله. سعر البكج مجموع قطعه بالضبط.</p></div>
+      </div>
+      <div>
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+        <div><b>افحصي قبل ما تدفعي</b><p>الدفع عند الاستلام · افتحي الطرد وشوفي الختوم قدام المندوب.</p></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   البيانات · كل سعر مقروء من ووكومرس، ولا رقم مكتوب بالإيد.
+   والصور من مكتبة وسائط الموقع (عامة · مفحوصة ٢٠٠).
+   ══════════════════════════════════════════════════════════════════════ */
+var U = 'https://plasmajo.com/wp-content/uploads/2026/08/';
+
+/* عبوات لوح الرأس · بترتيب الاستعمال
+   🔴 **مقصوصة** · الصور الأصلية مربّعة ٢٠٠٠×٢٠٠٠ والعبوة ثلثها، فالقياس
+   بالارتفاع بيعطي صندوقاً ٣ مرات أعرض والعبوات بتنكمش لصفر بالفلكس.
+   نفس الفخ اللي انحل بالغوص · . */
+var TRIM = 'img/';
+var SHELF = [
+  { f: 'luvit-hydrating-gel-cleanser-1-bottle.webp',        h: 92 },
+  { f: 'luvit-8d-hyaluronic-acid-toner-1-bottle.webp',      h: 88 },
+  { f: 'luvit-vitamin-c-serum-1-bottle.webp',               h: 66 },
+  { f: 'luvit-moisturizing-repairing-cream-1-bottle.webp',  h: 58 },
+  { f: 'luvit-high-protection-sunscreen-1-bottle.webp',     h: 70 }
+];
+
+var PACKS = [
+  { id: 205, goal: 'ترطيب ودعم', name: 'روتين الترطيب والدعم اليومي',
+    img: 'luvit-bundle-hydration.webp', price: 60,
+    who: 'للبشرة اللي بتشدّ وبتحسّ بالجفاف، وبدها ترطيب يثبت طول اليوم.',
+    steps: [['غسول هيدرا', '١٤'], ['تونر 8D هيالورونيك', '١٣'], ['سيروم الترطيب المكثّف', '١٨'], ['كريم الترطيب والترميم', '١٥']] },
+
+  { id: 203, goal: 'إشراقة', name: 'روتين الإشراقة',
+    img: 'luvit-bundle-glow.webp', price: 61,
+    who: 'للبشرة الباهتة واللي فيها تفاوت بسيط باللون وبدها نضارة.',
+    steps: [['غسول هيدرا', '١٤'], ['تونر 8D هيالورونيك', '١٣'], ['سيروم فيتامين سي ١٠٪', '١٩'], ['كريم الترطيب والترميم', '١٥']] },
+
+  { id: 204, goal: 'تنقية وتوازن', name: 'روتين التنقية والتوازن',
+    img: 'luvit-bundle-clarify.webp', price: 61,
+    who: 'للبشرة الدهنية والمختلطة اللي بتلمع وبتطلع فيها حبوب.',
+    steps: [['غسول البشرة الدهنية', '١٤'], ['تونر تضييق المسامات', '١٣'], ['سيروم فيتامين سي ١٠٪', '١٩'], ['كريم الترطيب والترميم', '١٥']] },
+
+  /* 🔴 المقترح · لساه ما انعمل بووكومرس. السعر مجموع قطعه بالضبط زي الباقي. */
+  { id: null, goal: 'توحيد اللون', name: 'روتين توحيد اللون', isNew: true,
+    img: 'luvit-bundle-eventone.webp', price: 81.95,
+    who: 'للبقع وآثار الحبوب وتفاوت لون البشرة · وفيه الحماية جوّاه لأنها شرط مش إضافة.',
+    steps: [['غسول البشرة الدهنية', '١٤'], ['تونر تضييق المسامات', '١٣'],
+            ['سيروم ألفا أربوتين ٢٪', '٢٢'], ['كريم الترطيب والترميم', '١٥'],
+            ['واقي الشمس SPF50+', '١٧٫٩٥']] }
+];
+
+var AR = function (n) {
+  return n.toFixed(2).replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }).replace('.', '٫');
+};
+
+/* ── بناء لوح الرأس ─────────────────────────────────────────────── */
+(function () {
+  var shelf = document.getElementById('shelf');
+  SHELF.forEach(function (b, i) {
+    var img = document.createElement('img');
+    img.className = 'shop-hero__bottle';
+    img.src = TRIM + b.f.replace(/.webp$/, '-trim.webp'); img.alt = ''; img.decoding = 'async';
+    img.style.setProperty('--b', b.h + '%');
+    img.dataset.i = i;
+    shelf.appendChild(img);
+  });
+
+  /* فقاعات · عددها ثابت ومواضعها موزّعة، مش عشوائية بالكامل */
+  var stage = document.querySelector('.shop-hero__stage');
+  [[14, 12, 22], [9, 74, 8], [20, 42, 4], [7, 88, 34], [12, 26, 40], [6, 58, 18]]
+    .forEach(function (b, i) {
+      var el = document.createElement('span');
+      el.className = 'shop-hero__bub';
+      el.style.inlineSize = b[0] + 'px'; el.style.blockSize = b[0] + 'px';
+      el.style.insetInlineStart = b[1] + '%'; el.style.insetBlockStart = b[2] + '%';
+      el.dataset.i = i;
+      stage.appendChild(el);
+    });
+})();
+
+/* ── بناء بطاقات البكجات ────────────────────────────────────────── */
+(function () {
+  var grid = document.getElementById('pkgrid');
+  PACKS.forEach(function (p) {
+    var parts = p.steps.reduce(function (a, s) {
+      return a + parseFloat(s[1].replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace('٫', '.'));
+    }, 0);
+
+    var steps = p.steps.map(function (s, i) {
+      return '<li><b>' + (i + 1) + '</b>' + s[0] + '<span>' + s[1] + '</span></li>';
+    }).join('');
+
+    var card = document.createElement('article');
+    card.className = 'pkc';
+    card.innerHTML =
+      '<div class="pkc__media">' +
+        '<span class="pkc__tag' + (p.isNew ? ' pkc__tag--new' : '') + '">' +
+          (p.isNew ? 'جديد' : p.steps.length + ' خطوات') + '</span>' +
+        '<img decoding="async" loading="lazy" width="800" height="800" src="' + (p.isNew ? 'img/' : U) + p.img + '" alt="' + p.name + '">' +
+      '</div>' +
+      '<div class="pkc__body">' +
+        '<p class="pkc__goal">' + p.goal + '</p>' +
+        '<h3 class="pkc__title"><a href="#">' + p.name + '</a></h3>' +
+        '<p class="pkc__for">' + p.who + '</p>' +
+        '<ol class="pkc__steps">' + steps + '</ol>' +
+        '<div class="pkc__bill">' +
+          '<dl><dt>مجموع القطع</dt><dd>' + AR(parts) + ' د.أ</dd></dl>' +
+          '<dl><dt>التوصيل</dt><dd class="free">مجاني</dd></dl>' +
+          '<hr>' +
+          '<dl class="tot"><dt>الإجمالي</dt><dd>' + AR(p.price) + ' د.أ</dd></dl>' +
+        '</div>' +
+        '<div class="pkc__buy">' +
+          '<a class="luvit-btn" href="' + (p.id ? '/?add-to-cart=' + p.id : '#') + '">أضيفي إلى السلة</a>' +
+        '</div>' +
+        '<p class="pkc__note">سعر البكج = مجموع قطعه بالضبط · مش خصم، هو ترتيب</p>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+})();
+
+/* ── الحركة ─────────────────────────────────────────────────────── */
+(function () {
+  if (!window.gsap) return;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+
+  var bottles = gsap.utils.toArray('.shop-hero__bottle');
+  var bubs = gsap.utils.toArray('.shop-hero__bub');
+
+  if (reduced) {
+    gsap.set(bottles, { y: 0, opacity: 1 });
+    gsap.set(bubs, { opacity: .5 });
+    return;
+  }
+
+  /* الدخول · العبوات بتطلع من تحت بتتابع */
+  gsap.set(bottles, { yPercent: 42, opacity: 0 });
+  gsap.set(bubs, { opacity: 0, scale: .4 });
+  gsap.set('.shop-hero__disc', { scale: .82, opacity: 0 });
+
+  var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  tl.to('.shop-hero__disc', { scale: 1, opacity: 1, duration: 1.1 }, 0)
+    .to(bottles, { yPercent: 0, opacity: 1, duration: 1.05, stagger: 0.085 }, 0.12)
+    .to(bubs, { opacity: .85, scale: 1, duration: .7, stagger: 0.06 }, 0.5);
+
+  /* العوم المستمر · كل عبوة بمداها هي عشان ما يبيّن نبضاً واحداً */
+  bottles.forEach(function (b, i) {
+    gsap.to(b, {
+      y: '-=' + (7 + (i % 3) * 3),
+      duration: 2.6 + (i % 4) * 0.45,
+      ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.1 + i * 0.14
+    });
+  });
+
+  /* الفقاعات بتصعد وبتختفي */
+  bubs.forEach(function (b, i) {
+    gsap.to(b, {
+      y: -(60 + i * 14), opacity: 0,
+      duration: 5 + i * 0.7, ease: 'none',
+      repeat: -1, delay: 1.4 + i * 0.9
+    });
+  });
+
+  /* بطاقات البكجات بتدخل مع السكرول */
+  gsap.from('.pkc', {
+    y: 26, opacity: 0, duration: .7, stagger: .08, ease: 'power2.out',
+    scrollTrigger: { trigger: '#packages', start: 'top 78%' }
+  });
+})();
+</script>
+</body>
+</html>
