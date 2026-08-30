@@ -19,211 +19,223 @@
         ما بتنسخ لـWPCode من هون · اللصق من tokens.css وحده.
      ══════════════════════════════════════════════════════════════════ */
 
-  /* ── رأس المتجر · لوحة واحدة بعمودين ─────────────────────────── */
-  .shop-hero {
-    position: relative;
-    overflow: hidden;
+  /* ── رأس المتجر · تسلسل «القطرة» مسحوباً بالسكرول ────────────────
+     المشهد فيديو مولَّد بـSeedance 2.5 **بمرجعيات العبوات الحقيقية**،
+     مستخرَج ١٢٠ فريماً ومرسوم على canvas بسحب السكرول. نفس منظومة هيرو
+     الرئيسية حرفياً (hero-sequence/) · مش نمطاً مشابهاً، هي هي.
+
+     القوس: مي ساكنة ← قطرة وحدة ← تاج ← حلقة بتتوسّع ← العبوات بتطلع.
+     وهاد **كشف متدرّج** بلغة motion-doctrine: الإطار بيكسب معلومة طول
+     الوقت. ولا حلقة سكون أبدية بالمشهد، ولا اهتزاز فاضي.               */
+  .shop-hero { position: relative; }
+
+  /* مسافة السحب · ٢٦٠vh بتعطي القوس وقته بلا ما تطوّل الصفحة زيادة */
+  .shop-hero__track { block-size: 260vh; }
+
+  .shop-hero__pin {
+    position: sticky; inset-block-start: 0;
+    /* svh مش vh · شريط عنوان الموبايل بيقلّص vh وبيقفز التخطيط */
+    block-size: 100svh;
+    overflow: clip;                     /* clip لا hidden · قاعدة توازَن ٢ */
+    background: var(--lagoon, #063436); /* اللي بيبين فوق الفريم لو قصر */
+  }
+  .shop-hero__canvas {
+    position: absolute; inset: 0;
+    inline-size: 100%; block-size: 100%; display: block;
+  }
+
+  /* 🔴 طلب ريّان: «اللون القريب من الأسود من فوق ما يبين كثير أو غطيه».
+     والحل مش تغطية عمياء · هاد تدرّج بلون Lagoon تبع العلامة نفسه.
+     الحساب: أعلى الفيديو #021E26 · وفوقه rgba(6,52,54,.94) بيطلع
+     #063335 · يعني **--lagoon بالضبط**. فالأسود ما بينطمس، بينقلب
+     للون علامة · والنص بيقعد فوقه بتباين كامل.                        */
+  /* السكريم العام · **خفيف ومحصور بأعلى الكادر**.
+     🔴 كان شبه صلب لحد ٥٢٪ وبيغطي عرض الشاشة كله · والنتيجة إن أعلى
+        العبوات كان بينغمّق وأسفلها فاتح، فالعبوة الوحدة بتطلع بلونين.
+        (بيّن واضحاً على المرطّب وواقي الشمس.)
+     والأرضية اللي بيحتاجها النص انتقلت **خلف النص نفسه** تحت. */
+  /* 🔴 الأرضية **بمحورين وعلى اللوح كله** · وهاد مقصود:
+     أي أرضية محصورة بصندوق (حتى بتدرّج شعاعي) بتنقصّ عند حدّها وهي
+     لساها معتمة، فبتطلع **حافّة مستطيلة ظاهرة**. صار فعلاً وانقاس.
+     ولمّا الأرضية بتغطي اللوح كله ما في حدّ تنقصّ عنده.
+
+     المحور العمودي: خفيف بأعلى الكادر · بيمسك العين المفتوحة.
+     المحور الأفقي: أقوى عند **بداية السطر** (يمين بالعربي) لأنه هناك
+     الكلام · وبيروح لصفر قبل وسط الشاشة، فالعبوات اللي بالوسط
+     واليسار بتضل بلونها الحقيقي بلا تغميق.
+
+     ⚠️ التدرّجات ما إلها اتجاه منطقي بالـCSS · فمكتوبة فيزيائياً
+        لـRTL ومقلوبة لـLTR تحت.                                     */
+  .shop-hero__scrim {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
     background:
-      radial-gradient(120% 90% at 85% 0%, rgba(76,197,218,.20), transparent 62%),
-      linear-gradient(178deg, #F4FBFD 0%, #E2F2F8 58%, #D2E9F3 100%);
+      /* غسلة فاتحة بالأسفل · شغلتان بضربة وحدة:
+         ١) شريط الحقائق حبره غامق، وكان بيقع على مي متوسطة النبرة ·
+            التباين المقيس كان ٣٫٩٨:١ بالموبايل و٤٫٣٨ بالديسكتوب،
+            **الاثنان تحت حدّ AA (4.5)**. الغسلة بترفعهم فوقه.
+         ٢) وبتنعّم الانتقال للموجة البيضا اللي تحت · بلاها في حزّ. */
+      linear-gradient(0deg,
+        rgba(255,255,255,.62) 0%, rgba(255,255,255,.36) 11%,
+        rgba(255,255,255,.12) 21%, rgba(255,255,255,0) 32%),
+      linear-gradient(180deg,
+        rgba(6,52,54,.74) 0%, rgba(6,52,54,.30) 26%, rgba(6,52,54,0) 54%),
+      linear-gradient(to left,
+        rgba(6,52,54,.82) 0%, rgba(6,52,54,.56) 24%,
+        rgba(6,52,54,.16) 48%, rgba(6,52,54,0) 66%);
   }
-  .shop-hero__inner {
-    position: relative; z-index: 2;
-    max-width: var(--container, 1200px);
-    margin-inline: auto;
-    padding-inline: var(--space-5);
-    padding-block: clamp(52px, 7vw, 92px) clamp(120px, 13vw, 180px);
-    display: grid; gap: clamp(28px, 4vw, 56px);
-    grid-template-columns: minmax(0, 1fr);
-    align-items: center;
+  [dir="ltr"] .shop-hero__scrim {
+    background:
+      linear-gradient(180deg,
+        rgba(6,52,54,.74) 0%, rgba(6,52,54,.30) 26%, rgba(6,52,54,0) 54%),
+      linear-gradient(to right,
+        rgba(6,52,54,.82) 0%, rgba(6,52,54,.56) 24%,
+        rgba(6,52,54,.16) 48%, rgba(6,52,54,0) 66%);
   }
-  @media (min-width: 900px) {
-    .shop-hero__inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); }
+
+  /* ── الكلام · قاعد فوق الشريط الغامق طول القوس ─────────────────
+     العبوات بتطلع بالنص والأسفل، فالأعلى بيضل فاضي لها طول الوقت. */
+  .shop-hero__copy {
+    position: absolute; z-index: 3;
+    /* مقيس: عين ٣٠ + عنوان سطرين ١٥٤ + وصف ٨٢ + أزرار ٤٦ = ٣١٢px،
+       وبإزاحة علوية ٤٨ بيخلص عند ٣٦٠ من ٨٦٠ = ٤٢٪ · تحت حافّة
+       الشريط الصلب وفوق أعلى العبوات (اللي بتوصل ٢٩٪ من تحت). */
+    inset-block-start: clamp(46px, 7vh, 86px);
+    inset-inline-start: max(var(--space-5, 20px),
+      calc((100vw - var(--container-max, 1200px)) / 2 + var(--space-5, 20px)));
+    max-inline-size: min(640px, 84vw);
   }
 
   .shop-hero__eyebrow {
-    display: inline-flex; align-items: center; gap: 9px;
-    font-family: var(--font-latin, inherit);
-    font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--aqua-700, #1E7C8C); font-weight: 600;
-    margin: 0 0 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+    margin: 0 0 12px; font-size: 13px; font-weight: 600; letter-spacing: 0;
+    color: var(--aqua-400, #4CC5DA);       /* تركوازي اللوجو · على الغامق */
   }
   .shop-hero__eyebrow::before {
-    content: ""; inline-size: 26px; block-size: 2px; border-radius: 2px;
+    content: ""; inline-size: 26px; block-size: 1px;
     background: currentColor; opacity: .55;
   }
+
   .shop-hero h1 {
-    font-family: var(--font-display, inherit);
-    font-size: clamp(30px, 5vw, 52px);
-    line-height: 1.16; margin: 0 0 18px;
-    color: var(--ink-900, #1A2529);
+    font-family: var(--font-heading, inherit);
+    font-size: clamp(30px, 5.2vw, 60px);
+    line-height: 1.16; margin: 0 0 14px; color: #FFFFFF;
     text-wrap: balance;
+    /* ظل خفيف بلون المي · بيمسك الحرف لو وقع على منطقة فاتحة بالفيديو */
+    text-shadow: 0 2px 18px rgba(6, 52, 54, .45);
   }
+  /* 🔴 الكلمة المميّزة بمائل **من نفس العائلة** · ولا مرة خط تاني جوّا
+     عنوان · قاعدة design-taste-frontend. والوصف بيحتاج leading أوسع
+     عشان النزلات ما تنقص.                                            */
   .shop-hero h1 em {
-    font-style: normal; position: relative; white-space: nowrap;
+    font-style: normal; color: var(--aqua-400, #4CC5DA);
+    position: relative; white-space: nowrap;
   }
-  /* خط الماء تحت الكلمة المفتاح · بينرسم مع الدخول */
   .shop-hero h1 em::after {
-    content: ""; position: absolute; inset-inline: -2px; inset-block-end: .06em;
-    block-size: .30em; border-radius: 99px; z-index: -1;
-    background: linear-gradient(90deg, rgba(76,197,218,.55), rgba(41,169,192,.30));
-    transform-origin: right center;
+    content: ""; position: absolute; inset-inline: 0; inset-block-end: -.14em;
+    block-size: 3px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--aqua-400, #4CC5DA), rgba(76,197,218,0));
   }
+
   .shop-hero__sub {
-    font-size: clamp(15.5px, 1.6vw, 18px);
-    color: var(--ink-600, #46585E);
-    max-width: 48ch; margin: 0 0 26px;
+    margin: 0 0 22px; font-size: clamp(14.5px, 1.6vw, 17px);
+    line-height: 1.75; color: rgba(255,255,255,.82);
+    max-inline-size: 54ch;
+    text-shadow: 0 1px 12px rgba(6, 52, 54, .4);
   }
+
   .shop-hero__cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  /* 🔴 tokens.css فيه أصلاً طقم «شبح على غامق» · ما بنخترع قيماً:
+     --btn-ghost-dark-fg / -border / -hover. الاحتياطيات هي قيمها
+     الحقيقية عشان المعاينة تضل تشتغل لو انفصل tokens.css.
 
-  /* شريط الحقائق · أرقام مقيسة لا شعارات */
+     🔴 وخلفيته **مش شفافة** هون · وهاد فرق جوهري عن الشبح العادي.
+     السبب مقيس: الزر بيقع فوق العبوات البيضا لما تطلع من المي، ونص
+     أبيض على زجاج أبيض = صفر تباين. حسبنا:
+        rgba(6,52,54,.72) فوق عبوة #E8E8E8  →  rgb(69,102,104)
+        وأبيض عليها = **٥٫٨:١** · فوق حدّ AA (4.5) للنص العادي.
+     وبـ.06 اللي كانت (٣٫٩:١ عند .55) كان بيرسب.
+
+     ⚠️ وممنوع backdrop-filter هون · الكانفاس بيعيد الرسم كل فريم
+        سكرول، والضبابية بتعيد الحساب معه. قاعدة أداء ثابتة بالمشروع. */
+  .shop-hero .luvit-btn--ghost {
+    color: var(--btn-ghost-dark-fg, #FFFFFF);
+    border-color: var(--btn-ghost-dark-border, rgba(255,255,255,.55));
+    background: rgba(6, 52, 54, .72);
+  }
+  .shop-hero .luvit-btn--ghost:hover {
+    background: rgba(6, 52, 54, .84);
+    border-color: rgba(255,255,255,.72);
+  }
+
+  /* 🔴 الحقائق انتقلت من كتلة الكلام لشريط بأسفل اللوح.
+     السبب مقيس: العبوات بترتفع لوسط الكادر، والحقائق كانت تحت
+     الأزرار يعني **بالضبط فوق العبوات** · الأرقام البيضا كانت
+     بتضيع على الزجاج الأبيض. وأسفل اللوح مي وانعكاسات وبس. */
   .shop-hero__facts {
-    display: flex; flex-wrap: wrap; gap: clamp(18px, 3vw, 38px);
-    margin-block-start: clamp(26px, 3.4vw, 40px);
-    padding-block-start: 22px;
-    border-block-start: 1px solid rgba(26,37,41,.13);
+    position: absolute; z-index: 3;
+    inset-inline: 0; inset-block-end: clamp(76px, 8.4vw, 116px);
+    display: flex; justify-content: center; flex-wrap: wrap;
+    gap: 8px clamp(18px, 3.4vw, 46px);
+    padding-inline: var(--container-gutter, 20px);
   }
-  .shop-hero__fact { display: flex; flex-direction: column; gap: 2px; }
+  .shop-hero__fact {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    /* حبر غامق على المي الفاتحة · والهالة الفاتحة بتمسكه لو مرّ على ظل */
+    text-shadow: 0 1px 10px rgba(255,255,255,.75), 0 0 22px rgba(255,255,255,.55);
+  }
   .shop-hero__fact b {
-    font-family: var(--font-display, inherit);
-    font-size: clamp(21px, 2.5vw, 28px); line-height: 1.1;
-    color: var(--aqua-700, #1E7C8C); font-variant-numeric: tabular-nums;
+    font-family: var(--font-heading, inherit); font-size: clamp(15px, 1.5vw, 18px);
+    color: var(--color-ink, #1A2529); font-variant-numeric: tabular-nums;
   }
-  .shop-hero__fact span { font-size: 13px; color: var(--ink-600, #46585E); }
-
-  /* ══ الطبقة الجوية · انعادت من الصفر ٣٠ آب ══════════════════════
-     🔴 السبب الجذري للحافة اللي مسكها ريّان مرتين:
-        `overflow: hidden` كان على **المسرح**، فكل وهج ناعم جوّاه بينقصّ
-        عند حدوده وبتطلع له حافة موس. مقيس: خط عمودي عند x≈712 بالضبط
-        على حدّ المسرح اليمنى.
-
-     والمعمارية الصح: **الجو على السكشن، والمسرح للتخطيط بس.**
-     السكشن ملء العرض فحوافه حواف الشاشة · وما في حدّ داخلي ينقصّ عليه.
-     والمسرح ما عاد يحتاج قصّ أصلاً لأن كل الأحجام بـcalc من متغيّر
-     صريح، فما في شي بيفيض. */
-
-  /* الوهج · على السكشن، بلا حدود داخلية */
-  .shop-hero__glow {
-    position: absolute; z-index: 0; pointer-events: none;
-    inset-block-start: -8%;
-    inset-inline-start: 26%;
-    inline-size: min(52vw, 620px); aspect-ratio: 1;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background: radial-gradient(circle at 44% 38%,
-      rgba(255,255,255,.9) 0%, rgba(232,247,252,.55) 34%,
-      rgba(198,232,244,.22) 58%, transparent 76%);
+  /* 🔴 الوصف بالحبر **الأساسي** مش الناعم · والهرمية بتيجي من الحجم
+     والخط لا من النبرة.
+     السبب مقيس: على مي rgb(127,203,197) بالديسكتوب، الحبر الناعم
+     (#47555B) بيعطي **٤٫١٤:١** يعني تحت AA · والأساسي بيعطي ٨٫٣٩:١.
+     ولون برّا المنظومة كان بيمشي، بس نبقى بالتوكنز أنضف. */
+  .shop-hero__fact span {
+    font-size: clamp(11px, 1.1vw, 12.5px);
+    color: var(--color-ink, #1A2529);
   }
 
-  /* سطح الماء · على السكشن كمان · بيمتد لعرض الصفحة فما إله طرف حادّ */
-  .shop-hero__surface {
-    position: absolute; inset-inline: 0; z-index: 1; pointer-events: none;
-    inset-block-end: var(--surface-bottom, 190px);
-    block-size: 2px;
-    background: linear-gradient(90deg,
-      transparent 4%, rgba(255,255,255,.75) 22%, rgba(255,255,255,.45) 50%,
-      rgba(255,255,255,.75) 78%, transparent 96%);
-  }
-  .shop-hero__surface::after {
-    content: ""; position: absolute; inset-inline: 0; inset-block-start: 1px;
-    block-size: 170px;
-    /* 🔴 بيبدأ من صفر · بلاه بيصير خط أفقي عبر الصفحة كلها.
-       مقيس: قفزة 25 عند y=548 · rgb(219,238,246) لـ rgb(205,232,241).
-       وقاعدة CLAUDE.md نفسها: أي اختلاف لوني بسيط بيقرا شكلاً عايماً. */
-    background: linear-gradient(180deg,
-      rgba(160,212,232,0) 0%, rgba(160,212,232,.22) 18%,
-      rgba(150,206,229,.12) 52%, transparent 92%);
+  @media (max-width: 640px) {
+    /* أربع حقائق بصف عرضه ٣٩٠px بتلتفّ لسطرين وبتاكل المي · اثنتان
+       بتكفّي، والباقي موجود بالصفحة تحت. */
+    .shop-hero__fact:nth-child(n+3) { display: none; }
+    .shop-hero__facts { gap: 8px 22px; inset-block-end: clamp(64px, 14vw, 92px); }
   }
 
-  /* ── لوح العبوات ─────────────────────────────────────────────── */
-  .shop-hero__stage {
-    position: relative; z-index: 2;
-    /* متغيّر ارتفاع صريح · وكل الأحجام تحته بـcalc.
-       🔴 ولا نسبة مئوية بالسلسلة · وقعت فيها ثلاث مرات. */
-    --shelf-h: clamp(300px, 32vw, 390px);
-    --mir-h: 58px;
-    block-size: calc(var(--shelf-h) + var(--mir-h) + 12px);
-    /* 🔴 ولا قصّ · هون كان مصدر الحافة */
-    display: flex; align-items: flex-end; justify-content: center;
+  /* شريط التحميل · خيط رفيع بلون العلامة، مش دوّارة عامة */
+  .shop-hero__load {
+    position: absolute; inset-inline: 0; inset-block-start: 0;
+    block-size: 2px; z-index: 5; overflow: hidden;
+    background: rgba(255,255,255,.10);
+    transition: opacity .4s ease;
   }
-  /* ══ مشهد عمق · لا صفّ على رفّ ═══════════════════════════════════
-     🔴 صفّ عبوات بخط واحد هو أعمّ هيرو بالعناية بالبشرة · كل علامة
-        عاملته، وما بيميّز حدا. واللي عنّا وما عند غيرنا **الماء**.
-
-     فالعبوات بتقف بأعماق مختلفة زي ما بتقف أغراض بمي ضحلة:
-       · اللي قدّام: أكبر · أوطى بالشاشة · أوضح · ظلها أقوى
-       · اللي ورا:  أصغر · أعلى بالشاشة · أزرق أكثر · حافتها أنعم
-     وهاد **منظور جوّي حقيقي** (المسافة بتزرّق وبتضبّب)، مش تنويع شكلي.
-
-     والترتيب مقصود: الغسول والتونر (٢٠٠ مل) ورا لأنهم أكبر جسماً،
-     والسيروم قدّام لأنه بطل الروتين · فالحجم بيخدم الهرمية مش الصدفة. */
-  .shop-hero__shelf {
-    inline-size: 100%;
-    display: flex; align-items: flex-end; justify-content: center;
-    gap: clamp(0px, .4vw, 8px);
+  .shop-hero__load i {
+    display: block; block-size: 100%; inline-size: 0%;
+    background: linear-gradient(90deg, var(--aqua-500, #29A9C0), var(--aqua-400, #4CC5DA));
+    transition: inline-size .18s linear;
   }
-  .shop-hero__slot {
-    position: relative; flex: none;
-    display: flex; flex-direction: column; align-items: center;
-    /* --d = العمق · 0 قدّام و1 ورا */
-    margin-block-end: calc(var(--d, 0) * 34px);   /* الأبعد بيرتفع بالشاشة */
-    z-index: calc(10 - var(--d, 0) * 10);
-    filter: saturate(calc(1 - var(--d, 0) * .32)) brightness(calc(1 + var(--d, 0) * .05));
-  }
-  /* ضباب أزرق بيزيد مع البعد · منظور جوّي */
-  .shop-hero__slot::after {
-    content: ""; position: absolute; inset: -4% -8%;
-    background: rgba(178, 218, 234, calc(var(--d, 0) * .34));
-    pointer-events: none; border-radius: 40%;
-    filter: blur(14px);
-  }
-  .shop-hero__bottle {
-    display: block; flex: none;
-    block-size: calc(var(--shelf-h) * var(--bf, .6));
-    inline-size: auto;
-    /* ظل بلون الماء لا أسود · وبيخفّ مع البعد */
-    filter: drop-shadow(0 14px 20px rgba(6, 52, 54, calc(.19 - var(--d, 0) * .11)));
-    will-change: transform;
-  }
-  /* نافذة الانعكاس · ارتفاعها ثابت لكل العبوات عشان القواعد تقع
-     على خط ماء واحد رغم اختلاف أطوالها */
-  .shop-hero__mirrorbox {
-    block-size: var(--mir-h); inline-size: 100%;
-    overflow: hidden; display: flex; justify-content: center;
-    pointer-events: none;
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent 86%);
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent 86%);
-  }
-  .shop-hero__mirror {
-    display: block; flex: none;
-    block-size: calc(var(--shelf-h) * var(--bf, .6));
-    inline-size: auto;
-    transform: scaleY(-1);
-    opacity: .32;
-    filter: blur(1.5px) saturate(.7);
-  }
-
-  /* فقاعات · ساكنة، بعمق للبارالاكس */
-  .shop-hero__bub {
-    position: absolute; border-radius: 50%; pointer-events: none; z-index: 3;
-    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.9), rgba(198,232,244,.42) 60%, rgba(160,214,232,.14));
-  }
+  .shop-hero__load.is-done { opacity: 0; }
 
   /* موجة القاع · بتقصّ لسكشن البكجات */
-  .shop-hero__wave { position: absolute; inset-inline: 0; inset-block-end: -1px; z-index: 3; line-height: 0; }
+  .shop-hero__wave {
+    position: absolute; inset-inline: 0; inset-block-end: -1px;
+    z-index: 4; line-height: 0; pointer-events: none;
+  }
   .shop-hero__wave svg { display: block; inline-size: 100%; block-size: clamp(52px, 7vw, 96px); }
 
   /* ── سكشن البكجات ─────────────────────────────────────────────── */
   .pk { background: #FFFFFF; padding-block: clamp(40px, 6vw, 72px) clamp(56px, 8vw, 96px); }
-  .pk__inner { max-width: var(--container, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
+  .pk__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
 
   .pk__head { max-width: 62ch; margin: 0 0 clamp(26px, 3.4vw, 40px); }
   .pk__head h2 {
-    font-family: var(--font-display, inherit);
+    font-family: var(--font-heading, inherit);
     font-size: clamp(24px, 3.4vw, 36px); line-height: 1.22; margin: 0 0 12px;
-    color: var(--ink-900, #1A2529); text-wrap: balance;
+    color: var(--color-ink, #1A2529); text-wrap: balance;
   }
-  .pk__head p { margin: 0; color: var(--ink-600, #46585E); font-size: clamp(15px, 1.5vw, 17px); }
+  .pk__head p { margin: 0; color: var(--color-ink-soft, #47555B); font-size: clamp(15px, 1.5vw, 17px); }
 
   /* شبكة متساوية الارتفاع · وهاد اللي كان مكسوراً */
   .pk__grid {
@@ -256,7 +268,7 @@
     color: var(--aqua-700, #1E7C8C);
     box-shadow: 0 2px 8px rgba(6,52,54,.12);
   }
-  .pkc__tag--new { background: var(--ink-900, #1A2529); color: #fff; }
+  .pkc__tag--new { background: var(--color-ink, #1A2529); color: #fff; }
 
   .pkc__body { display: flex; flex-direction: column; flex: 1; padding: 20px 20px 22px; gap: 12px; }
   .pkc__goal {
@@ -264,25 +276,25 @@
     color: var(--aqua-600, #248FA5); font-weight: 700; margin: 0;
   }
   .pkc__title {
-    font-family: var(--font-display, inherit);
-    font-size: 19px; line-height: 1.3; margin: 0; color: var(--ink-900, #1A2529);
+    font-family: var(--font-heading, inherit);
+    font-size: 19px; line-height: 1.3; margin: 0; color: var(--color-ink, #1A2529);
   }
   .pkc__title a { color: inherit; text-decoration: none; }
   .pkc__title a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .pkc__for { margin: 0; font-size: 13.5px; color: var(--ink-600, #46585E); min-block-size: 3.2em; }
+  .pkc__for { margin: 0; font-size: 13.5px; color: var(--color-ink-soft, #47555B); min-block-size: 3.2em; }
 
   /* الخطوات · صف مرقّم مضغوط */
   .pkc__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
   .pkc__steps li {
     display: grid; grid-template-columns: 20px 1fr auto; gap: 9px; align-items: start;
-    font-size: 13.5px; color: var(--ink-700, #33474D);
+    font-size: 13.5px; color: var(--color-ink-soft, #33474D);
   }
   .pkc__steps em { font-style: normal; display: block; line-height: 1.45; }
   /* 🔴 الفايدة هي اللي بتبيع · الاسم بيعرّف بس.
      ريّان: «روح لفوائد المكوّنات مش تذكرها.» */
   .pkc__steps i {
     font-style: normal; display: block;
-    font-size: 12px; color: var(--ink-500, #6B7B80); margin-block-start: 1px;
+    font-size: 12px; color: var(--color-ink-faint, #869399); margin-block-start: 1px;
   }
   .pkc__steps b {
     font-family: var(--font-latin, inherit); font-size: 11px; font-weight: 700;
@@ -290,15 +302,15 @@
     display: grid; place-items: center; border-radius: 50%;
     background: rgba(76,197,218,.15); align-self: center;
   }
-  .pkc__steps span { color: var(--ink-500, #6B7B80); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .pkc__steps li[data-opt] { color: var(--ink-500, #6B7B80); }
+  .pkc__steps span { color: var(--color-ink-faint, #869399); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .pkc__steps li[data-opt] { color: var(--color-ink-faint, #869399); }
 
   /* الفاتورة المكشوفة */
   .pkc__bill {
     margin-block-start: auto;
     background: #F5F9FB; border: 1px solid rgba(26,37,41,.08);
     border-radius: 11px; padding: 12px 14px;
-    font-size: 12.5px; color: var(--ink-600, #46585E);
+    font-size: 12.5px; color: var(--color-ink-soft, #47555B);
     display: flex; flex-direction: column; gap: 5px;
   }
   .pkc__bill dl { display: flex; justify-content: space-between; gap: 10px; margin: 0; }
@@ -306,11 +318,11 @@
   .pkc__bill dd { margin: 0; font-variant-numeric: tabular-nums; }
   .pkc__bill .free { color: var(--aqua-700, #1E7C8C); font-weight: 700; }
   .pkc__bill hr { border: none; border-block-start: 1px dashed rgba(26,37,41,.16); margin: 3px 0; }
-  .pkc__bill .tot { font-weight: 700; color: var(--ink-900, #1A2529); font-size: 14.5px; }
+  .pkc__bill .tot { font-weight: 700; color: var(--color-ink, #1A2529); font-size: 14.5px; }
 
   .pkc__buy { display: flex; align-items: center; gap: 10px; }
   .pkc__buy .luvit-btn { flex: 1; justify-content: center; }
-  .pkc__note { margin: 0; font-size: 11.5px; color: var(--ink-500, #6B7B80); text-align: center; }
+  .pkc__note { margin: 0; font-size: 11.5px; color: var(--color-ink-faint, #869399); text-align: center; }
 
   /* شريط الوعد تحت الشبكة */
   .pk__promise {
@@ -323,8 +335,8 @@
   }
   .pk__promise div { display: flex; gap: 11px; align-items: flex-start; }
   .pk__promise svg { flex: none; margin-block-start: 2px; color: var(--aqua-600, #248FA5); }
-  .pk__promise b { display: block; font-size: 14.5px; color: var(--ink-900, #1A2529); margin-block-end: 2px; }
-  .pk__promise p { margin: 0; font-size: 13px; color: var(--ink-600, #46585E); }
+  .pk__promise b { display: block; font-size: 14.5px; color: var(--color-ink, #1A2529); margin-block-end: 2px; }
+  .pk__promise p { margin: 0; font-size: 13px; color: var(--color-ink-soft, #47555B); }
 
 
   /* ══ مسارات البدء · عائلة تخطيط مختلفة عن البطاقات ═══════════════
@@ -336,10 +348,10 @@
   .paths__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
   .paths__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-block-end: 22px; }
   .paths__head h2 {
-    font-family: var(--font-display, inherit); font-size: clamp(20px, 2.6vw, 28px);
-    margin: 0; color: var(--ink-900, #1A2529);
+    font-family: var(--font-heading, inherit); font-size: clamp(20px, 2.6vw, 28px);
+    margin: 0; color: var(--color-ink, #1A2529);
   }
-  .paths__head p { margin: 0; color: var(--ink-600, #46585E); font-size: 14.5px; }
+  .paths__head p { margin: 0; color: var(--color-ink-soft, #47555B); font-size: 14.5px; }
   .paths__row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
   .path {
     display: flex; align-items: center; gap: 12px;
@@ -355,8 +367,8 @@
     display: grid; place-items: center;
     background: linear-gradient(160deg, #DCF0F6, #B7E0EC); color: var(--aqua-700, #1E7C8C);
   }
-  .path span { display: block; font-size: 14.5px; font-weight: 600; color: var(--ink-900, #1A2529); }
-  .path small { display: block; font-size: 12.5px; color: var(--ink-500, #6B7B80); margin-block-start: 1px; }
+  .path span { display: block; font-size: 14.5px; font-weight: 600; color: var(--color-ink, #1A2529); }
+  .path small { display: block; font-size: 12.5px; color: var(--color-ink-faint, #869399); margin-block-start: 1px; }
 
   /* ══ التشكيلة بترتيب الاستعمال · مجموعات مش كتلة وحدة ══════════════
      11 بطاقة متطابقة بكتلة 2311 بكسل = «ثلاث بطاقات متطابقة» بمقياس أكبر.
@@ -365,10 +377,10 @@
   .cat__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
   .cat__head { max-width: 60ch; margin-block-end: clamp(24px, 3vw, 36px); }
   .cat__head h2 {
-    font-family: var(--font-display, inherit); font-size: clamp(23px, 3.2vw, 34px);
-    line-height: 1.24; margin: 0 0 10px; color: var(--ink-900, #1A2529);
+    font-family: var(--font-heading, inherit); font-size: clamp(23px, 3.2vw, 34px);
+    line-height: 1.24; margin: 0 0 10px; color: var(--color-ink, #1A2529);
   }
-  .cat__head p { margin: 0; color: var(--ink-600, #46585E); font-size: clamp(15px, 1.5vw, 16.5px); }
+  .cat__head p { margin: 0; color: var(--color-ink-soft, #47555B); font-size: clamp(15px, 1.5vw, 16.5px); }
 
   .grp { padding-block-start: clamp(26px, 3vw, 38px); }
   .grp + .grp { border-block-start: 1px solid rgba(26,37,41,.09); }
@@ -377,12 +389,12 @@
     flex: none; inline-size: 34px; block-size: 34px; border-radius: 50%;
     display: grid; place-items: center;
     font-family: var(--font-latin, inherit); font-size: 14px; font-weight: 700;
-    background: var(--ink-900, #1A2529); color: #fff;
+    background: var(--color-ink, #1A2529); color: #fff;
   }
   .grp__t { flex: 1 1 auto; }
-  .grp__t b { display: block; font-family: var(--font-display, inherit); font-size: 18px; color: var(--ink-900, #1A2529); }
-  .grp__t small { display: block; font-size: 13px; color: var(--ink-600, #46585E); margin-block-start: 1px; }
-  .grp__count { flex: none; font-size: 12.5px; color: var(--ink-500, #6B7B80); font-variant-numeric: tabular-nums; }
+  .grp__t b { display: block; font-family: var(--font-heading, inherit); font-size: 18px; color: var(--color-ink, #1A2529); }
+  .grp__t small { display: block; font-size: 13px; color: var(--color-ink-soft, #47555B); margin-block-start: 1px; }
+  .grp__count { flex: none; font-size: 12.5px; color: var(--color-ink-faint, #869399); font-variant-numeric: tabular-nums; }
 
   .grp__row { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
   .pc {
@@ -400,8 +412,8 @@
     box-shadow: 0 2px 7px rgba(6,52,54,.12);
   }
   .pc__body { display: flex; flex-direction: column; flex: 1; gap: 7px; padding: 14px 15px 16px; }
-  .pc__name { font-family: var(--font-display, inherit); font-size: 15.5px; margin: 0; color: var(--ink-900, #1A2529); line-height: 1.35; }
-  .pc__does { margin: 0; font-size: 12.5px; color: var(--ink-600, #46585E); min-block-size: 2.7em; }
+  .pc__name { font-family: var(--font-heading, inherit); font-size: 15.5px; margin: 0; color: var(--color-ink, #1A2529); line-height: 1.35; }
+  .pc__does { margin: 0; font-size: 12.5px; color: var(--color-ink-soft, #47555B); min-block-size: 2.7em; }
   /* 🔴 النسبة سطر سند صغير تحت الفايدة · مش شارة فوق الصورة.
      الفايدة بتقود والنسبة بتبرهن · وهاي قاعدة benefits-not-ingredient-lists. */
   .pc__proof {
@@ -409,12 +421,12 @@
     font-variant-numeric: tabular-nums; opacity: .9;
   }
   .pc__foot { margin-block-start: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-block-start: 4px; }
-  .pc__price { font-weight: 700; font-size: 15px; color: var(--ink-900, #1A2529); font-variant-numeric: tabular-nums; }
-  .pc__ml { font-size: 12px; color: var(--ink-500, #6B7B80); }
+  .pc__price { font-weight: 700; font-size: 15px; color: var(--color-ink, #1A2529); font-variant-numeric: tabular-nums; }
+  .pc__ml { font-size: 12px; color: var(--color-ink-faint, #869399); }
   .pc .luvit-btn { inline-size: 100%; justify-content: center; font-size: 13.5px; padding-block: 9px; }
 
   @media (prefers-reduced-motion: reduce) {
-    .shop-hero__bottle, .shop-hero__bub { animation: none !important; transition: none !important; }
+    .shop-hero__canvas { transition: none !important; }
   }
 </style>
 </head>
@@ -425,41 +437,44 @@
      الحركة: العبوات بتطلع من تحت الموجة بتتابع، والقرص بيتنفّس،
      والفقاعات بتصعد. كلها transform وopacity · ولا خاصية بتسبب تخطيطاً.
      ══════════════════════════════════════════════════════════════════ -->
-<section class="shop-hero" id="page-head" data-nav-bg="light">
-  <span class="shop-hero__glow" aria-hidden="true"></span>
-  <span class="shop-hero__surface" aria-hidden="true"></span>
+<section class="shop-hero" id="page-head" data-nav-bg="dark">
+  <div class="shop-hero__track">
+    <div class="shop-hero__pin">
+      <canvas class="shop-hero__canvas" id="seqCanvas" aria-hidden="true"></canvas>
+      <span class="shop-hero__scrim" aria-hidden="true"></span>
+      <div class="shop-hero__load" id="seqLoad" aria-hidden="true"><i></i></div>
 
-  <div class="shop-hero__inner">
-    <div class="shop-hero__copy">
-      <p class="shop-hero__eyebrow">التشكيلة كاملة</p>
-      <h1>كل خطوة إلها <em>شغلة</em>، وكل مكوّن إله سبب</h1>
-      <p class="shop-hero__sub">
-        منظّف بينضّف بلا ما يشدّ · تونر بيهيّئ بشرتك تمتصّ اللي بعده · سيروم
-        بيشتغل على همّك إنتِ · وكريم بيقفل الترطيب لآخر اليوم. اختاري بهدفك،
-        وإحنا رتّبنا الباقي.
-      </p>
-      <div class="shop-hero__cta">
-        <a class="luvit-btn" href="#packages">ابدأي بروتين جاهز</a>
-        <a class="luvit-btn luvit-btn--ghost" href="#products">أو شوفي المنتجات وحدة وحدة</a>
+      <div class="shop-hero__copy">
+        <p class="shop-hero__eyebrow">التشكيلة كاملة</p>
+        <h1>كل خطوة إلها <em>شغلة</em>، وكل مكوّن إله سبب</h1>
+        <p class="shop-hero__sub">
+          منظّف بينضّف بلا ما يشدّ · تونر بيهيّئ بشرتك تمتصّ اللي بعده · سيروم
+          بيشتغل على همّك إنتِ · وكريم بيقفل الترطيب لآخر اليوم. اختاري بهدفك،
+          وإحنا رتّبنا الباقي.
+        </p>
+        <div class="shop-hero__cta">
+          <a class="luvit-btn" href="#packages">ابدأي بروتين جاهز</a>
+          <a class="luvit-btn luvit-btn--ghost" href="#catalogue">أو شوفي المنتجات وحدة وحدة</a>
+        </div>
+
       </div>
 
-      <div class="shop-hero__facts" data-luvit="stagger">
+      <!-- 🔴 الحقائق **برّا** كتلة الكلام · لأن .shop-hero__copy نفسها
+           absolute، فلو ضلّت جوّاها بينحسب inset-block-end من قاعها هي
+           مش من قاع اللوح · وبترجع تقعد فوق العبوات من جديد. -->
+      <div class="shop-hero__facts">
         <div class="shop-hero__fact"><b>١٢</b><span>منتجاً بالتشكيلة</span></div>
         <div class="shop-hero__fact"><b>٤</b><span>روتينات جاهزة</span></div>
         <div class="shop-hero__fact"><b>يوم لِيومين</b><span>توصيل لكل الأردن</span></div>
         <div class="shop-hero__fact"><b>٢ د.أ</b><span>وبلاش مع أي روتين</span></div>
       </div>
-    </div>
 
-    <div class="shop-hero__stage" aria-hidden="true">
-      <div class="shop-hero__shelf" id="shelf"></div>
+      <div class="shop-hero__wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+          <path d="M0,52 C220,88 380,10 620,32 C860,54 1040,92 1240,64 C1330,52 1390,40 1440,34 L1440,90 L0,90 Z" fill="#FFFFFF"/>
+        </svg>
+      </div>
     </div>
-  </div>
-
-  <div class="shop-hero__wave" aria-hidden="true">
-    <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
-      <path d="M0,52 C220,88 380,10 620,32 C860,54 1040,92 1240,64 C1330,52 1390,40 1440,34 L1440,90 L0,90 Z" fill="#FFFFFF"/>
-    </svg>
   </div>
 </section>
 
@@ -540,16 +555,6 @@ var U = 'https://plasmajo.com/wp-content/uploads/2026/08/';
    بالارتفاع بيعطي صندوقاً ٣ مرات أعرض والعبوات بتنكمش لصفر بالفلكس.
    نفس الفخ اللي انحل بالغوص · . */
 var TRIM = 'img/';
-/* h = نسبة الارتفاع · d = العمق (0 قدّام · 1 ورا)
-   الترتيب البصري: أعمق شي بالطرف، والبطل بالوسط قدّام. */
-var SHELF = [
-  { f: 'luvit-8d-hyaluronic-acid-toner-1-bottle.webp',      h: 74, d: 1.00 },
-  { f: 'luvit-moisturizing-repairing-cream-1-bottle.webp',  h: 54, d: 0.55 },
-  { f: 'luvit-vitamin-c-serum-1-bottle.webp',               h: 72, d: 0.00 },
-  { f: 'luvit-high-protection-sunscreen-1-bottle.webp',     h: 62, d: 0.35 },
-  { f: 'luvit-hydrating-gel-cleanser-1-bottle.webp',        h: 86, d: 0.85 }
-];
-
 var PACKS = [
   { id: 205, goal: 'ترطيب ودعم', name: 'روتين الترطيب والدعم اليومي',
     img: 'luvit-bundle-hydration.webp', price: 60,
@@ -590,53 +595,150 @@ var AR = function (n) {
   return n.toFixed(2).replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }).replace('.', '٫');
 };
 
-/* ── بناء لوح الرأس ─────────────────────────────────────────────── */
+/* ══ هيرو «القطرة» · تسلسل canvas مسحوب بالسكرول ═══════════════════
+   🔴 المسار نسبي للمعاينة. **عند النشر بينبدّل لمجلد رفع ووردبريس**،
+      لأن ملف الإلمنتور بينحطّ بمسار تاني والنسبي بينكسر بصمت.        */
+var SEQ_BASE = '../hero-sequence/';
+/* fill = أقل نسبة من ارتفاع اللوح مسموح للفريم يشغلها قبل ما نكبّره.
+   🔴 الطولية fill=0 · يعني **ما بنكبّر أبداً**، بنملأ العرض وبس.
+      السبب مقيس: فريم ٣:٤ على شاشة ٣٩٠×٨٤٤ · التكبير لـ٩٤٪ من
+      الارتفاع بيعمل عرضاً ٥٩٥px على شاشة ٣٩٠ = **٢٠٥px بتنقصّ من
+      الجنبين، والعبوة الطرفية بتروح**. وطلع فعلاً باللقطة.
+      واللي بيفضى فوق بينملي بـ--lagoon · وهناك الكلام أصلاً. */
+var SEQ = {
+  wide: { dir: 'frames-drop-final-desktop/', fill: .94 },  /* 1920x1080 · ١٦:٩ */
+  tall: { dir: 'frames-drop-final-mobile/',  fill: 0    }   /* 1248x1664 · ٣:٤  */
+};
+
 (function () {
-  var shelf = document.getElementById('shelf');
-  SHELF.forEach(function (b, i) {
-    /* 🔴 الملف `-soft` مش `-trim` · حافّة الألفا منعّمة بـ_أدوات/soften-cutout.mjs.
-       الحادّة بتقرا ملصقاً مقصوصاً · مقيس: البكسلات النصف-شفافة ٤١٩٨ ← ١٣١٤٣. */
-    var src = TRIM + b.f.replace(/\.webp$/, '-soft.webp');
+  var cv = document.getElementById('seqCanvas');
+  var pin = document.querySelector('.shop-hero__pin');
+  var track = document.querySelector('.shop-hero__track');
+  var load = document.getElementById('seqLoad');
+  var bar = load && load.querySelector('i');
+  if (!cv || !pin || !track) return;
 
-    var slot = document.createElement('span');
-    slot.className = 'shop-hero__slot';
-    slot.dataset.depth = (i % 2) ? 1 : 2;
+  var ctx = cv.getContext('2d', { alpha: false });
+  var MAX_DPR = 2;
+  var dpr = 1, last = -1, p = 0;
+  var cache = {}, key = null;
 
-    var img = document.createElement('img');
-    img.className = 'shop-hero__bottle';
-    img.src = src; img.alt = ''; img.decoding = 'async';
-    slot.style.setProperty('--bf', (b.h / 100).toFixed(3));
-    slot.style.setProperty('--d', b.d);
-    /* الانعكاس بيقصر مع البعد · الأبعد سطحه أضيق بالمنظور */
-    slot.style.setProperty('--mir-h', Math.round(58 - b.d * 26) + 'px');
+  var reduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* الانعكاس · نفس الصورة مقلوبة جوّا نافذة ثابتة الارتفاع */
-    var box = document.createElement('span');
-    box.className = 'shop-hero__mirrorbox';
-    var mir = document.createElement('img');
-    mir.className = 'shop-hero__mirror';
-    mir.src = src; mir.alt = ''; mir.decoding = 'async';
-    mir.setAttribute('aria-hidden', 'true');
-    box.appendChild(mir);
+  function pick() {
+    /* الفريمات الطولية للشاشات اللي أطول من عريضة · مش للعرض وحده،
+       لأن تابلت أفقي بده العريضة رغم إنه ضيّق. */
+    return (window.innerHeight > window.innerWidth * 1.05) ? 'tall' : 'wide';
+  }
 
-    slot.appendChild(img);
-    slot.appendChild(box);
-    shelf.appendChild(slot);
-  });
+  /* ── الرسم ────────────────────────────────────────────────────────
+     🔴 «ملء العرض · ملزوق بالأسفل» مش cover بالوسط.
+        السبب مقيس: الفريم الطولي ٣:٤ على شاشة تلفون ٩:١٩ · لو عملنا
+        cover بالوسط بينقصّ ٣٨٪ من العرض **والعبوات الطرفية بتروح**.
+        وبالملزوق بالأسفل: المي والعبوات كاملة، واللي بينقصّ (أو
+        بينكشف) هو **أعلى الكادر الغامق** — وهاد اللي بدنا نخفيه أصلاً،
+        ومحلّه بيمتلي بـ--lagoon تبع العلامة.                          */
+  function draw() {
+    var v = cache[key];
+    var cw = pin.clientWidth, ch = pin.clientHeight;
+    if (!v || !v.n) return;
+    var i = Math.max(0, Math.min(v.n - 1, Math.round(p * (v.n - 1))));
+    if (i === last) return;
+    last = i;
+    var img = v.img[i];
+    if (!img || !img.naturalWidth) return;
+    var fill = SEQ[key].fill || 0;
+    var scale = cw / img.naturalWidth;
+    var dh = img.naturalHeight * scale;
+    if (fill && dh < ch * fill) { scale = ch * fill / img.naturalHeight; dh = ch * fill; }
+    var dw = img.naturalWidth * scale;
+    ctx.fillStyle = '#063436';
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.drawImage(img, (cw - dw) / 2, ch - dh, dw, dh);
+  }
 
-  /* فقاعات ساكنة · زينة خلفية بعمق للبارالاكس، بلا حلقة أبدية */
-  var stage = document.querySelector('.shop-hero');
-  [[14, 12, 22], [9, 74, 8], [20, 42, 4], [7, 88, 34], [12, 26, 40], [6, 58, 18]]
-    .forEach(function (b, i) {
-      var el = document.createElement('span');
-      el.className = 'shop-hero__bub';
-      el.style.inlineSize = b[0] + 'px'; el.style.blockSize = b[0] + 'px';
-      el.style.insetInlineStart = b[1] + '%'; el.style.insetBlockStart = b[2] + '%';
-      el.dataset.depth = (i % 3) + 1;   /* عمق للبارالاكس · مربوط بالسكرول */
-      stage.appendChild(el);
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+    var cw = pin.clientWidth, ch = pin.clientHeight;
+    cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
+    cv.style.width = cw + 'px'; cv.style.height = ch + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    last = -1; draw();
+  }
+
+  function loadSeq(k) {
+    if (cache[k] && cache[k].promise) return cache[k].promise;
+    var base = SEQ_BASE + SEQ[k].dir;
+    var v = cache[k] = { img: [], n: 0, promise: null };
+    v.promise = fetch(base + 'manifest.json', { cache: 'force-cache' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('manifest ' + r.status);
+        return r.json();
+      })
+      .then(function (m) {
+        var fr = m.frames || [];
+        v.n = fr.length; v.img = new Array(v.n);
+        var done = 0;
+        return Promise.all(fr.map(function (f, i) {
+          return new Promise(function (res) {
+            var im = new Image();
+            im.decoding = 'async';
+            im.src = base + f.file;
+            v.img[i] = im;
+            var fin = function () {
+              done++;
+              if (bar && k === key) bar.style.inlineSize = Math.round(done / v.n * 100) + '%';
+              res();
+            };
+            if (im.decode) im.decode().then(fin).catch(function () { im.onload = im.onerror = fin; });
+            else im.onload = im.onerror = fin;
+          });
+        }));
+      });
+    return v.promise;
+  }
+
+  function activate(k) {
+    key = k;
+    loadSeq(k).then(function () {
+      if (key !== k) return;
+      if (load) load.classList.add('is-done');
+      last = -1; resize();
+      if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+    }).catch(function (e) {
+      if (load) load.classList.add('is-done');
+      console.warn('[shop-hero] فشل تحميل التسلسل:', e.message);
     });
-})();
+  }
 
+  activate(pick());
+
+  /* 🔴 حركة مخفّضة: بنوقف السحب ونعرض **آخر فريم** — يعني العبوات
+     كاملة، مش المي الفاضية. اللي أطفى الحركة لازم يشوف المنتج. */
+  if (reduced) {
+    p = 1;
+    window.addEventListener('resize', resize);
+    return;
+  }
+
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.create({
+      trigger: track,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: true,
+      onUpdate: function (self) { p = self.progress; draw(); }
+    });
+    ScrollTrigger.addEventListener('refreshInit', resize);
+  }
+
+  window.addEventListener('resize', function () {
+    var k = pick();
+    if (k !== key) activate(k); else resize();
+  });
+})();
 
 /* ══ التشكيلة بمجموعات · بترتيب الاستعمال ══════════════════════════
    🔴 الأسعار والأسماء من الكتالوج الرسمي · والفايدة من حقل role
@@ -765,7 +867,8 @@ var GROUPS = [
 
 /* ══════════════════════════════════════════════════════════════════════
    الحركة · مبنية بمكتبة توازَن · مش صورة ذكاء اصطناعي.
-   المفردات المستعملة: wordReveal · revealAll · sceneParallax.
+   المفردات المستعملة: revealAll · EASES · reduced.
+   ⚠️ ومقسّم كلمات **محلي** بدل wordReveal · السبب مشروح عند الدالة.
 
    🔴 وقرار مبني على «قانون الحركة» (motion-doctrine · Part 2):
       «Idle sine loops (breathe, float, drift, glow pulse) are BANNED as
@@ -774,56 +877,118 @@ var GROUPS = [
       فالنسخة الأولى كانت غلط: العبوات كانت تهتزّ بـyoyo لا نهائي
       والفقاعات بتصعد بحلقة أبدية. **الاثنان تعبئة وقت مش حركة.**
 
-      البديل المعتمد هو مسار **«الكشف المتدرّج»** (Staged reveals):
-      كل بيتة بتزيد معلومة · العبوات بتوصل بترتيب استعمالها، وبعد
-      **سكتة** بتيجي الحقائق. وبعدها المشهد **بيرتاح**.
-      والحياة المستمرة الوحيدة مربوطة بالسكرول (sceneParallax)، يعني
-      الزائرة هي اللي بتسوقها · مش المشهد بيستنى فيها.
+      البديل المعتمد هو مسار **«الكشف المتدرّج»** (Staged reveals)،
+      وهلأ صار **مسارين معاً**:
+        ١) دخول الكلام · العنوان كلمةً كلمة، ثم اللِيد، ثم — بعد
+           سكتة — الحقائق. بيخلص ويرتاح.
+        ٢) **تسلسل مسحوب بالسكرول** (Animated sequences) · مي ساكنة
+           ← قطرة ← تاج ← حلقة ← العبوات بتطلع. ١٢٠ فريماً على canvas.
+
+      والفرق الجوهري: الحياة المستمرة **مش حلقة أبدية**، هي
+      **الزائرة نفسها** وهي بتنزل بالصفحة. توقّف السكرول = توقّف
+      المشهد · وهاد بالضبط اللي بيطلبه القانون.
 
    وقيود التوقيت من نفس المصدر:
      · دخول العنصر الواحد ≤ ٨٠٠ملي · والتتابع الكلي ≤ ٥٠٠ملي
      · سكتة ٠٫٣ لـ٠٫٧٥ ثانية قبل البيتة الأخيرة
      · ممنوع bounce.out وelastic.out · وback.out(1.4-1.7) مسموحة
    ══════════════════════════════════════════════════════════════════════ */
-import { wordReveal, revealAll, sceneParallax, reduced, EASES }
-  from './tawaazn-motion.js';
+import { revealAll, reduced, EASES } from './tawaazn-motion.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
-var bottles = gsap.utils.toArray('.shop-hero__slot');
-var facts   = gsap.utils.toArray('.shop-hero__fact');
+/* ══ تقسيم بالكلمات **بيحافظ على الماركب** ═══════════════════════════
+   🔴 ليش محلي ومش من المكتبة: `splitWords` بتوازَن بتعمل
+      `el.innerHTML = el.textContent` · يعني **بتسطّح أي عنصر جوّا**.
+      فالـ<em> تبع الكلمة المميّزة كان بينمسح، وقاعدة تلوينها ما بتلاقي
+      شي تلوّنه. (انكشف بالفحص: querySelector('em') رجّع null.)
+
+   🔴 وما بنعدّل tawaazn-motion.js · هو **نسخة** من مصدر ريّان بمشروع
+      توازَن، وأي تعديل لازم يروح للمصدر مش للنسخة. فالحل محلي.
+
+   والمنطق: بنمشي على أبناء العنصر · النص بينقسم كلمات، والعنصر
+   (زي <em>) بيضل عنصراً كامل وبيتعامل كوحدة تتابع وحدة. */
+function splitKeepMarks(el) {
+  if (!el || el.dataset.split) return el.querySelectorAll(':scope > span > i');
+
+  /* 🔴 الوحدة هي **المسافة بالنص الأصلي**، مش عقدة الـDOM.
+     الباغ اللي انكشف بالفحص: الفاصلة بعد </em> كانت بتصير span
+     مستقلاً، فبتاخذ فرصة كسر سطر وبتهبط لأول السطر اللي بعده منفصلة
+     عن كلمتها. (ظهر حرفياً: «شغلة» بسطر و«، وكل مكوّن» بالسطر التاني.)
+
+     فبنجمّع: أي عقدة (نص أو عنصر) ما قبلها مسافة **بتنضمّ لنفس
+     المجموعة**. يعني <em>شغلة</em> والفاصلة اللي بعدها = وحدة وحدة.
+     وهاي مش تفصيلة عربية · نفس الشي بينطبق على أي علامة ترقيم. */
+  const groups = [];
+  let cur = null;
+  const push = (node) => {
+    if (!cur) { cur = document.createDocumentFragment(); groups.push(cur); }
+    cur.appendChild(node);
+  };
+  const brk = () => { cur = null; };
+
+  [...el.childNodes].forEach((n) => {
+    if (n.nodeType === 3) {
+      const parts = n.textContent.split(/(\s+)/);
+      parts.forEach((p) => {
+        if (!p) return;
+        if (/^\s+$/.test(p)) brk();
+        else push(document.createTextNode(p));
+      });
+    } else {
+      push(n);                       /* <em> بيضل <em> · بكل قواعده */
+    }
+  });
+
+  const out = document.createDocumentFragment();
+  groups.forEach((g, i) => {
+    if (i) out.appendChild(document.createTextNode(' '));
+    const s = document.createElement('span');
+    s.style.cssText = 'display:inline-block;overflow:clip;vertical-align:bottom';
+    const it = document.createElement('i');
+    it.style.cssText = 'display:inline-block;font-style:normal';
+    it.appendChild(g);
+    s.appendChild(it);
+    out.appendChild(s);
+  });
+
+  el.innerHTML = '';
+  el.appendChild(out);
+  el.dataset.split = '1';
+  return el.querySelectorAll(':scope > span > i');
+}
+
+const h1 = document.querySelector('.shop-hero h1');
+const facts = gsap.utils.toArray('.shop-hero__fact');
+const lede = ['.shop-hero__sub', '.shop-hero__cta'];
 
 if (reduced()) {
-  /* القاعدة ٥ بمكتبة توازَن: المحتوى بيظهر ثابتاً، ما بينحجب */
-  gsap.set([bottles, facts, '.shop-hero__glow'], { opacity: 1, y: 0, clearProps: 'transform' });
+  /* القاعدة ٥ بمكتبة توازَن: المحتوى بيظهر ثابتاً، ما بينحجب أبداً */
+  gsap.set([facts, lede], { opacity: 1, y: 0, clearProps: 'transform' });
 } else {
+  const words = splitKeepMarks(h1);
 
-  gsap.set(bottles, { yPercent: 26, autoAlpha: 0 });
-  gsap.set(facts,   { y: 14, autoAlpha: 0 });
-  gsap.set('.shop-hero__glow', { scale: .92, autoAlpha: 0 });
+  gsap.set(words, { yPercent: 112, opacity: 0 });
+  gsap.set(lede, { y: 16, autoAlpha: 0 });
+  gsap.set(facts, { y: 14, autoAlpha: 0 });
 
-  /* بيتة ١ · العنوان كلمةً كلمة · والتقسيم بالكلمات لأن العربية متصلة */
-  wordReveal('.shop-hero h1', { stagger: .06, dur: .72 });
+  /* 🔴 تايم‌لاين **وحدة** لكل الرأس · مش تويّنات متفرّقة.
+     السبب مقيس بهالمشروع: تويّنتان على نفس العنصر بتتصارعا، والتانية
+     بتسجّل قيمة البداية وبتمسح شغل الأولى بصمت.
 
-  /* بيتة ٢ · العبوات بتوصل بترتيب استعمالها · دخول ٦٢٠ملي وتتابع ٤٤٠ */
-  var tl = gsap.timeline({ delay: .18 });
-  tl.to('.shop-hero__glow', { scale: 1, autoAlpha: 1, duration: .8, ease: 'power2.out' }, 0)
-    /* التتابع من الأعمق للأقرب · فالبطل بيهبط آخر واحد وبياخد النظر */
-    .to(bottles, {
-      yPercent: 0, autoAlpha: 1, duration: .62,
-      ease: 'back.out(1.45)',
-      stagger: { each: .09, from: 'edges' }
-    }, .06)
-
-    /* 🔴 بيتة ٣ · السكتة قبل الحسم · «stillness before climax» */
-    .to(facts, {
-      y: 0, autoAlpha: 1, duration: .5, ease: 'power2.out', stagger: .06
-    }, '+=0.45');
-
-  /* وبعدها المشهد بيرتاح · ولا حلقة أبدية.
-     الحياة الباقية مربوطة بالسكرول: الزائرة بتسوقها. */
-  sceneParallax('.shop-hero', '[data-depth]');
+     والتوقيت من motion-doctrine:
+       · دخول العنصر الواحد ≤ ٨٠٠ملي  → ٧٢٠
+       · التتابع الكلي ≤ ٥٠٠ملي        → ٨ كلمات × ٠٫٠٦ = ٤٨٠
+       · سكتة ٠٫٣-٠٫٧٥ث قبل البيتة الأخيرة → ٠٫٤٥ قبل الحقائق */
+  gsap.timeline({ delay: .12 })
+    .to(words, { yPercent: 0, opacity: 1, duration: .72, stagger: .06, ease: 'expo.out' }, 0)
+    .to(lede, { y: 0, autoAlpha: 1, duration: .56, stagger: .08, ease: EASES ? EASES.out : 'power2.out' }, .34)
+    /* السكتة قبل الحسم · «stillness before climax» */
+    .to(facts, { y: 0, autoAlpha: 1, duration: .5, stagger: .06, ease: 'power2.out' }, '+=0.45');
 }
+
+/* ولا حلقة أبدية بالرأس · الحياة الباقية كلها مربوطة بالسكرول،
+   وهي تسلسل القطرة نفسه. الزائرة بتسوق المشهد، مش بتستنى فيه. */
 
 /* بطاقات البكجات · كشف بالتمرير */
 revealAll('.pkc');
