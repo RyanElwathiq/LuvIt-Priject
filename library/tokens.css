@@ -10981,3 +10981,62 @@ body.admin-bar #hero-seq .hero-story__cue {
   border-inline-start: 2px solid var(--aqua-200);
   padding-inline-start: var(--space-4);
 }
+
+/* ==========================================================================
+   5.53 · خطوة الروتين صارت لحظة شراء  (30 Aug)
+   --------------------------------------------------------------------------
+   نقد ريّان: «شوف صفحة الروتينات عننا كيف فاضية ومافيها اي اشي يقنع
+   العميل بالشراء · ومافيها لاصور وولا اشي، بس روتينات بكروت خفيفة
+   ملزقهم ببعض.»
+
+   والفحص أكّده برقم: **صفر صورة** بكل صفحات الروتينات الأربعة، مع إن
+   عندنا ٤٣ صورة منتج حقيقية مرفوعة من ٢٩ آب.
+
+   وكل خطوة كانت رقماً وعنواناً ورابطاً · يعني **طريق مسدود**: الزبونة
+   بتقرا اسم المنتج ولازم تطلع من الصفحة عشان تشتريه.
+
+   فالخطوة صارت تحمل: صورة العبوة الحقيقية · نسبة مادتها البطلة · سعرها ·
+   وزر شراء. **الروتين صار قابلاً للشراء خطوة خطوة، مش وصفاً لروتين.**
+
+   ⚠️ و`.luvit-step` على الشاشات الواسعة `flex-direction: column` مع خط
+      ماء بينهم · فالصورة بتنحط فوق الرقم بالترتيب البصري، والقاعدة
+      بتحترم الاتجاهين. */
+
+.luvit-step__media {
+  inline-size: 100%;
+  max-inline-size: 168px;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-image: linear-gradient(170deg,
+    var(--aqua-50) 0%, var(--aqua-100) 55%, var(--aqua-200) 100%);
+  order: -1;              /* الصورة قبل الرقم بالترتيب البصري */
+  flex: none;
+}
+.luvit-step__media img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* على التلفون الخطوة صفّ · فالصورة بتصغر وبتوقف جنب النص */
+@media (max-width: 859px) {
+  .luvit-step__media { max-inline-size: 92px; order: 0; }
+}
+
+/* سطر الشراء · السعر وزره بنفس السطر */
+.luvit-step__buy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-block-start: var(--space-3);
+}
+@media (min-width: 860px) {
+  .luvit-step__buy { justify-content: center; }
+}
+/* 🔴 وخط الماء اللي بيربط الخطوات كان محسوباً على رقم بارتفاع ٢٦px ·
+   بعد ما انضافت الصورة صار لازم ينزل تحتها، وإلا بيمرق فوق الصور. */
+@media (min-width: 860px) {
+  .luvit-step:has(.luvit-step__media)::after { top: calc(210px + 26px); }
+}

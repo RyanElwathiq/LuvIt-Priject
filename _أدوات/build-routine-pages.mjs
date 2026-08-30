@@ -38,16 +38,50 @@ const LIB    = path.resolve(HERE, '..', 'library');
 const OUT    = path.join(LIB, 'sections');
 const TOKENS = fs.readFileSync(path.join(LIB, 'tokens.css'), 'utf8');
 
-const P = {
-  L111: { ar: 'غسول البشرة الجافة والحساسة',  slug: 'hydrating-gel-cleanser',           price: 14, ml: '200ml' },
-  L110: { ar: 'غسول البشرة الدهنية',          slug: 'sebum-balancing-gel-cleanser',     price: 14, ml: '200ml' },
-  L114: { ar: 'تونر البشرة الجافة والحساسة',  slug: '8d-hyaluronic-acid-toner',         price: 13, ml: '200ml' },
-  L105: { ar: 'تونر تضييق المسامات',          slug: 'clarifying-pore-tightening-toner', price: 13, ml: '200ml' },
-  L102: { ar: 'سيروم الترطيب المكثّف',         slug: 'intensive-hydrating-serum',        price: 18, ml: '30ml' },
-  L101: { ar: 'سيروم فيتامين سي',             slug: 'vitamin-c-serum',                  price: 19, ml: '30ml' },
-  L116: { ar: 'كريم الترطيب والترميم',         slug: 'moisturizing-repairing-cream',     price: 15, ml: '75ml' },
-};
+/* ══════════════════════════════════════════════════════════════════════
+   المنتجات · **بتنقرا من مصدر الحقيقة، ما بتنكتب بالإيد**
+   ══════════════════════════════════════════════════════════════════════
+   🔴 كانت هون خريطة مكتوبة بالإيد فيها الأسعار (١٤ · ١٣ · ١٨ · ١٩ · ١٥).
+      وهاد **نفس فخ ملفات السكاشن البايتة** اللي كلّفنا صفحة كاملة:
+      رقم مكتوب بمكانين بينحرف، والصفحة بتقول سعراً والسلة بتقول تاني.
 
+   فالمصدران هما نفس مصدري صفحة المتجر:
+     _وارد/woo-products.json            ← معرّف وسعر وصورة ورابط (الحي)
+     _خطة/بيانات-المنتجات-الرسمية.json  ← الاسم الرسمي والنِسَب والحجم
+
+   ⚠️ ولو ما انسحبت بيانات ووكومرس بعد، البناء بيوقف بدل ما يخترع.
+   ══════════════════════════════════════════════════════════════════════ */
+const REPO = path.resolve(HERE, '..');
+const WOO_FILE = path.join(REPO, '_وارد', 'woo-products.json');
+if (!fs.existsSync(WOO_FILE)) {
+  console.error('🔴 ما لقيت _وارد/woo-products.json · اسحب بيانات ووكومرس أول');
+  process.exit(1);
+}
+const woo = JSON.parse(fs.readFileSync(WOO_FILE, 'utf8'));
+const cat = JSON.parse(fs.readFileSync(path.join(REPO, '_خطة', 'بيانات-المنتجات-الرسمية.json'), 'utf8'));
+
+const bySlug = Object.fromEntries(woo.منتجات.map((p) => [p.slug, p]));
+
+const P = {};
+for (const rec of cat.منتجات) {
+  const w = woo.منتجات.find((x) => x.id === rec.woo);
+  if (!w) continue;
+  /* المادة البطلة = **أول** مادة بالقائمة مش أعلى نسبة · القاعدة مشروحة
+     بالتفصيل بـbuild-shop-page.mjs، وطلعت غلط بأربعة من تسعة لو أخذنا الأعلى. */
+  const hero = (rec.actives || [])[0] || null;
+  P[rec.sku] = {
+    ar: rec.ar_رسمي || w.name,
+    slug: w.slug,
+    price: w.price,          /* نص من ووكومرس · مش رقم مكتوب */
+    ml: rec.ml,
+    id: w.id,
+    img: (w.images[0] || {}).src || null,
+    pct: hero ? hero.pct : null,
+    active: hero ? hero.name : null,
+  };
+}
+
+/* بوابة: كل منتج مذكور بالروتينات لازم يكون انحلّ */
 const ROUTINES = [
   {
     key: 'hydration', file: 'rt1-hydration.html', wooId: 205,
@@ -116,7 +150,7 @@ function assertClasses(html, file) {
 }
 
 function page(r) {
-  const total  = r.steps.reduce((s, [k]) => s + P[k].price, 0);
+  const total  = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
   const others = ROUTINES.filter((x) => x.key !== r.key);
 
   const featureCards = (items, icon) => items.map((t) =>
@@ -196,11 +230,23 @@ ${featureCards(r.who, '◇')}
 ${r.steps.map(([k, title, role], i) => {
   const p = P[k];
   return `      <div class="luvit-step">
+        <div class="luvit-step__media">
+          <img loading="lazy" decoding="async" width="800" height="1000"
+               src="${p.img}" alt="${p.ar}">
+        </div>
         <span class="luvit-step__num">${AR[i + 1]}</span>
         <div class="luvit-step__body">
           <h3 class="luvit-step__title">${title}</h3>
           <p class="luvit-step__text">
             <a href="/product/${p.slug}/">${p.ar}</a> · ${role}.
+          </p>
+          <p class="luvit-card__spec">${p.pct ? '<b>' + p.pct + ' ' + p.active + '</b>' : ''}<span class="luvit-card__vol">${p.ml}</span></p>
+          <p class="luvit-step__buy">
+            <span class="luvit-card__price"><span dir="ltr">${p.price}</span> د.أ</span>
+            <a href="/?add-to-cart=${p.id}" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="${p.id}" data-quantity="1"
+               aria-label="أضيفي ${p.ar} إلى السلة">أضيفي إلى السلة</a>
           </p>
         </div>
       </div>`;
@@ -246,7 +292,7 @@ ${r.steps.map(([k]) => {
     <div class="luvit-section__foot">
       <a class="luvit-btn luvit-btn--arrow add_to_cart_button ajax_add_to_cart"
          href="/?add-to-cart=${r.wooId}" data-quantity="1"
-         data-product_id="${r.wooId}" rel="nofollow">أضيفي البكج للسلة · ${total}.00 د.أ</a>
+         data-product_id="${r.wooId}" rel="nofollow">أضيفي البكج للسلة · ${total.toFixed(2)} د.أ</a>
       <a class="luvit-btn luvit-btn--ghost" href="/product/${r.slug}/">تفاصيل البكج</a>
     </div>
 
@@ -337,17 +383,35 @@ function hub() {
 
     <div class="luvit-card-grid" data-luvit="stagger">
 ${ROUTINES.map((r) => {
-  const total = r.steps.reduce((s, [k]) => s + P[k].price, 0);
-  return `      <article class="luvit-card luvit-card--feature">
+  const total = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
+  /* صورة البكج المركّبة · من ووكومرس مباشرة · وبتوقف البناء لو ما لقاها
+     بدل ما تطلع بطاقة بمربع فاضي. */
+  const pack = woo.منتجات.find((x) => x.id === r.wooId);
+  if (!pack || !pack.images.length) {
+    console.error('🔴 ما لقيت صورة بكج ' + r.key + ' (woo ' + r.wooId + ')');
+    process.exit(1);
+  }
+  pack.img = pack.images[0].src;
+  return `      <article class="luvit-card luvit-card--feature" data-goal="${r.key}">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" width="800" height="800"
+               src="${pack.img}" alt="${r.ar}">
+        </div>
         <div class="luvit-card__body">
           <p class="luvit-card__eyebrow">${r.en}</p>
           <h2 class="luvit-card__title">
             <a class="luvit-card__link" href="/routines/${r.key}">${r.ar}</a>
           </h2>
           <p class="luvit-card__text">${r.sub}</p>
-          <p class="luvit-card__text">مناسب لـ ${r.who.slice(0, 2).join(' و')}.</p>
+          <ol class="luvit-card__steps">
+${r.steps.map(([k]) => '            <li>' + P[k].ar + '</li>').join(String.fromCharCode(10))}
+          </ol>
           <div class="luvit-card__footer">
-            <span class="luvit-card__price">${total}.00 د.أ</span>
+            <span class="luvit-card__price"><span dir="ltr">${total.toFixed(2)}</span> د.أ</span>
+            <a href="/?add-to-cart=${r.wooId}" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="${r.wooId}" data-quantity="1"
+               aria-label="أضيفي ${r.ar} إلى السلة">أضيفي إلى السلة</a>
           </div>
         </div>
       </article>`;
@@ -394,7 +458,7 @@ for (const r of ROUTINES) {
 
   const nClasses = assertClasses(html, r.file);
   fs.writeFileSync(path.join(OUT, r.file), html, 'utf8');
-  const total = r.steps.reduce((s, [k]) => s + P[k].price, 0);
+  const total = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
   console.log(`✅ ${r.file.padEnd(22)} ${String(total).padStart(2)} د.أ · ${nClasses} كلاس كلهم معرّفين · ${html.length} حرف`);
   n++;
 }
