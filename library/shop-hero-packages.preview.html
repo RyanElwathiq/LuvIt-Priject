@@ -380,6 +380,32 @@
   .pk__goal[aria-selected="true"] i { background: #FFFFFF; }
 
   /* ── اللوح المفصّل ─────────────────────────────────────────────── */
+  /* ── مخرج الكويز · بديل سكشن «مسارات البدء» كله ──────────────────
+     🔴 السكشن كان أربعة مداخل، **تلاتة منها صارت مكرّرة**:
+        «بدي روتين كامل» ← مختار الأهداف فوقه مباشرةً
+        «بدوّر على منتج»  ← سكشن التشكيلة
+        «بدي أزيد خطوة»  ← رأس التشكيلة («كل مجموعة خطوة بروتينك»)
+     والرابع وحده مدخل حقيقي ما إله بديل: **«مش عارفة بشرتي»**.
+
+     فبدل شريط كامل لواحد نافع، سطر واحد **بمكان التردّد نفسه** —
+     تحت الأهداف مباشرةً، لحظة ما تسأل «وأنا أي وحدة منهم؟».
+     والصفحة قصرت سكشناً كاملاً.                                    */
+  .pk__quiz {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-block: 0 clamp(18px, 2.2vw, 26px);
+    font-size: 13.5px; color: var(--color-ink-soft, #47555B);
+  }
+  .pk__quiz a {
+    display: inline-flex; align-items: center; gap: 7px;
+    color: var(--aqua-700, #196B7D); font-weight: 600; text-decoration: none;
+    border-block-end: 1px solid rgba(25,107,125,.32);
+    padding-block-end: 1px;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .pk__quiz a:hover { color: var(--aqua-800, #124D5A); border-color: currentColor; }
+  .pk__quiz a:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+  .pk__quiz svg { flex: none; }
+
   .pk__panel {
     display: grid; gap: clamp(20px, 3vw, 44px);
     align-items: center;
@@ -392,7 +418,33 @@
                 0 30px 60px -40px rgba(var(--lagoon-rgb), .5);
   }
   @media (min-width: 900px) {
-    .pk__panel { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); }
+    /* ── مخرج الكويز · بديل سكشن «مسارات البدء» كله ──────────────────
+     🔴 السكشن كان أربعة مداخل، **تلاتة منها صارت مكرّرة**:
+        «بدي روتين كامل» ← مختار الأهداف فوقه مباشرةً
+        «بدوّر على منتج»  ← سكشن التشكيلة
+        «بدي أزيد خطوة»  ← رأس التشكيلة («كل مجموعة خطوة بروتينك»)
+     والرابع وحده مدخل حقيقي ما إله بديل: **«مش عارفة بشرتي»**.
+
+     فبدل شريط كامل لواحد نافع، سطر واحد **بمكان التردّد نفسه** —
+     تحت الأهداف مباشرةً، لحظة ما تسأل «وأنا أي وحدة منهم؟».
+     والصفحة قصرت سكشناً كاملاً.                                    */
+  .pk__quiz {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-block: 0 clamp(18px, 2.2vw, 26px);
+    font-size: 13.5px; color: var(--color-ink-soft, #47555B);
+  }
+  .pk__quiz a {
+    display: inline-flex; align-items: center; gap: 7px;
+    color: var(--aqua-700, #196B7D); font-weight: 600; text-decoration: none;
+    border-block-end: 1px solid rgba(25,107,125,.32);
+    padding-block-end: 1px;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .pk__quiz a:hover { color: var(--aqua-800, #124D5A); border-color: currentColor; }
+  .pk__quiz a:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+  .pk__quiz svg { flex: none; }
+
+  .pk__panel { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); }
   }
 
   /* 🔴 ولا خلفية ولا حشوة هون · والسبب مقيس:
@@ -494,48 +546,6 @@
   .pk__promise svg { flex: none; margin-block-start: 2px; color: var(--aqua-600, #1E869C); }
   .pk__promise b { display: block; font-size: 14.5px; color: var(--color-ink, #1A2529); margin-block-end: 2px; }
   .pk__promise p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--color-ink-soft, #47555B); }
-
-  /* ══ مسارات البدء · عائلة تخطيط مختلفة عن البطاقات ═══════════════
-     🔴 السبب: فحص design-taste-frontend طلع إن luvit-card-grid مستعملة
-        بثلاث سكاشن متتالية بصفحة المتجر (البكجات · نوع البشرة · المنتجات)
-        والقاعدة: عائلة تخطيط لكل سكشن.
-     فهاد شريط أفقي بمداخل، مش شبكة بطاقات. */
-  /* 🔴 كان linear-gradient(180deg) مستوياً · شبكة شعاعية بدله
-     عشان يكون في ضوء له مصدر لا انتقال ميكانيكي.
-     والحشوة **بصرية**: السفلى أكبر من العليا · العين بتحسّ التناظر
-     الحسابي كأنه أعلى شوي. */
-  .paths {
-    background:
-      radial-gradient(76% 58% at 88% -6%, rgba(76,197,218,.16), transparent 62%),
-      radial-gradient(64% 52% at 4% 108%, rgba(41,169,192,.12), transparent 66%),
-      linear-gradient(178deg, #F7FCFD, #EAF4F8);
-    padding-block: clamp(38px, 5vw, 62px) clamp(46px, 6vw, 74px);
-  }
-  .paths__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
-  .paths__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-block-end: 22px; }
-  .paths__head h2 {
-    font-family: var(--font-heading, inherit); font-size: clamp(20px, 2.6vw, 28px);
-    margin: 0; color: var(--color-ink, #1A2529);
-  }
-  .paths__head p { margin: 0; color: var(--color-ink-soft, #47555B); font-size: 14.5px; }
-  .paths__row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
-  .path {
-    display: flex; align-items: center; gap: 12px;
-    background: #fff; border: 1px solid rgba(26,37,41,.10); border-radius: 100px;
-    padding: 11px 18px 11px 12px; text-decoration: none; color: inherit;
-    transition: transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s;
-    box-shadow: 0 1px 2px rgba(var(--lagoon-rgb), .05);
-  }
-  .path:hover { transform: translateY(-3px); box-shadow: 0 10px 22px -12px rgba(var(--lagoon-rgb), .35); }
-  .path:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
-  .path b {
-    flex: none; inline-size: 38px; block-size: 38px; border-radius: 50%;
-    display: grid; place-items: center;
-    background: linear-gradient(160deg, #DCF0F6, #B7E0EC); color: var(--aqua-700, #1E7C8C);
-  }
-  .path span { display: block; font-size: 14.5px; font-weight: 600; color: var(--color-ink, #1A2529); }
-  /* ink-faint على الأرضية الفاتحة بيعطي 2.97:1 · ink-soft بيعطي 6.4 */
-  .path small { display: block; font-size: 12.5px; color: var(--color-ink-soft, #47555B); margin-block-start: 1px; }
 
   /* ══ التشكيلة · «رأس مجموعة ملتصق + شبكة مضغوطة» ═══════════════════
      🔴 اللي كان: ١٢ بطاقة متطابقة، الصورة **٦٥٪** من البطاقة، والزر
@@ -784,6 +794,14 @@
       <span class="pk__ind" aria-hidden="true" id="pkind"></span>
     </div>
 
+    <p class="pk__quiz">
+      <span>مش متأكدة أي هدف يناسب بشرتك؟</span>
+      <a href="/quiz">
+        جاوبي خمس أسئلة وبنقولك
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      </a>
+    </p>
+
     <div class="pk__panel" id="pkpanel"></div>
     <div class="pk__promise">
       <div>
@@ -805,22 +823,6 @@
 
 
 <!-- ٣ · مسارات البدء · عائلة تخطيط مختلفة -->
-<section class="paths luvit-grain" id="paths" data-nav-bg="light">
-  <div class="paths__inner">
-    <div class="paths__head">
-      <h2>مش عارفة من وين تبلّشي؟</h2>
-      <p>اختاري من هون وبنوصّلك للمناسب</p>
-    </div>
-    <div class="paths__row" data-luvit="stagger">
-      <a class="path" href="#packages"><b><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v13H3z"/><path d="M3 7l3-4h12l3 4"/><path d="M12 7v13"/></svg></b><span>بدي روتين كامل<small>أربع خطوات جاهزة</small></span></a>
-      <a class="path" href="/quiz"><b><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.1 9a3 3 0 1 1 4.2 2.7c-.8.4-1.3 1.1-1.3 2"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></b><span>مش عارفة بشرتي<small>خمس أسئلة</small></span></a>
-      <a class="path" href="#catalogue"><b><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></b><span>بدوّر على منتج<small>التشكيلة كاملة</small></span></a>
-      <a class="path" href="#catalogue"><b><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8h14"/><path d="M7 13h10"/><path d="M9 18h6"/></svg></b><span>بدي أزيد خطوة<small>على روتيني الحالي</small></span></a>
-    </div>
-  </div>
-</section>
-
-<!-- ٤ · التشكيلة بترتيب الاستعمال -->
 <section class="cat luvit-grain" id="catalogue" data-nav-bg="light">
   <div class="cat__inner">
     <div class="cat__head">
