@@ -80,16 +80,16 @@
       linear-gradient(180deg,
         rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .30) 26%, rgba(var(--lagoon-rgb), 0) 54%),
       linear-gradient(to left,
-        rgba(var(--lagoon-rgb), .82) 0%, rgba(var(--lagoon-rgb), .56) 24%,
-        rgba(var(--lagoon-rgb), .16) 48%, rgba(var(--lagoon-rgb), 0) 66%);
+        rgba(var(--lagoon-rgb), .88) 0%, rgba(var(--lagoon-rgb), .64) 24%,
+        rgba(var(--lagoon-rgb), .20) 48%, rgba(var(--lagoon-rgb), 0) 66%);
   }
   [dir="ltr"] .shop-hero__scrim {
     background:
       linear-gradient(180deg,
         rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .30) 26%, rgba(var(--lagoon-rgb), 0) 54%),
       linear-gradient(to right,
-        rgba(var(--lagoon-rgb), .82) 0%, rgba(var(--lagoon-rgb), .56) 24%,
-        rgba(var(--lagoon-rgb), .16) 48%, rgba(var(--lagoon-rgb), 0) 66%);
+        rgba(var(--lagoon-rgb), .88) 0%, rgba(var(--lagoon-rgb), .64) 24%,
+        rgba(var(--lagoon-rgb), .20) 48%, rgba(var(--lagoon-rgb), 0) 66%);
   }
 
   /* ── الكلام · قاعد فوق الشريط الغامق طول القوس ─────────────────
@@ -138,33 +138,37 @@
 
   .shop-hero__sub {
     margin: 0 0 22px; font-size: clamp(14.5px, 1.6vw, 17px);
-    line-height: 1.75; color: rgba(255,255,255,.82);
+    /* 🔴 أبيض **صافي** مش بشفافية · مقيس: بشفافية .82 على أسوأ خلفية
+       بالقوس rgb(88,120,120) بيطلع ٣٫٨٤:١ يعني تحت AA، وبـ.94 بيطلع
+       ٤٫٥١ يعني على الحدّ بالضبط بلا هامش. والصافي بيعطي ٤٫٨٥.
+       والهرمية جاية من الحجم (١٧px مقابل ٦٠) مش من النبرة. */
+    line-height: 1.75; color: #FFFFFF;
     max-inline-size: 54ch;
     text-shadow: 0 1px 12px rgba(var(--lagoon-rgb), .4);
   }
 
   .shop-hero__cta { display: flex; gap: 12px; flex-wrap: wrap; }
-  /* 🔴 tokens.css فيه أصلاً طقم «شبح على غامق» · ما بنخترع قيماً:
-     --btn-ghost-dark-fg / -border / -hover. الاحتياطيات هي قيمها
-     الحقيقية عشان المعاينة تضل تشتغل لو انفصل tokens.css.
+  /* 🔴 اللون والحدّ **مش من هون** · جايين من `.luvit-btn--on-dark`
+     بـtokens.css، والكلاس مضاف بالماركب.
 
-     🔴 وخلفيته **مش شفافة** هون · وهاد فرق جوهري عن الشبح العادي.
-     السبب مقيس: الزر بيقع فوق العبوات البيضا لما تطلع من المي، ونص
-     أبيض على زجاج أبيض = صفر تباين. حسبنا:
-        rgba(var(--lagoon-rgb), .72) فوق عبوة #E8E8E8  →  rgb(69,102,104)
-        وأبيض عليها = **٥٫٨:١** · فوق حدّ AA (4.5) للنص العادي.
-     وبـ.06 اللي كانت (٣٫٩:١ عند .55) كان بيرسب.
+     وأي محاولة نكتب `color` هون **بتضيع**: القاعدة الأصلية
+     `.luvit-btn--ghost { color: var(--aqua-700) !important }`،
+     والـ!important بتغلب الخصوصية مهما علت. جرّبناها وطلع التباين
+     **1.63:1** · وريّان شافه بعينه قبل ما يمسكه الفاحص.
+
+     واللي بنضيفه هون شي واحد مش موجود بالمتغيّر الأصلي: **خلفية
+     معتمة**. الشبح القياسي شفاف، وهون الزر بيقع فوق العبوات البيضا
+     لما تطلع من المي، وأبيض على زجاج أبيض = صفر تباين.
+        rgba(var(--lagoon-rgb), .72) فوق عبوة #E8E8E8 → rgb(69,102,104)
+        وأبيض عليها = **٥٫٨:١** · فوق حدّ AA.
 
      ⚠️ وممنوع backdrop-filter هون · الكانفاس بيعيد الرسم كل فريم
         سكرول، والضبابية بتعيد الحساب معه. قاعدة أداء ثابتة بالمشروع. */
   .shop-hero .luvit-btn--ghost {
-    color: var(--btn-ghost-dark-fg, #FFFFFF);
-    border-color: var(--btn-ghost-dark-border, rgba(255,255,255,.55));
     background: rgba(var(--lagoon-rgb), .72);
   }
   .shop-hero .luvit-btn--ghost:hover {
     background: rgba(var(--lagoon-rgb), .84);
-    border-color: rgba(255,255,255,.72);
   }
 
   /* 🔴 الحقائق انتقلت من كتلة الكلام لشريط بأسفل اللوح.
@@ -454,7 +458,11 @@
         </p>
         <div class="shop-hero__cta">
           <a class="luvit-btn" href="#packages">ابدأي بروتين جاهز</a>
-          <a class="luvit-btn luvit-btn--ghost" href="#catalogue">أو شوفي المنتجات وحدة وحدة</a>
+          <!-- 🔴 luvit-btn--on-dark إلزامي هون · بلاه tokens.css بيفرض
+               color: var(--aqua-700) !important على .luvit-btn--ghost،
+               والـ!important بتغلب أي خصوصية. النتيجة كانت **1.63:1**.
+               والكلاس موثّق بـELEMENTOR-GUIDE.md سطر ٨١. -->
+          <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="#catalogue">أو شوفي المنتجات وحدة وحدة</a>
         </div>
 
       </div>
