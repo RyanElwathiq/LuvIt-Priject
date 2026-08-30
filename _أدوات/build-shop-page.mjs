@@ -766,3 +766,28 @@ if (fs.existsSync(PREVIEW)) {
     console.error('⚠️ ما لقيت <main> بالمعاينة · انتخطّت');
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   ٧ · محتوى صفحة ووردبريس · جاهز للتركيب
+   ══════════════════════════════════════════════════════════════════════
+   الصفحة ٢٠٦ محتواها **بلوكات Gutenberg من نوع wp:html** بالـpost_content
+   (مش إلمنتور · إلمنتور بيعطيها الهيدر والفوتر بس عبر القالب).
+   مقيس على الحي: ٨ بلوكات و٨ سكاشن · تطابق واحد لواحد مع ملفاتنا.
+
+   فبينكتب الملف هون، والمتصفح بيسحبه من السيرفر المحلي وبيحطه بالصفحة ·
+   بدل ما ينتنقل ٣٠ كيلوبايت جوّا مكالمة أداة.
+
+   ⚠️ والموجة اللي بعد سكشن ٥ **مش سكشن** · هي div شقيق. فبتنحط بنفس
+      البلوك تبع سكشن ٥ عشان ما تنفصل عنه بحاوية بلوك تانية. */
+const wpContent = FILES.map(([name, fn]) => {
+  const html = fn().replace(/^<!--[\s\S]*?-->\n/, '').trim();
+  return '<!-- wp:html -->\n' + html + '\n<!-- /wp:html -->';
+}).join('\n\n');
+
+const OUTDIR = path.join(REPO, '_وارد');
+fs.mkdirSync(OUTDIR, { recursive: true });
+fs.writeFileSync(path.join(OUTDIR, 'page206-content.html'), wpContent, 'utf8');
+console.log('\n✅ محتوى الصفحة جاهز · _وارد/page206-content.html');
+console.log('   ' + Buffer.byteLength(wpContent, 'utf8') + ' بايت · ' +
+            (wpContent.match(/<!-- wp:html -->/g) || []).length + ' بلوك · ' +
+            (wpContent.match(/<section /g) || []).length + ' سكشن');
