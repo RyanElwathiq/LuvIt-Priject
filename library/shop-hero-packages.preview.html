@@ -83,107 +83,96 @@
   }
   .shop-hero__fact span { font-size: 13px; color: var(--ink-600, #46585E); }
 
-  /* ── لوح العبوات · العمود الثاني ──────────────────────────────── */
+  /* ══ الطبقة الجوية · انعادت من الصفر ٣٠ آب ══════════════════════
+     🔴 السبب الجذري للحافة اللي مسكها ريّان مرتين:
+        `overflow: hidden` كان على **المسرح**، فكل وهج ناعم جوّاه بينقصّ
+        عند حدوده وبتطلع له حافة موس. مقيس: خط عمودي عند x≈712 بالضبط
+        على حدّ المسرح اليمنى.
+
+     والمعمارية الصح: **الجو على السكشن، والمسرح للتخطيط بس.**
+     السكشن ملء العرض فحوافه حواف الشاشة · وما في حدّ داخلي ينقصّ عليه.
+     والمسرح ما عاد يحتاج قصّ أصلاً لأن كل الأحجام بـcalc من متغيّر
+     صريح، فما في شي بيفيض. */
+
+  /* الوهج · على السكشن، بلا حدود داخلية */
+  .shop-hero__glow {
+    position: absolute; z-index: 0; pointer-events: none;
+    inset-block-start: -8%;
+    inset-inline-start: 26%;
+    inline-size: min(52vw, 620px); aspect-ratio: 1;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 44% 38%,
+      rgba(255,255,255,.9) 0%, rgba(232,247,252,.55) 34%,
+      rgba(198,232,244,.22) 58%, transparent 76%);
+  }
+
+  /* سطح الماء · على السكشن كمان · بيمتد لعرض الصفحة فما إله طرف حادّ */
+  .shop-hero__surface {
+    position: absolute; inset-inline: 0; z-index: 1; pointer-events: none;
+    inset-block-end: var(--surface-bottom, 190px);
+    block-size: 2px;
+    background: linear-gradient(90deg,
+      transparent 4%, rgba(255,255,255,.75) 22%, rgba(255,255,255,.45) 50%,
+      rgba(255,255,255,.75) 78%, transparent 96%);
+  }
+  .shop-hero__surface::after {
+    content: ""; position: absolute; inset-inline: 0; inset-block-start: 1px;
+    block-size: 170px;
+    background: linear-gradient(180deg,
+      rgba(160,212,232,.26) 0%, rgba(150,206,229,.13) 44%, transparent 88%);
+  }
+
+  /* ── لوح العبوات ─────────────────────────────────────────────── */
   .shop-hero__stage {
-    position: relative;
-    /* 🔴 ارتفاع مشترك **صريح** · وكل الأحجام تحته بتنحسب منه بـcalc.
-       النسبة المئوية على أب ارتفاعه من محتواه بتنهار لصفر · وقعت فيها
-       ثلاث مرات بهالصفحة (عبوات صغيرة · عبوة عملاقة · وعبوات اختفت). */
+    position: relative; z-index: 2;
+    /* متغيّر ارتفاع صريح · وكل الأحجام تحته بـcalc.
+       🔴 ولا نسبة مئوية بالسلسلة · وقعت فيها ثلاث مرات. */
     --shelf-h: clamp(300px, 32vw, 390px);
-    --mir-h: 58px;              /* ارتفاع الانعكاس · ثابت لكل العبوات
-                                   عشان قواعدها كلها تقع على خط ماء واحد */
-    block-size: calc(var(--shelf-h) + var(--mir-h) + 18px);
-    /* 🔴 القصّ إلزامي · بلاه العبوات بتسرّب على عمود النص وبتقف فوق الأزرار.
-       انمسكت باللقطة أول محاولة. */
-    /* القصّ بيضل لازم للعبوات · والماء بيذوب بالماسك مش بالقصّ */
-    overflow: hidden;
-    display: grid; place-items: stretch;
+    --mir-h: 58px;
+    block-size: calc(var(--shelf-h) + var(--mir-h) + 12px);
+    /* 🔴 ولا قصّ · هون كان مصدر الحافة */
+    display: flex; align-items: flex-end; justify-content: center;
   }
   .shop-hero__shelf {
-    position: relative; z-index: 1;
     inline-size: 100%;
-    block-size: auto;
     display: flex; align-items: flex-end; justify-content: center;
     gap: clamp(2px, .6vw, 10px);
-    padding-block-end: 10px;
   }
-  /* ── العبوات واقفة بالمي ─────────────────────────────────────────
-     🔴 المشكلة اللي مسكها ريّان: حافّة القصّ حادّة وجسم العبوة
-        rgb(224,224,224) قريب من الخلفية، فبتقرا **ملصق مقصوص بالمقص**.
-     والحل مش تنعيم الحافة وبس · الحل **إنها تلاقي سطحاً**.
-     لغة العلامة ماء ومحيط، فالعبوات بتوقف بمي ضحلة: خط ماء عند
-     قواعدها، وانعكاس مقلوب تحته. الحافة وقتها بتنتهي بسطح مش بفراغ. */
   .shop-hero__slot {
     position: relative; flex: none;
     display: flex; flex-direction: column; align-items: center;
   }
   .shop-hero__bottle {
     display: block; flex: none;
-    /* الارتفاع محسوب من المتغيّر المشترك · ولا نسبة مئوية */
     block-size: calc(var(--shelf-h) * var(--bf, .6));
     inline-size: auto;
     /* ظل بلون الماء لا أسود · قاعدة العلامة */
     filter: drop-shadow(0 14px 20px rgba(6, 52, 54, .17));
     will-change: transform;
   }
-  /* صندوق الانعكاس · نافذة ثابتة الارتفاع بتوري قاعدة العبوة مقلوبة */
+  /* نافذة الانعكاس · ارتفاعها ثابت لكل العبوات عشان القواعد تقع
+     على خط ماء واحد رغم اختلاف أطوالها */
   .shop-hero__mirrorbox {
     block-size: var(--mir-h); inline-size: 100%;
     overflow: hidden; display: flex; justify-content: center;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 88%);
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 88%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent 86%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent 86%);
   }
   .shop-hero__mirror {
     display: block; flex: none;
     block-size: calc(var(--shelf-h) * var(--bf, .6));
     inline-size: auto;
-    /* القلب حول المركز · فقاعدة العبوة بتطلع بأعلى النافذة · وهاد
-       بالضبط شكل الانعكاس الحقيقي على سطح المي. */
     transform: scaleY(-1);
-    opacity: .34;
+    opacity: .32;
     filter: blur(1.5px) saturate(.7);
   }
-  /* ── سطح الماء ──────────────────────────────────────────────────
-     شريط واحد بيمرّ عند قواعد العبوات · فيه لمعة فوق وعمق تحت. */
-  /* 🔴 الأطراف بتذوب · بلاها الماء بينقصّ عند حدود المسرح وبيصير
-     **مستطيلاً بحافتين حادّتين** · وهاد اللي مسكه ريّان باللقطة. */
-  .shop-hero__water {
-    position: absolute; inset-inline: -6%; z-index: 2; pointer-events: none;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-            mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-    inset-block-end: calc(var(--mir-h) + 10px);
-    block-size: 3px;
-    background: linear-gradient(90deg,
-      transparent, rgba(255,255,255,.85) 12%, rgba(255,255,255,.55) 50%,
-      rgba(255,255,255,.85) 88%, transparent);
-    filter: blur(.4px);
-  }
-  /* جسم الماء تحت السطح · تدرّج بيعمّق للأسفل */
-  .shop-hero__water::after {
-    content: ""; position: absolute; inset-inline: 0; inset-block-start: 2px;
-    -webkit-mask-image: radial-gradient(120% 100% at 50% 0%, #000 46%, transparent 82%);
-            mask-image: radial-gradient(120% 100% at 50% 0%, #000 46%, transparent 82%);
-    block-size: 30vh; max-block-size: 150px;
-    background: linear-gradient(180deg,
-      rgba(163,214,233,.30) 0%, rgba(141,203,226,.16) 42%, transparent 92%);
-  }
-  /* قرص زجاجي خلف اللوح · نفس لغة الهيرو بالرئيسية */
-  /* 🔴 وهج بلا حافة · القرص بحدّ ظاهر بيبيّن مقصوصاً لما المسرح يقصّ،
-     وانمسك باللقطة مرتين. الوهج ما إله حافة فما بيبيّن قصّه. */
-  .shop-hero__disc {
-    position: absolute; inset-block-start: 2%; inset-inline-start: 50%;
-    inline-size: min(92%, 420px); aspect-ratio: 1;
-    transform: translateX(-50%);
-    border-radius: 50%; z-index: 0; pointer-events: none;
-    background: radial-gradient(circle at 42% 34%, rgba(255,255,255,.92), rgba(226,244,250,.5) 46%, rgba(198,232,244,.16) 66%, transparent 78%);
-  }
 
-  /* فقاعات · زينة صرفة */
+  /* فقاعات · ساكنة، بعمق للبارالاكس */
   .shop-hero__bub {
-    position: absolute; border-radius: 50%; pointer-events: none;
-    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.95), rgba(198,232,244,.5) 60%, rgba(160,214,232,.18));
-    border: 1px solid rgba(255,255,255,.7);
+    position: absolute; border-radius: 50%; pointer-events: none; z-index: 3;
+    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.9), rgba(198,232,244,.42) 60%, rgba(160,214,232,.14));
   }
 
   /* موجة القاع · بتقصّ لسكشن البكجات */
@@ -316,6 +305,9 @@
      والفقاعات بتصعد. كلها transform وopacity · ولا خاصية بتسبب تخطيطاً.
      ══════════════════════════════════════════════════════════════════ -->
 <section class="shop-hero" id="page-head" data-nav-bg="light">
+  <span class="shop-hero__glow" aria-hidden="true"></span>
+  <span class="shop-hero__surface" aria-hidden="true"></span>
+
   <div class="shop-hero__inner">
     <div class="shop-hero__copy">
       <p class="shop-hero__eyebrow">التشكيلة كاملة</p>
@@ -339,9 +331,7 @@
     </div>
 
     <div class="shop-hero__stage" aria-hidden="true">
-      <span class="shop-hero__disc"></span>
       <div class="shop-hero__shelf" id="shelf"></div>
-      <span class="shop-hero__water"></span>
     </div>
   </div>
 
@@ -481,7 +471,7 @@ var AR = function (n) {
   });
 
   /* فقاعات ساكنة · زينة خلفية بعمق للبارالاكس، بلا حلقة أبدية */
-  var stage = document.querySelector('.shop-hero__stage');
+  var stage = document.querySelector('.shop-hero');
   [[14, 12, 22], [9, 74, 8], [20, 42, 4], [7, 88, 34], [12, 26, 40], [6, 58, 18]]
     .forEach(function (b, i) {
       var el = document.createElement('span');
@@ -567,19 +557,19 @@ var facts   = gsap.utils.toArray('.shop-hero__fact');
 
 if (reduced()) {
   /* القاعدة ٥ بمكتبة توازَن: المحتوى بيظهر ثابتاً، ما بينحجب */
-  gsap.set([bottles, facts, '.shop-hero__disc'], { opacity: 1, y: 0, clearProps: 'transform' });
+  gsap.set([bottles, facts, '.shop-hero__glow'], { opacity: 1, y: 0, clearProps: 'transform' });
 } else {
 
   gsap.set(bottles, { yPercent: 26, autoAlpha: 0 });
   gsap.set(facts,   { y: 14, autoAlpha: 0 });
-  gsap.set('.shop-hero__disc', { scale: .9, autoAlpha: 0 });
+  gsap.set('.shop-hero__glow', { scale: .92, autoAlpha: 0 });
 
   /* بيتة ١ · العنوان كلمةً كلمة · والتقسيم بالكلمات لأن العربية متصلة */
   wordReveal('.shop-hero h1', { stagger: .06, dur: .72 });
 
   /* بيتة ٢ · العبوات بتوصل بترتيب استعمالها · دخول ٦٢٠ملي وتتابع ٤٤٠ */
   var tl = gsap.timeline({ delay: .18 });
-  tl.to('.shop-hero__disc', { scale: 1, autoAlpha: 1, duration: .7, ease: 'power2.out' }, 0)
+  tl.to('.shop-hero__glow', { scale: 1, autoAlpha: 1, duration: .8, ease: 'power2.out' }, 0)
     .to(bottles, {
       yPercent: 0, autoAlpha: 1, duration: .62,
       ease: 'back.out(1.45)', stagger: .11
