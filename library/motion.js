@@ -146,6 +146,69 @@ function luvitParallax(selector, opts) {
 }
 
 /* --------------------------------------------------------------------------
+   Dive — the bottle that rises out of the light and sinks into the water
+   --------------------------------------------------------------------------
+   الغوص · وافق عليها ريّان ٢٩ آب.
+
+   القصة بثلاث مراحل مربوطة بالسكرول (scrub · مش تشغيل تلقائي):
+     ١ · العبوة بتطلع من السكشن الفاتح وبتكبر شوي · «بتخرج من الماء»
+     ٢ · بتوصل ذروتها بالضبط عند الحد بين السكشنين
+     ٣ · بتغطس بالسكشن الغامق وبتصغر · «بتنزل تحت»
+
+   🔴 وثلاث قواعد ما بتنكسر:
+     · `transform` و`opacity` بس · ولا خاصية بتسبب تخطيطاً.
+     · ScrollTrigger مش `addEventListener('scroll')` · اللي بيشتغل كل
+       فريم وبيقتل الموبايل.
+     · تحت `prefers-reduced-motion` **ما بتنعمل الحركة أصلاً** · والعبوة
+       بتضل ساكنة بمكانها (الـCSS بيشيل الـsticky). يعني ما بتختفي، بس
+       ما بتتحرّك.
+
+   ⚠️ وعلى التلفون بتنطفي بالـCSS (`display: none`) · فبنوقف هون كمان
+      عشان ما نبني ScrollTrigger لعنصر مخفي (بيحسب أطوالاً غلط).
+   -------------------------------------------------------------------------- */
+function luvitDive(el) {
+  if (LUVIT_REDUCED) return;
+  if (window.matchMedia('(max-width: 899px)').matches) return;
+
+  var img = el.querySelector('img');
+  if (!img) return;
+
+  /* السكشن اللي قبلها واللي بعدها · وهما مرجعا الرحلة.
+     بلا واحد منهم ما في قصة، فبنوقف بدل ما نخترع نقاط. */
+  var above = el.previousElementSibling;
+  var below = el.nextElementSibling;
+  if (!above || !below) return;
+
+  gsap.set(img, { yPercent: 12, scale: 0.9 });
+
+  /* الصعود · من وسط السكشن الفاتح لحد الحدّ */
+  gsap.to(img, {
+    yPercent: -6,
+    scale: 1.06,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: above,
+      start: 'center center',
+      end: 'bottom center',
+      scrub: 1.2,
+    },
+  });
+
+  /* الغطس · من الحدّ لجوّا الماء */
+  gsap.to(img, {
+    yPercent: 26,
+    scale: 0.82,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: below,
+      start: 'top center',
+      end: 'center center',
+      scrub: 1.2,
+    },
+  });
+}
+
+/* --------------------------------------------------------------------------
    Float — gentle infinite bobbing for product bottles
    -------------------------------------------------------------------------- */
 function luvitFloat(selector, opts) {
@@ -307,6 +370,9 @@ function luvitAutoInit() {
         break;
       case 'counter':
         luvitCounter(el);
+        break;
+      case 'dive':
+        luvitDive(el);
         break;
     }
   });

@@ -285,7 +285,7 @@ function s1() {
 <section class="luvit-section luvit-section--tight band-mist luvit-shop-root" data-nav-bg="light" id="page-head">
   <div class="luvit-promise">
     <span class="luvit-promise__item">${icon(I.wallet, 18)} الدفع عند الاستلام</span>
-    <span class="luvit-promise__item">${icon(I.truck, 18)} التوصيل ٢ دنانير لكل محافظات الأردن</span>
+    <span class="luvit-promise__item">${icon(I.truck, 18)} التوصيل خلال يوم · ويومين بالأكثر</span>
     <span class="luvit-promise__item">${icon(I.flask, 18)} النِسَب مكتوبة على العبوة</span>
   </div>
 
@@ -321,7 +321,7 @@ function s2() {
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
       <h2 class="luvit-section__title">روتين كامل بطلبية وحدة</h2>
-      <p class="luvit-section__sub">أربع خطوات مرتّبة بترتيبها الصح · بدل ما تختاري وحدة وحدة وتحتاري إذا بتناسبوا بعض.</p>
+      <p class="luvit-section__sub">أربع خطوات مرتّبة بترتيبها الصح · والتوصيل مجاني مع أي روتين.</p>
     </div>
 
     <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
@@ -588,7 +588,7 @@ function s7() {
         ما انطلق بعد فولا سؤال «وصل». */
   const qa = [
     ['كم بتوصل الطلبية؟',
-     'التوصيل لكل محافظات الأردن بـ٢ دنانير · وتفاصيل المدة والمناطق كاملة بصفحة الشحن والتوصيل.'],
+     'خلال يوم · ويومين بالأكثر · لكل محافظات الأردن بـ٢ دنانير. والتوصيل **مجاني** مع أي روتين جاهز.'],
     ['وإذا المنتج ما ناسب بشرتي؟',
      'المفتوح ما بيرجع، وهاد معيار صناعة مستحضرات التجميل كلها لأسباب صحية · والمعيب بيرجع دايماً.'],
     ['ليش ما في خصومات؟',
