@@ -127,8 +127,12 @@
   .shop-hero__surface::after {
     content: ""; position: absolute; inset-inline: 0; inset-block-start: 1px;
     block-size: 170px;
+    /* 🔴 بيبدأ من صفر · بلاه بيصير خط أفقي عبر الصفحة كلها.
+       مقيس: قفزة 25 عند y=548 · rgb(219,238,246) لـ rgb(205,232,241).
+       وقاعدة CLAUDE.md نفسها: أي اختلاف لوني بسيط بيقرا شكلاً عايماً. */
     background: linear-gradient(180deg,
-      rgba(160,212,232,.26) 0%, rgba(150,206,229,.13) 44%, transparent 88%);
+      rgba(160,212,232,0) 0%, rgba(160,212,232,.22) 18%,
+      rgba(150,206,229,.12) 52%, transparent 92%);
   }
 
   /* ── لوح العبوات ─────────────────────────────────────────────── */
