@@ -37,6 +37,16 @@
   --aqua-800: #124D5A;
   --aqua-900: #0C333C;
 
+  /* ---- Lagoon — the deep water the brand sits in.
+     Documented in CLAUDE.md as the hero glass colour, and it had been
+     hand-typed as a literal channel triplet in 22 places across the project
+     before it earned a name. Two forms because rgba() cannot take a hex:
+       --lagoon      → solid fills, canvas clears, section backgrounds
+       --lagoon-rgb  → rgba(var(--lagoon-rgb), .72) for scrims and shadows
+     Keep them in sync: #063436 is exactly rgb(6, 52, 54). ---- */
+  --lagoon:     #063436;
+  --lagoon-rgb: 6, 52, 54;
+
   /* ---- Hero scroll-sequence hand-off (sampled from the underwater video's
      last frame bottom edge — used as background-color on the hero section AND
      the section directly below it, so the video blends seamlessly into the page.
@@ -3371,7 +3381,7 @@ body.luvit-locked { overflow: hidden; }
 .luvit-ing--on-dark .luvit-ing__row {
   background:
     linear-gradient(to bottom, rgba(255,255,255,.10), rgba(255,255,255,.045)),
-    rgba(6, 52, 54, .58);
+    rgba(var(--lagoon-rgb), .58);
   border-color: rgba(255,255,255,.20);
   box-shadow: var(--nav-bezel);
 }
@@ -11110,7 +11120,7 @@ body.admin-bar #hero-seq .hero-story__cue {
   max-inline-size: 20vw;
   display: block;
   /* الظل بلون الماء مش أسود · قاعدة العلامة */
-  filter: drop-shadow(0 24px 40px rgba(6, 52, 54, 0.38));
+  filter: drop-shadow(0 24px 40px rgba(var(--lagoon-rgb), 0.38));
   will-change: transform;
 }
 
@@ -11122,5 +11132,5 @@ body.admin-bar #hero-seq .hero-story__cue {
 
 /* واللي بيطلب حركة أقل بيشوفها ساكنة بمكانها · **ما بتختفي** */
 @media (prefers-reduced-motion: reduce) {
-  .luvit-dive img { will-change: auto; filter: drop-shadow(0 10px 18px rgba(6, 52, 54, 0.3)); }
+  .luvit-dive img { will-change: auto; filter: drop-shadow(0 10px 18px rgba(var(--lagoon-rgb), 0.3)); }
 }

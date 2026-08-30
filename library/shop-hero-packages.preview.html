@@ -46,7 +46,7 @@
 
   /* 🔴 طلب ريّان: «اللون القريب من الأسود من فوق ما يبين كثير أو غطيه».
      والحل مش تغطية عمياء · هاد تدرّج بلون Lagoon تبع العلامة نفسه.
-     الحساب: أعلى الفيديو #021E26 · وفوقه rgba(6,52,54,.94) بيطلع
+     الحساب: أعلى الفيديو #021E26 · وفوقه rgba(var(--lagoon-rgb), .94) بيطلع
      #063335 · يعني **--lagoon بالضبط**. فالأسود ما بينطمس، بينقلب
      للون علامة · والنص بيقعد فوقه بتباين كامل.                        */
   /* السكريم العام · **خفيف ومحصور بأعلى الكادر**.
@@ -78,18 +78,18 @@
         rgba(255,255,255,.62) 0%, rgba(255,255,255,.36) 11%,
         rgba(255,255,255,.12) 21%, rgba(255,255,255,0) 32%),
       linear-gradient(180deg,
-        rgba(6,52,54,.74) 0%, rgba(6,52,54,.30) 26%, rgba(6,52,54,0) 54%),
+        rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .30) 26%, rgba(var(--lagoon-rgb), 0) 54%),
       linear-gradient(to left,
-        rgba(6,52,54,.82) 0%, rgba(6,52,54,.56) 24%,
-        rgba(6,52,54,.16) 48%, rgba(6,52,54,0) 66%);
+        rgba(var(--lagoon-rgb), .82) 0%, rgba(var(--lagoon-rgb), .56) 24%,
+        rgba(var(--lagoon-rgb), .16) 48%, rgba(var(--lagoon-rgb), 0) 66%);
   }
   [dir="ltr"] .shop-hero__scrim {
     background:
       linear-gradient(180deg,
-        rgba(6,52,54,.74) 0%, rgba(6,52,54,.30) 26%, rgba(6,52,54,0) 54%),
+        rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .30) 26%, rgba(var(--lagoon-rgb), 0) 54%),
       linear-gradient(to right,
-        rgba(6,52,54,.82) 0%, rgba(6,52,54,.56) 24%,
-        rgba(6,52,54,.16) 48%, rgba(6,52,54,0) 66%);
+        rgba(var(--lagoon-rgb), .82) 0%, rgba(var(--lagoon-rgb), .56) 24%,
+        rgba(var(--lagoon-rgb), .16) 48%, rgba(var(--lagoon-rgb), 0) 66%);
   }
 
   /* ── الكلام · قاعد فوق الشريط الغامق طول القوس ─────────────────
@@ -121,7 +121,7 @@
     line-height: 1.16; margin: 0 0 14px; color: #FFFFFF;
     text-wrap: balance;
     /* ظل خفيف بلون المي · بيمسك الحرف لو وقع على منطقة فاتحة بالفيديو */
-    text-shadow: 0 2px 18px rgba(6, 52, 54, .45);
+    text-shadow: 0 2px 18px rgba(var(--lagoon-rgb), .45);
   }
   /* 🔴 الكلمة المميّزة بمائل **من نفس العائلة** · ولا مرة خط تاني جوّا
      عنوان · قاعدة design-taste-frontend. والوصف بيحتاج leading أوسع
@@ -140,7 +140,7 @@
     margin: 0 0 22px; font-size: clamp(14.5px, 1.6vw, 17px);
     line-height: 1.75; color: rgba(255,255,255,.82);
     max-inline-size: 54ch;
-    text-shadow: 0 1px 12px rgba(6, 52, 54, .4);
+    text-shadow: 0 1px 12px rgba(var(--lagoon-rgb), .4);
   }
 
   .shop-hero__cta { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -151,7 +151,7 @@
      🔴 وخلفيته **مش شفافة** هون · وهاد فرق جوهري عن الشبح العادي.
      السبب مقيس: الزر بيقع فوق العبوات البيضا لما تطلع من المي، ونص
      أبيض على زجاج أبيض = صفر تباين. حسبنا:
-        rgba(6,52,54,.72) فوق عبوة #E8E8E8  →  rgb(69,102,104)
+        rgba(var(--lagoon-rgb), .72) فوق عبوة #E8E8E8  →  rgb(69,102,104)
         وأبيض عليها = **٥٫٨:١** · فوق حدّ AA (4.5) للنص العادي.
      وبـ.06 اللي كانت (٣٫٩:١ عند .55) كان بيرسب.
 
@@ -160,10 +160,10 @@
   .shop-hero .luvit-btn--ghost {
     color: var(--btn-ghost-dark-fg, #FFFFFF);
     border-color: var(--btn-ghost-dark-border, rgba(255,255,255,.55));
-    background: rgba(6, 52, 54, .72);
+    background: rgba(var(--lagoon-rgb), .72);
   }
   .shop-hero .luvit-btn--ghost:hover {
-    background: rgba(6, 52, 54, .84);
+    background: rgba(var(--lagoon-rgb), .84);
     border-color: rgba(255,255,255,.72);
   }
 
@@ -252,10 +252,10 @@
     border: 1px solid rgba(26,37,41,.11);
     border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 1px 2px rgba(6,52,54,.05), 0 10px 26px -18px rgba(6,52,54,.34);
+    box-shadow: 0 1px 2px rgba(var(--lagoon-rgb), .05), 0 10px 26px -18px rgba(var(--lagoon-rgb), .34);
     transition: transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s cubic-bezier(.22,.61,.36,1);
   }
-  .pkc:hover { transform: translateY(-5px); box-shadow: 0 1px 2px rgba(6,52,54,.06), 0 22px 40px -22px rgba(6,52,54,.42); }
+  .pkc:hover { transform: translateY(-5px); box-shadow: 0 1px 2px rgba(var(--lagoon-rgb), .06), 0 22px 40px -22px rgba(var(--lagoon-rgb), .42); }
   .pkc:focus-within { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
 
   .pkc__media { position: relative; aspect-ratio: 1; background: linear-gradient(180deg,#F2FAFD,#DCEFF7); }
@@ -266,7 +266,7 @@
     border-radius: 99px; padding: 5px 12px;
     font-size: 11.5px; font-weight: 600; letter-spacing: .02em;
     color: var(--aqua-700, #1E7C8C);
-    box-shadow: 0 2px 8px rgba(6,52,54,.12);
+    box-shadow: 0 2px 8px rgba(var(--lagoon-rgb), .12);
   }
   .pkc__tag--new { background: var(--color-ink, #1A2529); color: #fff; }
 
@@ -358,9 +358,9 @@
     background: #fff; border: 1px solid rgba(26,37,41,.10); border-radius: 100px;
     padding: 11px 18px 11px 12px; text-decoration: none; color: inherit;
     transition: transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s;
-    box-shadow: 0 1px 2px rgba(6,52,54,.05);
+    box-shadow: 0 1px 2px rgba(var(--lagoon-rgb), .05);
   }
-  .path:hover { transform: translateY(-3px); box-shadow: 0 10px 22px -12px rgba(6,52,54,.35); }
+  .path:hover { transform: translateY(-3px); box-shadow: 0 10px 22px -12px rgba(var(--lagoon-rgb), .35); }
   .path:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
   .path b {
     flex: none; inline-size: 38px; block-size: 38px; border-radius: 50%;
@@ -402,14 +402,14 @@
     background: #fff; border: 1px solid rgba(26,37,41,.10); border-radius: 14px;
     transition: transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s;
   }
-  .pc:hover { transform: translateY(-4px); box-shadow: 0 16px 30px -20px rgba(6,52,54,.4); }
+  .pc:hover { transform: translateY(-4px); box-shadow: 0 16px 30px -20px rgba(var(--lagoon-rgb), .4); }
   .pc__media { position: relative; aspect-ratio: 4/5; background: linear-gradient(180deg,#F4FBFD,#DCEFF7); }
   .pc__media img { inline-size: 100%; block-size: 100%; object-fit: contain; padding: 14px; display: block; }
   .pc__pct {
     position: absolute; inset-block-start: 10px; inset-inline-start: 10px;
     background: rgba(255,255,255,.95); border-radius: 99px; padding: 4px 10px;
     font-size: 11.5px; font-weight: 700; color: var(--aqua-700, #1E7C8C);
-    box-shadow: 0 2px 7px rgba(6,52,54,.12);
+    box-shadow: 0 2px 7px rgba(var(--lagoon-rgb), .12);
   }
   .pc__body { display: flex; flex-direction: column; flex: 1; gap: 7px; padding: 14px 15px 16px; }
   .pc__name { font-family: var(--font-heading, inherit); font-size: 15.5px; margin: 0; color: var(--color-ink, #1A2529); line-height: 1.35; }
@@ -619,6 +619,8 @@ var SEQ = {
   if (!cv || !pin || !track) return;
 
   var ctx = cv.getContext('2d', { alpha: false });
+  var LAGOON = (getComputedStyle(document.documentElement)
+    .getPropertyValue('--lagoon') || '').trim() || '#063436';
   var MAX_DPR = 2;
   var dpr = 1, last = -1, p = 0;
   var cache = {}, key = null;
@@ -653,7 +655,8 @@ var SEQ = {
     var dh = img.naturalHeight * scale;
     if (fill && dh < ch * fill) { scale = ch * fill / img.naturalHeight; dh = ch * fill; }
     var dw = img.naturalWidth * scale;
-    ctx.fillStyle = '#063436';
+    /* بينقرا من التوكن · فلو تغيّر Lagoon بمكان واحد بيتغيّر هون كمان */
+    ctx.fillStyle = LAGOON;
     ctx.fillRect(0, 0, cw, ch);
     ctx.drawImage(img, (cw - dw) / 2, ch - dh, dw, dh);
   }
