@@ -15,9 +15,13 @@ const OUT = process.argv[2];
 const URL_ = process.argv[3];
 const W = Number(process.argv[4] || 1280);
 const H = Number(process.argv[5] || 900);
+/* اختياري: قائمة إزاحات سكرول مفصولة بفاصلة بدل لقطة-لكل-سكشن.
+   بتلزم لفحص أي حركة مربوطة بالسكرول (الغوص · البارالاكس)، لأن اللقطة
+   عند رأس السكشن **ما بتمسك** نص الرحلة. */
+const AT = (process.argv[6] || '').split(',').map(s => s.trim()).filter(Boolean).map(Number);
 
 if (!OUT || !URL_) {
-  console.error('usage: node shoot.mjs <outDir> <url> [width] [height]');
+  console.error('usage: node shoot.mjs <outDir> <url> [width] [height] [scrollY,scrollY,...]');
   process.exit(1);
 }
 fs.mkdirSync(OUT, { recursive: true });
@@ -159,10 +163,14 @@ async function shot(name, scrollTo) {
 
 const label = (r) => String(r.n).padStart(2, '0') + '-' + (r.id || r.cls.split(' ').find(c => c.startsWith('luvit-')) || r.tag).replace(/[^a-z0-9-]/gi, '');
 
-for (const r of map.rows) {
-  // نوقف السكشن بحيث يبين من فوق مع هامش صغير تحت النافيجيشن
-  const y = Math.max(0, r.top - 20);
-  await shot(label(r), y);
+if (AT.length) {
+  for (const y of AT) await shot('at-' + y, y);
+} else {
+  for (const r of map.rows) {
+    // نوقف السكشن بحيث يبين من فوق مع هامش صغير تحت النافيجيشن
+    const y = Math.max(0, r.top - 20);
+    await shot(label(r), y);
+  }
 }
 
 await send('Browser.close').catch(() => {});

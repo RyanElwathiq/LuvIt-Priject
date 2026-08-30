@@ -160,7 +160,7 @@ function luvitParallax(selector, opts) {
      · ScrollTrigger مش `addEventListener('scroll')` · اللي بيشتغل كل
        فريم وبيقتل الموبايل.
      · تحت `prefers-reduced-motion` **ما بتنعمل الحركة أصلاً** · والعبوة
-       بتضل ساكنة بمكانها (الـCSS بيشيل الـsticky). يعني ما بتختفي، بس
+       بتضل ساكنة بمكانها الطبيعي بالـCSS. يعني ما بتختفي، بس
        ما بتتحرّك.
 
    ⚠️ وعلى التلفون بتنطفي بالـCSS (`display: none`) · فبنوقف هون كمان
@@ -173,39 +173,37 @@ function luvitDive(el) {
   var img = el.querySelector('img');
   if (!img) return;
 
-  /* السكشن اللي قبلها واللي بعدها · وهما مرجعا الرحلة.
-     بلا واحد منهم ما في قصة، فبنوقف بدل ما نخترع نقاط. */
-  var above = el.previousElementSibling;
-  var below = el.nextElementSibling;
-  if (!above || !below) return;
+  /* 🔴 تايم‌لاين **وحدة** · مش تويّنتين.
+     أول نسخة كانت تويّنتين مستقلتين (صعود مربوط بالسكشن الفاتح، وغطس
+     مربوط بالغامق) وهاي **انكسرت بصمت**: التويّنة الثانية بتسجّل قيمة
+     بدايتها أول ما تنعرض، فكل ما ScrollTrigger يحدّثها وهي على صفر
+     بترجّع العبوة لمكان البداية وبتمسح الصعود. مقيس:
+       تقدّم الصعود ٠٫٥٠ → المصفوفة لساها قيمة البداية بالضبط.
+     ومداهما كانوا متداخلين ٧٠px كمان (بسبب `luvit-cut-top`).
 
-  gsap.set(img, { yPercent: 12, scale: 0.9 });
-
-  /* الصعود · من وسط السكشن الفاتح لحد الحدّ */
-  gsap.to(img, {
-    yPercent: -6,
-    scale: 1.06,
-    ease: 'none',
+     والمرجع صار **العبوة نفسها** مش السكشنين · لسببين:
+       · القصة بتلعب وهي على الشاشة فعلاً · `top bottom` لـ`bottom top`
+         يعني من لحظة ما تطلع من تحت لحد ما تختفي من فوق. المدى القديم
+         كان بيخلّص الغطس والعبوة أصلاً طالعة برّا الشاشة من فوق.
+       · بلا تبعية للجيران · نقل السكشن أو زيادة سكشن بينهم ما بيكسرها. */
+  var tl = gsap.timeline({
     scrollTrigger: {
-      trigger: above,
-      start: 'center center',
-      end: 'bottom center',
+      trigger: el,
+      start: 'top bottom',
+      end: 'bottom top',
       scrub: 1.2,
     },
   });
 
-  /* الغطس · من الحدّ لجوّا الماء */
-  gsap.to(img, {
-    yPercent: 26,
-    scale: 0.82,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: below,
-      start: 'top center',
-      end: 'center center',
-      scrub: 1.2,
-    },
-  });
+  /* النصف الأول: بتطلع وبتكبر · «بتخرج من الماء»
+     والنصف الثاني: بتغطس وبتصغر · «بتنزل تحت»
+     المدّتان متساويتان، فالذروة بنص المدى · وهاد بيقع عملياً على الحدّ
+     بين السكشنين لأن العبوة مركّبة عليه. */
+  tl.fromTo(img,
+      { yPercent: 14, scale: 0.88 },
+      { yPercent: -18, scale: 1.06, ease: 'none', duration: 1 })
+    .to(img,
+      { yPercent: 34, scale: 0.8, ease: 'none', duration: 1 });
 }
 
 /* --------------------------------------------------------------------------
