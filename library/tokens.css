@@ -5538,21 +5538,25 @@ body.woocommerce-cart.woocommerce-cart {
 /* WHY transparent: the fixed layers sit at z-index -1, so any paint on the body
    itself would cover them. `background-image: none` also clears theme washes. */
 body.woocommerce-checkout.woocommerce-checkout,
-body.woocommerce-cart.woocommerce-cart {
+body.woocommerce-cart.woocommerce-cart,
+body:has(.luvit-shop-root):has(.luvit-shop-root) {
   background-color: transparent;
   background-image: none;
 }
 
 /* WHY: the theme wrapper must not paint over the water either. */
 body.woocommerce-checkout.woocommerce-checkout main,
-body.woocommerce-cart.woocommerce-cart main {
+body.woocommerce-cart.woocommerce-cart main,
+body:has(.luvit-shop-root):has(.luvit-shop-root) main {
   background-color: transparent;
 }
 
 body.woocommerce-checkout.woocommerce-checkout::before,
 body.woocommerce-checkout.woocommerce-checkout::after,
 body.woocommerce-cart.woocommerce-cart::before,
-body.woocommerce-cart.woocommerce-cart::after {
+body.woocommerce-cart.woocommerce-cart::after,
+body:has(.luvit-shop-root):has(.luvit-shop-root)::before,
+body:has(.luvit-shop-root):has(.luvit-shop-root)::after {
   content: "";
   position: fixed;
   inset: 0;
@@ -5566,7 +5570,8 @@ body.woocommerce-cart.woocommerce-cart::after {
    WHY `color-mix` instead of new rgba() values: the palette stays the palette.
    No hex is invented anywhere in this file. */
 body.woocommerce-checkout.woocommerce-checkout::before,
-body.woocommerce-cart.woocommerce-cart::before {
+body.woocommerce-cart.woocommerce-cart::before,
+body:has(.luvit-shop-root):has(.luvit-shop-root)::before {
   background-color: var(--color-canvas, #FAFCFD);
   background-image:
     /* crossed light rays. repeating-linear-gradient tiles internally, so this
@@ -5632,7 +5637,8 @@ body.woocommerce-cart.woocommerce-cart::before {
 /* WHY grain: four overlapping wide gradients WILL band on 6-bit panels. This
    is a dither, not a texture. 4% is the ceiling before it reads as dirt. */
 body.woocommerce-checkout.woocommerce-checkout::after,
-body.woocommerce-cart.woocommerce-cart::after {
+body.woocommerce-cart.woocommerce-cart::after,
+body:has(.luvit-shop-root):has(.luvit-shop-root)::after {
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 120px 120px;
@@ -5645,13 +5651,17 @@ body.woocommerce-cart.woocommerce-cart::after {
   body.woocommerce-checkout.woocommerce-checkout::before,
   body.woocommerce-checkout.woocommerce-checkout::after,
   body.woocommerce-cart.woocommerce-cart::before,
-  body.woocommerce-cart.woocommerce-cart::after { display: none; }
+  body.woocommerce-cart.woocommerce-cart::after,
+  body:has(.luvit-shop-root):has(.luvit-shop-root)::before,
+  body:has(.luvit-shop-root):has(.luvit-shop-root)::after { display: none; }
 }
 @media (forced-colors: active) {
   body.woocommerce-checkout.woocommerce-checkout::before,
   body.woocommerce-checkout.woocommerce-checkout::after,
   body.woocommerce-cart.woocommerce-cart::before,
-  body.woocommerce-cart.woocommerce-cart::after { display: none; }
+  body.woocommerce-cart.woocommerce-cart::after,
+  body:has(.luvit-shop-root):has(.luvit-shop-root)::before,
+  body:has(.luvit-shop-root):has(.luvit-shop-root)::after { display: none; }
 }
 
 
@@ -6852,7 +6862,8 @@ body.woocommerce-cart .wc-block-cart__sidebar.is-sticky {
    ========================================================================== */
 @media (max-width: 1023px) {
   body.woocommerce-checkout.woocommerce-checkout::before,
-  body.woocommerce-cart.woocommerce-cart::before {
+  body.woocommerce-cart.woocommerce-cart::before,
+  body:has(.luvit-shop-root):has(.luvit-shop-root)::before {
     background-image: linear-gradient(180deg,
       var(--color-canvas, #FAFCFD) 0%,
       var(--color-mist, #F2F7F9) 44%,
@@ -6862,7 +6873,8 @@ body.woocommerce-cart .wc-block-cart__sidebar.is-sticky {
   /* the grain layer exists only to dither wide gradients on 8-bit desktop
      panels; phones do not band the same way and it is pure paint cost */
   body.woocommerce-checkout.woocommerce-checkout::after,
-  body.woocommerce-cart.woocommerce-cart::after {
+  body.woocommerce-cart.woocommerce-cart::after,
+  body:has(.luvit-shop-root):has(.luvit-shop-root)::after {
     display: none;
   }
 }
@@ -10719,3 +10731,97 @@ body.admin-bar #hero-seq .hero-story__cue {
     var(--aqua-100) 55%,
     var(--aqua-200) 100%);
 }
+
+/* ==========================================================================
+   5.50 · كسر تكرار «رأس موسّط + شبكة»  (30 Aug)
+   --------------------------------------------------------------------------
+   نقد ريّان: «الصفحة كثير فاضية والخلفية حاسها نايمة · فيها إشي ناقص.»
+
+   والتشخيص طلع مقيساً مش ذوقاً · سكيل design-taste-frontend بيسمّي النمط
+   بالحرف **أشهر بصمة موقع مبني بالذكاء الاصطناعي** وبيحط سقوفاً كسرناها:
+
+     · لِيبل إنجليزي فوق كل عنوان → السقف ٣ لثمانية سكاشن · وكان عندنا ٧
+     · عائلات تخطيط مختلفة       → الحد الأدنى ٤ · وكان عندنا وحدة ونص
+     · ثلاث بطاقات متطابقة بصف   → ممنوعة صراحةً · وهي بوابات الهدف
+     · بطاقات بيضا على بيضا      → ممنوعة بلا تنوّع · وهي كل شبكاتنا
+
+   يعني الصفحة كانت **نفس القالب ثمان مرات**: لِيبل، عنوان موسّط، شبكة
+   بطاقات بيضا. والدماغ بيقرا التكرار كـ«ما في شي جديد هون» حتى لو المحتوى
+   مختلف · وهاد بالضبط إحساس «نايمة».
+
+   ⚠️ ورقم تاني مقيس بيفسّر الإحساس: `band-light` (#FFFFFF) مقابل
+      `band-mist` (#FAFCFD) تباينهم **1.03:1** · يعني الإيقاع اللي بنيته
+      بينهم **غير مرئي عملياً**. الإيقاع الحقيقي صار بسكشن غامق (5.49/5.51).
+
+   والحل هون كلاس واحد بس · باقي الكسر انعمل بالماركب وبالسكشن الغامق. */
+
+/* ---- رأس سكشن بمحاذاة البداية بدل التوسيط -------------------------
+   لما كل رأس بالصفحة موسّط، التوسيط بيفقد معناه. صف أو صفّان بمحاذاة
+   البداية بيكسروا الرتابة **بلا ما يكسروا النظام** · والعنوان بيضل
+   نفس الحجم ونفس الخط، بس مكانه بيتغيّر.
+   ⚠️ ومحاذاة `start` مش `left` · الصفحة عربية والاتجاه بينقلب. */
+.luvit-section__head--start {
+  text-align: start;
+  margin-inline-end: auto;
+  max-width: 46ch;
+}
+
+/* ---- روابط جوّا سلّم المكوّنات على الماء الغامق --------------------
+   🔴 مقيس: `.luvit-ing__name a` كانت بتاخد **أزرق المتصفح الافتراضي**
+      `rgb(0, 0, 238)` وتباينها على صندوق الصف **1.44:1** · يعني شبه
+      غير مقروءة. السبب إن `luvit-ing` ما كان فيها روابط ولا مرة قبل
+      سلّم البانثينول، فما حدا كتب لها لوناً.
+
+   ⚠️ وما بانت بالصورة · اللقطة أرتني نصاً مسطّراً فاتحاً وحسبته تركوازياً.
+      **القياس هو اللي كشفها** · نفس درس شبكة المتجر.
+
+   و`--aqua-300` مختار لأنه مقيس ٦٫٧:١ على الماء الغامق · وهو نفس اللون
+   اللي بتستعمله `.luvit-cta__accent` لنفس السبب.
+   🔴 والفوشيا ممنوعة هون · مقيسة ٢٫١:١. */
+.luvit-ing--on-dark .luvit-ing__name a {
+  color: var(--aqua-300);
+  text-decoration-color: color-mix(in srgb, var(--aqua-300) 45%, transparent);
+  text-underline-offset: 3px;
+}
+.luvit-ing--on-dark .luvit-ing__name a:hover,
+.luvit-ing--on-dark .luvit-ing__name a:focus-visible {
+  color: #FFFFFF;
+  text-decoration-color: currentColor;
+}
+
+/* ---- بوابات الهدف · تلوين بدل ثلاث بطاقات بيضا متطابقة ------------
+   🔴 «ثلاث بطاقات متطابقة بصف» نمط ممنوع صراحةً بسكيل التصميم، و«بطاقات
+      بيضا على بيضا بشبكة» كمان · وبوابات الهدف كانت الاثنين مع بعض.
+
+   والحل من داخل النظام: تواكن التلوين موجودة أصلاً من صفحات الروتينات
+   (`--tint-*` بسطر ٦٠) وما كانت مستعملة هون. فكل بوابة أخذت لونها،
+   وصار الصف **مقروءاً بالنظر قبل القراءة** بدل ما يكون ثلاث بطاقات
+   بيضا بتفرق بالنص بس.
+
+   ⚠️ والاختيار بالسمة `data-goal` مش بكلاس جديد · السمة موجودة بالماركب
+      كمعلومة دلالية أصلاً، فما في داعي لكلاس يكرّرها.
+   ⚠️ والحدود بتتلوّن معها · بطاقة ملوّنة بحد رمادي بتبيّن ناقصة. */
+.luvit-option[data-goal="hydration"] {
+  background: var(--tint-dry-bg);
+  border-color: color-mix(in srgb, var(--tint-dry-fg) 28%, transparent);
+}
+/* 🔴 والقاعدة لازم توصل الـsvg نفسه مش الحاوية بس · لأن
+    بسطر ٩٤٩٥ بتعيد تعيين  عليه، فـ
+   بتحلّ لـaqua-500 بدل اللون الموروث. خصوصيتها (0,1,2) وخصوصيتنا (0,2,2).
+   ⚠️ ولا مرة تفترض إن اللون بيورث لجوّا svg · هون انكسرت مرتين. */
+.luvit-option[data-goal="hydration"] .luvit-option__icon,
+.luvit-option[data-goal="hydration"] .luvit-option__icon svg { color: var(--tint-dry-fg); }
+
+.luvit-option[data-goal="clarify"] {
+  background: var(--tint-oily-bg);
+  border-color: color-mix(in srgb, var(--tint-oily-fg) 28%, transparent);
+}
+.luvit-option[data-goal="clarify"] .luvit-option__icon,
+.luvit-option[data-goal="clarify"] .luvit-option__icon svg { color: var(--tint-oily-fg); }
+
+.luvit-option[data-goal="glow"] {
+  background: var(--tint-combo-bg);
+  border-color: color-mix(in srgb, var(--tint-combo-fg) 28%, transparent);
+}
+.luvit-option[data-goal="glow"] .luvit-option__icon,
+.luvit-option[data-goal="glow"] .luvit-option__icon svg { color: var(--tint-combo-fg); }

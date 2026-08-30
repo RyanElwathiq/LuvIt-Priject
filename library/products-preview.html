@@ -182,7 +182,6 @@
 <section class="luvit-section band-light" data-nav-bg="light" id="packages">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Routines</p>
       <h2 class="luvit-section__title">روتين كامل بطلبية وحدة</h2>
       <p class="luvit-section__sub">أربع خطوات مرتّبة بترتيبها الصح · بدل ما تختاري وحدة وحدة وتحتاري إذا بتناسبوا بعض.</p>
     </div>
@@ -249,22 +248,21 @@
 -->
 <section class="luvit-section band-mist" data-nav-bg="light" id="skin-types">
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Start here</p>
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
       <h2 class="luvit-section__title">مش عارفة من وين تبلّشي؟</h2>
       <p class="luvit-section__sub">اختاري الهدف، ومنوريكِ الروتين كامل بخطواته.</p>
     </div>
 
     <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
-      <a class="luvit-option" href="/routines/hydration">
+      <a class="luvit-option" data-goal="hydration" href="/routines/hydration">
         <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/></svg></span>
         <span class="luvit-option__label">ترطيب ودعم<br><small>للبشرة الجافة أو الحسّاسة</small></span>
       </a>
-      <a class="luvit-option" href="/routines/clarify">
+      <a class="luvit-option" data-goal="clarify" href="/routines/clarify">
         <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20c8 0 15-5 16-16C11 4 4 9 4 20z"/><path d="M4 20c3-5 7-8 11-10"/></svg></span>
         <span class="luvit-option__label">تنقية وتوازن<br><small>للبشرة الدهنية أو المختلطة</small></span>
       </a>
-      <a class="luvit-option" href="/routines/glow">
+      <a class="luvit-option" data-goal="glow" href="/routines/glow">
         <span class="luvit-option__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg></span>
         <span class="luvit-option__label">إشراقة<br><small>للبهتان وتفاوت اللون</small></span>
       </a>
@@ -289,7 +287,6 @@
 <section class="luvit-section band-light" data-nav-bg="light" id="products">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">All products</p>
       <h2 class="luvit-section__title">المنتجات بترتيب استعمالها</h2>
       <p class="luvit-section__sub">من الغسول للكريم · الرقم على كل بطاقة هو مكانها بالروتين.</p>
     </div>
@@ -577,61 +574,83 @@
 </section>
 
 <!--
-  LUVIT · صفحة المتجر (/products/) · سكشن ٥ من ٨ · المكوّنات
-  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد.
+  LUVIT · صفحة المتجر (/products/) · سكشن ٥ من ٨ · سلّم البانثينول
+  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد، عدّل المولّد.
 
-  · المواد والنِسَب **مسحوبة من الكتالوج الرسمي** · ولا رقم مكتوب بالإيد.
-  · معروضة المواد اللي بتتكرر بمنتجين فأكثر · لأنها بتوصف الخط كله.
-  · 🔴 والمرساة ingredients **ممنوع تتغيّر**: الفوتر والرئيسية وأربع
-    صفحات روتين بيربطوا /products#ingredients · وكسرها ما بيرمي خطأ.
+  · **السكشن الغامق الوحيد بالصفحة** · وهو اللي بيعمل الإيقاع.
+    والصفحة قبله كانت ثمانية سكاشن فاتح، وتباين band-light مقابل band-mist
+    مقيس **1.03:1** يعني غير مرئي · فالإيقاع كان وهماً.
+  · luvit-deep بيرسم ماءه الحي: توهّجان بدورتين ٣٤ و٤٤ ثانية وأشعة ٤٠ ·
+    كلها transform وopacity بس، وكلها بتنطفي تحت prefers-reduced-motion.
+  · luvit-deep__rays لازم يكون **أول ابن**.
+  · luvit-cut-top بيخلي السكشن يقص حافته العليا بنفسه · **ولا موجة قبله**:
+    شريط بلون واحد ما بيقدر يطابق تدرّجاً عمودياً وتوهّجين وحقل فقاعات.
+  · والموجة **بعده** لأنه غامق داخل على فاتح · و--wave-fill لازم يطابق لون
+    p6-delivery بالضبط وهو band-light = #FFFFFF. حرف غلط = شريط أبيض عايم.
+  · 🔴 والمرساة ingredients ممنوع تتغيّر · الفوتر والرئيسية وأربع صفحات
+    روتين بيربطوا /products#ingredients، وكسرها ما بيرمي أي خطأ.
 -->
-<section class="luvit-section band-mist" data-nav-bg="light" id="ingredients">
+<section class="luvit-section luvit-section--dark luvit-deep luvit-cut-top"
+         data-nav-bg="dark" data-luvit-bubbles="12" id="ingredients">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Inside the bottle</p>
-      <h2 class="luvit-section__title">شو جوّا العبوة بالضبط</h2>
-      <p class="luvit-section__sub">المواد الخام كورية والتصنيع بتركيا · والنِسَب مكتوبة على العبوة نفسها، تقدري تقرأيها وتتأكدي قبل ما تشتري.</p>
+      <h2 class="luvit-section__title">الرقم هو اللي بيحاسبنا</h2>
+      <p class="luvit-section__sub">اسم المكوّن عالعلبة إشي بديهي، وأي علامة بتقدر تكتبه · اللي بيفرق هو قدّيش منه. خدي مادة وحدة، البانثينول، وشوفي شو بيصير فيها من منتج لمنتج.</p>
     </div>
 
-    <div class="luvit-ing" data-luvit="stagger">
+    <div class="luvit-ing luvit-ing--on-dark" data-luvit="stagger">
       <div class="luvit-ing__row">
-        <span class="luvit-ing__pct"><span dir="ltr">10%</span></span>
+        <span class="luvit-ing__pct" aria-hidden="true">؟</span>
         <div class="luvit-ing__body">
-          <p class="luvit-ing__name">بانثينول · <bdi>Panthenol</bdi></p>
-          <p class="luvit-ing__note">تغذية وحماية البشرة · بـ7 منتجات من التشكيلة.</p>
+          <p class="luvit-ing__name">فيه بانثينول</p>
+          <p class="luvit-ing__note">جملة صادقة مية بالمية · وبتزبط سواء كان جوّاها نص بالمية أو عشرة. ولهيك ما منكتفي فيها.</p>
         </div>
       </div>
       <div class="luvit-ing__row">
         <span class="luvit-ing__pct"><span dir="ltr">10%</span></span>
         <div class="luvit-ing__body">
-          <p class="luvit-ing__name">نياسيناميد · <bdi>Niacinamide</bdi></p>
-          <p class="luvit-ing__note">تقليل لمعان البشرة · بـ5 منتجات من التشكيلة.</p>
-        </div>
-      </div>
-      <div class="luvit-ing__row">
-        <span class="luvit-ing__pct"><span dir="ltr">2%</span></span>
-        <div class="luvit-ing__body">
-          <p class="luvit-ing__name">حمض هيالورونيك · <bdi>Hyaluronic acid</bdi></p>
-          <p class="luvit-ing__note">احتفاظ عميق بالرطوبة · بـ5 منتجات من التشكيلة.</p>
+          <p class="luvit-ing__name"><a href="/product/moisturizing-repairing-cream/">كريم الترطيب والترميم</a></p>
+          <p class="luvit-ing__note">ترطيب البشرة وعلاجها بشكل مكثّف · أعلى جرعة بالتشكيلة كلها.</p>
         </div>
       </div>
       <div class="luvit-ing__row">
         <span class="luvit-ing__pct"><span dir="ltr">5%</span></span>
         <div class="luvit-ing__body">
-          <p class="luvit-ing__name">جلسرين · <bdi>Glycerin</bdi></p>
-          <p class="luvit-ing__note">ترطيب طبقات البشرة · بـ3 منتجات من التشكيلة.</p>
+          <p class="luvit-ing__name"><a href="/product/intensive-hydrating-serum/">سيروم الترطيب المكثّف</a></p>
+          <p class="luvit-ing__note">نص جرعة الكريم · وبالروتين بيجي قبله.</p>
         </div>
       </div>
       <div class="luvit-ing__row">
-        <span class="luvit-ing__pct"><span dir="ltr">10% + 2%</span></span>
+        <span class="luvit-ing__pct"><span dir="ltr">2%</span></span>
         <div class="luvit-ing__body">
-          <p class="luvit-ing__name">AHA + BHA</p>
-          <p class="luvit-ing__note">تنظيف عميق لمسامات البشرة · بـ2 منتجات من التشكيلة.</p>
+          <p class="luvit-ing__name"><a href="/product/vitamin-c-serum/">سيروم فيتامين سي</a></p>
+          <p class="luvit-ing__note">ترطيب حاجز البشرة · هون البانثينول مساعد، والبطل ١٠٪ فيتامين سي.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">1%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name"><a href="/product/clarifying-pore-tightening-toner/">تونر تضييق المسامات</a></p>
+          <p class="luvit-ing__note">ترطيب طبقات البشرة · بيوازن الحموضة اللي بيشيلها التقشير.</p>
+        </div>
+      </div>
+      <div class="luvit-ing__row">
+        <span class="luvit-ing__pct"><span dir="ltr">0.5%</span></span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name"><a href="/product/hydrating-gel-cleanser/">غسول البشرة الجافة والحساسة</a></p>
+          <p class="luvit-ing__note">تغذية وحماية · الغسول بينشطف، فجرعة أعلى بتروح بالميّ.</p>
         </div>
       </div>
     </div>
+
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="#products">شوفي التشكيلة كاملة</a>
+    </div>
   </div>
 </section>
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
 
 <!--
   LUVIT · صفحة المتجر (/products/) · سكشن ٦ من ٨ · التوصيل والدفع
@@ -644,8 +663,7 @@
 -->
 <section class="luvit-section band-light" data-nav-bg="light" id="delivery">
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Delivery</p>
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
       <h2 class="luvit-section__title">كيف بتوصلك الطلبية</h2>
     </div>
 
@@ -680,7 +698,6 @@
 <section class="luvit-section band-mist" data-nav-bg="light" id="products-faq">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">FAQ</p>
       <h2 class="luvit-section__title">أسئلة قبل ما تطلبي</h2>
     </div>
 

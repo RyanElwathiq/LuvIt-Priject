@@ -293,7 +293,6 @@ function s2() {
 <section class="luvit-section band-light" data-nav-bg="light" id="packages">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Routines</p>
       <h2 class="luvit-section__title">روتين كامل بطلبية وحدة</h2>
       <p class="luvit-section__sub">أربع خطوات مرتّبة بترتيبها الصح · بدل ما تختاري وحدة وحدة وتحتاري إذا بتناسبوا بعض.</p>
     </div>
@@ -315,9 +314,9 @@ function s3() {
      ⚠️ والمرساة skin-types محفوظة من الصفحة القديمة مع إن المحتوى
         صار بالهدف · تغيير الـid بيكسر أي رابط قديم بلا ما يحكي. */
   const gates = [
-    { href: '/routines/hydration', icon: I.drop, label: 'ترطيب ودعم', note: 'للبشرة الجافة أو الحسّاسة' },
-    { href: '/routines/clarify',   icon: I.leaf, label: 'تنقية وتوازن', note: 'للبشرة الدهنية أو المختلطة' },
-    { href: '/routines/glow',      icon: I.sun,  label: 'إشراقة', note: 'للبهتان وتفاوت اللون' },
+    { href: '/routines/hydration', goal: 'hydration', icon: I.drop, label: 'ترطيب ودعم', note: 'للبشرة الجافة أو الحسّاسة' },
+    { href: '/routines/clarify', goal: 'clarify', icon: I.leaf, label: 'تنقية وتوازن', note: 'للبشرة الدهنية أو المختلطة' },
+    { href: '/routines/glow', goal: 'glow', icon: I.sun, label: 'إشراقة', note: 'للبهتان وتفاوت اللون' },
   ];
   return `<!--
   LUVIT · صفحة المتجر (/products/) · سكشن ٣ من ٨ · بوابات الهدف
@@ -325,15 +324,14 @@ function s3() {
 -->
 <section class="luvit-section band-mist" data-nav-bg="light" id="skin-types">
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Start here</p>
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
       <h2 class="luvit-section__title">مش عارفة من وين تبلّشي؟</h2>
       <p class="luvit-section__sub">اختاري الهدف، ومنوريكِ الروتين كامل بخطواته.</p>
     </div>
 
     <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
 ${gates.map((g) => [
-  `      <a class="luvit-option" href="${g.href}">`,
+  `      <a class="luvit-option" data-goal="${g.goal}" href="${g.href}">`,
   `        <span class="luvit-option__icon" aria-hidden="true">${icon(g.icon, 40)}</span>`,
   `        <span class="luvit-option__label">${g.label}<br><small>${g.note}</small></span>`,
   '      </a>',
@@ -366,7 +364,6 @@ function s4() {
 <section class="luvit-section band-light" data-nav-bg="light" id="products">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">All products</p>
       <h2 class="luvit-section__title">المنتجات بترتيب استعمالها</h2>
       <p class="luvit-section__sub">من الغسول للكريم · الرقم على كل بطاقة هو مكانها بالروتين.</p>
     </div>
@@ -379,57 +376,127 @@ ${singles.map(productCard).join('\n')}
 `;
 }
 
-/* ── ٥ · المكوّنات · التمايز الوحيد الحقيقي ─────────────────────────── */
+/* ── ٥ · سلّم البانثينول · «الرقم هو اللي بيحاسبنا» ────────────────────
+   🔴 هالسكشن **انبنى من الصفر** بعد نقد ريّان ٣٠ آب:
+   > «معلومة النِسَب هاي مادة تسويقية كـUSP مش نحطها بالهبل هذا · أكيد
+   >  المكوّنات حتكون عالعلبة وهاي بديهيات · وكل منتج مكوّناته بتختلف عن
+   >  الثانية · المفروض نكتب ليش هاي المنتجات وليش أغلى من السوق.»
+
+   **واللي كان قبله كان أسوأ من «معروض غلط»**: جدول بيدمج مواد من منتجات
+   مختلفة، فبيعطي انطباعاً إن كل المنتجات فيها نفس الإشي. وهاد غير صحيح.
+
+   ── الفكرة ──────────────────────────────────────────────────────────
+   **مادة وحدة · خمس جرعات · خمس منتجات.** البانثينول من ١٠٪ لـ٠.٥٪.
+   مقيس من الكتالوج: بسبعة منتجات، بخمس قيم مختلفة، وفرق **٢٠ ضعف** بين
+   الأعلى والأدنى.
+
+   وهاد بالضبط جواب اعتراض ريّان «كل منتج مكوّناته بتختلف»:
+   **آه بتختلف · وهاد دليل تركيب مدروس مش عشوائية.**
+
+   والصف الأول `؟` مقابل جملة «فيه بانثينول» · وهي جملة صادقة مية بالمية
+   سواء كان جوّاها نص بالمية أو عشرة · ولهيك ما بتكفي.
+
+   ── ليش غامق ────────────────────────────────────────────────────────
+   الصفحة كانت **ثمانية سكاشن كلها فاتح**، وريّان حسّها «نايمة». والقياس
+   أثبته: `band-light` مقابل `band-mist` تباينهم **1.03:1** يعني غير مرئي
+   عملياً. فهاد السكشن صار **الغامق الوحيد بوسط الصفحة** · وهو اللي بيعمل
+   الإيقاع.
+   ⚠️ و`band-mist` انشالت من الكلاسات: معرّفة بـtokens.css بعد `luvit-deep`
+      بآلاف الأسطر، فبتدهس لون الخلفية وبتلغي كل الشغل.
+
+   ── وشو انشال من اقتراح الوكلاء ──────────────────────────────────────
+   اقترحوا نضيف شريط «سعر الصيدلية نفسه». **انشال**: القصة محكية أصلاً
+   بـp6-delivery وبـp7-faq · إضافتها هون بتخلي ثلاث سكاشن متتالية بنفس
+   الجملة. */
 function s5() {
-  /* بيجي **بعد** الشبكة عن قصد · هو بيبرّر السعر مش بيقدّمه.
-     والمواد بتنسحب من الكتالوج نفسه · وبتنعرض المواد اللي بتتكرر بأكثر
-     من منتج، لأنها هي اللي بتوصف الخط كله مش منتجاً واحداً. */
-  const tally = new Map();
-  for (const s of singles) {
-    if (!s.rec || !s.rec.actives) continue;
-    for (const a of s.rec.actives) {
-      if (!tally.has(a.name)) tally.set(a.name, { ...a, n: 0, max: 0 });
-      const t = tally.get(a.name);
-      t.n += 1;
-      const v = parseFloat(a.pct);
-      if (v > t.max) { t.max = v; t.pct = a.pct; }
+  const LADDER = [
+    { pct: null, name: 'فيه بانثينول',
+      note: 'جملة صادقة مية بالمية · وبتزبط سواء كان جوّاها نص بالمية أو عشرة. ولهيك ما منكتفي فيها.',
+      href: null },
+    { pct: '10%', slug: 'moisturizing-repairing-cream', product: 'كريم الترطيب والترميم',
+      note: 'ترطيب البشرة وعلاجها بشكل مكثّف · أعلى جرعة بالتشكيلة كلها.' },
+    { pct: '5%', slug: 'intensive-hydrating-serum', product: 'سيروم الترطيب المكثّف',
+      note: 'نص جرعة الكريم · وبالروتين بيجي قبله.' },
+    { pct: '2%', slug: 'vitamin-c-serum', product: 'سيروم فيتامين سي',
+      note: 'ترطيب حاجز البشرة · هون البانثينول مساعد، والبطل ١٠٪ فيتامين سي.' },
+    { pct: '1%', slug: 'clarifying-pore-tightening-toner', product: 'تونر تضييق المسامات',
+      note: 'ترطيب طبقات البشرة · بيوازن الحموضة اللي بيشيلها التقشير.' },
+    { pct: '0.5%', slug: 'hydrating-gel-cleanser', product: 'غسول البشرة الجافة والحساسة',
+      note: 'تغذية وحماية · الغسول بينشطف، فجرعة أعلى بتروح بالميّ.' },
+  ];
+
+  /* 🔴 كل رقم هون **بينفحص من الكتالوج وقت البناء** · لو تغيّرت نسخة
+     الكتالوج وما عاد الرقم مطابقاً، البناء بيوقف بدل ما ينشر رقماً كاذباً. */
+  for (const row of LADDER) {
+    if (!row.pct) continue;
+    const rec = cat.منتجات.find((p) => {
+      const w = woo.منتجات.find((x) => x.slug === row.slug);
+      return w && p.woo === w.id;
+    });
+    if (!rec) { console.error('🔴 سلّم البانثينول · ما لقيت ' + row.slug + ' بالكتالوج'); process.exit(1); }
+    const found = (rec.actives || []).find((a) => (a.name || '').includes('بانثينول'));
+    if (!found) { console.error('🔴 ' + row.slug + ' ما فيه بانثينول بالكتالوج'); process.exit(1); }
+    if (found.pct !== row.pct) {
+      console.error('🔴 نسبة البانثينول بـ' + row.slug + ' صارت ' + found.pct + ' والمكتوب ' + row.pct);
+      process.exit(1);
     }
   }
-  const rows = [...tally.values()].filter((t) => t.n >= 2)
-    .sort((a, b) => b.n - a.n || b.max - a.max).slice(0, 6);
+
+  const rows = LADDER.map((r) => {
+    const num = r.pct
+      ? `        <span class="luvit-ing__pct">${ltr(r.pct)}</span>`
+      : '        <span class="luvit-ing__pct" aria-hidden="true">؟</span>';
+    const title = r.href === null
+      ? `          <p class="luvit-ing__name">${esc(r.name)}</p>`
+      : `          <p class="luvit-ing__name"><a href="/product/${esc(r.slug)}/">${esc(r.product)}</a></p>`;
+    return [
+      '      <div class="luvit-ing__row">',
+      num,
+      '        <div class="luvit-ing__body">',
+      title,
+      `          <p class="luvit-ing__note">${esc(r.note)}</p>`,
+      '        </div>',
+      '      </div>',
+    ].join('\n');
+  }).join('\n');
 
   return `<!--
-  LUVIT · صفحة المتجر (/products/) · سكشن ٥ من ٨ · المكوّنات
-  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد.
+  LUVIT · صفحة المتجر (/products/) · سكشن ٥ من ٨ · سلّم البانثينول
+  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد، عدّل المولّد.
 
-  · المواد والنِسَب **مسحوبة من الكتالوج الرسمي** · ولا رقم مكتوب بالإيد.
-  · معروضة المواد اللي بتتكرر بمنتجين فأكثر · لأنها بتوصف الخط كله.
-  · 🔴 والمرساة ingredients **ممنوع تتغيّر**: الفوتر والرئيسية وأربع
-    صفحات روتين بيربطوا /products#ingredients · وكسرها ما بيرمي خطأ.
+  · **السكشن الغامق الوحيد بالصفحة** · وهو اللي بيعمل الإيقاع.
+    والصفحة قبله كانت ثمانية سكاشن فاتح، وتباين band-light مقابل band-mist
+    مقيس **1.03:1** يعني غير مرئي · فالإيقاع كان وهماً.
+  · luvit-deep بيرسم ماءه الحي: توهّجان بدورتين ٣٤ و٤٤ ثانية وأشعة ٤٠ ·
+    كلها transform وopacity بس، وكلها بتنطفي تحت prefers-reduced-motion.
+  · luvit-deep__rays لازم يكون **أول ابن**.
+  · luvit-cut-top بيخلي السكشن يقص حافته العليا بنفسه · **ولا موجة قبله**:
+    شريط بلون واحد ما بيقدر يطابق تدرّجاً عمودياً وتوهّجين وحقل فقاعات.
+  · والموجة **بعده** لأنه غامق داخل على فاتح · و--wave-fill لازم يطابق لون
+    p6-delivery بالضبط وهو band-light = #FFFFFF. حرف غلط = شريط أبيض عايم.
+  · 🔴 والمرساة ingredients ممنوع تتغيّر · الفوتر والرئيسية وأربع صفحات
+    روتين بيربطوا /products#ingredients، وكسرها ما بيرمي أي خطأ.
 -->
-<section class="luvit-section band-mist" data-nav-bg="light" id="ingredients">
+<section class="luvit-section luvit-section--dark luvit-deep luvit-cut-top"
+         data-nav-bg="dark" data-luvit-bubbles="12" id="ingredients">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Inside the bottle</p>
-      <h2 class="luvit-section__title">شو جوّا العبوة بالضبط</h2>
-      <p class="luvit-section__sub">المواد الخام كورية والتصنيع بتركيا · والنِسَب مكتوبة على العبوة نفسها، تقدري تقرأيها وتتأكدي قبل ما تشتري.</p>
+      <h2 class="luvit-section__title">الرقم هو اللي بيحاسبنا</h2>
+      <p class="luvit-section__sub">اسم المكوّن عالعلبة إشي بديهي، وأي علامة بتقدر تكتبه · اللي بيفرق هو قدّيش منه. خدي مادة وحدة، البانثينول، وشوفي شو بيصير فيها من منتج لمنتج.</p>
     </div>
 
-    <div class="luvit-ing" data-luvit="stagger">
-${rows.map((r) => [
-  '      <div class="luvit-ing__row">',
-  `        <span class="luvit-ing__pct">${ltr(r.pct)}</span>`,
-  '        <div class="luvit-ing__body">',
-  /* ⚠️ بعض المواد اسمها العربي هو نفسه اللاتيني (AHA + BHA)، فطباعة
-     الاثنين بتطلع «AHA + BHA · AHA + BHA». انمسكت بالعين باللقطة. */
-  `          <p class="luvit-ing__name">${esc(r.name)}${r.en && r.en !== r.name ? ' · <bdi>' + esc(r.en) + '</bdi>' : ''}</p>`,
-  `          <p class="luvit-ing__note">${esc(r.role)} · بـ${r.n} منتجات من التشكيلة.</p>`,
-  '        </div>',
-  '      </div>',
-].join('\n')).join('\n')}
+    <div class="luvit-ing luvit-ing--on-dark" data-luvit="stagger">
+${rows}
+    </div>
+
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="#products">شوفي التشكيلة كاملة</a>
     </div>
   </div>
 </section>
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
 `;
 }
 
@@ -453,8 +520,7 @@ function s6() {
 -->
 <section class="luvit-section band-light" data-nav-bg="light" id="delivery">
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Delivery</p>
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
       <h2 class="luvit-section__title">كيف بتوصلك الطلبية</h2>
     </div>
 
@@ -503,7 +569,6 @@ function s7() {
 <section class="luvit-section band-mist" data-nav-bg="light" id="products-faq">
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">FAQ</p>
       <h2 class="luvit-section__title">أسئلة قبل ما تطلبي</h2>
     </div>
 
