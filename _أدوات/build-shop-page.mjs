@@ -166,21 +166,43 @@ function productCard(p) {
   return parts.join('\n');
 }
 
+/* ── ربط كل بكج بروتينه · عشان اللون والرابط ────────────────────────
+   المفتاح هو السلَغ · وهو الجسر الوحيد الموثوق بين ووكومرس والروتينات. */
+const PACK_GOAL = {
+  'hydration-support-routine': { goal: 'hydration', route: '/routines/hydration' },
+  'clarify-balance-routine':   { goal: 'clarify',   route: '/routines/clarify' },
+  'brighten-glow-routine':     { goal: 'glow',      route: '/routines/glow' },
+};
+
+/* 🔴 القطعة المشتركة بين الروتينات الثلاثة · محسوبة من البيانات مش مكتوبة.
+   لو تغيّر تركيب بكج، الحساب بيتغيّر معه بدل ما يضل نصاً بايتاً. */
+const partCount = {};
+for (const p of packages) for (const s of p.parts) partCount[s] = (partCount[s] || 0) + 1;
+const sharedByAll = Object.keys(partCount).filter((k) => partCount[k] === packages.length);
+
 function packageCard(p) {
   const img = p.images[0];
+  const meta = PACK_GOAL[p.slug] || {};
+  const steps = p.parts.map((s) => {
+    const shared = sharedByAll.includes(s);
+    /* ⚠️ العلامة **عنصر داخل السطر** مش `::after` · لأن الـli شبكة عمودين،
+       فـ`::after` بينزل صفاً جديداً وبتبيّن العلامة يتيمة تحت الاسم.
+       انمسكت باللقطة. */
+    return `            <li${shared ? ' data-shared' : ''}>${esc(s)}` +
+           `${shared ? ' <small>بالثلاثة</small>' : ''}</li>`;
+  }).join('\n');
+
   return [
-    '      <article class="luvit-card luvit-card--feature">',
+    `      <article class="luvit-card luvit-card--feature"${meta.goal ? ` data-goal="${meta.goal}"` : ''}>`,
     '        <div class="luvit-card__media">',
     `          <img loading="lazy" decoding="async" width="800" height="800"`,
     `               src="${esc(img.src)}" alt="${esc(p.name)}">`,
     '        </div>',
     '        <div class="luvit-card__body">',
     `          <h3 class="luvit-card__title"><a href="${esc(new URL(p.permalink).pathname)}">${esc(p.name)}</a></h3>`,
-    /* ⚠️ محتوى البكج نصاً بفواصل · مش قائمة بكلاس جديد.
-       كنت رح أكتب `luvit-ticks` وهو **من الأربعة اللي اخترعتهم ٢٩ آب**
-       وانشالوا. الكلاس الموجود بيعمل الشغل، والبوابة تحت بتمسك الاختراع
-       على أي حال. */
-    `          <p class="luvit-card__text">${esc(p.parts.join(' · '))}</p>`,
+    '          <ol class="luvit-card__steps">',
+    steps,
+    '          </ol>',
     '          <div class="luvit-card__footer">',
     `            <span class="luvit-card__price">${ltr(p.price)} د.أ</span>`,
     `            <a href="/?add-to-cart=${p.id}" rel="nofollow"`,
@@ -272,6 +294,11 @@ function s1() {
       <p class="luvit-section__eyebrow">Shop</p>
       <h1 class="luvit-section__title">التشكيلة كاملة، والنِسَب مكتوبة</h1>
       <p class="luvit-section__sub">${singles.length} منتجاً مفرداً و${packages.length} روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
+
+      <div class="luvit-section__foot">
+        <a class="luvit-btn luvit-btn--arrow" href="#packages">ابدأي بروتين جاهز</a>
+        <a class="luvit-btn luvit-btn--ghost" href="#products">أو شوفي المنتجات وحدة وحدة</a>
+      </div>
     </div>
   </div>
 </section>

@@ -10825,3 +10825,75 @@ body.admin-bar #hero-seq .hero-story__cue {
 }
 .luvit-option[data-goal="glow"] .luvit-option__icon,
 .luvit-option[data-goal="glow"] .luvit-option__icon svg { color: var(--tint-combo-fg); }
+
+/* ==========================================================================
+   5.51 · رفّ الروتينات · كسر «ثلاث بطاقات متطابقة بصف»  (30 Aug)
+   --------------------------------------------------------------------------
+   نفس النمط الممنوع اللي انكسر ببوابات الهدف · وريّان طلب كسره هون كمان.
+
+   والكسر بثلاث حركات مع بعض، مش وحدة:
+     ١ · **محتوى مختلف**: خطوات مرقّمة بدل سطر نص بفواصل · وهاد بيخلي
+         البطاقة تعلّم الروتين مش بس تسرد قطعه.
+     ٢ · **لون لكل روتين**: نفس تواكن بوابات الهدف بالضبط · فبيصير في
+         **نظام**: بوابة الهدف ← بطاقة الروتين ← صفحة الروتين، كلها بنفس
+         اللون. الزبونة بتربطهم بالنظر بلا ما نشرح.
+     ٣ · **إزاحة عمودية**: الصف ما عاد مستقيماً · وهاد بيشيل إحساس
+         «ثلاث نسخ من نفس الإشي».
+
+   ⚠️ والإزاحة على الشاشات الواسعة بس · على التلفون البطاقات بتتكدّس
+      عمودياً أصلاً، وإزاحة وقتها بتصير فراغاً بلا معنى. */
+
+/* ---- المحتوى كخطوات مرقّمة -------------------------------------- */
+.luvit-card__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  counter-reset: luvit-pack;
+}
+.luvit-card__steps li {
+  counter-increment: luvit-pack;
+  display: grid;
+  grid-template-columns: 1.35em 1fr;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-soft);
+}
+.luvit-card__steps li::before {
+  content: counter(luvit-pack);
+  font-family: var(--font-latin);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--aqua-700);
+  text-align: center;
+}
+/* القطعة المشتركة بين الروتينات الثلاثة · بتتعلّم عشان الفرق يبين */
+.luvit-card__steps li[data-shared] {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+/* العلامة لصق الاسم بنفس السطر · مش ::after بصف جديد */
+.luvit-card__steps li[data-shared] small {
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--color-ink-faint);
+  margin-inline-start: var(--space-2);
+  white-space: nowrap;
+}
+
+/* ---- لون لكل روتين · نفس تواكن بوابات الهدف --------------------- */
+#packages .luvit-card[data-goal="hydration"] .luvit-card__media { background: var(--tint-dry-bg); }
+#packages .luvit-card[data-goal="clarify"]   .luvit-card__media { background: var(--tint-oily-bg); }
+#packages .luvit-card[data-goal="glow"]      .luvit-card__media { background: var(--tint-combo-bg); }
+
+#packages .luvit-card[data-goal="hydration"] .luvit-card__steps li::before { color: var(--tint-dry-fg); }
+#packages .luvit-card[data-goal="clarify"]   .luvit-card__steps li::before { color: var(--tint-oily-fg); }
+#packages .luvit-card[data-goal="glow"]      .luvit-card__steps li::before { color: var(--tint-combo-fg); }
+
+/* ---- الإزاحة العمودية · تكسر استقامة الصف ------------------------ */
+@media (min-width: 1000px) {
+  #packages .luvit-card-grid--wide > :nth-child(2) { margin-block-start: var(--space-7); }
+  #packages .luvit-card-grid--wide > :nth-child(3) { margin-block-start: calc(var(--space-7) * 2); }
+}
