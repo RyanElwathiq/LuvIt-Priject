@@ -10897,3 +10897,87 @@ body.admin-bar #hero-seq .hero-story__cue {
   #packages .luvit-card-grid--wide > :nth-child(2) { margin-block-start: var(--space-7); }
   #packages .luvit-card-grid--wide > :nth-child(3) { margin-block-start: calc(var(--space-7) * 2); }
 }
+
+/* ==========================================================================
+   5.52 · «مفحوص وموثّق» و«أسئلة مفتوحة»  (30 Aug)
+   --------------------------------------------------------------------------
+   ريّان: «كمّل التصميم · صلّح التوصيل والأسئلة.»
+
+   🔴 وسكشن التوصيل كان **بيعيد نفسه**، مش بس شكله مكرر:
+       شريط الوعد بالترويسة:  الدفع عند الاستلام · التوصيل ٢ دنانير
+       سكشن التوصيل:          الدفع عند الاستلام · التوصيل ٢ دنانير · سعر الصيدلية
+       الأسئلة:                                                    سعر الصيدلية
+     يعني حقيقتان مكررتان من أول الصفحة، وثالثة مكررة مع اللي بعده ·
+     **السكشن ما كان بيقول ولا معلومة جديدة.**
+
+   ⚠️ وما قدرت أستبدله بـ«رحلة الطلب» لأن كل خطواتها بدها حقائق تشغيلية
+      غير مؤكدة: مدة التوصيل معلّمة بالكود «رقم مثال · أكّده قبل النشر» ·
+      وإرسال الإيميلات مكسور (بلا SPF ولا MX) · و«الفحص قبل الدفع» مسجّل
+      كسؤال مفتوح لصاحب العلامة. **فالبديل انبنى على المؤكد وحده.**
+
+   والبديل: **الشهادات**. ثمانية موجودة بالكتالوج وما كانت مستعملة إلا
+   كسطر رمادي صغير على البطاقة · وهي أقوى بديل عن آراء الزبونات اللي
+   لساها ما وصلت. وأرقامها مقيسة، مش «منتجاتنا مفحوصة» المرسلة. */
+
+/* ---- جدار الشهادات · عائلة تخطيط جديدة · مش بطاقات ولا شبكة -------- */
+.luvit-certs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.luvit-certs__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 10px var(--space-4);
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-pill);
+  background: var(--color-paper);
+  font-size: var(--text-body-sm);
+  color: var(--color-ink);
+}
+/* العدد أولاً · لأن **الرقم هو الحجّة** مش اسم الشهادة.
+   «٩ من ٩» بتقول إشي، و«مفحوص جلدياً» لحالها ادعاء زي أي ادعاء. */
+.luvit-certs__item b {
+  font-family: var(--font-latin);
+  font-weight: 600;
+  color: var(--aqua-700);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+/* الشهادات اللي على كل التشكيلة بتتميّز · هي الأقوى */
+.luvit-certs__item[data-all] {
+  border-color: color-mix(in srgb, var(--aqua-500) 40%, transparent);
+  background: var(--aqua-50);
+}
+.luvit-certs__item[data-all] b { color: var(--aqua-800); }
+
+/* ---- أسئلة مفتوحة بدل أكورديون -------------------------------------
+   🔴 الأكورديون **بيخبّي** · والأجوبة هون هي معالجة الاعتراضات، وهي
+      أهم محتوى ثقة عندنا لأن ما في ولا مراجعة زبونة بعد.
+      محتوى الثقة المخبّى وراء ضغطة = محتوى ما انقرا.
+   والأجوبة قصيرة (سطر لتلاتة)، فعمودان بيخلّوا الستة يبانوا مرة وحدة. */
+.luvit-qa {
+  display: grid;
+  gap: var(--space-5) var(--space-7);
+  margin: 0;
+}
+@media (min-width: 760px) {
+  .luvit-qa { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.luvit-qa dt {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin-block-end: var(--space-2);
+}
+.luvit-qa dd {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
+  color: var(--color-ink-soft);
+  /* الخط الرفيع بيربط الجواب بسؤاله بلا صندوق · بديل البطاقة */
+  border-inline-start: 2px solid var(--aqua-200);
+  padding-inline-start: var(--space-4);
+}
