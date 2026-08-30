@@ -493,60 +493,146 @@
   /* ink-faint على الأرضية الفاتحة بيعطي 2.97:1 · ink-soft بيعطي 6.4 */
   .path small { display: block; font-size: 12.5px; color: var(--color-ink-soft, #47555B); margin-block-start: 1px; }
 
-  /* ══ التشكيلة بترتيب الاستعمال · مجموعات مش كتلة وحدة ══════════════
-     11 بطاقة متطابقة بكتلة 2311 بكسل = «ثلاث بطاقات متطابقة» بمقياس أكبر.
-     التجميع بيعطي إيقاعاً وبيجاوب سؤال «وين مكان هاد بروتيني». */
-  .cat { background: #fff; padding-block: clamp(40px, 5.5vw, 70px); }
+  /* ══ التشكيلة · «رأس مجموعة ملتصق + شبكة مضغوطة» ═══════════════════
+     🔴 اللي كان: ١٢ بطاقة متطابقة، الصورة **٦٥٪** من البطاقة، والزر
+        شريط غامق بعرض البطاقة. النتيجة إن الزر بياخد النظر قبل
+        المنتج، والبطاقة بترتفع ٧٠٠px فما بينشاف منها إلا وحدة ونص.
+
+     اللي صار:
+       · رأس المجموعة **عمود ملتصق** بجنب منتجاتها لا شريط فوقها ·
+         فبتضل «إنتِ بخطوة التنظيف» ظاهرة وإنتِ بتتصفّحي.
+       · البطاقة انضغطت · الصورة صارت ٤:٣ عريضة لا ٤:٥ طويلة.
+       · الزر صار **قرصاً بأيقونة** جنب السعر، لا شريطاً غامقاً.
+       · نبرتان متناوبتان بين المجموعات · إيقاع بدل جدار واحد.       */
+  .cat { background: #FFFFFF; padding-block: clamp(44px, 6vw, 78px) clamp(56px, 8vw, 96px); }
   .cat__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
-  .cat__head { max-width: 60ch; margin-block-end: clamp(24px, 3vw, 36px); }
+
+  .cat__head { max-width: 58ch; margin-block-end: clamp(26px, 3.4vw, 40px); }
   .cat__head h2 {
-    font-family: var(--font-heading, inherit); font-size: clamp(23px, 3.2vw, 34px);
-    line-height: 1.24; margin: 0 0 10px; color: var(--color-ink, #1A2529);
+    font-family: var(--font-heading, inherit);
+    font-size: clamp(25px, 3.4vw, 38px); line-height: 1.22; letter-spacing: -.01em;
+    margin: 0 0 10px; color: var(--color-ink, #1A2529); text-wrap: balance;
   }
-  .cat__head p { margin: 0; color: var(--color-ink-soft, #47555B); font-size: clamp(15px, 1.5vw, 16.5px); }
+  .cat__head p {
+    margin: 0; font-size: clamp(14.5px, 1.6vw, 16.5px); line-height: 1.8;
+    color: var(--color-ink-soft, #47555B);
+  }
 
-  .grp { padding-block-start: clamp(26px, 3vw, 38px); }
-  .grp + .grp { border-block-start: 1px solid rgba(26,37,41,.09); }
-  .grp__bar { display: flex; align-items: center; gap: 14px; margin-block-end: 16px; }
+  /* ── المجموعة ─────────────────────────────────────────────────── */
+  .grp { padding-block: clamp(24px, 3vw, 40px); }
+  /* نبرة متناوبة · بتمتدّ لعرض الشاشة بحيلة الظل الجانبي عشان ما
+     نحتاج حاوية إضافية · والحدّ الناعم بيمنع الحزّ. */
+  .grp:nth-child(even) {
+    background: linear-gradient(180deg, #F7FCFD, #F2F9FB);
+    box-shadow: 0 0 0 100vmax #F5FBFC;
+    clip-path: inset(0 -100vmax);
+  }
+  .grp__wrap { display: grid; gap: clamp(16px, 2.4vw, 34px); }
+  @media (min-width: 900px) {
+    .grp__wrap { grid-template-columns: minmax(180px, 220px) minmax(0, 1fr); }
+  }
+
+  /* رأس المجموعة · عمود ملتصق */
+  .grp__head { align-self: start; }
+  @media (min-width: 900px) {
+    .grp__head { position: sticky; inset-block-start: clamp(18px, 4vh, 40px); }
+  }
   .grp__n {
-    flex: none; inline-size: 34px; block-size: 34px; border-radius: 50%;
-    display: grid; place-items: center;
-    font-family: var(--font-latin, inherit); font-size: 14px; font-weight: 700;
-    background: var(--color-ink, #1A2529); color: #fff;
+    display: inline-grid; place-items: center;
+    inline-size: 30px; block-size: 30px; border-radius: 10px;
+    font-family: var(--font-latin, inherit); font-size: 13px; font-weight: 700;
+    background: var(--aqua-50, #EAFAFD); color: var(--aqua-700, #196B7D);
+    margin-block-end: 10px;
   }
-  .grp__t { flex: 1 1 auto; }
-  .grp__t b { display: block; font-family: var(--font-heading, inherit); font-size: 18px; color: var(--color-ink, #1A2529); }
-  .grp__t small { display: block; font-size: 13px; color: var(--color-ink-soft, #47555B); margin-block-start: 1px; }
-  .grp__count { flex: none; font-size: 12.5px; color: var(--color-ink-faint, #869399); font-variant-numeric: tabular-nums; }
+  .grp__head h3 {
+    font-family: var(--font-heading, inherit); font-size: clamp(17px, 2vw, 21px);
+    margin: 0 0 6px; color: var(--color-ink, #1A2529); line-height: 1.3;
+  }
+  .grp__head p {
+    margin: 0 0 8px; font-size: 13px; line-height: 1.65;
+    color: var(--color-ink-soft, #47555B); max-width: 30ch;
+  }
+  .grp__count {
+    font-size: 12px; color: var(--color-ink-soft, #47555B);
+    font-variant-numeric: tabular-nums;
+  }
 
-  .grp__row { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .grp__row { display: grid; gap: clamp(12px, 1.6vw, 18px); grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+
+  /* ── البطاقة · مضغوطة ─────────────────────────────────────────── */
   .pc {
-    display: flex; flex-direction: column; overflow: hidden;
-    background: #fff; border: 1px solid rgba(26,37,41,.10); border-radius: 14px;
-    transition: transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s;
+    display: flex; flex-direction: column; overflow: clip;
+    background: #FFFFFF; border-radius: 16px;
+    border: 1px solid rgba(26,37,41,.09);
+    box-shadow: 0 1px 2px rgba(var(--lagoon-rgb), .04);
+    transition: transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;
   }
-  .pc:hover { transform: translateY(-4px); box-shadow: 0 16px 30px -20px rgba(var(--lagoon-rgb), .4); }
-  .pc__media { position: relative; aspect-ratio: 4/5; background: linear-gradient(180deg,#F4FBFD,#DCEFF7); }
-  .pc__media img { inline-size: 100%; block-size: 100%; object-fit: contain; padding: 14px; display: block; }
-  .pc__pct {
-    position: absolute; inset-block-start: 10px; inset-inline-start: 10px;
-    background: rgba(255,255,255,.95); border-radius: 99px; padding: 4px 10px;
-    font-size: 11.5px; font-weight: 700; color: var(--aqua-700, #1E7C8C);
-    box-shadow: 0 2px 7px rgba(var(--lagoon-rgb), .12);
+  .pc:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 4px rgba(var(--lagoon-rgb), .05),
+                0 20px 34px -24px rgba(var(--lagoon-rgb), .5);
   }
-  .pc__body { display: flex; flex-direction: column; flex: 1; gap: 7px; padding: 14px 15px 16px; }
-  .pc__name { font-family: var(--font-heading, inherit); font-size: 15.5px; margin: 0; color: var(--color-ink, #1A2529); line-height: 1.35; }
-  .pc__does { margin: 0; font-size: 12.5px; color: var(--color-ink-soft, #47555B); min-block-size: 2.7em; }
-  /* 🔴 النسبة سطر سند صغير تحت الفايدة · مش شارة فوق الصورة.
-     الفايدة بتقود والنسبة بتبرهن · وهاي قاعدة benefits-not-ingredient-lists. */
+  .pc:focus-within { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+
+  /* 🔴 ٤:٣ عريضة لا ٤:٥ طويلة · وخلفية العبوات مطبوعة جوّاها بلا
+     ألفا (زي البكجات)، فالخلفية هون **بلون صورها نفسه** عشان ما
+     يطلع إطار. مقيس: rgb(243,250,250). */
+  /* 🔴 الكادر **مربّع** لأن صور العبوات مربّعة (2000²)، فـcover
+     بتعطي صفر قصّ وصفر إطار **والعبوة بحجمها الطبيعي**.
+     كان ٤:٣ مع contain · النتيجة إن المربّعة بتنحشر بالارتفاع
+     وبتصغر ٣٤٪ وبتترك هامشين باهتين على جنابها. */
+  .pc__media { background: #F3FAFA; aspect-ratio: 1 / 1; overflow: clip; }
+  .pc__media img {
+    display: block; inline-size: 100%; block-size: 100%;
+    object-fit: cover;
+    transition: transform .3s cubic-bezier(.22,.61,.36,1);
+  }
+  .pc:hover .pc__media img { transform: scale(1.045); }
+
+  .pc__body { display: flex; flex-direction: column; flex: 1; gap: 5px; padding: 13px 14px 14px; }
+  .pc__name {
+    font-family: var(--font-heading, inherit); font-size: 15px; line-height: 1.35;
+    margin: 0; color: var(--color-ink, #1A2529);
+  }
+  .pc__does { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--color-ink-soft, #47555B); }
+  /* البرهان تحت الوعد · النسبة **مش** شارة فوق الصورة */
   .pc__proof {
-    margin: 0; font-size: 11.5px; color: var(--aqua-700, #1E7C8C);
-    font-variant-numeric: tabular-nums; opacity: .9;
+    margin: 2px 0 0; font-size: 11.5px; font-weight: 600;
+    color: var(--aqua-700, #196B7D); letter-spacing: 0;
   }
-  .pc__foot { margin-block-start: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-block-start: 4px; }
-  .pc__price { font-weight: 700; font-size: 15px; color: var(--color-ink, #1A2529); font-variant-numeric: tabular-nums; }
-  .pc__ml { font-size: 12px; color: var(--color-ink-faint, #869399); }
-  .pc .luvit-btn { inline-size: 100%; justify-content: center; font-size: 13.5px; padding-block: 9px; }
+
+  .pc__foot {
+    margin-block-start: auto; padding-block-start: 11px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .pc__price {
+    font-family: var(--font-heading, inherit); font-size: 16px;
+    color: var(--color-ink, #1A2529); font-variant-numeric: tabular-nums;
+  }
+  .pc__ml { display: block; font-size: 11.5px; font-weight: 400; color: var(--color-ink-soft, #47555B); }
+
+  /* 🔴 الزر قرص بأيقونة · لا شريط بعرض البطاقة.
+     ٤٤px حدّ اللمس الآمن، والدائرة بتخلّي النظر يروح للمنتج أول. */
+  .pc__add {
+    flex: none; inline-size: 44px; block-size: 44px; border-radius: 50%;
+    display: grid; place-items: center; text-decoration: none;
+    background: var(--aqua-700, #196B7D); color: #FFFFFF;
+    transition: background .2s ease, transform .18s cubic-bezier(.22,.61,.36,1);
+  }
+  .pc__add:hover { background: var(--aqua-800, #124D5A); transform: scale(1.06); }
+  .pc__add:active { transform: scale(.95); }
+  .pc__add:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+
+  /* تحذير الاستعمال · مرتين بالأسبوع مش يومي */
+  .pc__warn {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-block-start: 4px; font-size: 11px;
+    color: var(--color-ink-soft, #47555B);
+  }
+  .pc__warn::before {
+    content: ""; inline-size: 5px; block-size: 5px; border-radius: 50%;
+    background: var(--fuchsia, #D02D86); flex: none;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .shop-hero__canvas { transition: none !important; }
@@ -929,7 +1015,8 @@ var GROUPS = [
     var cards = g.items.map(function (it) {
       return '<article class="pc">' +
         '<div class="pc__media">' +
-          '<img decoding="async" loading="lazy" width="600" height="750" src="' + U2 + it.img + '" alt="' + it.ar + '">' +
+          '<img decoding="async" loading="lazy" width="800" height="600"' +
+          ' src="' + U2 + it.img + '" alt="' + it.ar + '">' +
         '</div>' +
         '<div class="pc__body">' +
           '<h3 class="pc__name">' + it.ar + '</h3>' +
@@ -938,21 +1025,38 @@ var GROUPS = [
              ريّان: «روح لفوائد المكوّنات مش تذكرها» · و«مش تغلط بموضوع
              النسب مرة ثانية». فالفايدة بتقود والنسبة بتسند. */
           '<p class="pc__proof">' + it.pct + '</p>' +
-          '<div class="pc__foot"><span class="pc__price">' + it.price + ' د.أ</span><span class="pc__ml">' + it.ml + '</span></div>' +
-          '<a class="luvit-btn" href="/?add-to-cart=' + it.id + '" rel="nofollow">أضيفي إلى السلة</a>' +
+          (it.warn ? '<span class="pc__warn">مرتين بالأسبوع · مش يومي</span>' : '') +
+          '<div class="pc__foot">' +
+            '<span class="pc__price">' + it.price + ' د.أ' +
+              '<span class="pc__ml">' + it.ml + '</span>' +
+            '</span>' +
+            /* 🔴 قرص بأيقونة لا شريط · واسم واضح لقارئ الشاشة لأن
+               الأيقونة وحدها ما بتقول شو بتضيف. */
+            '<a class="pc__add" href="/?add-to-cart=' + it.id + '" rel="nofollow"' +
+            ' aria-label="أضيفي ' + it.ar + ' إلى السلة" title="أضيفي إلى السلة">' +
+              '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"' +
+              ' stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+              '<path d="M12 5v14M5 12h14"/></svg>' +
+            '</a>' +
+          '</div>' +
         '</div>' +
       '</article>';
     }).join('');
 
+    /* 🔴 الرأس صار **عموداً ملتصقاً** جنب منتجاته لا شريطاً فوقها ·
+       فبتضل «إنتِ بخطوة التنظيف» ظاهرة والزائرة بتتصفّح. */
     var sec = document.createElement('div');
     sec.className = 'grp';
     sec.innerHTML =
-      '<div class="grp__bar">' +
-        '<b class="grp__n">' + g.n + '</b>' +
-        '<span class="grp__t"><b>' + g.name + '</b><small>' + g.does + '</small></span>' +
-        '<span class="grp__count">' + g.items.length + ' منتج' + (g.items.length > 2 ? 'ات' : '') + '</span>' +
-      '</div>' +
-      '<div class="grp__row">' + cards + '</div>';
+      '<div class="grp__wrap">' +
+        '<div class="grp__head">' +
+          '<b class="grp__n">' + g.n + '</b>' +
+          '<h3>' + g.name + '</h3>' +
+          '<p>' + g.does + '</p>' +
+          '<span class="grp__count">' + g.items.length + ' منتج' + (g.items.length > 2 ? 'ات' : '') + '</span>' +
+        '</div>' +
+        '<div class="grp__row">' + cards + '</div>' +
+      '</div>';
     root.appendChild(sec);
   });
 })();
