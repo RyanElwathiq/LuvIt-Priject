@@ -6,6 +6,14 @@
 <title>معاينة · رأس المتجر والبكجات</title>
 <link rel="stylesheet" href="tokens.css">
 <style>
+  /* 🔴 تصفير · بلاه هامش body الافتراضي (٨px) بيعمل إطاراً أبيض حوالي
+     كل اللوحة · مقيس: x=0..7 أبيض صافي و x=1528..1535 كمان.
+     ريّان مسكه: «طلع حز أبيض من تحت والشكل كله مش حلو». */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { overflow-x: clip; }   /* clip لا hidden · قاعدة ٢ بمكتبة توازَن */
+  body { background: #fff; }
+
   /* ══════════════════════════════════════════════════════════════════
      🔴 معاينة فقط · هالكتلة بتنتقل لـtokens.css بعد الموافقة.
         ما بتنسخ لـWPCode من هون · اللصق من tokens.css وحده.
