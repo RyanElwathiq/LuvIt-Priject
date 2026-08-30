@@ -155,7 +155,7 @@ function productCard(p) {
   parts.push('          <div class="luvit-card__footer">');
   /* 🔴 السعر من ووكومرس · ممنوع يتكتب رقم بالإيد. لو تغيّر بالوحة وما
      انعاد التوليد، الصفحة بتقول رقماً والسلة بتقول تاني. */
-  parts.push(`            <span class="luvit-card__price">${ltr(p.price)} د.ا</span>`);
+  parts.push(`            <span class="luvit-card__price">${ltr(p.price)} د.أ</span>`);
   parts.push(`            <a href="/?add-to-cart=${p.id}" rel="nofollow"`);
   parts.push('               class="luvit-btn add_to_cart_button ajax_add_to_cart"');
   parts.push(`               data-product_id="${p.id}" data-quantity="1"`);
@@ -182,7 +182,7 @@ function packageCard(p) {
        على أي حال. */
     `          <p class="luvit-card__text">${esc(p.parts.join(' · '))}</p>`,
     '          <div class="luvit-card__footer">',
-    `            <span class="luvit-card__price">${ltr(p.price)} د.ا</span>`,
+    `            <span class="luvit-card__price">${ltr(p.price)} د.أ</span>`,
     `            <a href="/?add-to-cart=${p.id}" rel="nofollow"`,
     '               class="luvit-btn add_to_cart_button ajax_add_to_cart"',
     `               data-product_id="${p.id}" data-quantity="1"`,
