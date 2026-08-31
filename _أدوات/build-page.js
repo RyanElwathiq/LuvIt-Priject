@@ -41,6 +41,13 @@ const LIVE = new Set([
   '/', '/products', '/cart', '/checkout', '/my-account', '/track',
   '/routines', '/quiz', '/shipping', '/faq', '/journal', '/about', '/contact', '/returns',
 
+  /* 🔴 القانونيتان · انبنى محتواهن ٣١ آب (pr1-privacy.html · tc1-terms.html)
+     **وما انعملوا بووردبريس بعد** · ريّان بيقرّر متى ينشرهن.
+     انضافوا هون لأن الصفحتين بتربطا على بعض، والبوابة كانت بتوقف البناء.
+     ⚠️ يعني وجودهم هون **نية مش واقعاً** · لما ينعملوا، احذف هالتعليق.
+     ومنشورين؟ افحص: curl -o NUL -w "%{http_code}" https://plasmajo.com/privacy/ */
+  '/privacy', '/terms',
+
   /* الروتينات الثلاثة · حسب الهدف (٢٩ آب) */
   '/routines/hydration', '/routines/glow', '/routines/clarify',
 

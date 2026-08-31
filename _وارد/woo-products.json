@@ -1,420 +1,39 @@
 {
- "_مصدر": "wc/v3 · سُحب من الموقع الحي",
- "_ملاحظة": "مولّد · لا تعدّله بالإيد · أعد سحبه",
+ "_مصدر": "https://plasmajo.com/wp-json/wc/store/v1/products",
+ "_ملاحظة": "مولَّدة بـ_أدوات/sync-woo-snapshot.mjs · لا تعدّلها بالإيد · شغّل الأداة.",
+ "_تاريخ": "2026-08-31",
  "فئات": [
-  {
-   "id": 21,
-   "name": "Uncategorized",
-   "slug": "uncategorized",
-   "count": 0
-  },
-  {
-   "id": 38,
-   "name": "بكجات",
-   "slug": "packages",
-   "count": 3
-  },
-  {
-   "id": 39,
-   "name": "منتجات مفردة",
-   "slug": "singles",
-   "count": 11
-  }
+  "بكجات",
+  "منتجات مفردة"
  ],
  "منتجات": [
   {
-   "id": 282,
-   "slug": "alpha-arbutin-complex-serum",
-   "name": "سيروم ألفا أربوتين المركّب",
-   "price": "22.00",
-   "permalink": "https://plasmajo.com/product/alpha-arbutin-complex-serum/",
+   "id": 191,
+   "slug": "vitamin-c-serum",
+   "name": "سيروم فيتامين سي",
+   "price": "19.00",
+   "permalink": "https://plasmajo.com/product/vitamin-c-serum/",
    "stock": "instock",
    "cats": [
-    "singles"
+    "منتجات مفردة"
    ],
-   "short": "2% ألفا أربوتين · 3% حمض ترانيكساميك · 2% جلوتاثيون · 5% نياسيناميد · 30ml",
+   "short": "10% فيتامين سي · 2% نياسيناميد · 2% حمض هيالورونيك · 2% بانثينول · 30ml",
    "images": [
     {
-     "id": 272,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-alpha-arbutin-complex-serum-2-box-front"
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-1-bottle.webp",
+     "alt": ""
     },
     {
-     "id": 273,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-alpha-arbutin-complex-serum-3-box-back"
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-2-box-front.webp",
+     "alt": ""
     },
     {
-     "id": 274,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-alpha-arbutin-complex-serum-4-box-side"
-    }
-   ]
-  },
-  {
-   "id": 281,
-   "slug": "moisturizing-repairing-cream",
-   "name": "كريم الترطيب والترميم",
-   "price": "15.00",
-   "permalink": "https://plasmajo.com/product/moisturizing-repairing-cream/",
-   "stock": "instock",
-   "cats": [
-    "singles"
-   ],
-   "short": "10% بانثينول · 2% حمض هيالورونيك · 1% سيراميد · 1% مركّب ببتيدات · 75ml",
-   "images": [
-    {
-     "id": 246,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-moisturizing-repairing-cream-1-bottle"
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-3-box-back.webp",
+     "alt": ""
     },
     {
-     "id": 247,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-moisturizing-repairing-cream-2-box-front"
-    },
-    {
-     "id": 248,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-moisturizing-repairing-cream-3-box-back"
-    },
-    {
-     "id": 249,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-moisturizing-repairing-cream-4-box-side"
-    }
-   ]
-  },
-  {
-   "id": 280,
-   "slug": "sebum-balancing-gel-cleanser",
-   "name": "غسول البشرة الدهنية",
-   "price": "14.00",
-   "permalink": "https://plasmajo.com/product/sebum-balancing-gel-cleanser/",
-   "stock": "instock",
-   "cats": [
-    "singles"
-   ],
-   "short": "0.5% حمض الساليسيليك · 1% خلاصة الشاي الأخضر · 0.5% نياسيناميد · 0.5% حمض اللاكتيك · 200ml",
-   "images": [
-    {
-     "id": 254,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-sebum-balancing-gel-cleanser-1-bottle"
-    },
-    {
-     "id": 255,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-sebum-balancing-gel-cleanser-2-box-front"
-    },
-    {
-     "id": 256,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-sebum-balancing-gel-cleanser-3-box-back"
-    },
-    {
-     "id": 257,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-sebum-balancing-gel-cleanser-4-box-side"
-    }
-   ]
-  },
-  {
-   "id": 279,
-   "slug": "aha-bha-peeling-serum",
-   "name": "سيروم التقشير",
-   "price": "16.00",
-   "permalink": "https://plasmajo.com/product/aha-bha-peeling-serum/",
-   "stock": "instock",
-   "cats": [
-    "singles"
-   ],
-   "short": "10% + 2% AHA + BHA · 2% بانثينول · 1% جلسرين · 30ml",
-   "images": [
-    {
-     "id": 266,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-aha-bha-peeling-serum-1-bottle"
-    },
-    {
-     "id": 267,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-aha-bha-peeling-serum-2-box-front"
-    },
-    {
-     "id": 268,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-aha-bha-peeling-serum-3-box-back"
-    },
-    {
-     "id": 269,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-aha-bha-peeling-serum-4-box-side"
-    }
-   ]
-  },
-  {
-   "id": 278,
-   "slug": "clarifying-pore-tightening-toner",
-   "name": "تونر تضييق المسامات",
-   "price": "13.00",
-   "permalink": "https://plasmajo.com/product/clarifying-pore-tightening-toner/",
-   "stock": "instock",
-   "cats": [
-    "singles"
-   ],
-   "short": "5% + 0.5% AHA + BHA · 5% خلاصة أوراق شجرة الشاي · 1% بانثينول · 5% جلسرين · 200ml",
-   "images": [
-    {
-     "id": 262,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-clarifying-pore-tightening-toner-1-bottle"
-    },
-    {
-     "id": 263,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-clarifying-pore-tightening-toner-2-box-front"
-    },
-    {
-     "id": 264,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-clarifying-pore-tightening-toner-3-box-back"
-    },
-    {
-     "id": 265,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-clarifying-pore-tightening-toner-4-box-side"
-    }
-   ]
-  },
-  {
-   "id": 277,
-   "slug": "pore-tightening-brightening-serum",
-   "name": "سيروم تضييق المسامات",
-   "price": "16.00",
-   "permalink": "https://plasmajo.com/product/pore-tightening-brightening-serum/",
-   "stock": "instock",
-   "cats": [
-    "singles"
-   ],
-   "short": "10% نياسيناميد · 1% زنك · 1% ويتش هازل · 1% حمض هيالورونيك · 30ml",
-   "images": [
-    {
-     "id": 250,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-pore-tightening-brightening-serum-1-bottle"
-    },
-    {
-     "id": 251,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-pore-tightening-brightening-serum-2-box-front"
-    },
-    {
-     "id": 252,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-pore-tightening-brightening-serum-3-box-back"
-    },
-    {
-     "id": 253,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-pore-tightening-brightening-serum-4-box-side"
-    }
-   ]
-  },
-  {
-   "id": 276,
-   "slug": "centella-blemish-cream",
-   "name": "كريم سنتيلا للبقع",
-   "price": "18.00",
-   "permalink": "https://plasmajo.com/product/centella-blemish-cream/",
-   "stock": "instock",
-   "cats": [
-    "singles"
-   ],
-   "short": "5% سنتيلا · 5% نياسيناميد · 2% حمض هيالورونيك · 2% بانثينول · 50ml",
-   "images": [
-    {
-     "id": 258,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-centella-blemish-cream-1-bottle"
-    },
-    {
-     "id": 259,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-centella-blemish-cream-2-box-front"
-    },
-    {
-     "id": 260,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-centella-blemish-cream-3-box-back"
-    },
-    {
-     "id": 261,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-centella-blemish-cream-4-box-side"
-    }
-   ]
-  },
-  {
-   "id": 275,
-   "slug": "intensive-hydrating-serum",
-   "name": "سيروم الترطيب المكثّف",
-   "price": "18.00",
-   "permalink": "https://plasmajo.com/product/intensive-hydrating-serum/",
-   "stock": "instock",
-   "cats": [
-    "singles"
-   ],
-   "short": "2% حمض هيالورونيك · 2% كولاجين ذائب · 5% بانثينول · 2% نياسيناميد · 30ml",
-   "images": [
-    {
-     "id": 242,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-intensive-hydrating-serum-1-bottle"
-    },
-    {
-     "id": 243,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-intensive-hydrating-serum-2-box-front"
-    },
-    {
-     "id": 244,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-intensive-hydrating-serum-3-box-back"
-    },
-    {
-     "id": 245,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-intensive-hydrating-serum-4-box-side"
-    }
-   ]
-  },
-  {
-   "id": 205,
-   "slug": "hydration-support-routine",
-   "name": "روتين الترطيب والدعم اليومي",
-   "price": "60.00",
-   "permalink": "https://plasmajo.com/product/hydration-support-routine/",
-   "stock": "instock",
-   "cats": [
-    "packages"
-   ],
-   "short": "غسول البشرة الجافة والحساسة + تونر البشرة الجافة والحساسة + سيروم الترطيب المكثّف + كريم الترطيب والترميم",
-   "images": [
-    {
-     "id": 285,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-hydration.webp",
-     "alt": "",
-     "name": "luvit-bundle-hydration"
-    }
-   ]
-  },
-  {
-   "id": 204,
-   "slug": "clarify-balance-routine",
-   "name": "روتين التنقية والتوازن",
-   "price": "61.00",
-   "permalink": "https://plasmajo.com/product/clarify-balance-routine/",
-   "stock": "instock",
-   "cats": [
-    "packages"
-   ],
-   "short": "غسول البشرة الدهنية + تونر تضييق المسامات + سيروم فيتامين سي + كريم الترطيب والترميم",
-   "images": [
-    {
-     "id": 287,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-clarify.webp",
-     "alt": "",
-     "name": "luvit-bundle-clarify"
-    }
-   ]
-  },
-  {
-   "id": 203,
-   "slug": "brighten-glow-routine",
-   "name": "روتين الإشراقة",
-   "price": "61.00",
-   "permalink": "https://plasmajo.com/product/brighten-glow-routine/",
-   "stock": "instock",
-   "cats": [
-    "packages"
-   ],
-   "short": "غسول البشرة الجافة والحساسة + تونر البشرة الجافة والحساسة + سيروم فيتامين سي + كريم الترطيب والترميم",
-   "images": [
-    {
-     "id": 286,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-glow.webp",
-     "alt": "",
-     "name": "luvit-bundle-glow"
-    }
-   ]
-  },
-  {
-   "id": 202,
-   "slug": "8d-hyaluronic-acid-toner",
-   "name": "تونر البشرة الجافة والحساسة",
-   "price": "13.00",
-   "permalink": "https://plasmajo.com/product/8d-hyaluronic-acid-toner/",
-   "stock": "instock",
-   "cats": [
-    "singles"
-   ],
-   "short": "2% حمض الهيالورونيك 8D · 1% حمض الأسبارتيك · 1.5% يوريا · 200ml",
-   "images": [
-    {
-     "id": 236,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-8d-hyaluronic-acid-toner-1-bottle"
-    },
-    {
-     "id": 237,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-8d-hyaluronic-acid-toner-2-box-front"
-    },
-    {
-     "id": 238,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-8d-hyaluronic-acid-toner-3-box-back"
-    },
-    {
-     "id": 271,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-8d-hyaluronic-acid-toner-4-box-side"
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-4-box-side.webp",
+     "alt": ""
     }
    ]
   },
@@ -426,71 +45,375 @@
    "permalink": "https://plasmajo.com/product/hydrating-gel-cleanser/",
    "stock": "instock",
    "cats": [
-    "singles"
+    "منتجات مفردة"
    ],
    "short": "0.5% حمض هيالورونيك · 0.5% سكوالان · 0.5% بانثينول · 0.5% بيتا جلوكان · 200ml",
    "images": [
     {
-     "id": 270,
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-hydrating-gel-cleanser-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-hydrating-gel-cleanser-1-bottle"
+     "alt": ""
     },
     {
-     "id": 239,
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-hydrating-gel-cleanser-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-hydrating-gel-cleanser-2-box-front"
+     "alt": ""
     },
     {
-     "id": 240,
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-hydrating-gel-cleanser-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-hydrating-gel-cleanser-3-box-back"
+     "alt": ""
     },
     {
-     "id": 241,
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-hydrating-gel-cleanser-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-hydrating-gel-cleanser-4-box-side"
+     "alt": ""
     }
    ]
   },
   {
-   "id": 191,
-   "slug": "vitamin-c-serum",
-   "name": "سيروم فيتامين سي",
-   "price": "19.00",
-   "permalink": "https://plasmajo.com/product/vitamin-c-serum/",
+   "id": 202,
+   "slug": "8d-hyaluronic-acid-toner",
+   "name": "تونر البشرة الجافة والحساسة",
+   "price": "13.00",
+   "permalink": "https://plasmajo.com/product/8d-hyaluronic-acid-toner/",
    "stock": "instock",
    "cats": [
-    "singles"
+    "منتجات مفردة"
    ],
-   "short": "10% فيتامين سي · 2% نياسيناميد · 2% حمض هيالورونيك · 2% بانثينول · 30ml",
+   "short": "2% حمض الهيالورونيك 8D · 1% حمض الأسبارتيك · 1.5% يوريا · 200ml",
    "images": [
     {
-     "id": 232,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-1-bottle.webp",
-     "alt": "",
-     "name": "luvit-vitamin-c-serum-1-bottle"
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-1-bottle.webp",
+     "alt": ""
     },
     {
-     "id": 233,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-2-box-front.webp",
-     "alt": "",
-     "name": "luvit-vitamin-c-serum-2-box-front"
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-2-box-front.webp",
+     "alt": ""
     },
     {
-     "id": 234,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-3-box-back.webp",
-     "alt": "",
-     "name": "luvit-vitamin-c-serum-3-box-back"
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-3-box-back.webp",
+     "alt": ""
     },
     {
-     "id": 235,
-     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-4-box-side.webp",
-     "alt": "",
-     "name": "luvit-vitamin-c-serum-4-box-side"
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 203,
+   "slug": "brighten-glow-routine",
+   "name": "روتين الإشراقة",
+   "price": "61.00",
+   "permalink": "https://plasmajo.com/product/brighten-glow-routine/",
+   "stock": "instock",
+   "cats": [
+    "بكجات"
+   ],
+   "short": "غسول البشرة الجافة والحساسة + تونر البشرة الجافة والحساسة + سيروم فيتامين سي + كريم الترطيب والترميم",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-glow.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 204,
+   "slug": "clarify-balance-routine",
+   "name": "روتين التنقية والتوازن",
+   "price": "61.00",
+   "permalink": "https://plasmajo.com/product/clarify-balance-routine/",
+   "stock": "instock",
+   "cats": [
+    "بكجات"
+   ],
+   "short": "غسول البشرة الدهنية + تونر تضييق المسامات + سيروم فيتامين سي + كريم الترطيب والترميم",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-clarify.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 205,
+   "slug": "hydration-support-routine",
+   "name": "روتين الترطيب والدعم اليومي",
+   "price": "60.00",
+   "permalink": "https://plasmajo.com/product/hydration-support-routine/",
+   "stock": "instock",
+   "cats": [
+    "بكجات"
+   ],
+   "short": "غسول البشرة الجافة والحساسة + تونر البشرة الجافة والحساسة + سيروم الترطيب المكثّف + كريم الترطيب والترميم",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-hydration.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 275,
+   "slug": "intensive-hydrating-serum",
+   "name": "سيروم الترطيب المكثّف",
+   "price": "18.00",
+   "permalink": "https://plasmajo.com/product/intensive-hydrating-serum/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "2% حمض هيالورونيك · 2% كولاجين ذائب · 5% بانثينول · 2% نياسيناميد · 30ml",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-1-bottle.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-2-box-front.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-3-box-back.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 276,
+   "slug": "centella-blemish-cream",
+   "name": "كريم سنتيلا للبقع",
+   "price": "18.00",
+   "permalink": "https://plasmajo.com/product/centella-blemish-cream/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "5% سنتيلا · 5% نياسيناميد · 2% حمض هيالورونيك · 2% بانثينول · 50ml",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-1-bottle.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-2-box-front.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-3-box-back.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 277,
+   "slug": "pore-tightening-brightening-serum",
+   "name": "سيروم تضييق المسامات",
+   "price": "16.00",
+   "permalink": "https://plasmajo.com/product/pore-tightening-brightening-serum/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "10% نياسيناميد · 1% زنك · 1% ويتش هازل · 1% حمض هيالورونيك · 30ml",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-1-bottle.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-2-box-front.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-3-box-back.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 278,
+   "slug": "clarifying-pore-tightening-toner",
+   "name": "تونر تضييق المسامات",
+   "price": "13.00",
+   "permalink": "https://plasmajo.com/product/clarifying-pore-tightening-toner/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "5% + 0.5% AHA + BHA · 5% خلاصة أوراق شجرة الشاي · 1% بانثينول · 5% جلسرين · 200ml",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-1-bottle.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-2-box-front.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-3-box-back.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 279,
+   "slug": "aha-bha-peeling-serum",
+   "name": "سيروم التقشير",
+   "price": "16.00",
+   "permalink": "https://plasmajo.com/product/aha-bha-peeling-serum/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "10% + 2% AHA + BHA · 2% بانثينول · 1% جلسرين · 30ml",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-1-bottle.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-2-box-front.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-3-box-back.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 280,
+   "slug": "sebum-balancing-gel-cleanser",
+   "name": "غسول البشرة الدهنية",
+   "price": "14.00",
+   "permalink": "https://plasmajo.com/product/sebum-balancing-gel-cleanser/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "0.5% حمض الساليسيليك · 1% خلاصة الشاي الأخضر · 0.5% نياسيناميد · 0.5% حمض اللاكتيك · 200ml",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-1-bottle.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-2-box-front.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-3-box-back.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 281,
+   "slug": "moisturizing-repairing-cream",
+   "name": "كريم الترطيب والترميم",
+   "price": "15.00",
+   "permalink": "https://plasmajo.com/product/moisturizing-repairing-cream/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "10% بانثينول · 2% حمض هيالورونيك · 1% سيراميد · 1% مركّب ببتيدات · 75ml",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-1-bottle.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-2-box-front.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-3-box-back.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 282,
+   "slug": "alpha-arbutin-complex-serum",
+   "name": "سيروم ألفا أربوتين المركّب",
+   "price": "22.00",
+   "permalink": "https://plasmajo.com/product/alpha-arbutin-complex-serum/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "2% ألفا أربوتين · 3% حمض ترانيكساميك · 2% جلوتاثيون · 5% نياسيناميد · 30ml",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-2-box-front.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-3-box-back.webp",
+     "alt": ""
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-4-box-side.webp",
+     "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 318,
+   "slug": "%d9%88%d8%a7%d9%82%d9%8a-%d8%a7%d9%84%d8%b4%d9%85%d8%b3-%d8%a7%d9%84%d9%8a%d9%88%d9%85%d9%8a-%c2%b7-spf50",
+   "name": "واقي الشمس اليومي · SPF50+",
+   "price": "17.95",
+   "permalink": "https://plasmajo.com/product/%d9%88%d8%a7%d9%82%d9%8a-%d8%a7%d9%84%d8%b4%d9%85%d8%b3-%d8%a7%d9%84%d9%8a%d9%88%d9%85%d9%8a-%c2%b7-spf50/",
+   "stock": "instock",
+   "cats": [
+    "منتجات مفردة"
+   ],
+   "short": "واقي شمس يومي بملمس خفيف غير مرئي · SPF50+ وPA++++ · حماية من UVA وUVB ومن الضوء الأزرق. ٥٠ مل · مفحوص جلدياً.",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-high-protection-sunscreen-1-bottle.webp",
+     "alt": "واقي الشمس اليومي · الأنبوب"
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-high-protection-sunscreen-2-box-front.webp",
+     "alt": "واقي الشمس اليومي · العلبة من الأمام"
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-high-protection-sunscreen-3-box-side.webp",
+     "alt": "واقي الشمس اليومي · جانب العلبة"
+    },
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-high-protection-sunscreen-4-box-angle.webp",
+     "alt": "واقي الشمس اليومي · العلبة بزاوية"
     }
    ]
   }

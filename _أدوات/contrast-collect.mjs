@@ -138,9 +138,32 @@ const COLLECT = `(() => {
     if (!direct) return;
     const r = el.getBoundingClientRect();
     if (r.width < 8 || r.height < 6) return;
+    /* 🔴 الصندوق لازم يكون **كاملاً** جوّا النافذة، مش متقاطعاً معها.
+       السبب: الخلفية بتنقاس من بكسلات اللقطة، واللقطة بتوقف عند حافّة
+       النافذة. صندوق نصّه برّا بيرجّع نصّ بكسلات + حشو أسود من خارج
+       الصورة، والمنوال بيطلع لوناً ما إله علاقة.
+       مقيس ٣١ آب: دائرة رقم بيضا على تركوازي غامق، box.y=863 والنافذة
+       900 · القراءة طلعت أبيض 250,252,253 وأسود 0,0,0، والنتيجة
+       **1.06:1 لعنصر تباينه الحقيقي فوق 6**.
+       ⚠️ وهاد مش تسكيتاً للفاحص · العنصر بينفحص بموضع سكرول تاني بيكون
+          فيه كاملاً بالنافذة. وأي فحص بلا موضع 0 بيضيّع عناصر أعلى الصفحة. */
     if (r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) return;
+    if (r.top < 0 || r.bottom > innerHeight || r.left < 0 || r.right > innerWidth) return;
     const cs = getComputedStyle(el);
     if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity < 0.15) return;
+
+    /* 🔴 تخطّي العناصر المغطّاة بعنصر ثابت (شريط الجوال · الترويسة اللاصقة).
+       بلا هالفحص، الأداة بتقرا لون الشريط الغامق خلفيةً للنص وبتطلّع
+       نِسَباً زي 1.27:1 لنص سليم تماماً. صار فعلاً ٣١ آب على صفحة الخصوصية:
+       أربعة إنذارات كاذبة، كلها لعناصر واقعة تحت .luvit-dock.
+       والفاحص اللي بيطلق إنذاراً كاذباً بينتجاهل ثم بينشال · فالتخطّي
+       أهم من التغطية هون.
+       الطريقة: نسأل المتصفح مين فعلاً بيرسم بمركز العنصر. لو مش هو ولا
+       واحد من أبنائه ولا أبوه، فهو مغطّى. */
+    const cx = Math.min(innerWidth - 1, Math.max(0, r.left + r.width / 2));
+    const cy = Math.min(innerHeight - 1, Math.max(0, r.top + r.height / 2));
+    const hit = document.elementFromPoint(cx, cy);
+    if (hit && hit !== el && !el.contains(hit) && !hit.contains(el)) return;
     const key = Math.round(r.x) + ':' + Math.round(r.y) + ':' + direct.slice(0, 20);
     if (seen.has(key)) return;
     seen.add(key);

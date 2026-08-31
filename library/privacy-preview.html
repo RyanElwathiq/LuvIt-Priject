@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة · سياسة الخصوصية</title>
+<link rel="stylesheet" href="tokens.css">
+
+<!--
+  ============================================================================
+  LUVIT — THE PRODUCTS PAGE  (working build, not a mock-up)
+  ============================================================================
+  This is the page paid ads land on. `الرئيسية` stays the brand show-off and is
+  deliberately NOT the ad destination (Ryan, 18 Aug). `/shop/` stays the full
+  WooCommerce archive; this page is the curated hub that feeds it.
+
+  Built from `_خطة/خطة-صفحة-المنتجات.md`, which came out of a six-angle research
+  pass on 21 Aug: 43 agents, 33 claims that survived an adversarial review.
+
+  MUST BE SERVED OVER HTTP (the browser blocks fetch() on file:// URLs):
+
+        node serve.js "D:\Ryan-Work\LUVIT\luvit" 4322
+        http://localhost:4322/library/products-preview.html
+
+  When this moves into Elementor each numbered section below becomes its own
+  container with an HTML widget inside it, and `data-nav-bg` on the CONTAINER
+  is what makes the navigation bar switch between light and dark.
+
+  🔴 EVERY price, package name and product name on this page is a placeholder.
+     The launch is gated on real content arriving from the brand owner
+     (مرحلة ٨). Nothing here may go live as written.
+  ============================================================================
+-->
+<style>
+  body { margin: 0; background: var(--color-paper); }
+
+  /* Colour bands for the sections — same three the home page uses */
+  .band-light { background: var(--color-paper); }
+  .band-mist  { background: var(--color-canvas); }
+  .band-dark  {
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(76,197,218,.24), rgba(76,197,218,0) 60%),
+      linear-gradient(180deg, #0C333C 0%, #124D5A 60%, #0B9198 100%);
+  }
+</style>
+</head>
+<body class="luvit-dock-offset">
+
+<a class="luvit-skip" href="#main">تخطّي إلى المحتوى</a>
+
+<header class="luvit-nav" id="luvit-nav">
+  <div class="luvit-nav__bar">
+    <span class="luvit-nav__drop" aria-hidden="true"></span>
+
+    <a class="luvit-nav__brand" href="/" aria-label="Luv it! Jordan"><img class="luvit-nav__logo" src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-logo.png" alt="Luv it! Jordan" width="417" height="220" decoding="async"></a>
+
+    <nav class="luvit-nav__links" aria-label="التنقل الرئيسي">
+      <a class="luvit-nav__link" href="/">الرئيسية</a>
+      <a class="luvit-nav__link" href="/products">المتجر</a>
+      <a class="luvit-nav__link" href="/routines">الروتين</a>
+      <a class="luvit-nav__link" href="/journal">المقالات</a>
+      <a class="luvit-nav__link" href="/about">من نحن</a>
+    </nav>
+
+    <div class="luvit-nav__actions">
+      <a class="luvit-nav__icon-btn" href="/cart" aria-label="سلة التسوّق">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="luvit-nav__count" id="luvit-cart-count">0</span>
+      </a>
+
+      <button class="luvit-nav__icon-btn luvit-nav__toggle" type="button"
+              aria-label="فتح القائمة" aria-expanded="false" aria-controls="luvit-drawer">
+        <span class="luvit-nav__burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="luvit-drawer" id="luvit-drawer" role="dialog" aria-modal="true"
+     aria-label="قائمة التنقل" aria-hidden="true">
+  <div class="luvit-drawer__water" aria-hidden="true"></div>
+
+  <nav class="luvit-drawer__panel" aria-label="قائمة الجوال">
+    <a class="luvit-drawer__link" href="/">الرئيسية</a>
+    <a class="luvit-drawer__link" href="/products">المتجر</a>
+    <a class="luvit-drawer__link" href="/routines">الروتين</a>
+    <a class="luvit-drawer__link" href="/journal">المقالات</a>
+    <a class="luvit-drawer__link" href="/quiz">اختبار نوع البشرة</a>
+    <a class="luvit-drawer__link" href="/about">من نحن</a>
+
+    <div class="luvit-drawer__sep" role="presentation"></div>
+
+    <a class="luvit-drawer__link luvit-drawer__small" href="/my-account">حسابي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/track">تتبّع طلبي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/shipping">الشحن والتوصيل</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/faq">الأسئلة الشائعة</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/contact">تواصلي معنا</a>
+  </nav>
+</div>
+
+<nav class="luvit-dock" aria-label="التنقل السريع">
+  <a class="luvit-dock__item" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>
+    </svg>
+    <span>الرئيسية</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/products">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/>
+    </svg>
+    <span>المتجر</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/routines">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/>
+    </svg>
+    <span>الروتين</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/cart">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+      <path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/>
+    </svg>
+    <span>السلة</span>
+  </a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="motion.js"></script>
+
+<main id="main">
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     سياسة الخصوصية · /privacy
+     ══════════════════════════════════════════════════════════════════════
+     🔴 هاي مش قالباً معرّباً · كل سطر فيها **مفحوص من الموقع نفسه** ٣١ آب.
+     السياسة اللي بتذكر بيانات ما بتنجمع، أو بتنسى بيانات بتنجمع فعلاً،
+     أسوأ من ولا سياسة: بتعطي وعداً كاذباً وبتخالف القانون بنفس الوقت.
+
+     ══════════════════════════════════════════════════════════════════════
+     ١ · اللي انفحص · وكيف
+     ══════════════════════════════════════════════════════════════════════
+     · حقول الشيك أوت · من OPTIONS /wp-json/wc/store/v1/checkout مباشرةً:
+       first_name, last_name, company, address_1, address_2, city, state,
+       postcode, country, phone, email + customer_note + create_account
+     · طرق الدفع · wc/store/v1/cart رجّع **cod وبس** · يعني ولا بيانات
+       بطاقة بتمرّ من الموقع أصلاً. وهاي مش سياسة، هاي بنية.
+     · التتبّع · فُحص HTML الصفحة الحيّة (بمتصفح مسجّل دخوله، مش خلف قفل
+       «قريباً») · googletagmanager · google-analytics · gtag · fbq ·
+       connect.facebook.net · analytics.tiktok · hotjar · clarity.ms
+       ⤷ **كلهم صفر.**
+     · 🔴 **تتبّع مصدر الطلب بووكومرس شغّال** (Sourcebuster) · مفحوص من
+       الكوكيز الفعلية، وبيخزّن:
+         sbjs_udata   → vst (عدد الزيارات) · **uip (عنوان IP)** · uag (المتصفح)
+         sbjs_current → typ · src · mdm · cmp · cnt · trm · id · plt · fmt
+         sbjs_session → pgs (عدد الصفحات) · cpg (الصفحة الحالية)
+         sbjs_*_add   → fd (أول زيارة) · ep (نقطة الدخول) · rf (الرابط اللي جاب)
+       **وهاي بيانات شخصية بتنربط بالطلب** · فلازم تنذكر بالاسم.
+     · 🔴 **kodee_message_sent** · محادثة هوستنجر الذكية شغّالة على الموقع
+       الحيّ · يعني في **طرف ثالث** بيشوف الصفحة.
+
+     ══════════════════════════════════════════════════════════════════════
+     ٢ · الأرضية القانونية · متحقَّق منها من مصدر رسمي ٣١ آب
+     ══════════════════════════════════════════════════════════════════════
+     **قانون حماية البيانات الشخصية الأردني رقم (٢٤) لسنة ٢٠٢٣**
+     · نُشر بالجريدة الرسمية ١٧ أيلول ٢٠٢٣
+     · **نفذ ١٧ آذار ٢٠٢٤** (بعد ستة شهور من النشر)
+     · ومهلة توفيق أوضاع سنة من تاريخ النفاذ
+     المصدر: وزارة الاقتصاد الرقمي والريادة · modee.gov.jo
+
+     ⚠️ وما استشهدنا بأي مادة برقمها · الاستشهاد الدقيق بده مراجعة محامٍ،
+        والرقم الغلط بصفحة قانونية أسوأ من ولا رقم.
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴 أربعة أقفال بتنتظر صاحب المشروع · ما انخترعت ولا وحدة
+     ══════════════════════════════════════════════════════════════════════
+     ١ · **الجهة المسؤولة قانونياً** · الاسم التجاري المسجّل وعنوانه.
+     ٢ · **إيميل التواصل للخصوصية** · orders@plasmajo.com **لساه ما انعمل**
+         (بند ٦.١.ب معلّق) · فالصفحة بتوصّل لـ/contact مؤقتاً.
+     ٣ · **شركة التوصيل** · اسمها بينذكر لأن العنوان والهاتف بيوصلوها.
+     ٤ · **مدة الاحتفاظ** · كم سنة بتنحفظ بيانات الطلب · ما انكتب رقم.
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
+         data-nav-bg="light" id="page-head">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">سياسة الخصوصية</span>
+      </nav>
+
+      <p class="luvit-section__eyebrow">Privacy</p>
+      <h1 class="luvit-section__title">سياسة الخصوصية</h1>
+      <p class="luvit-section__sub">
+        شو بناخذ منك، وليش، ومين بيشوفه · مكتوبة بلغة تفهميها من أول قراءة،
+        لأن سياسة ما بتنقرا ما إلها قيمة.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٢ · التلاتة اللي بتحسم الموضوع ═══════════════
+     البلوك هاد هو الصفحة عملياً · والباقي تفصيل إله.
+     وكلها **مفحوصة** لا موعودة. -->
+<section class="luvit-section band-light" data-nav-bg="light" id="short">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">The short version</p>
+      <h2 class="luvit-section__title">تلاتة بتحسم الموضوع</h2>
+      <p class="luvit-section__sub">ولو ما قريتِ غيرهم، بتكوني عارفة الأساسي.</p>
+    </div>
+
+    <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
+
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">✦</span>
+          <h3 class="luvit-card__title">ولا بيانات بطاقة عنّا</h3>
+          <p class="luvit-card__text">
+            الدفع <strong>عند الاستلام فقط</strong> · فما في رقم بطاقة يمرّ
+            من الموقع أصلاً. مش لأننا بنحميه منيح · لأنه <strong>ما بيوصلنا</strong>.
+          </p>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">◆</span>
+          <h3 class="luvit-card__title">ولا تتبّع إعلاني</h3>
+          <p class="luvit-card__text">
+            ما بنركّب بكسل فيسبوك ولا جوجل أناليتكس ولا تيك توك ولا أي أداة
+            بتلاحقك على مواقع تانية. <strong>ولا واحد منهم.</strong>
+          </p>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--feature">
+        <div class="luvit-card__body">
+          <span class="luvit-card__icon" aria-hidden="true">●</span>
+          <h3 class="luvit-card__title">وبنجمع اللي الطلب بده إياه</h3>
+          <p class="luvit-card__text">
+            اسم وعنوان وهاتف عشان توصلك الطلبية · وإيميل عشان يوصلك تأكيدها.
+            <strong>ما منبيع بياناتك ولا منأجّرها لحدا.</strong>
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٣ · شو بنجمع · بالضبط ═══════════════
+     🔴 اللائحة هاي **مسحوبة من عقد الشيك أوت نفسه**، مش مكتوبة من الذاكرة.
+        لو تغيّرت الحقول بووكومرس، هالسكشن بيصير غلط ولازم يتحدّث. -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="what">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">What we collect</p>
+      <h2 class="luvit-section__title">شو بنجمع بالضبط</h2>
+      <p class="luvit-section__sub">
+        بلا «قد نجمع بعض المعلومات» · هاي اللائحة الكاملة.
+      </p>
+    </div>
+
+    <ol class="luvit-steps" data-luvit="stagger">
+
+      <li class="luvit-step">
+        <span class="luvit-step__num">١</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">لما تعملي طلب</h3>
+          <p class="luvit-step__text">
+            الاسم الأول والأخير · العنوان (سطر وسطر ثاني اختياري) · المدينة ·
+            المحافظة · الرمز البريدي · الدولة · رقم الهاتف · البريد الإلكتروني ·
+            واسم الشركة لو حبيتِ تكتبيه · وملاحظة الطلب لو كتبتِ وحدة.
+            <strong>وهاي كلها بتروح مع الطلبية عشان توصلك.</strong>
+          </p>
+        </div>
+      </li>
+
+      <li class="luvit-step">
+        <span class="luvit-step__num">٢</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">لو عملتِ حساب</h3>
+          <p class="luvit-step__text">
+            نفس البيانات فوق بتنحفظ بحسابك عشان ما تعيدي كتابتها كل مرة ·
+            مع <strong>كلمة سر مشفّرة</strong> ما بنقدر نقراها لا إحنا ولا حدا.
+            والحساب اختياري تماماً · بتقدري تطلبي بلاه.
+          </p>
+        </div>
+      </li>
+
+      <li class="luvit-step">
+        <span class="luvit-step__num">٣</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">وأشياء بتنسجّل تلقائياً</h3>
+          <p class="luvit-step__text">
+            عنوان الـIP تبعك · نوع المتصفح والجهاز · ومن وين وصلتِ للموقع
+            (إعلان · بحث · رابط من حساب) · وكم صفحة تصفّحتِ.
+            <strong>ليش:</strong> عشان نعرف الطلبات جاية من وين، وعشان نمسك
+            محاولات الاحتيال. وبتنحفظ بكوكيز على متصفحك إنتِ.
+          </p>
+        </div>
+      </li>
+
+    </ol>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٤ · وشو ما بنجمعه · وهاد نص السياسة ═══════════════
+     🔴 كل نفي هون **مفحوص** · النفي غير المفحوص كذب صريح. -->
+<section class="luvit-section band-light" data-nav-bg="light" id="not">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">What we don't</p>
+      <h2 class="luvit-section__title">وشو ما بنجمعه</h2>
+      <p class="luvit-section__sub">
+        وهاي أهم من اللي فوقها · لأنها بتحسم اللي بتخافي منه.
+      </p>
+    </div>
+
+    <div class="luvit-trust" data-luvit="stagger">
+
+      <div class="luvit-trust__item">
+        <p class="luvit-trust__title">ولا رقم بطاقة</p>
+        <p class="luvit-trust__note">
+          الدفع عند الاستلام فقط · فما في بوابة دفع على الموقع من الأساس.
+        </p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <p class="luvit-trust__title">ولا بكسل إعلاني</p>
+        <p class="luvit-trust__note">
+          ولا فيسبوك ولا إنستغرام ولا تيك توك ولا جوجل · ما بنلاحقك برّا الموقع.
+        </p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <p class="luvit-trust__title">ولا بيع ولا تأجير</p>
+        <p class="luvit-trust__note">
+          بياناتك ما بتنباع ولا بتنعطى لجهة تسويقية · ولا مرة، ولا مقابل شي.
+        </p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <p class="luvit-trust__title">ولا بيانات صحية</p>
+        <p class="luvit-trust__note">
+          اختبار البشرة بيشتغل على متصفحك · جوابك ما بينحفظ عندنا مربوطاً باسمك.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٥ · مين بيشوف بياناتك ═══════════════
+     🔴 اسم شركة التوصيل قفل معلّق · مكتوب عام لحد ما ينثبّت. -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="who">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Who sees it</p>
+      <h2 class="luvit-section__title">مين بيشوفها غيرنا</h2>
+      <p class="luvit-section__sub">
+        تلات جهات وبس · وكل وحدة بتشوف اللي شغلها بيحتاجه لا أكثر.
+      </p>
+    </div>
+
+    <ol class="luvit-steps" data-luvit="stagger">
+
+      <li class="luvit-step">
+        <span class="luvit-step__num">١</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">شركة التوصيل</h3>
+          <p class="luvit-step__text">
+            بتاخذ <strong>اسمك وعنوانك ورقم هاتفك</strong> عشان توصّلك الطلبية ·
+            وهاد الحد. ما بتاخذ إيميلك ولا شو اشتريتِ بالتفصيل.
+          </p>
+        </div>
+      </li>
+
+      <li class="luvit-step">
+        <span class="luvit-step__num">٢</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">شركة الاستضافة</h3>
+          <p class="luvit-step__text">
+            الموقع مستضاف على خوادم <strong>هوستنجر</strong>، فالبيانات محفوظة
+            عندهم تقنياً. وعندهم كمان أداة محادثة بتشتغل على صفحات الموقع.
+          </p>
+        </div>
+      </li>
+
+      <li class="luvit-step">
+        <span class="luvit-step__num">٣</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">والجهات الرسمية · لو طلبت</h3>
+          <p class="luvit-step__text">
+            بحالة طلب قانوني رسمي بس · وهاد استثناء نادر ما بيصير إلا بأمر
+            من جهة مختصة.
+          </p>
+        </div>
+      </li>
+
+    </ol>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٦ · حقوقك ═══════════════
+     مبنية على قانون حماية البيانات الشخصية الأردني ٢٤/٢٠٢٣ (نفذ ١٧ آذار
+     ٢٠٢٤) · وبلا استشهاد بمادة برقمها، شوف التعليق بأعلى الملف. -->
+<section class="luvit-section band-light" data-nav-bg="light" id="rights">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Your rights</p>
+      <h2 class="luvit-section__title">وحقوقك عندنا</h2>
+      <p class="luvit-section__sub">
+        مضمونة بقانون حماية البيانات الشخصية الأردني رقم ٢٤ لسنة ٢٠٢٣ ·
+        وممارستها بتاخذ رسالة وحدة.
+      </p>
+    </div>
+
+    <div class="luvit-trust" data-luvit="stagger">
+
+      <div class="luvit-trust__item">
+        <p class="luvit-trust__title">تشوفي شو عنّا</p>
+        <p class="luvit-trust__note">بتطلبي نسخة من كل بياناتك المحفوظة عندنا.</p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <p class="luvit-trust__title">تصحّحي الغلط</p>
+        <p class="luvit-trust__note">عنوان قديم أو رقم تغيّر · بتقوليلنا ومنعدّله.</p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <p class="luvit-trust__title">تحذفي بياناتك</p>
+        <p class="luvit-trust__note">
+          ما عدا اللي القانون بيلزمنا نحفظه (سجلات الطلبات محاسبياً).
+        </p>
+      </div>
+
+      <div class="luvit-trust__item">
+        <p class="luvit-trust__title">تسحبي موافقتك</p>
+        <p class="luvit-trust__note">
+          بأي وقت · وبلا ما نسألك ليش، وبلا ما يأثّر على طلبات سابقة.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--arrow" href="/contact">تواصلي معنا</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٧ · أسئلة ═══════════════ -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="faq">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Questions</p>
+      <h2 class="luvit-section__title">أسئلة عن الخصوصية</h2>
+    </div>
+
+    <div class="luvit-acc" data-luvit="stagger">
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          بتحتفظوا برقم بطاقتي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            لأ · وما بنقدر أصلاً. الدفع عند الاستلام هو <strong>الطريقة الوحيدة</strong>
+            المتاحة، يعني ما في بوابة دفع على الموقع ولا حقل لرقم بطاقة.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          ليش بتسجّلوا عنوان الـIP تبعي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            لسببين: نعرف الطلبات جاية من وين (إعلان · بحث · رابط) عشان نعرف شو
+            بينفع، ونمسك محاولات الطلبات الوهمية. <strong>وما بنستعمله لملاحقتك
+            بمواقع تانية</strong> · ما عنّا أدوات تعمل هيك أصلاً.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          بتبعتولي إعلانات على الإيميل؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            إيميلات الطلب بتوصلك دايماً (تأكيد · شحن) لأنها جزء من الخدمة.
+            وأي إيميل تسويقي <strong>بده اشتراكك الصريح</strong> · وبتقدري
+            تلغيه من رابط بآخر أي رسالة.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          جوابي باختبار البشرة بينحفظ؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            الاختبار بيشتغل على متصفحك وبيعطيك النتيجة مباشرةً ·
+            <strong>ما بنحفظ إجاباتك مربوطة باسمك أو إيميلك.</strong>
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كيف بحذف بياناتي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            راسلينا من صفحة <a href="/contact">تواصلي معنا</a> وبنحذفها ·
+            ما عدا سجلات الطلبات اللي القانون بيلزمنا نحتفظ فيها لأغراض محاسبية.
+            وبنردّ عليكِ بأسرع وقت ممكن.
+          </p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+
+</main>
+
+<script>
+  /* Local preview only: the onward pages do not exist yet, so a click on one
+     would 404 the preview server. Every href is REAL and ships as written. */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="/"]');
+    if (a) e.preventDefault();
+  });
+</script>
+</body>
+</html>
