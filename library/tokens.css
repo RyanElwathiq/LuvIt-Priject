@@ -771,7 +771,7 @@ h1, h2, h3, h4, .luvit-heading {
   font-size: var(--text-caption);
   letter-spacing: var(--tracking-caption);
   text-transform: uppercase;
-  color: var(--aqua-600);
+  color: var(--aqua-700);
 }
 .luvit-card__title {
   font-family: var(--font-heading);
@@ -2804,11 +2804,21 @@ body.luvit-locked { overflow: hidden; }
 .luvit-trust__note {
   margin: 0;
   font-size: var(--text-caption);
-  color: var(--color-ink-faint);
+  color: var(--color-ink-soft);
 }
 /* On a dark water section */
 .luvit-trust--on-dark .luvit-trust__title { color: #fff; }
 .luvit-trust--on-dark .luvit-trust__note  { color: rgba(255,255,255,.75); }
+
+/* 🔴 العناوين الصغيرة على خلفية غامقة · aqua-700 عليها 2.22:1 يعني عمياء.
+   الأساس انغمّق لـaqua-700 لأنه على الأبيض بيعطي 6.10 بدل 4.25 · وهاد
+   بيعمي الغامق، فالغامق بده تجاوزه: aqua-400 عليه 6.64:1.
+   وبلا هالسطرين، إصلاح الفاتح بيكسر الغامق **بصمت**. */
+.luvit-deep .luvit-card__eyebrow,
+.luvit-deep .luvit-section__eyebrow,
+.luvit-section--dark .luvit-card__eyebrow,
+.luvit-section--dark .luvit-section__eyebrow,
+.luvit-card--on-dark .luvit-card__eyebrow { color: var(--aqua-400); }
 
 /* ==========================================================================
    LIQUID GLASS v1  —  COMPONENT 8: STEPS  ("كيف تطلبي")
@@ -3130,7 +3140,7 @@ body.luvit-locked { overflow: hidden; }
   font-size: var(--text-caption);
   letter-spacing: var(--tracking-caption);
   text-transform: uppercase;
-  color: var(--aqua-600);
+  color: var(--aqua-700);
   margin: 0 0 var(--space-2);
 }
 .luvit-section__title {

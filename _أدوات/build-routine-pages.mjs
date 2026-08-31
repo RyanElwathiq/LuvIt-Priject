@@ -346,6 +346,21 @@ ${others.map((o) => `      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-da
       العنوان هدف، وتحته سطر «مناسب لـ» بأنواع البشرة. هيك ما بتضيع وحدة
       بتدوّر على «البشرة الدهنية» وما بتلاقيها.
    ═══════════════════════════════════════════════════════════════════════════ */
+/* ══ الهَب · صفحة «ليش الروتين» لا صفحة شراء تانية ═══════════════════
+   🔴 قرار بنيوي · ٣١ آب:
+   صفحة المتجر صار فيها **مختار أهداف** بنفس الروتينات. لو الهَب عرضهم
+   كشبكة شراء كمان، بنرجع لنفس شكوى ريّان القديمة: «إيش الفرق بين المتجر
+   والمنتجات؟».
+
+   فالتقسيم بالوظيفة:
+     · المتجر    = **تشتري**  · مختار الأهداف والتشكيلة
+     · الروتينات = **تفهم**   · ليش الترتيب بيفرق وشو بتعمل كل خطوة
+   والشراء من هون بيروح لصفحة الروتين نفسها، مش زرّ سلة مكرّر.
+
+   🔴 وولا كلاس جديد بهالدالة · كلهم موجودين بـtokens.css من قبل:
+   luvit-steps · luvit-step__num/__body/__title/__text · luvit-trust ·
+   luvit-section__head--start. فتّشنا قبل ما نخترع، وهاي القاعدة اللي
+   كلّفتنا مرتين بنفس اليوم لما ما اتّبعناها.                          */
 function hub() {
   return `<!--
   ============================================================================
@@ -358,7 +373,7 @@ function hub() {
 <section class="luvit-section luvit-section--tight band-mist luvit-page-top"
          data-nav-bg="light" id="page-head">
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
 
       <nav aria-label="مسار التنقّل">
         <a href="/">الرئيسية</a>
@@ -366,11 +381,11 @@ function hub() {
         <span aria-current="page">الروتينات</span>
       </nav>
 
-      <p class="luvit-section__eyebrow">Our Routines</p>
-      <h1 class="luvit-section__title">تلات روتينات · كل واحد لهدف</h1>
+      <p class="luvit-section__eyebrow">Why order matters</p>
+      <h1 class="luvit-section__title">الروتين مش أربع منتجات · هو ترتيب</h1>
       <p class="luvit-section__sub">
-        كل روتين أربع خطوات بنفس الترتيب · تنظيف، تونر، سيروم، وقفل ترطيب.
-        اللي بيتغيّر هو المنتجات حسب اللي بدك توصليله.
+        نفس القطع بترتيب غلط بتعطي نتيجة أضعف بكثير. هون بنفرجيكي شو بتعمل
+        كل خطوة وليش مكانها هون بالذات · وبعدها بتختاري بثقة.
       </p>
 
     </div>
@@ -378,46 +393,167 @@ function hub() {
 </section>
 
 
+<section class="luvit-section band-light" data-nav-bg="light" id="why">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
+      <h2 class="luvit-section__title">ليش نصّ اللي بتشتريه ما بيبيّن</h2>
+      <p class="luvit-section__sub">
+        مش لأن المنتج ضعيف · بالعادة لواحد من تلاتة، وكلهم بينحلّوا بالترتيب.
+      </p>
+    </div>
+
+    <div class="luvit-trust" data-luvit="stagger">
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M11 18h2"/></svg>
+        </span>
+        <p class="luvit-trust__title">منتجات عشوائية</p>
+        <p class="luvit-trust__note">كل شهر تركيبة جديدة · فالبشرة ما بتاخذ وقتها تستجيب لولا وحدة.</p>
+      </div>
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3v6"/><path d="m14 6 3-3 3 3"/><path d="M7 21v-6"/><path d="m4 18 3 3 3-3"/></svg>
+        </span>
+        <p class="luvit-trust__title">ترتيب غلط</p>
+        <p class="luvit-trust__note">سيروم على بشرة مش محضّرة بينمتصّ أقل · فبتحسّي إنه ما نفع.</p>
+      </div>
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        </span>
+        <p class="luvit-trust__title">مش مناسبة لنوعك</p>
+        <p class="luvit-trust__note">نفس المنتج بيريّح بشرة وبيهيّج تانية · والفرق نوع البشرة مش جودة المنتج.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="luvit-section band-mist" data-nav-bg="light" id="how">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
+      <h2 class="luvit-section__title">أربع خطوات · كل وحدة بتحضّر اللي بعدها</h2>
+      <p class="luvit-section__sub">
+        هاد الترتيب مش تفضيلاً · كل خطوة بتترك البشرة بحالة بتخلّي اللي بعدها
+        يشتغل أحسن. واللي بيتغيّر بين روتين وروتين هو <b>المنتجات</b> لا الترتيب.
+      </p>
+    </div>
+
+    <ol class="luvit-steps" data-luvit="stagger">
+      <li class="luvit-step">
+        <span class="luvit-step__num">١</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">تنظيف</h3>
+          <p class="luvit-step__text">
+            بيشيل الزيت والأوساخ ومخلّفات اليوم · بلا ما يشدّ ولا يكسر الحاجز.
+            وبشرة نضيفة معناها كل اللي بعده بيوصل فعلاً.
+          </p>
+        </div>
+      </li>
+      <li class="luvit-step">
+        <span class="luvit-step__num">٢</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">تونر</h3>
+          <p class="luvit-step__text">
+            بيرجّع توازن البشرة بعد الغسيل وبيرطّبها الترطيب الأول · فبتصير
+            جاهزة تمتصّ السيروم بدل ما يقعد على السطح.
+          </p>
+        </div>
+      </li>
+      <li class="luvit-step">
+        <span class="luvit-step__num">٣</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">سيروم</h3>
+          <p class="luvit-step__text">
+            هون بتشتغل الخطوة على همّك إنتِ: إشراقة، ترطيب مكثّف، مسامات،
+            أو تفاوت لون. وهاي <b>الخطوة الوحيدة اللي بتتغيّر</b> بين الروتينات.
+          </p>
+        </div>
+      </li>
+      <li class="luvit-step">
+        <span class="luvit-step__num">٤</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">ترطيب</h3>
+          <p class="luvit-step__text">
+            بيقفل كل اللي قبله جوّا البشرة وبيدعم الحاجز · بلاه الترطيب بيتبخّر
+            والشغل اللي عملتيه بيروح مع أول ساعة.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+
 <section class="luvit-section band-light" data-nav-bg="light" id="routines">
   <div class="luvit-section__inner">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
+      <h2 class="luvit-section__title">والروتينات بتختلف بخطوة وحدة</h2>
+      <p class="luvit-section__sub">
+        نفس التنظيف ونفس التونر ونفس القفل · والسيروم هو اللي بيحدّد الهدف.
+        افتحي أي واحد تشوفي خطواته بالتفصيل.
+      </p>
+    </div>
 
     <div class="luvit-card-grid" data-luvit="stagger">
 ${ROUTINES.map((r) => {
-  const total = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
-  /* صورة البكج المركّبة · من ووكومرس مباشرة · وبتوقف البناء لو ما لقاها
-     بدل ما تطلع بطاقة بمربع فاضي. */
   const pack = woo.منتجات.find((x) => x.id === r.wooId);
   if (!pack || !pack.images.length) {
-    console.error('🔴 ما لقيت صورة بكج ' + r.key + ' (woo ' + r.wooId + ')');
+    console.error(String.fromCharCode(0x1F534) + " ما لقيت صورة بكج " + r.key);
     process.exit(1);
   }
-  pack.img = pack.images[0].src;
-  return `      <article class="luvit-card luvit-card--feature" data-goal="${r.key}">
+  return `      <article class="luvit-card luvit-card--feature" data-goal=${r.key}">
         <div class="luvit-card__media">
-          <img decoding="async" width="800" height="800"
-               src="${pack.img}" alt="${r.ar}">
+          <img decoding="async" loading="lazy" width="800" height="800"
+               src=${pack.images[0].src}" alt=${r.ar}">
         </div>
         <div class="luvit-card__body">
           <p class="luvit-card__eyebrow">${r.en}</p>
-          <h2 class="luvit-card__title">
+          <h3 class="luvit-card__title">
             <a class="luvit-card__link" href="/routines/${r.key}">${r.ar}</a>
-          </h2>
+          </h3>
           <p class="luvit-card__text">${r.sub}</p>
-          <ol class="luvit-card__steps">
-${r.steps.map(([k]) => '            <li>' + P[k].ar + '</li>').join(String.fromCharCode(10))}
-          </ol>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">${total.toFixed(2)}</span> د.أ</span>
-            <a href="/?add-to-cart=${r.wooId}" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="${r.wooId}" data-quantity="1"
-               aria-label="أضيفي ${r.ar} إلى السلة">أضيفي إلى السلة</a>
-          </div>
+          <p class="luvit-card__spec">السيروم: ${P[r.steps[2][0]].ar}</p>
         </div>
       </article>`;
-}).join('\n\n')}
+}).join("\n\n")}
+    </div>
+  </div>
+</section>
+
+
+<section class="luvit-section band-mist" data-nav-bg="light" id="where">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
+      <h2 class="luvit-section__title">وليش تثقي فينا</h2>
+      <p class="luvit-section__sub">
+        مش برأي مكتوب · بأشياء بتقدري تتأكدي منها بنفسك.
+      </p>
     </div>
 
+    <div class="luvit-trust" data-luvit="stagger">
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="9"/></svg>
+        </span>
+        <p class="luvit-trust__title">بتنباع بالصيدليات الأردنية</p>
+        <p class="luvit-trust__note">مش بس أونلاين · الصيدلية ما بتحطّ على رفّها بضاعة ما بتنباع.</p>
+      </div>
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="14" height="11" rx="2"/><path d="M15 9h4l3 3v5h-7z"/><circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/></svg>
+        </span>
+        <p class="luvit-trust__title">يوم لِيومين لكل الأردن</p>
+        <p class="luvit-trust__note">ديناران على القطعة المفردة · وبلاش مع أي روتين كامل.</p>
+      </div>
+      <div class="luvit-trust__item">
+        <span class="luvit-trust__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+        </span>
+        <p class="luvit-trust__title">افحصي قبل ما تدفعي</p>
+        <p class="luvit-trust__note">الدفع عند الاستلام · افتحي الطرد وشوفي الختوم قدام المندوب.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -426,13 +562,14 @@ ${r.steps.map(([k]) => '            <li>' + P[k].ar + '</li>').join(String.fromC
          data-luvit-bubbles="16" id="unsure">
   <span class="luvit-deep__rays" aria-hidden="true"></span>
   <div class="luvit-cta__panel" data-luvit="reveal">
-    <h2 class="luvit-cta__title luvit-cta__accent">مش متأكدة من نوع بشرتك؟</h2>
+    <h2 class="luvit-cta__title luvit-cta__accent">عرفتِ الترتيب · بقي تختاري هدفك</h2>
     <p class="luvit-cta__sub">
-      خمس أسئلة · بنقلّك نوع بشرتك وبنوصّلك للروتين الأنسب.
+      روحي على المتجر واختاري همّك، وبنعرضلك روتينه كامل بخطواته وسعره مفصّلاً.
+      ولو لساكِ مش متأكدة من نوع بشرتك، خمس أسئلة بتحسمها.
     </p>
     <div class="luvit-section__foot">
-      <a class="luvit-btn luvit-btn--arrow" href="/quiz">ابدئي الاختبار</a>
-      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/products">شوفي كل المنتجات</a>
+      <a class="luvit-btn luvit-btn--arrow" href="/products">اختاري روتينك</a>
+      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/quiz">ابدئي الاختبار</a>
     </div>
   </div>
 </section>
@@ -441,20 +578,36 @@ ${r.steps.map(([k]) => '            <li>' + P[k].ar + '</li>').join(String.fromC
 `;
 }
 
-let n = 0;
-for (const r of ROUTINES) {
-  const html = page(r);
-  const problems = [];
+/* ══ فاحص واحد لكل الصفحات ═══════════════════════════════════════════
+   🔴 كان الفحص بيشتغل **على صفحات الروتين وحدها** · والهَب بيمرّ بفحص
+      الكلاسات وبس. يعني أوسع صفحة بالقسم كانت أقلّهن فحصاً.
 
-  if ((html.match(/<h1[\s>]/g) || []).length !== 1) problems.push('عدد h1 مش واحد');
-  if (html.includes('—')) problems.push('شرطة طويلة');
-  if (/href="#"/.test(html)) problems.push('رابط ميت');
-  for (const t of ['section', 'div', 'nav', 'article', 'h1', 'h2', 'h3', 'a', 'p', 'span']) {
-    const o = (html.match(new RegExp('<' + t + '(?=[\\s>])', 'g')) || []).length;
-    const c = (html.match(new RegExp('</' + t + '>', 'g')) || []).length;
-    if (o !== c) problems.push(`<${t}> مش متوازن: ${o}/${c}`);
+   ⚠️ والنجمات بتنفحص **بعد شيل التعليقات**: تعليقات المطوّر مليانة
+      **تشديد** بالماركداون، وbuild-page.js بيشيل التعليقات أصلاً فما
+      بتوصل الزائرة. فحص بلا هالاستثناء بيطلّع إنذاراً كاذباً بكل بناء،
+      والفاحص المزعج بينتجاهل وبعدها بينشال.                            */
+function validate(html, file) {
+  const problems = [];
+  const visible = html.replace(/<!--[\s\S]*?-->/g, "");
+
+  if ((html.match(/<h1[\s>]/g) || []).length > 1) problems.push("أكثر من h1");
+  if (visible.includes("—")) problems.push("شرطة طويلة");
+  if (/href="#"/.test(html)) problems.push("رابط ميت");
+  if (/\*\*[^*\n]+\*\*/.test(visible)) problems.push("نجمات ماركداون بالمحتوى المرئي");
+  for (const tag of ["section", "div", "nav", "article", "h1", "h2", "h3", "a", "p", "span", "ol", "li"]) {
+    const o = (html.match(new RegExp("<" + tag + "(?=[\\s>])", "g")) || []).length;
+    const c = (html.match(new RegExp("</" + tag + ">", "g")) || []).length;
+    if (o !== c) problems.push("<" + tag + "> مش متوازن: " + o + "/" + c);
   }
-  if (problems.length) { problems.forEach((x) => console.error('🔴 ' + r.file + ' · ' + x)); process.exit(1); }
+  if (problems.length) {
+    problems.forEach((x) => console.error(String.fromCharCode(0x1F534) + " " + file + " · " + x));
+    process.exit(1);
+  }
+}
+
+let n = 0;for (const r of ROUTINES) {
+  const html = page(r);
+  validate(html, r.file);
 
   const nClasses = assertClasses(html, r.file);
   fs.writeFileSync(path.join(OUT, r.file), html, 'utf8');
@@ -464,9 +617,38 @@ for (const r of ROUTINES) {
 }
 /* الهَب */
 const hubHtml = hub();
+validate(hubHtml, 'r0-hub.html');
 const hubClasses = assertClasses(hubHtml, 'r0-hub.html');
 fs.writeFileSync(path.join(OUT, 'r0-hub.html'), hubHtml, 'utf8');
 console.log(`✅ ${'r0-hub.html'.padEnd(22)} الهَب · ${hubClasses} كلاس كلهم معرّفين · ${hubHtml.length} حرف`);
+
+/* ══ المعاينة الكاملة · بتنكتب من نفس المصدر ═══════════════════════════
+   🔴 ليش هون وليش آلياً:
+   `library/routines-hub-preview.html` كانت **نسخة يدوية** من نفس السكشن.
+   ونسختان لنفس المحتوى بتنحرفا بصمت: المولّد بيتحدّث والمعاينة بتضل قديمة،
+   فبتحكم على شكل مش موجود. صار معنا بنفس اليوم مع الهيرو (ثلاث نسخ)
+   ومع صفحات السكاشن.
+
+   فالمعاينة صارت **مخرَجاً** لا مصدراً: بنستبدل جوّا <main> وبس، والقشرة
+   (الترويسة والفوتر والسكربتات) بتضل زي ما هي لأنها مشتركة مع باقي
+   المعاينات.                                                            */
+const PREVIEW = path.join(LIB, "routines-hub-preview.html");
+if (fs.existsSync(PREVIEW)) {
+  const shell = fs.readFileSync(PREVIEW, "utf8");
+  const a = shell.indexOf("<main id=\"main\">");
+  const b = shell.indexOf("</main>", a);
+  if (a === -1 || b === -1) {
+    console.error("🔴 المعاينة بلا <main> · ما انتحدّثت");
+    process.exit(1);
+  }
+  const open = "<main id=\"main\">";
+  const next = shell.slice(0, a + open.length) + "\n\n" + hubHtml + "\n\n" + shell.slice(b);
+  fs.writeFileSync(PREVIEW, next, "utf8");
+  console.log("✅ " + "routines-hub-preview".padEnd(22) + " المعاينة انتحدّثت من نفس المصدر");
+} else {
+  console.error("🔴 ما لقيت routines-hub-preview.html");
+  process.exit(1);
+}
 
 console.log('');
 console.log((n + 1) + ' صفحات · متوازنة · بلا روابط ميتة · بلا كلاس مخترع');
