@@ -11144,3 +11144,165 @@ body.admin-bar #hero-seq .hero-story__cue {
 @media (prefers-reduced-motion: reduce) {
   .luvit-dive img { will-change: auto; filter: drop-shadow(0 10px 18px rgba(var(--lagoon-rgb), 0.3)); }
 }
+
+/* ══ ووكومرس · السلة الفاضية وشبكة «وصلنا جديد» ═══════════════════════
+   🔴 ريّان ١ أيلول: «بالله تفتحها وتشوفها وانت لحالك حتعرف قد ايش هيه
+      كارثية» · وكان محقاً. واللي انكشف بالفحص إن الطبقة **موجودة**
+      (١٥٩ محدّد ووكومرس بهالملف) بس **ناقصة بالضبط عند هالشاشة**:
+      الحاوية والعنوان مغطّيان، وكل اللي جوّاهم لأ.
+
+   واللي كان ظاهر على الموقع:
+     · وجه حزين أسود **٢١٠px** على علامة كل لغتها مي وهدوء
+     · أسماء منتجات **حمرا ومسطّرة** · شكل رابط خام
+     · أزرار **سودا** مش تركوازي العلامة                              */
+
+/* 🔴 الوجه الحزين · ووكومرس بيحقنه كأيقونة عبر الكلاس، مش كصورة
+   بالماركب · فبينشال من هون لا بتعديل المحتوى. */
+.wc-block-cart__empty-cart__title.with-empty-cart-icon::before,
+.wc-block-cart__empty-cart__title.with-empty-cart-icon::after {
+  content: none !important;
+}
+.wc-block-cart__empty-cart__title.with-empty-cart-icon {
+  background-image: none !important;
+  padding-block-start: 0 !important;
+}
+
+/* الفاصل المنقّط · بيقرا كخلل رسم لا كفاصل */
+.wp-block-woocommerce-empty-cart-block .wp-block-separator.is-style-dots {
+  display: none;
+}
+
+/* ── شبكة «وصلنا جديد» ─────────────────────────────────────────────── */
+.wc-block-grid__products {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wc-block-grid__product-link { text-decoration: none; }
+
+/* 🔴 العنوان كان أحمر ومسطّراً · لون الرابط الخام تبع المتصفح */
+.wc-block-grid__product-title {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--color-ink);
+  text-decoration: none;
+  margin-block: var(--space-2) var(--space-1);
+}
+.wc-block-grid__product-title a,
+.wc-block-grid__product-link .wc-block-grid__product-title {
+  color: inherit;
+  text-decoration: none;
+}
+.wc-block-grid__product-link:hover .wc-block-grid__product-title {
+  color: var(--aqua-700);
+}
+
+.wc-block-grid__product-price {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* أرضية الصورة **بلون خلفية صور المنتجات نفسها** · مقيس rgb(243,250,250)
+   · وإلا بيطلع إطار حوالي العبوة (فخ مقيس بصفحة المتجر ٣١ آب). */
+.wc-block-grid__product-image {
+  display: block;
+  border-radius: var(--radius-md);
+  overflow: clip;
+  background: #F3FAFA;
+  margin-block-end: var(--space-2);
+}
+.wc-block-grid__product-image img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+/* 🔴 الزر كان أسود كبسولياً · بيصير زر العلامة.
+   والمحدّد مضاعف الكلاس (مش !important) لأن ووكومرس بيشحن قواعده
+   الخاصة · وهاي قاعدة المشروع بالتصادم. */
+.wc-block-grid__product .wc-block-grid__product-add-to-cart a.wp-block-button__link,
+.wc-block-grid__product .wc-block-grid__product-add-to-cart .wp-block-button__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--aqua-700);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .2s ease, transform .18s cubic-bezier(.22,.61,.36,1);
+}
+.wc-block-grid__product .wc-block-grid__product-add-to-cart .wp-block-button__link:hover {
+  background: var(--aqua-800);
+}
+.wc-block-grid__product .wc-block-grid__product-add-to-cart .wp-block-button__link:active {
+  transform: scale(.98);
+}
+
+/* ── الحالة الفاضية اللي بنكتبها إحنا (بلوك HTML بالصفحة) ─────────── */
+.luvit-empty { text-align: center; padding-block: var(--space-6) var(--space-7); }
+.luvit-empty__mark {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 78px;
+  block-size: 78px;
+  border-radius: 50%;
+  margin-block-end: var(--space-4);
+  color: var(--aqua-700);
+  background: radial-gradient(72% 72% at 50% 34%, #F1FBFD, #E2F4F8);
+}
+.luvit-empty__title {
+  font-family: var(--font-heading);
+  font-size: clamp(21px, 2.6vw, 28px);
+  line-height: 1.28;
+  color: var(--color-ink);
+  margin: 0 0 var(--space-2);
+}
+.luvit-empty__sub {
+  margin: 0 auto var(--space-5);
+  max-inline-size: 46ch;
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+}
+.luvit-empty__foot {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── إصلاحان مقيسان على الموقع الحيّ · ١ أيلول ─────────────────────── */
+
+/* 🔴 ١ · التسطير · قالب Hello Elementor فيه:
+       .comments-area a, .page-content a { text-decoration: underline }
+   خصوصيتها (0,1,1) وقاعدتنا .luvit-btn (0,1,0) · **فالقالب بيغلب**
+   وكل أزرارنا جوّا محتوى الصفحة بتطلع مسطّرة.
+   والحل **مضاعفة الكلاس** (0,2,0) لا !important · قاعدة المشروع بالتصادم. */
+.luvit-btn.luvit-btn { text-decoration: none; }
+
+/* 🔴 ٢ · لون عنوان المنتج · وهون **قاعدتنا هزمت قاعدتنا**:
+       .wc-block-grid__product-title { color: var(--color-ink) }   ← الأولى
+       .wc-block-grid__product-title a { color: inherit }          ← وبتغلبها
+   و`inherit` بتورّث الوردي rgb(204,51,102) من الرابط اللي فوقها.
+   فالحل تلوين **الرابط الحاوي** عشان الوراثة تجيب الصح. */
+.wc-block-grid__product-link,
+.wc-block-grid__product-link:visited {
+  color: var(--color-ink);
+  text-decoration: none;
+}
