@@ -1,20 +1,44 @@
 <!-- wp:html -->
-<section class="luvit-section luvit-section--tight band-mist luvit-shop-root" data-nav-bg="light" id="page-head">
-  <div class="luvit-promise">
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg> الدفع عند الاستلام</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V6h11v10"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg> التوصيل خلال يوم · ويومين بالأكثر</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6.5L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M7.5 15h9"/></svg> النِسَب مكتوبة على العبوة</span>
-  </div>
+<section class="shop-hero" id="page-head" data-nav-bg="dark">
+  <div class="shop-hero__track">
+    <div class="shop-hero__pin">
+      <canvas class="shop-hero__canvas" id="seqCanvas" aria-hidden="true"></canvas>
+      <span class="shop-hero__scrim" aria-hidden="true"></span>
+      <div class="shop-hero__load" id="seqLoad" aria-hidden="true"><i></i></div>
 
-  <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Shop</p>
-      <h1 class="luvit-section__title">التشكيلة كاملة، والنِسَب مكتوبة</h1>
-      <p class="luvit-section__sub">11 منتجاً مفرداً و3 روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
+      <div class="shop-hero__copy">
+        <p class="shop-hero__eyebrow">التشكيلة كاملة</p>
+        <h1>كل خطوة إلها <em>شغلة</em>، وكل مكوّن إله سبب</h1>
+        <p class="shop-hero__sub">
+          منظّف بينضّف بلا ما يشدّ · تونر بيهيّئ بشرتك تمتصّ اللي بعده · سيروم
+          بيشتغل على همّك إنتِ · وكريم بيقفل الترطيب لآخر اليوم. اختاري بهدفك،
+          وإحنا رتّبنا الباقي.
+        </p>
+        <div class="shop-hero__cta">
+          <a class="luvit-btn" href="#packages">ابدأي بروتين جاهز</a>
+          <!-- 🔴 luvit-btn--on-dark إلزامي هون · بلاه tokens.css بيفرض
+               color: var(--aqua-700) !important على .luvit-btn--ghost،
+               والـ!important بتغلب أي خصوصية. النتيجة كانت **1.63:1**.
+               والكلاس موثّق بـELEMENTOR-GUIDE.md سطر ٨١. -->
+          <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="#catalogue">أو شوفي المنتجات وحدة وحدة</a>
+        </div>
 
-      <div class="luvit-section__foot">
-        <a class="luvit-btn luvit-btn--arrow" href="#packages">ابدأي بروتين جاهز</a>
-        <a class="luvit-btn luvit-btn--ghost" href="#products">أو شوفي المنتجات وحدة وحدة</a>
+      </div>
+
+      <!-- 🔴 الحقائق **برّا** كتلة الكلام · لأن .shop-hero__copy نفسها
+           absolute، فلو ضلّت جوّاها بينحسب inset-block-end من قاعها هي
+           مش من قاع اللوح · وبترجع تقعد فوق العبوات من جديد. -->
+      <div class="shop-hero__facts">
+        <div class="shop-hero__fact"><b>١٢</b><span>منتجاً بالتشكيلة</span></div>
+        <div class="shop-hero__fact"><b>٤</b><span>روتينات جاهزة</span></div>
+        <div class="shop-hero__fact"><b>يوم لِيومين</b><span>توصيل لكل الأردن</span></div>
+        <div class="shop-hero__fact"><b>٢ د.أ</b><span>وبلاش مع أي روتين</span></div>
+      </div>
+
+      <div class="shop-hero__wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+          <path d="M0,52 C220,88 380,10 620,32 C860,54 1040,92 1240,64 C1330,52 1390,40 1440,34 L1440,90 L0,90 Z" fill="#FFFFFF"/>
+        </svg>
       </div>
     </div>
   </div>
@@ -22,81 +46,47 @@
 <!-- /wp:html -->
 
 <!-- wp:html -->
-<section class="luvit-section band-light" data-nav-bg="light" id="packages">
-  <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <h2 class="luvit-section__title">روتين كامل بطلبية وحدة</h2>
-      <p class="luvit-section__sub">أربع خطوات مرتّبة بترتيبها الصح · والتوصيل مجاني مع أي روتين.</p>
+<section class="pk luvit-grain" id="packages" data-nav-bg="light">
+  <div class="pk__inner">
+
+    <div class="pk__head">
+      <h2>اختاري همّك، وإحنا رتّبنا الروتين</h2>
+      <p>
+        القطعة الوحدة بتشتغل لحالها، بس النتيجة بتيجي من التسلسل: كل خطوة
+        بتحضّر البشرة للي بعدها، وآخر خطوة بتقفل الشغل كله.
+        <b>وسعر الروتين مجموع قطعه بالضبط، بتشوفيه مفصّلاً تحت.</b>
+      </p>
     </div>
 
-    <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
-      <article class="luvit-card luvit-card--feature" data-goal="hydration">
-        <div class="luvit-card__media">
-          <img decoding="async" width="800" height="800"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-hydration.webp" alt="روتين الترطيب والدعم اليومي">
-        </div>
-        <div class="luvit-card__body">
-          <h3 class="luvit-card__title"><a href="/product/hydration-support-routine/">روتين الترطيب والدعم اليومي</a></h3>
-          <ol class="luvit-card__steps">
-            <li>غسول البشرة الجافة والحساسة</li>
-            <li>تونر البشرة الجافة والحساسة</li>
-            <li>سيروم الترطيب المكثّف</li>
-            <li data-shared>كريم الترطيب والترميم <small>بالثلاثة</small></li>
-          </ol>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">60.00</span> د.أ</span>
-            <a href="/?add-to-cart=205" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="205" data-quantity="1"
-               aria-label="أضيفي روتين الترطيب والدعم اليومي إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--feature" data-goal="clarify">
-        <div class="luvit-card__media">
-          <img decoding="async" width="800" height="800"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-clarify.webp" alt="روتين التنقية والتوازن">
-        </div>
-        <div class="luvit-card__body">
-          <h3 class="luvit-card__title"><a href="/product/clarify-balance-routine/">روتين التنقية والتوازن</a></h3>
-          <ol class="luvit-card__steps">
-            <li>غسول البشرة الدهنية</li>
-            <li>تونر تضييق المسامات</li>
-            <li>سيروم فيتامين سي</li>
-            <li data-shared>كريم الترطيب والترميم <small>بالثلاثة</small></li>
-          </ol>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">61.00</span> د.أ</span>
-            <a href="/?add-to-cart=204" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="204" data-quantity="1"
-               aria-label="أضيفي روتين التنقية والتوازن إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--feature" data-goal="glow">
-        <div class="luvit-card__media">
-          <img decoding="async" width="800" height="800"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-glow.webp" alt="روتين الإشراقة">
-        </div>
-        <div class="luvit-card__body">
-          <h3 class="luvit-card__title"><a href="/product/brighten-glow-routine/">روتين الإشراقة</a></h3>
-          <ol class="luvit-card__steps">
-            <li>غسول البشرة الجافة والحساسة</li>
-            <li>تونر البشرة الجافة والحساسة</li>
-            <li>سيروم فيتامين سي</li>
-            <li data-shared>كريم الترطيب والترميم <small>بالثلاثة</small></li>
-          </ol>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">61.00</span> د.أ</span>
-            <a href="/?add-to-cart=203" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="203" data-quantity="1"
-               aria-label="أضيفي روتين الإشراقة إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
+    <!-- شريط الأهداف · tablist حقيقي عشان الكيبورد وقارئ الشاشة -->
+    <div class="pk__rail" role="tablist" aria-label="اختاري هدفك" id="pkrail">
+      <span class="pk__ind" aria-hidden="true" id="pkind"></span>
     </div>
+
+    <p class="pk__quiz">
+      <span>مش متأكدة أي هدف يناسب بشرتك؟</span>
+      <a href="/quiz">
+        جاوبي خمس أسئلة وبنقولك
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      </a>
+    </p>
+
+    <div class="pk__panel" id="pkpanel"></div>
+    <div class="pk__promise">
+      <div>
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="14" height="11" rx="2"/><path d="M15 9h4l3 3v5h-7z"/><circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/></svg>
+        <div><b>التوصيل مجاني مع أي روتين</b><p>ديناران على القطعة المفردة · وصفر لأي طلبية فيها روتين.</p></div>
+      </div>
+      <div>
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>
+        <div><b>سعر واحد، بالموقع وبالصيدلية</b><p>ما منرفع السعر عشان ننزّله. سعر البكج مجموع قطعه بالضبط.</p></div>
+      </div>
+      <div>
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+        <div><b>افحصي قبل ما تدفعي</b><p>الدفع عند الاستلام · افتحي الطرد وشوفي الختوم قدام المندوب.</p></div>
+      </div>
+    </div>
+
   </div>
 </section>
 <!-- /wp:html -->
@@ -132,292 +122,13 @@
 <!-- /wp:html -->
 
 <!-- wp:html -->
-<section class="luvit-section band-light" data-nav-bg="light" id="products">
-  <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <h2 class="luvit-section__title">المنتجات بترتيب استعمالها</h2>
-      <p class="luvit-section__sub">من الغسول للكريم · الرقم على كل بطاقة هو مكانها بالروتين.</p>
+<section class="cat luvit-grain" id="catalogue" data-nav-bg="light">
+  <div class="cat__inner">
+    <div class="cat__head">
+      <h2>التشكيلة بترتيب استعمالها</h2>
+      <p>كل مجموعة خطوة بروتينك · فتشوفي مكان كل منتج قبل ما تشتري، مش لائحة بتدبّري حالك فيها.</p>
     </div>
-
-    <div class="luvit-card-grid" data-luvit="stagger">
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">0.5%</span> حمض الساليسيليك</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-1-bottle.webp" alt="غسول البشرة الدهنية">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">1</span>
-            <p class="luvit-card__spec">
-              <b>تنظيف</b>
-              <span class="luvit-card__vol">200ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/sebum-balancing-gel-cleanser/">غسول البشرة الدهنية</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من SLS وSLES · نباتي ١٠٠٪</p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">14.00</span> د.أ</span>
-            <a href="/?add-to-cart=280" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="280" data-quantity="1"
-               aria-label="أضيفي غسول البشرة الدهنية إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">0.5%</span> حمض هيالورونيك</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-hydrating-gel-cleanser-1-bottle.webp" alt="غسول البشرة الجافة والحساسة">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">1</span>
-            <p class="luvit-card__spec">
-              <b>تنظيف</b>
-              <span class="luvit-card__vol">200ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/hydrating-gel-cleanser/">غسول البشرة الجافة والحساسة</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من SLS وSLES · نباتي ١٠٠٪</p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">14.00</span> د.أ</span>
-            <a href="/?add-to-cart=201" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="201" data-quantity="1"
-               aria-label="أضيفي غسول البشرة الجافة والحساسة إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">5% + 0.5%</span> AHA + BHA</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-1-bottle.webp" alt="تونر تضييق المسامات">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">2</span>
-            <p class="luvit-card__spec">
-              <b>توازن</b>
-              <span class="luvit-card__vol">200ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/clarifying-pore-tightening-toner/">تونر تضييق المسامات</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من العطور</p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">13.00</span> د.أ</span>
-            <a href="/?add-to-cart=278" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="278" data-quantity="1"
-               aria-label="أضيفي تونر تضييق المسامات إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">2%</span> حمض الهيالورونيك 8D</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-1-bottle.webp" alt="تونر البشرة الجافة والحساسة">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">2</span>
-            <p class="luvit-card__spec">
-              <b>توازن</b>
-              <span class="luvit-card__vol">200ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/8d-hyaluronic-acid-toner/">تونر البشرة الجافة والحساسة</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من الكحول</p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">13.00</span> د.أ</span>
-            <a href="/?add-to-cart=202" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="202" data-quantity="1"
-               aria-label="أضيفي تونر البشرة الجافة والحساسة إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">10% + 2%</span> AHA + BHA</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-1-bottle.webp" alt="سيروم التقشير">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">3</span>
-            <p class="luvit-card__spec">
-              <b>علاج</b>
-              <span class="luvit-card__vol">30ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/aha-bha-peeling-serum/">سيروم التقشير</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من العطور</p>
-          <p class="luvit-card__warn">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 8v5"/><path d="M12 16.5h.01"/><circle cx="12" cy="12" r="9"/></svg>
-            مرتين بالأسبوع · مش يومي
-          </p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">16.00</span> د.أ</span>
-            <a href="/?add-to-cart=279" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="279" data-quantity="1"
-               aria-label="أضيفي سيروم التقشير إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">10%</span> نياسيناميد</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-1-bottle.webp" alt="سيروم تضييق المسامات">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">3</span>
-            <p class="luvit-card__spec">
-              <b>علاج</b>
-              <span class="luvit-card__vol">30ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/pore-tightening-brightening-serum/">سيروم تضييق المسامات</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من الكحول · خالٍ من الملوّنات</p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">16.00</span> د.أ</span>
-            <a href="/?add-to-cart=277" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="277" data-quantity="1"
-               aria-label="أضيفي سيروم تضييق المسامات إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">5%</span> سنتيلا</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-1-bottle.webp" alt="كريم سنتيلا للبقع">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">3</span>
-            <p class="luvit-card__spec">
-              <b>علاج</b>
-              <span class="luvit-card__vol">50ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/centella-blemish-cream/">كريم سنتيلا للبقع</a></h3>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">18.00</span> د.أ</span>
-            <a href="/?add-to-cart=276" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="276" data-quantity="1"
-               aria-label="أضيفي كريم سنتيلا للبقع إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">2%</span> حمض هيالورونيك</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-1-bottle.webp" alt="سيروم الترطيب المكثّف">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">3</span>
-            <p class="luvit-card__spec">
-              <b>علاج</b>
-              <span class="luvit-card__vol">30ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/intensive-hydrating-serum/">سيروم الترطيب المكثّف</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من الكحول · خالٍ من الملوّنات</p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">18.00</span> د.أ</span>
-            <a href="/?add-to-cart=275" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="275" data-quantity="1"
-               aria-label="أضيفي سيروم الترطيب المكثّف إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">10%</span> فيتامين سي</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-1-bottle.webp" alt="سيروم فيتامين سي">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">3</span>
-            <p class="luvit-card__spec">
-              <b>علاج</b>
-              <span class="luvit-card__vol">30ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/vitamin-c-serum/">سيروم فيتامين سي</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · خالٍ من الكحول · خالٍ من الملوّنات</p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">19.00</span> د.أ</span>
-            <a href="/?add-to-cart=191" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="191" data-quantity="1"
-               aria-label="أضيفي سيروم فيتامين سي إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">2%</span> ألفا أربوتين</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-2-box-front.webp" alt="سيروم ألفا أربوتين المركّب">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">3</span>
-            <p class="luvit-card__spec">
-              <b>علاج</b>
-              <span class="luvit-card__vol">30ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/alpha-arbutin-complex-serum/">سيروم ألفا أربوتين المركّب</a></h3>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">22.00</span> د.أ</span>
-            <a href="/?add-to-cart=282" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="282" data-quantity="1"
-               aria-label="أضيفي سيروم ألفا أربوتين المركّب إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-      <article class="luvit-card luvit-card--product">
-        <div class="luvit-card__media">
-          <span class="luvit-card__badge"><span dir="ltr">10%</span> بانثينول</span>
-          <img decoding="async" width="800" height="1000"
-               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-1-bottle.webp" alt="كريم الترطيب والترميم">
-        </div>
-        <div class="luvit-card__body">
-          <div class="luvit-card__head">
-            <span class="luvit-card__step" aria-hidden="true">4</span>
-            <p class="luvit-card__spec">
-              <b>ترطيب</b>
-              <span class="luvit-card__vol">75ml</span>
-            </p>
-          </div>
-          <h3 class="luvit-card__title"><a href="/product/moisturizing-repairing-cream/">كريم الترطيب والترميم</a></h3>
-          <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من الكحول</p>
-          <div class="luvit-card__footer">
-            <span class="luvit-card__price"><span dir="ltr">15.00</span> د.أ</span>
-            <a href="/?add-to-cart=281" rel="nofollow"
-               class="luvit-btn add_to_cart_button ajax_add_to_cart"
-               data-product_id="281" data-quantity="1"
-               aria-label="أضيفي كريم الترطيب والترميم إلى السلة">أضيفي إلى السلة</a>
-          </div>
-        </div>
-      </article>
-    </div>
+    <div id="cats"></div>
   </div>
 </section>
 <!-- /wp:html -->
@@ -483,7 +194,6 @@
     </div>
   </div>
 </section>
-<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
 <!-- /wp:html -->
 
 <!-- wp:html -->
@@ -522,7 +232,7 @@
     <dl class="luvit-qa" data-luvit="stagger">
       <div>
         <dt>كم بتوصل الطلبية؟</dt>
-        <dd>خلال يوم · ويومين بالأكثر · لكل محافظات الأردن بـ٢ دنانير. والتوصيل **مجاني** مع أي روتين جاهز.</dd>
+        <dd>خلال يوم · ويومين بالأكثر · لكل محافظات الأردن بـ٢ دنانير. والتوصيل <strong>مجاني</strong> مع أي روتين جاهز.</dd>
       </div>
       <div>
         <dt>وإذا المنتج ما ناسب بشرتي؟</dt>
@@ -549,17 +259,6 @@
     <div class="luvit-section__foot">
       <a class="luvit-btn luvit-btn--ghost" href="/faq">كل الأسئلة الشائعة</a>
     </div>
-  </div>
-</section>
-<!-- /wp:html -->
-
-<!-- wp:html -->
-<section class="luvit-cta luvit-deep luvit-cut-top" data-nav-bg="dark" data-luvit-bubbles="16">
-  <span class="luvit-deep__rays" aria-hidden="true"></span>
-  <div class="luvit-cta__panel" data-luvit="reveal">
-    <h2 class="luvit-cta__title luvit-cta__accent">لسا محتارة بين منتج ومنتج؟</h2>
-    <p class="luvit-cta__sub">جاوبي على كم سؤال عن بشرتك، ومنوريكِ الروتين اللي بيناسبها · والدفع عند الاستلام.</p>
-    <a href="/quiz" class="luvit-btn luvit-btn--arrow">اكتشفي روتينك</a>
   </div>
 </section>
 <!-- /wp:html -->

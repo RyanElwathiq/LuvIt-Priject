@@ -1,0 +1,723 @@
+/* ══════════════════════════════════════════════════════════════════════
+   صفحة المتجر · هيرو القطرة + مختار الأهداف + التشكيلة
+   ══════════════════════════════════════════════════════════════════════
+   🔴 مولَّد بـ_أدوات/bundle-shop.mjs من
+      library/shop-hero-packages.preview.html · **لا تعدّله هون.**
+      عدّل المعاينة وأعد التجميع، وإلا الاثنان بينحرفوا.
+   ══════════════════════════════════════════════════════════════════════ */
+
+
+  /* 🔴 تصفير · بلاه هامش body الافتراضي (٨px) بيعمل إطاراً أبيض حوالي
+     كل اللوحة · مقيس: x=0..7 أبيض صافي و x=1528..1535 كمان.
+     ريّان مسكه: «طلع حز أبيض من تحت والشكل كله مش حلو». */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { overflow-x: clip; }   /* clip لا hidden · قاعدة ٢ بمكتبة توازَن */
+  body { background: #fff; }
+
+  /* ══════════════════════════════════════════════════════════════════
+     🔴 معاينة فقط · هالكتلة بتنتقل لـtokens.css بعد الموافقة.
+        ما بتنسخ لـWPCode من هون · اللصق من tokens.css وحده.
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* ── رأس المتجر · تسلسل «القطرة» مسحوباً بالسكرول ────────────────
+     المشهد فيديو مولَّد بـSeedance 2.5 **بمرجعيات العبوات الحقيقية**،
+     مستخرَج ١٢٠ فريماً ومرسوم على canvas بسحب السكرول. نفس منظومة هيرو
+     الرئيسية حرفياً (hero-sequence/) · مش نمطاً مشابهاً، هي هي.
+
+     القوس: مي ساكنة ← قطرة وحدة ← تاج ← حلقة بتتوسّع ← العبوات بتطلع.
+     وهاد **كشف متدرّج** بلغة motion-doctrine: الإطار بيكسب معلومة طول
+     الوقت. ولا حلقة سكون أبدية بالمشهد، ولا اهتزاز فاضي.               */
+  .shop-hero { position: relative; }
+
+  /* مسافة السحب · ٢٦٠vh بتعطي القوس وقته بلا ما تطوّل الصفحة زيادة */
+  .shop-hero__track { block-size: 260vh; }
+
+  .shop-hero__pin {
+    position: sticky; inset-block-start: 0;
+    /* svh مش vh · شريط عنوان الموبايل بيقلّص vh وبيقفز التخطيط */
+    block-size: 100svh;
+    overflow: clip;                     /* clip لا hidden · قاعدة توازَن ٢ */
+    background: var(--lagoon, #063436); /* اللي بيبين فوق الفريم لو قصر */
+  }
+  .shop-hero__canvas {
+    position: absolute; inset: 0;
+    inline-size: 100%; block-size: 100%; display: block;
+  }
+
+  /* 🔴 طلب ريّان: «اللون القريب من الأسود من فوق ما يبين كثير أو غطيه».
+     والحل مش تغطية عمياء · هاد تدرّج بلون Lagoon تبع العلامة نفسه.
+     الحساب: أعلى الفيديو #021E26 · وفوقه rgba(var(--lagoon-rgb), .94) بيطلع
+     #063335 · يعني **--lagoon بالضبط**. فالأسود ما بينطمس، بينقلب
+     للون علامة · والنص بيقعد فوقه بتباين كامل.                        */
+  /* السكريم العام · **خفيف ومحصور بأعلى الكادر**.
+     🔴 كان شبه صلب لحد ٥٢٪ وبيغطي عرض الشاشة كله · والنتيجة إن أعلى
+        العبوات كان بينغمّق وأسفلها فاتح، فالعبوة الوحدة بتطلع بلونين.
+        (بيّن واضحاً على المرطّب وواقي الشمس.)
+     والأرضية اللي بيحتاجها النص انتقلت **خلف النص نفسه** تحت. */
+  /* 🔴 الأرضية **بمحورين وعلى اللوح كله** · وهاد مقصود:
+     أي أرضية محصورة بصندوق (حتى بتدرّج شعاعي) بتنقصّ عند حدّها وهي
+     لساها معتمة، فبتطلع **حافّة مستطيلة ظاهرة**. صار فعلاً وانقاس.
+     ولمّا الأرضية بتغطي اللوح كله ما في حدّ تنقصّ عنده.
+
+     المحور العمودي: خفيف بأعلى الكادر · بيمسك العين المفتوحة.
+     المحور الأفقي: أقوى عند **بداية السطر** (يمين بالعربي) لأنه هناك
+     الكلام · وبيروح لصفر قبل وسط الشاشة، فالعبوات اللي بالوسط
+     واليسار بتضل بلونها الحقيقي بلا تغميق.
+
+     ⚠️ التدرّجات ما إلها اتجاه منطقي بالـCSS · فمكتوبة فيزيائياً
+        لـRTL ومقلوبة لـLTR تحت.                                     */
+  .shop-hero__scrim {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background:
+      /* غسلة فاتحة بالأسفل · شغلتان بضربة وحدة:
+         ١) شريط الحقائق حبره غامق، وكان بيقع على مي متوسطة النبرة ·
+            التباين المقيس كان ٣٫٩٨:١ بالموبايل و٤٫٣٨ بالديسكتوب،
+            **الاثنان تحت حدّ AA (4.5)**. الغسلة بترفعهم فوقه.
+         ٢) وبتنعّم الانتقال للموجة البيضا اللي تحت · بلاها في حزّ. */
+      linear-gradient(0deg,
+        rgba(255,255,255,.62) 0%, rgba(255,255,255,.36) 11%,
+        rgba(255,255,255,.12) 21%, rgba(255,255,255,0) 32%),
+      linear-gradient(180deg,
+        rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .30) 26%, rgba(var(--lagoon-rgb), 0) 54%),
+      linear-gradient(to left,
+        rgba(var(--lagoon-rgb), .88) 0%, rgba(var(--lagoon-rgb), .64) 24%,
+        rgba(var(--lagoon-rgb), .20) 48%, rgba(var(--lagoon-rgb), 0) 66%);
+  }
+  [dir="ltr"] .shop-hero__scrim {
+    background:
+      linear-gradient(180deg,
+        rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .30) 26%, rgba(var(--lagoon-rgb), 0) 54%),
+      linear-gradient(to right,
+        rgba(var(--lagoon-rgb), .88) 0%, rgba(var(--lagoon-rgb), .64) 24%,
+        rgba(var(--lagoon-rgb), .20) 48%, rgba(var(--lagoon-rgb), 0) 66%);
+  }
+
+  /* ── الكلام · قاعد فوق الشريط الغامق طول القوس ─────────────────
+     العبوات بتطلع بالنص والأسفل، فالأعلى بيضل فاضي لها طول الوقت. */
+  .shop-hero__copy {
+    position: absolute; z-index: 3;
+    /* مقيس: عين ٣٠ + عنوان سطرين ١٥٤ + وصف ٨٢ + أزرار ٤٦ = ٣١٢px،
+       وبإزاحة علوية ٤٨ بيخلص عند ٣٦٠ من ٨٦٠ = ٤٢٪ · تحت حافّة
+       الشريط الصلب وفوق أعلى العبوات (اللي بتوصل ٢٩٪ من تحت). */
+    inset-block-start: clamp(46px, 7vh, 86px);
+    inset-inline-start: max(var(--space-5, 20px),
+      calc((100vw - var(--container-max, 1200px)) / 2 + var(--space-5, 20px)));
+    max-inline-size: min(640px, 84vw);
+  }
+
+  .shop-hero__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin: 0 0 12px; font-size: 13px; font-weight: 600; letter-spacing: 0;
+    color: var(--aqua-400, #4CC5DA);       /* تركوازي اللوجو · على الغامق */
+  }
+  .shop-hero__eyebrow::before {
+    content: ""; inline-size: 26px; block-size: 1px;
+    background: currentColor; opacity: .55;
+  }
+
+  .shop-hero h1 {
+    font-family: var(--font-heading, inherit);
+    font-size: clamp(30px, 5.2vw, 60px);
+    line-height: 1.16; margin: 0 0 14px; color: #FFFFFF;
+    text-wrap: balance;
+    /* ظل خفيف بلون المي · بيمسك الحرف لو وقع على منطقة فاتحة بالفيديو */
+    text-shadow: 0 2px 18px rgba(var(--lagoon-rgb), .45);
+  }
+  /* 🔴 الكلمة المميّزة بمائل **من نفس العائلة** · ولا مرة خط تاني جوّا
+     عنوان · قاعدة design-taste-frontend. والوصف بيحتاج leading أوسع
+     عشان النزلات ما تنقص.                                            */
+  .shop-hero h1 em {
+    font-style: normal; color: var(--aqua-400, #4CC5DA);
+    position: relative; white-space: nowrap;
+  }
+  .shop-hero h1 em::after {
+    content: ""; position: absolute; inset-inline: 0; inset-block-end: -.14em;
+    block-size: 3px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--aqua-400, #4CC5DA), rgba(76,197,218,0));
+  }
+
+  .shop-hero__sub {
+    margin: 0 0 22px; font-size: clamp(14.5px, 1.6vw, 17px);
+    /* 🔴 أبيض **صافي** مش بشفافية · مقيس: بشفافية .82 على أسوأ خلفية
+       بالقوس rgb(88,120,120) بيطلع ٣٫٨٤:١ يعني تحت AA، وبـ.94 بيطلع
+       ٤٫٥١ يعني على الحدّ بالضبط بلا هامش. والصافي بيعطي ٤٫٨٥.
+       والهرمية جاية من الحجم (١٧px مقابل ٦٠) مش من النبرة. */
+    line-height: 1.75; color: #FFFFFF;
+    max-inline-size: 54ch;
+    text-shadow: 0 1px 12px rgba(var(--lagoon-rgb), .4);
+  }
+
+  .shop-hero__cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  /* 🔴 اللون والحدّ **مش من هون** · جايين من `.luvit-btn--on-dark`
+     بـtokens.css، والكلاس مضاف بالماركب.
+
+     وأي محاولة نكتب `color` هون **بتضيع**: القاعدة الأصلية
+     `.luvit-btn--ghost { color: var(--aqua-700) !important }`،
+     والـ!important بتغلب الخصوصية مهما علت. جرّبناها وطلع التباين
+     **1.63:1** · وريّان شافه بعينه قبل ما يمسكه الفاحص.
+
+     واللي بنضيفه هون شي واحد مش موجود بالمتغيّر الأصلي: **خلفية
+     معتمة**. الشبح القياسي شفاف، وهون الزر بيقع فوق العبوات البيضا
+     لما تطلع من المي، وأبيض على زجاج أبيض = صفر تباين.
+        rgba(var(--lagoon-rgb), .72) فوق عبوة #E8E8E8 → rgb(69,102,104)
+        وأبيض عليها = **٥٫٨:١** · فوق حدّ AA.
+
+     ⚠️ وممنوع backdrop-filter هون · الكانفاس بيعيد الرسم كل فريم
+        سكرول، والضبابية بتعيد الحساب معه. قاعدة أداء ثابتة بالمشروع. */
+  .shop-hero .luvit-btn--ghost {
+    background: rgba(var(--lagoon-rgb), .72);
+  }
+  .shop-hero .luvit-btn--ghost:hover {
+    background: rgba(var(--lagoon-rgb), .84);
+  }
+
+  /* 🔴 الحقائق انتقلت من كتلة الكلام لشريط بأسفل اللوح.
+     السبب مقيس: العبوات بترتفع لوسط الكادر، والحقائق كانت تحت
+     الأزرار يعني **بالضبط فوق العبوات** · الأرقام البيضا كانت
+     بتضيع على الزجاج الأبيض. وأسفل اللوح مي وانعكاسات وبس. */
+  .shop-hero__facts {
+    position: absolute; z-index: 3;
+    inset-inline: 0; inset-block-end: clamp(76px, 8.4vw, 116px);
+    display: flex; justify-content: center; flex-wrap: wrap;
+    gap: 8px clamp(18px, 3.4vw, 46px);
+    padding-inline: var(--container-gutter, 20px);
+  }
+  .shop-hero__fact {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    /* 🔴 ولا ظل · ريّان: «هاي الظل الأبيض اللي وراها مش حلو».
+       كانت هالة بيضا لمسك الحبر لو مرّ على منطقة غامقة · بس الهالة
+       بتطلع لطخة مرئية خلف الحرف، وهاد أسوأ من المشكلة اللي بتحلّها.
+       والقراءة صارت مضمونة **باللون** بدل الظل: الغسلة الفاتحة بأسفل
+       اللوح بتخلّي الأرضية rgb(127,203,197) والحبر عليها **٨٫٣٩:١**. */
+  }
+  .shop-hero__fact b {
+    font-family: var(--font-heading, inherit); font-size: clamp(15px, 1.5vw, 18px);
+    color: var(--color-ink, #1A2529); font-variant-numeric: tabular-nums;
+  }
+  /* 🔴 الوصف بالحبر **الأساسي** مش الناعم · والهرمية بتيجي من الحجم
+     والخط لا من النبرة.
+     السبب مقيس: على مي rgb(127,203,197) بالديسكتوب، الحبر الناعم
+     (#47555B) بيعطي **٤٫١٤:١** يعني تحت AA · والأساسي بيعطي ٨٫٣٩:١.
+     ولون برّا المنظومة كان بيمشي، بس نبقى بالتوكنز أنضف. */
+  .shop-hero__fact span {
+    font-size: clamp(11px, 1.1vw, 12.5px);
+    color: var(--color-ink, #1A2529);
+  }
+
+  @media (max-width: 640px) {
+    /* أربع حقائق بصف عرضه ٣٩٠px بتلتفّ لسطرين وبتاكل المي · اثنتان
+       بتكفّي، والباقي موجود بالصفحة تحت. */
+    .shop-hero__fact:nth-child(n+3) { display: none; }
+    .shop-hero__facts { gap: 8px 22px; inset-block-end: clamp(64px, 14vw, 92px); }
+  }
+
+  /* شريط التحميل · خيط رفيع بلون العلامة، مش دوّارة عامة */
+  .shop-hero__load {
+    position: absolute; inset-inline: 0; inset-block-start: 0;
+    block-size: 2px; z-index: 5; overflow: hidden;
+    background: rgba(255,255,255,.10);
+    transition: opacity .4s ease;
+  }
+  .shop-hero__load i {
+    display: block; block-size: 100%; inline-size: 0%;
+    background: linear-gradient(90deg, var(--aqua-500, #29A9C0), var(--aqua-400, #4CC5DA));
+    transition: inline-size .18s linear;
+  }
+  .shop-hero__load.is-done { opacity: 0; }
+
+  /* موجة القاع · بتقصّ لسكشن البكجات */
+  .shop-hero__wave {
+    position: absolute; inset-inline: 0; inset-block-end: -1px;
+    z-index: 4; line-height: 0; pointer-events: none;
+  }
+  .shop-hero__wave svg { display: block; inline-size: 100%; block-size: clamp(52px, 7vw, 96px); }
+
+  /* ══ النسيج · حبيبات دقيقة على الأسطح الكبيرة ═════════════════════
+     🔴 الجرد قال: ٨ أسطح لون صلب و١٥ تدرّجاً خطّياً و**شعاعيان بس**.
+        يعني كل شي أملس تماماً · وredesign-existing-projects بيسمّيها
+        «Flat design with zero texture · pure flat vectors feel sterile»
+        و«Perfectly even gradients».
+
+     🔴 وبـbase64 لا utf8 · وهاد مش تفضيل:
+        wptexturize بووردبريس **بيقوّس الاقتباسات** جوّا
+        data:image/svg+xml;utf8, وبيكسر الـSVG. صار فعلاً ٢١ آب وراحت
+        ست صور بصفحة المنتجات. والbase64 ما فيه اقتباس فما في شي يقوّسه.
+        (مفحوص: فُكّ التشفير رجّع SVG سليماً مطابقاً للأصل.)
+
+     والتكلفة صفر تقريباً: صورة ساكنة ١٦٠×١٦٠ بتتكرّر، الـGPU بيركّبها
+     مرة · ولا فلتر حيّ ولا إعادة حساب مع السكرول.                    */
+  /* النسيج معرَّف **مرة وحدة** كمتغيّر · أي طبقة بتحتاجه بتناديه.
+     وهاد مش ترتيباً · نسختان من نفس الـbase64 بتنحرفا بصمت. */
+  :root { --luvit-grain: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIj48ZmlsdGVyIGlkPSJnIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC44NSIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjxmZUNvbG9yTWF0cml4IHR5cGU9InNhdHVyYXRlIiB2YWx1ZXM9IjAiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgZmlsdGVyPSJ1cmwoI2cpIi8+PC9zdmc+"); }
+
+  .luvit-grain { position: relative; isolation: isolate; }
+  .luvit-grain::after {
+    content: ""; position: absolute; inset: 0; z-index: 0;
+    pointer-events: none; border-radius: inherit;
+    background-image: var(--luvit-grain);
+    background-size: 160px 160px;
+    opacity: .09;                 /* لمسة · مش ملمس مرئي */
+    mix-blend-mode: multiply;
+  }
+  /* المحتوى فوق الحبيبات · وإلا الطبقة بتغطّيه */
+  .luvit-grain > * { position: relative; z-index: 1; }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .luvit-grain::after { display: none; }
+  }
+
+  /* ── البكجات · «شريط أهداف + لوح مفصّل» ─────────────────────────
+     🔴 كانت أربع بطاقات متطابقة بصف · وهاد بالحرف اللي بيسمّيه
+        design-taste-frontend و redesign-existing-projects
+        «أعمّ تخطيط ذكاء اصطناعي». وريّان مسكه بالعين.
+
+     والمشكلة مش جمالية بس · **الأربعة مش درجات، هني أهداف**:
+     ترطيب · إشراقة · تنقية · توحيد لون. عرضهم متجاورين متطابقين
+     بيخلّي الزبونة **تقارن** وهي أصلاً بدها **تختار**. فالشكل كان
+     بيشتغل ضد القرار.
+
+     البديل: الأهداف شريط، والمختار بينفتح بلوح واحد كبير.
+     عائلة تخطيط وحدة · ولا بطاقة مكرّرة · وقرار أوضح.              */
+  .pk {
+    position: relative;
+    padding-block: clamp(52px, 7vw, 96px) clamp(64px, 9vw, 112px);
+    /* نسيج خفيف بدل السطح المسطّح · تدرّجان شعاعيان غير متناظرين
+       عشان ما يقرا كتدرّج خطّي موحّد. */
+    background:
+      radial-gradient(88% 62% at 84% 0%, rgba(76,197,218,.10), transparent 64%),
+      radial-gradient(70% 54% at 6% 28%, rgba(41,169,192,.07), transparent 60%),
+      #FFFFFF;
+  }
+  .pk__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
+
+  /* الرأس بمحاذاة البداية لا بالوسط · كسر التناظر قاعدة صريحة */
+  .pk__head { max-width: 60ch; margin-block-end: clamp(28px, 3.6vw, 44px); }
+  .pk__head h2 {
+    font-family: var(--font-heading, inherit);
+    font-size: clamp(25px, 3.4vw, 38px); line-height: 1.22;
+    letter-spacing: -.01em;                /* تضييق للعناوين الكبيرة */
+    margin: 0 0 12px; color: var(--color-ink, #1A2529);
+    text-wrap: balance;                    /* بلا كلمة يتيمة بآخر سطر */
+  }
+  .pk__head p {
+    margin: 0; font-size: clamp(14.5px, 1.6vw, 16.5px); line-height: 1.8;
+    color: var(--color-ink-soft, #47555B); max-width: 62ch;
+  }
+  .pk__head b { color: var(--color-ink, #1A2529); font-weight: 600; }
+
+  /* ── شريط الأهداف ──────────────────────────────────────────────── */
+  .pk__rail {
+    position: relative; display: flex; gap: 4px;
+    padding: 5px; margin-block-end: clamp(20px, 2.4vw, 30px);
+    background: #FFFFFF; border-radius: 100px;
+    border: 1px solid rgba(26,37,41,.09);
+    box-shadow: 0 1px 2px rgba(var(--lagoon-rgb), .05),
+                0 14px 30px -24px rgba(var(--lagoon-rgb), .45);
+    overflow-x: auto; scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    /* 🔴 الشريط بينقصّ بالموبايل · وبلا إشارة بيقرا **مكسوراً** لا
+       منزلقاً. القناع بيلاشي الحافّة فبتبيّن إن في كمان.
+       وممنوع تدرّج أبيض فوقه بدل القناع · الشريط أبيض أصلاً فما
+       بيبيّن، والقناع بيشتغل مهما كانت الخلفية. */
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 22px,
+                                        #000 calc(100% - 22px), transparent 100%);
+            mask-image: linear-gradient(to left, transparent 0, #000 22px,
+                                        #000 calc(100% - 22px), transparent 100%);
+  }
+  .pk__rail::-webkit-scrollbar { display: none; }
+  .pk__goal { scroll-snap-align: center; }
+  @media (min-width: 760px) {
+    /* بالشاشة الواسعة الأربعة بيوسعوا · فلا قصّ ولا قناع */
+    .pk__rail { -webkit-mask-image: none; mask-image: none; }
+  }
+
+  /* المؤشّر المنزلق · transform بس، ولا width ولا left */
+  .pk__ind {
+    position: absolute; inset-block: 5px; inset-inline-start: 0;
+    inline-size: 10px; border-radius: 100px; z-index: 0;
+    /* 🔴 aqua-700→800 لا 600→700 · محسوب: أبيض على aqua-600 بيعطي
+       **4.25:1** يعني تحت AA، وعلى aqua-700 بيعطي **6.04:1**. */
+    background: linear-gradient(140deg, var(--aqua-700, #196B7D), var(--aqua-800, #124D5A));
+    transform-origin: 0 50%;
+    transition: transform .42s cubic-bezier(.22,.61,.36,1);
+    will-change: transform;
+  }
+  [dir="rtl"] .pk__ind { transform-origin: 100% 50%; }
+
+  .pk__goal {
+    position: relative; z-index: 1; flex: 1 1 0; min-inline-size: max-content;
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 11px clamp(12px, 1.8vw, 24px);
+    border: 0; background: none; cursor: pointer; border-radius: 100px;
+    font-family: inherit; text-align: center;
+    color: var(--color-ink-soft, #47555B);
+    transition: color .3s ease;
+  }
+  .pk__goal:hover { color: var(--color-ink, #1A2529); }
+  .pk__goal:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 2px; }
+  .pk__goal b {
+    font-family: var(--font-heading, inherit);
+    font-size: clamp(14px, 1.5vw, 16.5px); font-weight: 600; line-height: 1.3;
+  }
+  /* 🔴 ولا opacity هون · بشفافية .8 التباين نزل لـ4.03:1.
+     اللون الصريح بيعطي 7.7:1 على الأبيض. */
+  .pk__goal small {
+    font-size: 11.5px; font-variant-numeric: tabular-nums;
+    color: var(--color-ink-soft, #47555B);
+  }
+  .pk__goal[aria-selected="true"] { color: #FFFFFF; }
+  .pk__goal[aria-selected="true"] small { color: rgba(255,255,255,.88); }
+
+  /* 🔴 شارة «جديد» · **جنب الاسم** لا معلّقة بحافّة الزر.
+     كانت نقطة بـinset-inline-end، ولأن «توحيد اللون» آخر تبويب
+     طلعت النقطة على حافّة الشريط كلها وقرأت كأنها غلط رسم.
+     والفوشيا هون **علامة صغيرة** لا خلفية · قاعدة العلامة. */
+  .pk__goal b { display: inline-flex; align-items: center; gap: 6px; }
+  .pk__goal i {
+    inline-size: 5px; block-size: 5px; border-radius: 50%; flex: none;
+    background: var(--fuchsia, #D02D86);
+  }
+  .pk__goal[aria-selected="true"] i { background: #FFFFFF; }
+
+  /* ── اللوح المفصّل ─────────────────────────────────────────────── */
+  /* ── مخرج الكويز · بديل سكشن «مسارات البدء» كله ──────────────────
+     🔴 السكشن كان أربعة مداخل، **تلاتة منها صارت مكرّرة**:
+        «بدي روتين كامل» ← مختار الأهداف فوقه مباشرةً
+        «بدوّر على منتج»  ← سكشن التشكيلة
+        «بدي أزيد خطوة»  ← رأس التشكيلة («كل مجموعة خطوة بروتينك»)
+     والرابع وحده مدخل حقيقي ما إله بديل: **«مش عارفة بشرتي»**.
+
+     فبدل شريط كامل لواحد نافع، سطر واحد **بمكان التردّد نفسه** —
+     تحت الأهداف مباشرةً، لحظة ما تسأل «وأنا أي وحدة منهم؟».
+     والصفحة قصرت سكشناً كاملاً.                                    */
+  .pk__quiz {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-block: 0 clamp(18px, 2.2vw, 26px);
+    font-size: 13.5px; color: var(--color-ink-soft, #47555B);
+  }
+  .pk__quiz a {
+    display: inline-flex; align-items: center; gap: 7px;
+    color: var(--aqua-700, #196B7D); font-weight: 600; text-decoration: none;
+    border-block-end: 1px solid rgba(25,107,125,.32);
+    padding-block-end: 1px;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .pk__quiz a:hover { color: var(--aqua-800, #124D5A); border-color: currentColor; }
+  .pk__quiz a:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+  .pk__quiz svg { flex: none; }
+
+  .pk__panel {
+    display: grid; gap: clamp(20px, 3vw, 44px);
+    align-items: center;
+    padding: clamp(20px, 2.6vw, 34px);
+    background: #FFFFFF;
+    /* نصف قطر متفاوت · حاوية أنعم وعناصر داخلية أحدّ */
+    border-radius: 22px;
+    border: 1px solid rgba(26,37,41,.08);
+    box-shadow: 0 2px 4px rgba(var(--lagoon-rgb), .04),
+                0 30px 60px -40px rgba(var(--lagoon-rgb), .5);
+  }
+  @media (min-width: 900px) {
+    /* ── مخرج الكويز · بديل سكشن «مسارات البدء» كله ──────────────────
+     🔴 السكشن كان أربعة مداخل، **تلاتة منها صارت مكرّرة**:
+        «بدي روتين كامل» ← مختار الأهداف فوقه مباشرةً
+        «بدوّر على منتج»  ← سكشن التشكيلة
+        «بدي أزيد خطوة»  ← رأس التشكيلة («كل مجموعة خطوة بروتينك»)
+     والرابع وحده مدخل حقيقي ما إله بديل: **«مش عارفة بشرتي»**.
+
+     فبدل شريط كامل لواحد نافع، سطر واحد **بمكان التردّد نفسه** —
+     تحت الأهداف مباشرةً، لحظة ما تسأل «وأنا أي وحدة منهم؟».
+     والصفحة قصرت سكشناً كاملاً.                                    */
+  .pk__quiz {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-block: 0 clamp(18px, 2.2vw, 26px);
+    font-size: 13.5px; color: var(--color-ink-soft, #47555B);
+  }
+  .pk__quiz a {
+    display: inline-flex; align-items: center; gap: 7px;
+    color: var(--aqua-700, #196B7D); font-weight: 600; text-decoration: none;
+    border-block-end: 1px solid rgba(25,107,125,.32);
+    padding-block-end: 1px;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .pk__quiz a:hover { color: var(--aqua-800, #124D5A); border-color: currentColor; }
+  .pk__quiz a:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+  .pk__quiz svg { flex: none; }
+
+  .pk__panel { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); }
+  }
+
+  /* 🔴 ولا خلفية ولا حشوة هون · والسبب مقيس:
+     صور البكجات **خلفيتها مطبوعة جوّاها بلا قناة ألفا** —
+     ثلاثة منها rgb(243,250,250) مسطّح والرابعة تدرّج أزرق.
+     فأي لون بنحطّه تحتها بيطلع **إطاراً أبيض حوالي الصورة**،
+     يعني «صورة جوّا صورة». وريّان مسك نفس الفئة قبل هيك.
+
+     والحل: الصورة تملأ صندوقها حافّة لحافّة. والكادر **مربّع**
+     لأن الأربعة مربّعة أصلاً (2000² و1400²)، فـcover بتعطي
+     **صفر قص وصفر إطار** — ولا عبوة بتنقصّ.                    */
+  .pk__shot {
+    position: relative; border-radius: 16px; overflow: clip;
+    /* تراكب · الصورة بتطلع فوق حافّة اللوح بهامش سالب */
+    margin-block-start: clamp(-40px, -3vw, -18px);
+    box-shadow: 0 18px 40px -30px rgba(var(--lagoon-rgb), .55);
+  }
+  .pk__shot img {
+    display: block; inline-size: 100%; block-size: auto;
+    aspect-ratio: 1 / 1; object-fit: cover;
+  }
+
+  .pk__title {
+    font-family: var(--font-heading, inherit);
+    font-size: clamp(20px, 2.4vw, 27px); line-height: 1.26;
+    margin: 0 0 7px; color: var(--color-ink, #1A2529);
+  }
+  .pk__who {
+    margin: 0 0 clamp(16px, 2vw, 22px); font-size: 14px; line-height: 1.7;
+    color: var(--color-ink-soft, #47555B); max-width: 46ch;
+  }
+
+  /* ── سلّم الخطوات · خيط واصل بين الأرقام ───────────────────────── */
+  .pk__ladder { list-style: none; margin: 0 0 clamp(16px, 2vw, 22px); padding: 0; position: relative; }
+  .pk__step {
+    position: relative; display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) auto;
+    gap: 0 12px; align-items: baseline;
+    padding-block: 9px;
+  }
+  .pk__step + .pk__step { border-block-start: 1px solid rgba(26,37,41,.07); }
+  .pk__step b {
+    grid-row: 1 / 3; align-self: start;
+    inline-size: 26px; block-size: 26px; border-radius: 9px;   /* أحدّ من الحاوية */
+    display: grid; place-items: center;
+    font-family: var(--font-latin, inherit); font-size: 12.5px; font-weight: 600;
+    background: var(--aqua-50, #EAFAFD); color: var(--aqua-700, #196B7D);
+  }
+  /* الخيط الواصل · بيربط الأرقام كسلّم واحد مش نقاط متفرّقة */
+  .pk__step:not(:last-child) b::after {
+    content: ""; position: absolute; inset-block-start: 35px;
+    inset-inline-start: 13px; inline-size: 1px; block-size: calc(100% - 26px);
+    background: linear-gradient(180deg, rgba(41,169,192,.35), rgba(41,169,192,.08));
+  }
+  .pk__step span { font-size: 14.5px; font-weight: 600; color: var(--color-ink, #1A2529); }
+  .pk__step em {
+    grid-column: 2; font-style: normal; font-size: 12.5px;
+    color: var(--color-ink-soft, #47555B); line-height: 1.55;
+  }
+  .pk__step u {
+    grid-column: 3; grid-row: 1; text-decoration: none;
+    font-size: 13.5px; color: var(--color-ink-soft, #47555B);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  /* ── الفاتورة المفتوحة ─────────────────────────────────────────── */
+  .pk__bill {
+    border-radius: 14px; padding: 14px 16px;
+    background: linear-gradient(170deg, #F7FCFD, #EDF7FA);
+    border: 1px solid rgba(41,169,192,.16);
+  }
+  .pk__row {
+    display: flex; justify-content: space-between; gap: 12px;
+    font-size: 13.5px; color: var(--color-ink-soft, #47555B); padding-block: 3px;
+  }
+  .pk__row b { font-weight: 600; color: var(--color-ink, #1A2529); font-variant-numeric: tabular-nums; }
+  .pk__row--free b { color: var(--aqua-700, #196B7D); }
+  .pk__row--total {
+    margin-block-start: 8px; padding-block-start: 10px;
+    border-block-start: 1px dashed rgba(41,169,192,.34);
+    font-size: 15px; color: var(--color-ink, #1A2529);
+  }
+  .pk__row--total b { font-family: var(--font-heading, inherit); font-size: 20px; }
+  .pk__note {
+    margin: 10px 0 0; font-size: 12px; line-height: 1.6;
+    color: var(--color-ink-soft, #47555B);
+  }
+
+  .pk__buy { margin-block-start: clamp(14px, 1.8vw, 20px); }
+  .pk__buy .luvit-btn { inline-size: 100%; justify-content: center; }
+
+  /* ── الوعود · صف تحت اللوح ─────────────────────────────────────── */
+  .pk__promise {
+    display: grid; gap: clamp(14px, 2vw, 26px);
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    margin-block-start: clamp(26px, 3.4vw, 42px);
+  }
+  .pk__promise div { display: flex; gap: 11px; align-items: flex-start; }
+  .pk__promise svg { flex: none; margin-block-start: 2px; color: var(--aqua-600, #1E869C); }
+  .pk__promise b { display: block; font-size: 14.5px; color: var(--color-ink, #1A2529); margin-block-end: 2px; }
+  .pk__promise p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--color-ink-soft, #47555B); }
+
+  /* ══ التشكيلة · «رأس مجموعة ملتصق + شبكة مضغوطة» ═══════════════════
+     🔴 اللي كان: ١٢ بطاقة متطابقة، الصورة **٦٥٪** من البطاقة، والزر
+        شريط غامق بعرض البطاقة. النتيجة إن الزر بياخد النظر قبل
+        المنتج، والبطاقة بترتفع ٧٠٠px فما بينشاف منها إلا وحدة ونص.
+
+     اللي صار:
+       · رأس المجموعة **عمود ملتصق** بجنب منتجاتها لا شريط فوقها ·
+         فبتضل «إنتِ بخطوة التنظيف» ظاهرة وإنتِ بتتصفّحي.
+       · البطاقة انضغطت · الصورة صارت ٤:٣ عريضة لا ٤:٥ طويلة.
+       · الزر صار **قرصاً بأيقونة** جنب السعر، لا شريطاً غامقاً.
+       · نبرتان متناوبتان بين المجموعات · إيقاع بدل جدار واحد.       */
+  .cat { background: #FFFFFF; padding-block: clamp(44px, 6vw, 78px) clamp(56px, 8vw, 96px); }
+  .cat__inner { max-width: var(--container-max, 1200px); margin-inline: auto; padding-inline: var(--space-5); }
+
+  .cat__head { max-width: 58ch; margin-block-end: clamp(26px, 3.4vw, 40px); }
+  .cat__head h2 {
+    font-family: var(--font-heading, inherit);
+    font-size: clamp(25px, 3.4vw, 38px); line-height: 1.22; letter-spacing: -.01em;
+    margin: 0 0 10px; color: var(--color-ink, #1A2529); text-wrap: balance;
+  }
+  .cat__head p {
+    margin: 0; font-size: clamp(14.5px, 1.6vw, 16.5px); line-height: 1.8;
+    color: var(--color-ink-soft, #47555B);
+  }
+
+  /* ── المجموعة ─────────────────────────────────────────────────── */
+  .grp { padding-block: clamp(24px, 3vw, 40px); }
+  /* نبرة متناوبة · بتمتدّ لعرض الشاشة بحيلة الظل الجانبي عشان ما
+     نحتاج حاوية إضافية · والحدّ الناعم بيمنع الحزّ. */
+  .grp:nth-child(even) {
+    background:
+      radial-gradient(58% 70% at 96% 0%, rgba(76,197,218,.10), transparent 60%),
+      linear-gradient(178deg, #F8FCFD, #F1F8FA);
+    box-shadow: 0 0 0 100vmax #F5FBFC;
+    clip-path: inset(0 -100vmax);
+  }
+  /* 🔴 الشريط المتناوب بيمدّ ظلاً بعرض الشاشة، وهو جوّا .cat__inner
+     اللي z-index:1 · يعني **بيرسم فوق حبيبات السكشن ويطمسها**.
+     مقيس: الانحراف ضل 1.08 مهما رفعنا الشفافية. فالشريط بياخد
+     حبيباته الخاصة. */
+  .grp:nth-child(even) { position: relative; isolation: isolate; }
+  .grp:nth-child(even)::after {
+    content: ""; position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;
+    background-image: var(--luvit-grain);
+    background-size: 160px 160px;
+    opacity: .09; mix-blend-mode: multiply;
+    clip-path: inset(0 -100vmax);
+    box-shadow: 0 0 0 100vmax transparent;
+  }
+  .grp:nth-child(even) > * { position: relative; z-index: 1; }
+  @media (prefers-reduced-transparency: reduce) {
+    .grp:nth-child(even)::after { display: none; }
+  }
+
+  /* الحشوة البصرية · السفلى أكبر */
+  .grp { padding-block: clamp(24px, 3vw, 40px) clamp(30px, 3.6vw, 50px); }
+  .grp__wrap { display: grid; gap: clamp(16px, 2.4vw, 34px); }
+  @media (min-width: 900px) {
+    .grp__wrap { grid-template-columns: minmax(180px, 220px) minmax(0, 1fr); }
+  }
+
+  /* رأس المجموعة · عمود ملتصق */
+  .grp__head { align-self: start; }
+  @media (min-width: 900px) {
+    .grp__head { position: sticky; inset-block-start: clamp(18px, 4vh, 40px); }
+  }
+  .grp__n {
+    display: inline-grid; place-items: center;
+    inline-size: 30px; block-size: 30px; border-radius: 10px;
+    font-family: var(--font-latin, inherit); font-size: 13px; font-weight: 700;
+    background: var(--aqua-50, #EAFAFD); color: var(--aqua-700, #196B7D);
+    margin-block-end: 10px;
+  }
+  .grp__head h3 {
+    font-family: var(--font-heading, inherit); font-size: clamp(17px, 2vw, 21px);
+    margin: 0 0 6px; color: var(--color-ink, #1A2529); line-height: 1.3;
+  }
+  .grp__head p {
+    margin: 0 0 8px; font-size: 13px; line-height: 1.65;
+    color: var(--color-ink-soft, #47555B); max-width: 30ch;
+  }
+  .grp__count {
+    font-size: 12px; color: var(--color-ink-soft, #47555B);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .grp__row { display: grid; gap: clamp(12px, 1.6vw, 18px); grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+
+  /* ── البطاقة · مضغوطة ─────────────────────────────────────────── */
+  .pc {
+    display: flex; flex-direction: column; overflow: clip;
+    background: #FFFFFF; border-radius: 16px;
+    border: 1px solid rgba(26,37,41,.09);
+    box-shadow: 0 1px 2px rgba(var(--lagoon-rgb), .04);
+    transition: transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;
+  }
+  .pc:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 4px rgba(var(--lagoon-rgb), .05),
+                0 20px 34px -24px rgba(var(--lagoon-rgb), .5);
+  }
+  .pc:focus-within { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+
+  /* 🔴 ٤:٣ عريضة لا ٤:٥ طويلة · وخلفية العبوات مطبوعة جوّاها بلا
+     ألفا (زي البكجات)، فالخلفية هون **بلون صورها نفسه** عشان ما
+     يطلع إطار. مقيس: rgb(243,250,250). */
+  /* 🔴 الكادر **مربّع** لأن صور العبوات مربّعة (2000²)، فـcover
+     بتعطي صفر قصّ وصفر إطار **والعبوة بحجمها الطبيعي**.
+     كان ٤:٣ مع contain · النتيجة إن المربّعة بتنحشر بالارتفاع
+     وبتصغر ٣٤٪ وبتترك هامشين باهتين على جنابها. */
+  /* اللون الأساسي **لازم** يضل #F3FAFA لأنه لون خلفية الصور نفسها
+     المطبوعة جوّاها · والتدرّج الشعاعي بيزيد عمقاً بلا ما يبيّن حدّاً،
+     لأنه بيبدا من نفس اللون. */
+  .pc__media {
+    aspect-ratio: 1 / 1; overflow: clip;
+    background: radial-gradient(78% 62% at 50% 26%, #F8FCFD, #F3FAFA 58%, #ECF6F8 100%);
+  }
+  .pc__media img {
+    display: block; inline-size: 100%; block-size: 100%;
+    object-fit: cover;
+    transition: transform .3s cubic-bezier(.22,.61,.36,1);
+  }
+  .pc:hover .pc__media img { transform: scale(1.045); }
+
+  .pc__body { display: flex; flex-direction: column; flex: 1; gap: 5px; padding: 13px 14px 14px; }
+  .pc__name {
+    font-family: var(--font-heading, inherit); font-size: 15px; line-height: 1.35;
+    margin: 0; color: var(--color-ink, #1A2529);
+  }
+  .pc__does { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--color-ink-soft, #47555B); }
+  /* البرهان تحت الوعد · النسبة **مش** شارة فوق الصورة */
+  .pc__proof {
+    margin: 2px 0 0; font-size: 11.5px; font-weight: 600;
+    color: var(--aqua-700, #196B7D); letter-spacing: 0;
+  }
+
+  .pc__foot {
+    margin-block-start: auto; padding-block-start: 11px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .pc__price {
+    font-family: var(--font-heading, inherit); font-size: 16px;
+    color: var(--color-ink, #1A2529); font-variant-numeric: tabular-nums;
+  }
+  .pc__ml { display: block; font-size: 11.5px; font-weight: 400; color: var(--color-ink-soft, #47555B); }
+
+  /* 🔴 الزر قرص بأيقونة · لا شريط بعرض البطاقة.
+     ٤٤px حدّ اللمس الآمن، والدائرة بتخلّي النظر يروح للمنتج أول. */
+  .pc__add {
+    flex: none; inline-size: 44px; block-size: 44px; border-radius: 50%;
+    display: grid; place-items: center; text-decoration: none;
+    background: var(--aqua-700, #196B7D); color: #FFFFFF;
+    transition: background .2s ease, transform .18s cubic-bezier(.22,.61,.36,1);
+  }
+  .pc__add:hover { background: var(--aqua-800, #124D5A); transform: scale(1.06); }
+  .pc__add:active { transform: scale(.95); }
+  .pc__add:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 3px; }
+
+  /* تحذير الاستعمال · مرتين بالأسبوع مش يومي */
+  .pc__warn {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-block-start: 4px; font-size: 11px;
+    color: var(--color-ink-soft, #47555B);
+  }
+  .pc__warn::before {
+    content: ""; inline-size: 5px; block-size: 5px; border-radius: 50%;
+    background: var(--fuchsia, #D02D86); flex: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shop-hero__canvas { transition: none !important; }
+  }
