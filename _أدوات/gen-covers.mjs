@@ -80,6 +80,43 @@ const COVERS = [
     idea: 'A single large crystal-clear droplet suspended in deep water, refracting the light '
       + 'above it into a soft ring. Around it, much smaller droplets drifting out of focus.',
   },
+
+  /* ── الدفعة الثانية · ١ أيلول ────────────────────────────────────────
+     🔴 وكل فكرة **موضوعها موضوع مقالها** لا زينة مائية عامة · الغلاف
+        اللي بيشرح شي بينقرا، واللي بس حلو بينتنسى. */
+  {
+    slug: 'what-free-from-labels-mean',
+    ar: 'شهادات العبوة · شو بتعني فعلاً',
+    /* المقال عن **الغياب**: خالٍ من العطور · من الكحول · من الملوّنات */
+    idea: 'A tall pane of perfectly clear glass standing upright in still water, its surface '
+      + 'completely unmarked and holding not one bubble or particle, while the water all '
+      + 'around it carries fine drifting specks and motes. The contrast between the spotless '
+      + 'pane and the busy water is the subject.',
+  },
+  {
+    slug: 'how-often-to-exfoliate',
+    ar: 'التقشير · كم مرة وشو تتجنّبي',
+    /* الطبقات بترتفع وحدة وحدة · لا كشط ولا عنف */
+    idea: 'Extremely thin translucent films lifting one at a time from a smooth surface '
+      + 'underwater and drifting slowly upward, revealing an even clean surface beneath. '
+      + 'Gentle and unhurried, only a few films in motion.',
+  },
+  {
+    slug: 'why-results-take-time',
+    ar: 'ليش النتيجة بتاخد وقت',
+    /* الزمن · حلقة بتتسع ببطء عبر مساحة واسعة */
+    idea: 'A single drop has struck a vast still water surface and its ripple is spreading '
+      + 'outward in wide, slow, evenly spaced concentric rings, the outermost ones so faint '
+      + 'they almost vanish at the edges of the frame. Nothing else in the scene.',
+  },
+  {
+    slug: 'panthenol-the-quiet-one',
+    ar: 'بانثينول · المكوّن الهادي',
+    /* المساند اللي ما حدا بيلاحظه · هالة بتحمل اللي حواليها */
+    idea: 'A wide soft diffuse halo of pale light underwater, cradling several smaller, '
+      + 'brighter, sharply focused droplets. The halo is so gentle it is almost invisible '
+      + 'until you look for it, and the bright droplets clearly sit inside it.',
+  },
 ];
 
 /* ── المفتاح ─────────────────────────────────────────────────────────── */
@@ -163,9 +200,17 @@ const KEY = key();
 let total = 0;
 for (const c of list) {
   /* 🔴 الموجود ما بينتولّد مرتين · كل استدعاء مصاري، وما في إلغاء.
-     لإعادة توليد وحدة: احذف ملفها ثم شغّل، أو مرّر --force. */
+     لإعادة توليد وحدة: احذف ملفها ثم شغّل، أو مرّر --force.
+
+     ⚠️ **والفحص بيشوف `.webp` كمان · وهاد كلّفنا $0.42.**
+        النسخة الأولى كانت بتدوّر على `.png` بس، والأنبوب بيحوّل المخرَج
+        لـ`.webp` **وبيحذف الـPNG** · فأول ما شغّلت الدفعة الثانية،
+        التلات أغلفة القديمة ما انلقيوا وانولّدوا من جديد بلا داعي.
+     ⤷ الدرس: فحص «موجود؟» لازم يسأل عن **الشكل النهائي** للمخرَج، مش
+       عن الشكل الوسيط اللي بينحذف بالطريق. */
   const dst = path.join(OUT, c.slug + '.png');
-  if (fs.existsSync(dst) && !argv.includes('--force')) {
+  const done = fs.existsSync(dst) || fs.existsSync(dst.replace(/\.png$/, '.webp'));
+  if (done && !argv.includes('--force')) {
     console.log('  · ' + c.slug + ' ... موجودة · انتخطّت (--force لإعادتها)');
     continue;
   }

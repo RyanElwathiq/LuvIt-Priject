@@ -73,6 +73,12 @@ for (const f of files) {
   /* ٣ · الشرطة الطويلة ممنوعة */
   if (html.includes('—')) errs.push('شرطة طويلة');
 
+  /* ٣ب · نجمات ماركداون · بتنطبع نصاً حرفياً بالمقال
+     🔴 كتبت `**كل**` بمقال الشهادات ظاناً إنها بتغمّق · وووردبريس
+        بيطبعها نجمات. الماركب هون HTML لا ماركداون · التغميق `<strong>`. */
+  const md = html.replace(/<!--[\s\S]*?-->/g, '').match(/\*\*[^*\n]+\*\*/g);
+  if (md) errs.push('نجمات ماركداون: ' + md.slice(0, 3).join(' · '));
+
   /* ٤ · النِسَب · شبكة الأمان ضد الاختراع */
   const used = [...new Set([...html.matchAll(/(\d+(?:\.\d+)?)\s*%/g)].map((m) => m[1]))];
   const invented = used.filter((x) => !KNOWN.has(x));

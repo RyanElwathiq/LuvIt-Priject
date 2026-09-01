@@ -18,9 +18,13 @@ node _أدوات/check-journal-posts.mjs
 ```js
 const n = window.wpApiSettings.nonce;
 const POSTS = [
-  { id: 225, f: '225-oily-skin-why-moisturize.html' },
-  { id: 224, f: '224-why-layer-order-matters.html' },
-  { id: 223, f: '223-niacinamide-what-it-does.html' },
+  { id: 225, f: '225-oily-skin-why-moisturize.html' },   // أسئلتك
+  { id: 224, f: '224-why-layer-order-matters.html' },    // الروتين
+  { id: 223, f: '223-niacinamide-what-it-does.html' },   // المكوّنات
+  { id: 353, f: 'a1-what-free-from-labels-mean.html' },  // المكوّنات
+  { id: 355, f: 'a2-how-often-to-exfoliate.html' },      // الروتين
+  { id: 357, f: 'a3-why-results-take-time.html' },       // أسئلتك
+  { id: 359, f: 'a4-panthenol-the-quiet-one.html' },     // المكوّنات
 ];
 for (const p of POSTS) {
   const html = await (await fetch(
@@ -55,3 +59,33 @@ for (const p of POSTS) {
 404. الروتينات صارت حسب الهدف لا حسب نوع البشرة:
 `/routines/hydration` · `/routines/glow` · `/routines/clarify`.
 والفاحص بيمسك هالفئة من هلأ.
+
+---
+
+## الأغلفة
+
+```
+node _أدوات/gen-covers.mjs            # الخطة والكلفة · بلا توليد
+node _أدوات/gen-covers.mjs --one      # وحدة للمعاينة
+node _أدوات/gen-covers.mjs --yes      # الكل · بيتخطّى الموجود
+```
+
+موديل `google/gemini-3-pro-image` عبر OpenRouter · **المقيس $0.139 للصورة**.
+والمخرَج PNG بـ`library/img/journal/`، بينتحوّل WebP (١٣٧٦×٧٦٨ · ١٨ لـ٣٧ كيلو)
+والـPNG بينحذف.
+
+🔴 **وفحص «موجود؟» بيشوف `.webp` كمان مش بس `.png`** · النسخة الأولى كانت
+بتشوف الـPNG وحده، والأنبوب بيحذفه بعد التحويل · فأول دفعة ثانية أعادت توليد
+تلات أغلفة موجودة أصلاً **وكلّفت $0.42 بلا داعي**.
+
+## 🔴 وفخّ سلَق المرفق
+
+**ارفع الصورة باسم `<slug>-cover` لا `<slug>`.**
+المرفقات بووردبريس بتشارك المقالات نفس فضاء الأسماء، فلو رفعت الغلاف
+باسم المقال، المقال بياخد `<slug>-2`. صار بالأربعة الجداد وانتصلّح
+بإعادة تسمية المرفق ثم إعادة السلَق للمقال.
+
+## وسلَقات التصنيفات
+
+كانت عربية مشفّرة كمان · صارت `your-questions` (42) و`routine` (41)
+و`ingredients` (40). وهي بتظهر بروابط الفلترة `?cat=` على `/journal`.
