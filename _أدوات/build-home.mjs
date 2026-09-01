@@ -191,7 +191,7 @@ const svg = (k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
   'stroke-linecap="round" stroke-linejoin="round">' + ICON[k] + '</svg>';
 
 const TRUST = [
-  ['truck', 'توصيل لكل الأردن', 'خلال ٢٤ لـ٤٨ ساعة'],
+  ['truck', 'توصيل لكل الأردن', 'من يوم ليومين'],
   ['card', 'الدفع عند الاستلام', 'ادفعي لمّا يوصلك'],
   ['shield', 'أصلي <span data-luvit="counter">100</span>٪', 'وصلك تالف؟ منستبدله'],
   ['chat', 'منرافقك خطوة بخطوة', 'استشارة مجانية'],

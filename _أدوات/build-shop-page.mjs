@@ -326,7 +326,7 @@ function s1() {
 <section class="luvit-section luvit-section--tight band-mist luvit-shop-root" data-nav-bg="light" id="page-head">
   <div class="luvit-promise">
     <span class="luvit-promise__item">${icon(I.wallet, 18)} الدفع عند الاستلام</span>
-    <span class="luvit-promise__item">${icon(I.truck, 18)} التوصيل خلال يوم · ويومين بالأكثر</span>
+    <span class="luvit-promise__item">${icon(I.truck, 18)} التوصيل من يوم ليومين</span>
     <span class="luvit-promise__item">${icon(I.flask, 18)} منوصّيكي باللي بيناسبك</span>
   </div>
 
@@ -632,7 +632,7 @@ function s7() {
         ما انطلق بعد فولا سؤال «وصل». */
   const qa = [
     ['كم بتوصل الطلبية؟',
-     'خلال يوم · ويومين بالأكثر · لكل محافظات الأردن بـ٢ دنانير. والتوصيل <strong>مجاني</strong> مع أي روتين جاهز.'],
+     'من يوم ليومين · لكل محافظات الأردن بـ٢ دنانير. والتوصيل <strong>مجاني</strong> مع أي روتين جاهز.'],
     ['وإذا المنتج ما ناسب بشرتي؟',
      'المفتوح ما بيرجع، وهاد معيار صناعة مستحضرات التجميل كلها لأسباب صحية · والمعيب بيرجع دايماً.'],
     ['ليش ما في خصومات؟',
