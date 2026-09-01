@@ -1,0 +1,112 @@
+<!-- ══════════════════════════════════════════════════════════════════════
+     إشعار الكوكيز · سنيبت WPCode من نوع HTML · الفوتر · أولوية ٢٠
+     ══════════════════════════════════════════════════════════════════════
+     🔴 طلبه ريّان ٢ أيلول: «بشكل حلو ومش مزعج أبداً · ما بدي إياه ياكل
+        نص الصفحة أو أكثر».
+     ⤷ فهو **شريط رفيع بأسفل الصفحة**، بلا طبقة سوداء ورا، وبلا ما يمنع
+       القراءة ولا الضغط. ارتفاعه ≈٧٢px بالديسكتوب.
+
+     ── 🔴 وشو بيوقف فعلياً ────────────────────────────────────────────
+     مقيس ٢ أيلول · **ولا سكربت تحليلات خارجي شغّال على الموقع**
+     (`window.clarity` و`gtag` و`dataLayer` كلهم undefined · وClarity
+     مركّبة كإضافة بس بلا معرّف مشروع).
+
+     واللي بيوصل الزبونة فعلاً:
+       `sbjs_*`            تتبّع مصدر الطلب تبع ووكومرس (Sourcebuster)
+       `kodee_message_sent` أداة المحادثة
+
+     فالإشعار **بيخزّن القرار وبيعرضه** لأي سكربت جاي، وبيمسح كوكيز
+     التتبّع لو رفضت. ⚠️ وما بيقدر يوقف إضافة بتحمّل سكربتها بالسيرفر
+     قبل ما يشتغل هو · فلما ينضاف Clarity أو Analytics لازم ينحطّوا
+     **جوّا هالبوابة** لا كإضافة مستقلّة.
+
+     ── الواجهة لأي سكربت جاي ──────────────────────────────────────────
+       window.luvitConsent            → 'all' | 'essential' | null
+       document.addEventListener('luvit:consent', e => e.detail)
+
+     ⚠️ ولا كلمة عن «موافقتك بتحسّن تجربتك» ولا أي إقناع · الإشعار
+        بيوصف اللي بيصير وبس.
+     ══════════════════════════════════════════════════════════════════ -->
+
+<div class="luvit-consent" id="luvit-consent" hidden
+     role="region" aria-label="إشعار الكوكيز">
+  <p class="luvit-consent__text">
+    منستعمل كوكيز عشان الموقع يشتغل ونعرف الطلبات جاية من وين ·
+    <a href="/privacy/">شو بنجمع بالضبط</a>.
+  </p>
+  <div class="luvit-consent__acts">
+    <button type="button" class="luvit-btn luvit-btn--ghost" data-consent="essential">
+      بس الضروري
+    </button>
+    <button type="button" class="luvit-btn" data-consent="all">تمام</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var KEY = 'luvit-consent';
+  var box = document.getElementById('luvit-consent');
+  if (!box) return;
+
+  /* 🔴 الكوكيز اللي بتنمسح لو اختارت «بس الضروري».
+     `sbjs_*` تتبّع مصدر الطلب · مش لازمة عشان الموقع يشتغل.
+     ⚠️ وكوكيز ووردبريس وووكومرس الوظيفية **ما بتنلمس** · مسحها
+        بيكسر السلة والدخول. */
+  var TRACKING = /^(sbjs_|_ga|_gid|_gat|_clck|_clsk|_fbp)/;
+
+  function forget() {
+    document.cookie.split(';').forEach(function (c) {
+      var name = c.split('=')[0].trim();
+      if (!TRACKING.test(name)) return;
+      /* الحذف بده نفس المسار والنطاق · وإلا بيضل */
+      var host = location.hostname;
+      ['/', location.pathname].forEach(function (p) {
+        document.cookie = name + '=; Max-Age=0; path=' + p;
+        document.cookie = name + '=; Max-Age=0; path=' + p + '; domain=' + host;
+        document.cookie = name + '=; Max-Age=0; path=' + p + '; domain=.' + host;
+      });
+    });
+  }
+
+  function apply(v, announce) {
+    window.luvitConsent = v;
+    /* كوكي أوّلي عشان PHP يقدر يقراه كمان · سنة وحدة */
+    document.cookie = KEY + '=' + v + '; Max-Age=31536000; path=/; SameSite=Lax';
+    if (v === 'essential') forget();
+    if (announce) {
+      document.dispatchEvent(new CustomEvent('luvit:consent', { detail: v }));
+    }
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  if (!saved) {
+    var m = document.cookie.match(/(?:^|;\s*)luvit-consent=([^;]+)/);
+    if (m) saved = m[1];
+  }
+
+  if (saved === 'all' || saved === 'essential') { apply(saved, false); return; }
+
+  /* ⚠️ ما بيبيّن إلا بعد ثانية · عشان ما يزاحم المحتوى ولا يقفز بوجه
+     القارئة أول ما تفتح.
+     🔴 وبلا `requestAnimationFrame` بقصد · هي **ما بتشتغل بتبويب مش
+        بالواجهة**، فالشريط كان بيضل مخفي بأي تبويب مفتوح بالخلفية
+        (انكشفت بالفحص الآلي ٢ أيلول · القراءة قالت hidden وهي سليمة
+        بالماركب والستايل). `setTimeout` بتشتغل بكل الحالات. */
+  setTimeout(function () {
+    box.hidden = false;
+    /* فريم واحد بين الإظهار وبين الكلاس · عشان الانتقال يبدأ من مكانه */
+    setTimeout(function () { box.classList.add('is-in'); }, 30);
+  }, 900);
+
+  box.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-consent]');
+    if (!b) return;
+    var v = b.getAttribute('data-consent');
+    try { localStorage.setItem(KEY, v); } catch (err) {}
+    apply(v, true);
+    box.classList.remove('is-in');
+    setTimeout(function () { box.hidden = true; }, 260);
+  });
+})();
+</script>

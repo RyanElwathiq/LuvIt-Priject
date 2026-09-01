@@ -13098,3 +13098,86 @@ html body {
   .luvit-footer__brand { text-align: center; }
 }
 /* FOOTER-LOGO:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CONSENT:START · إشعار الكوكيز
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 ريّان ٢ أيلول: «بشكل حلو ومش مزعج أبداً · ما بدي إياه ياكل نص
+      الصفحة أو أكثر».
+   ⤷ شريط رفيع بأسفل الصفحة · **بلا طبقة سوداء ورا** وبلا ما يمنع
+     القراءة. ارتفاعه ≈٧٢px بالديسكتوب و≈١٣٠px بالموبايل (سطران وزرّان).
+
+   ⚠️ و`position: fixed` مقصودة · `sticky` بتموت لأن `body` عندها
+      `overflow` (فخّ مسجَّل · sticky-dies-on-wordpress-body).
+   ⚠️ وz-index تحت النافبار (١٦٠) وفوق المحتوى · عشان ما يغطّي القائمة.  */
+
+.luvit-consent {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 140;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3) var(--space-5);
+
+  padding: var(--space-4) var(--space-5);
+  padding-block-end: max(var(--space-4), env(safe-area-inset-bottom));
+
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border-block-start: 1px solid rgba(41, 169, 192, .22);
+  box-shadow: 0 -10px 30px rgba(2, 26, 30, .10);
+
+  /* الدخول من تحت · هادي وسريعة */
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform .34s cubic-bezier(.22, .8, .3, 1), opacity .34s;
+}
+.luvit-consent.is-in { transform: none; opacity: 1; }
+
+.luvit-consent__text {
+  margin: 0;
+  font-size: var(--fs-sm, .9rem);
+  line-height: 1.7;
+  color: var(--color-ink, #1A2529);
+  max-inline-size: 62ch;
+}
+.luvit-consent__text a {
+  color: var(--aqua-700, #16788C);
+  text-underline-offset: 3px;
+}
+
+.luvit-consent__acts {
+  display: flex;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+/* أزرار أصغر من المعتاد · هاد شريط خدمي مش دعوة لفعل */
+.luvit-consent .luvit-btn {
+  padding-block: 9px;
+  padding-inline: 18px;
+  font-size: var(--fs-sm, .875rem);
+  min-block-size: 0;
+}
+
+@media (max-width: 700px) {
+  .luvit-consent { justify-content: stretch; text-align: center; }
+  .luvit-consent__text { max-inline-size: none; }
+  .luvit-consent__acts { inline-size: 100%; }
+  .luvit-consent .luvit-btn { flex: 1; }
+}
+
+/* ⚠️ ولمّا الشريط بايِن، الدوك السفلي بالموبايل بينرفع فوقه عشان
+   ما يتغطّى · وإلا الزبونة بتخسر التنقّل لحد ما تجاوب. */
+@media (max-width: 860px) {
+  body:has(.luvit-consent:not([hidden])) .luvit-dock { inset-block-end: 132px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-consent { transition: none; }
+}
+/* CONSENT:END */
