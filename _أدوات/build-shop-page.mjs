@@ -97,8 +97,17 @@ function certs(rec) {
   return names.length ? names.join(' · ') : null;
 }
 
+/* 🔴 **نفس فخ البكجات بالضبط** · الفلتر كان بيدوّر فئة `singles`
+   بالإنجليزي واللقطة فيها `منتجات مفردة` بالعربي، فـ`singles` طلعت
+   **مصفوفة فاضية** والشبكة الرئيسية بصفحة المتجر انفرغت من ١٢ منتجاً.
+
+   ⚠️ وأنا صلّحت فخ البكجات ودفعت الصفحة **وما فحصت المفردات** · فالموقع
+      قعد يقول «0 منتجاً مفرداً» بصفحة المتجر. البناء طبع «✅ ٨ سكشن»
+      وولا بوابة حكت · **ريّان هو اللي شافها**.
+   ⤷ الدرس: فخ بمكانين بينصلّح بمكانين · والبوابة تحت بتعدّ فعلياً. */
+const فئة_المفردات = ['منتجات مفردة', 'singles'];
 const singles = woo.منتجات
-  .filter((p) => p.cats.includes('singles'))
+  .filter((p) => p.cats.some((c) => فئة_المفردات.includes(c)))
   .map((p) => {
     const rec = byWoo[p.id] || null;
     const step = rec ? STEPS[rec.cat] : STEP_FALLBACK[p.id];
@@ -144,6 +153,14 @@ for (const p of woo.منتجات) {
   }
 }
 if (!packages.length) fail('شبكة البكجات فاضية');
+
+/* 🔴 والعدّ الفعلي · «فاضية» مش كافية، الرقم لازم يطابق المتجر.
+   منتج بينضاف لووكومرس وما بيوصل الصفحة = نفس الصمت. */
+const مفردات_حيّة = woo.منتجات.filter((p) => !/^روتين /.test(p.name)).length;
+if (!singles.length) fail('شبكة المنتجات المفردة فاضية');
+if (singles.length !== مفردات_حيّة) {
+  fail('المتجر فيه ' + مفردات_حيّة + ' منتجاً مفرداً والصفحة بتعرض ' + singles.length);
+}
 
 /* ── ٢ · أدوات ماركب ──────────────────────────────────────────────── */
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -310,13 +327,13 @@ function s1() {
   <div class="luvit-promise">
     <span class="luvit-promise__item">${icon(I.wallet, 18)} الدفع عند الاستلام</span>
     <span class="luvit-promise__item">${icon(I.truck, 18)} التوصيل خلال يوم · ويومين بالأكثر</span>
-    <span class="luvit-promise__item">${icon(I.flask, 18)} النِسَب مكتوبة على العبوة</span>
+    <span class="luvit-promise__item">${icon(I.flask, 18)} منوصّيكي باللي بيناسبك</span>
   </div>
 
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
       <p class="luvit-section__eyebrow">Shop</p>
-      <h1 class="luvit-section__title">التشكيلة كاملة، والنِسَب مكتوبة</h1>
+      <h1 class="luvit-section__title">التشكيلة كاملة · ومنساعدك تختاري منها</h1>
       <p class="luvit-section__sub">${singles.length} منتجاً مفرداً و${packages.length} روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
 
       <div class="luvit-section__foot">

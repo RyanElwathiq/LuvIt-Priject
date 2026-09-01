@@ -49,6 +49,9 @@ const cat = JSON.parse(fs.readFileSync(path.join(REPO, '_خطة', 'بيانات-
  */
 const نسبة = (v) => String(v).replace(/%/g, '').replace(/\s+/g, '').trim();
 
+/** سجل الكتالوج بالـid · للشهادات وأي حقل رسمي تاني */
+const byId = Object.fromEntries(cat.منتجات.filter((r) => r.woo).map((r) => [r.woo, r]));
+
 const byWooId = {};
 for (const rec of cat.منتجات) {
   if (!rec.woo) continue;
@@ -112,6 +115,7 @@ function merge(wooList, catList, productName) {
 const rows = singles.map((p) => ({
   id: p.id, slug: p.slug, name: p.name, price: p.price,
   actives: merge(actives(strip(p.short)), byWooId[p.id] || [], p.name),
+  certs: (byId[p.id] && byId[p.id].certs) || [],
 }));
 
 if (conflicts.length) {
