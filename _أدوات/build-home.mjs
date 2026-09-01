@@ -223,7 +223,6 @@ const sRoutine = () => H(`
   <div class="luvit-section__inner">
 
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Our routines</p>
       <h2 class="luvit-section__title">الترتيب هو الفكرة كلها</h2>
       <p class="luvit-section__sub">
         ${منطوق(عدد)} روتينات · نفس الترتيب بكلهن، واللي بيتغيّر المنتجات
@@ -377,7 +376,6 @@ const sIng = () => H(`
   <span class="luvit-deep__rays" aria-hidden="true"></span>
   <div class="luvit-section__inner">
     <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">What is inside</p>
       <h2 class="luvit-section__title">كل مادة إلها شغلة</h2>
       <p class="luvit-section__sub">
         هون شو بتعمل كل مادة بـ${VITC.ar} · والنسبة جنبها عشان تعرفي
@@ -431,7 +429,6 @@ const sWhy = () => H(`
 
       <div class="luvit-split__aside">
         <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
-          <p class="luvit-section__eyebrow">Why us</p>
           <h2 class="luvit-section__title">العناية مش رفاهية، هي حقّك</h2>
           <p class="luvit-section__sub">
             ما منبيع وعود. منبيع وضوح، ومنضلّ معك بعد الطلب.
