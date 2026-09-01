@@ -13021,3 +13021,47 @@ html body {
   .luvit-about-shot img { max-inline-size: 200px; }
 }
 /* ABOUT-SHOT:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DARK-COMPONENTS:START · مكوّنات على شريط غامق
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 حطّيت `luvit-trust` بسكشن غامق بصفحة الخصوصية، و`luvit-steps` بسكشن
+      غامق بالشروط · **والاثنان محتفظان بحبر الشريط الفاتح**:
+
+        العنوان  rgb(26, 37, 41)   على تدرّج rgb(8, 38, 46)
+        النصّ    rgb(71, 85, 91)   على نفس التدرّج
+
+      يعني تباين **≈ 1.1:1** · غير مقروء أصلاً، مش «باهت».
+      وريّان هو اللي شافه بلقطة · وقياسي الأول قال 7.73:1 لأنه انقرا من
+      **تبويب متجمّد ما بيرسم** · [[computed-style-goes-stale]].
+
+   ⚠️ والعلّة بنيوية مش بهالصفحتين: `.luvit-section--dark` عندها قواعد
+      لـ`__title` و`__sub` و`__eyebrow` والروابط (سطر 3162)، **وما عندها
+      ولا قاعدة لمكوّنات جوّاها**. فأي مكوّن بينحط بسكشن غامق بيطلع أعمى.
+   ⤷ فالقواعد تحت **بالسكشن لا بمُعدِّل على المكوّن** · هيك أي سكشن غامق
+     جاي بيشتغل لحاله بلا ما حدا يتذكّر يضيف كلاساً.
+
+   والقيم مطابقة للموجود بـ`.luvit-section--dark .luvit-section__sub`
+   (‎.82 للنصّ) عشان الصفحة تضل بصوت واحد.                              */
+
+.luvit-section--dark .luvit-trust__title,
+.luvit-section--dark .luvit-step__title { color: #fff; }
+
+.luvit-section--dark .luvit-trust__note,
+.luvit-section--dark .luvit-step__text { color: rgba(255, 255, 255, .82); }
+
+.luvit-section--dark .luvit-trust__icon { color: var(--aqua-200); }
+
+/* رقم الخطوة · دائرة فاتحة على غامق بدل العكس */
+.luvit-section--dark .luvit-step__num {
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+  border-color: rgba(255, 255, 255, .28);
+}
+/* والخيط الواصل بين الخطوات */
+.luvit-section--dark .luvit-step::after { background: rgba(255, 255, 255, .22); }
+
+/* والقطعة المشتركة والملاحظات الصغيرة */
+.luvit-section--dark .luvit-trust__item small,
+.luvit-section--dark .luvit-step__body small { color: rgba(255, 255, 255, .70); }
+/* DARK-COMPONENTS:END */
