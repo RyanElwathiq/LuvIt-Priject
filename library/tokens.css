@@ -12118,3 +12118,107 @@ body.admin-bar #hero-seq .hero-story__cue {
     .shop-hero__canvas { transition: none !important; }
   }
 /* ══ SHOP-BUNDLE:END ══ */
+
+/* ══ .luvit-steps--compact · العبوات جوّا بطاقة الروتين ═══════════════
+   🔴 ريّان ١ أيلول: صفحة الروتينات كانت **بتشرح بدل ما توري** · أربع
+      فقرات بتوصف الخطوات وولا صورة منتج بينها.
+      فالخطوات صارت **العبوات نفسها** بترتيبها · وهاد الفرق كله.
+
+   والصيغة مضغوطة لأنها جوّا بطاقة لا سكشناً: صف أفقي، أربع عبوات
+   بأرقامها وأسمائها القصيرة، بينزل عموداً على الموبايل.               */
+.luvit-steps--compact {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-block: var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.luvit-steps--compact .luvit-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-1);
+  position: relative;
+}
+/* الرقم شارة صغيرة فوق العبوة لا دائرة ٥٢px */
+.luvit-steps--compact .luvit-step__num {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 2;
+  inline-size: 22px;
+  block-size: 22px;
+  font-size: 11px;
+  background: var(--aqua-50);
+  color: var(--aqua-700);
+  border-radius: 8px;
+}
+/* 🔴 أرضية العبوة **بلون خلفية صورها المطبوعة** rgb(243,250,250)
+   وإلا بيطلع إطار حواليها · فخّ مقيس بصفحة المتجر. */
+.luvit-steps--compact .luvit-step__media {
+  inline-size: 100%;
+  max-inline-size: none;
+  aspect-ratio: 1 / 1;
+  background: #F3FAFA;
+  border-radius: var(--radius-md);
+  overflow: clip;
+  display: block;
+}
+.luvit-steps--compact .luvit-step__media img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+.luvit-steps--compact .luvit-step__body { display: block; }
+.luvit-steps--compact .luvit-step__title {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--color-ink);
+  margin: 0;
+}
+.luvit-steps--compact .luvit-step__text {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+}
+@media (max-width: 560px) {
+  .luvit-steps--compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ══ بطاقة الروتين بصفحة الروتينات · تخطيط أفقي ═══════════════════════
+   🔴 بعمود واحد صورة البكج بتاخد العرض كامل وبترتفع ٦٨٠px · فبتبلع
+      البطاقة وبتدفع العبوات والسعر تحت الطيّة. والعبوات الأربع أصلاً
+      بتوري المنتجات، فصورة البكج **مساندة لا بطلة**.
+   ⤷ صورة على جنب بثلث العرض · والمحتوى بالباقي.                       */
+@media (min-width: 900px) {
+  .luvit-card--routine {
+    display: grid;
+    grid-template-columns: minmax(0, 34%) minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: center;
+  }
+  .luvit-card--routine .luvit-card__media {
+    block-size: 100%;
+    max-block-size: 380px;
+  }
+  .luvit-card--routine .luvit-card__media img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+}
+/* وبالموبايل عمود واحد · بس الصورة مقصوصة ما بتطول */
+.luvit-card--routine .luvit-card__media {
+  aspect-ratio: 1 / 1;
+  overflow: clip;
+}
+/* مسافة بين البطاقات · الثلاثة بيقعدوا فوق بعض */
+#routines .luvit-card--routine + .luvit-card--routine {
+  margin-block-start: var(--space-6);
+}
