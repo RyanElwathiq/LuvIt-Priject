@@ -11335,3 +11335,33 @@ body.admin-bar #hero-seq .hero-story__cue {
   text-underline-offset: 2px;
 }
 .wc-block-checkout__terms a:hover { color: var(--aqua-800); }
+
+/* ── «قطراتك» · تبويب برنامج الولاء بصفحة الحساب ──────────────────
+   ريّان ١ أيلول: البنية بتنبنى قبل المحتوى · الموقع ما انطلق أصلاً.
+   الاسم من لغة العلامة نفسها (الهيرو قطرة) · والنقاط كقطرات بتتجمّع
+   مفهومة بلا شرح.                                                  */
+.luvit-drops { padding-block: var(--space-4); }
+.luvit-drops__title {
+  font-family: var(--font-heading);
+  font-size: clamp(20px, 2.4vw, 26px);
+  color: var(--color-ink);
+  margin: 0 0 var(--space-2);
+}
+.luvit-drops__sub {
+  margin: 0 0 var(--space-4);
+  max-inline-size: 48ch;
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+}
+/* سطر «قيد التجهيز» · واضح إنه حالة مؤقتة لا رصيد صفر */
+.luvit-drops__soon {
+  display: inline-block;
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(170deg, #F7FCFD, #EDF7FA);
+  border: 1px dashed rgba(41,169,192,.34);
+  font-size: 13.5px;
+  color: var(--color-ink-soft);
+}
