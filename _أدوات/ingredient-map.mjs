@@ -41,10 +41,18 @@ const cat = JSON.parse(fs.readFileSync(path.join(REPO, '_خطة', 'بيانات-
    ⤷ فولا مصدر لحاله بيعطي الجرد · الاتّحاد هو اللي بيعطيه.
    ⚠️ ولو اختلفت **النسبة نفسها** لنفس المادة بنفس المنتج، الأداة بتوقف ·
       هاد تناقض بيانات بينعرض على ريّان لا بينحلّ بالتخمين. */
+/** 🔴 توحيد صيغة النسبة قبل أي مقارنة.
+ *  المصدران بيكتبوها مختلف: ووكومرس `10% + 2%` والكتالوج `10% + 2%` بس
+ *  `String(pct).replace('%','')` بتشيل **أول `%` بس** فبتطلع `10 + 2%`.
+ *  فالمقارنة كانت بتصرخ «تعارض» على قيمتين متطابقتين.
+ *  ⚠️ إنذار كاذب من الأداة، مش تعارض بيانات · وكان بيظهر بكل تشغيلة.
+ */
+const نسبة = (v) => String(v).replace(/%/g, '').replace(/\s+/g, '').trim();
+
 const byWooId = {};
 for (const rec of cat.منتجات) {
   if (!rec.woo) continue;
-  byWooId[rec.woo] = (rec.actives || []).map((a) => ({ pct: String(a.pct).replace('%', ''), name: a.name }));
+  byWooId[rec.woo] = (rec.actives || []).map((a) => ({ pct: String(a.pct).replace(/%$/, ''), name: a.name }));
 }
 
 /* المفردات فقط · البكجات مجموعة قطع لا منتج بتركيبة */
@@ -52,14 +60,36 @@ const singles = woo.منتجات.filter((p) => !/^روتين /.test(p.name));
 
 const strip = (s) => String(s || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
-/** كل نسبة مع اسم مادّتها من الوصف المختصر · «10% فيتامين سي» */
+/** كل نسبة مع اسم مادّتها من الوصف المختصر · «10% فيتامين سي»
+ *
+ *  🔴 و**الصيغة المركّبة** بتنقرا أول · «10% + 2% AHA + BHA» **مادة وحدة**
+ *     بنسبتين، مش مادتين. بلا هالحالة الريجيكس بياخد `10%` ويسمّيها `+`،
+ *     وبعدين ياخد `2%` ويسمّيها «AHA + BHA» · فالأداة بتقول
+ *     «تعارض: ووكومرس 2% مقابل الكتالوج 10 + 2%» **وهما متطابقان**.
+ *     ⚠️ إنذار كاذب من الأداة نفسها · والإنذار الكاذب بيلغي الأداة كلها.
+ */
 function actives(text) {
   const out = [];
-  const re = /([\d.]+)\s*%\s*([^·،\n]+?)(?=\s*·|\s*،|\s*$|\s+\d+\s*%)/g;
+  const مأخوذ = [];
   let m;
-  while ((m = re.exec(text))) {
-    const name = m[2].replace(/\s+\d+ml.*$/, '').trim();
-    if (name) out.push({ pct: m[1], name });
+
+  /* ١ · المركّبة · N% + M% <اسم> */
+  const مركّب = /(\d+(?:\.\d+)?\s*%\s*\+\s*\d+(?:\.\d+)?\s*%)\s*([^·،\n]+?)(?=\s*·|\s*،|\s*$)/g;
+  while ((m = مركّب.exec(text))) {
+    const name = m[2].replace(/\s+\d+\s*ml.*$/, '').trim();
+    if (name) {
+      out.push({ pct: m[1].replace(/\s+/g, ' ').trim(), name });
+      مأخوذ.push(m[0]);
+    }
+  }
+
+  /* ٢ · المفردة · من اللي ما انأخذ */
+  let بقية = text;
+  for (const t of مأخوذ) بقية = بقية.split(t).join(' · ');
+  const مفرد = /(\d+(?:\.\d+)?)\s*%\s*([^·،\n]+?)(?=\s*·|\s*،|\s*$|\s+\d+\s*%)/g;
+  while ((m = مفرد.exec(بقية))) {
+    const name = m[2].replace(/\s+\d+\s*ml.*$/, '').trim();
+    if (name && name !== '+') out.push({ pct: m[1], name });
   }
   return out;
 }
@@ -71,7 +101,7 @@ function merge(wooList, catList, productName) {
   for (const a of wooList) map.set(a.name.trim(), a.pct);
   for (const a of catList) {
     const k = a.name.trim();
-    if (map.has(k) && map.get(k) !== a.pct) {
+    if (map.has(k) && نسبة(map.get(k)) !== نسبة(a.pct)) {
       conflicts.push(productName + ' · ' + k + ' · ووكومرس ' + map.get(k) + '% مقابل الكتالوج ' + a.pct + '%');
     }
     if (!map.has(k)) map.set(k, a.pct);
@@ -90,32 +120,80 @@ if (conflicts.length) {
   console.error('');
 }
 
-const want = process.argv[2];
 
-if (!want) {
-  console.log('المنتجات المفردة الحيّة: ' + rows.length);
-  console.log('');
+/* ══════════════════════════════════════════════════════════════════════
+   التصدير · عشان البوابات تقرا من **نفس** المنطق لا من نسخة تانية
+   ══════════════════════════════════════════════════════════════════════
+   🔴 بوابة المقالات كانت بتقرا الكتالوج **وحده** (٩ منتجات)، وهاد بالضبط
+      اللي خلّى مقالين ينكتبوا بأرقام ناقصة. بوابة بمصدر أضعف من مصدر
+      الكاتب **بتمرّر الغلط وبتعطي إحساس أمان**.
+   ⤷ من هون وطالع، أي حدا بده «كل النِسَب» أو «كم منتجاً فيه X» بياخدها
+     من هون · والدمج بينعمل مرة وحدة. */
+
+/** كل المنتجات المفردة الحيّة مع موادّها الفعّالة مدموجة من المصدرين */
+export const منتجات = rows;
+
+/** تعارضات النِسَب بين المصدرين · فاضية = المصدران متطابقان */
+export const تعارضات = conflicts;
+
+/** كل قيم النِسَب المعروفة كنصّ · «0.5» · «10» · «3» */
+export const نِسَب_معروفة = new Set(
+  rows.flatMap((r) => r.actives.flatMap((a) =>
+    [...String(a.pct).matchAll(/(\d+(?:\.\d+)?)\s*%?/g)].map((m) => m[1]).filter(Boolean))),
+);
+
+/** المنتجات اللي فيها مادة معيّنة · مرتّبة بالنسبة تصاعدياً */
+export function فيها(مادة) {
+  const hits = [];
   for (const r of rows) {
-    console.log('  ' + r.name.slice(0, 30).padEnd(32) +
-      r.actives.map((a) => a.pct + '% ' + a.name).join(' · ').slice(0, 92));
+    for (const a of r.actives) {
+      if (a.name.includes(مادة)) hits.push({ منتج: r.name, نسبة: a.pct, slug: r.slug });
+    }
   }
-  /* أكثر المكوّنات تكراراً · وهاد اللي بيصلح لمقال */
-  const tally = {};
-  for (const r of rows) for (const a of r.actives) (tally[a.name] = tally[a.name] || []).push({ n: r.name, p: a.pct });
-  console.log('');
-  console.log('المكوّنات المتكرّرة (منتجان فأكثر):');
-  for (const [k, v] of Object.entries(tally).sort((a, b) => b[1].length - a[1].length)) {
-    if (v.length < 2) continue;
-    console.log('  ' + k.padEnd(22) + String(v.length + '/' + rows.length).padStart(6) +
-      '   ' + [...new Set(v.map((x) => x.p))].sort((a, b) => a - b).join(' · ') + ' %');
-  }
-  process.exit(0);
+  return hits.sort((x, y) => parseFloat(x.نسبة) - parseFloat(y.نسبة));
 }
 
-const hits = [];
-for (const r of rows) for (const a of r.actives) if (a.name.includes(want)) hits.push({ name: r.name, pct: a.pct, slug: r.slug });
-hits.sort((a, b) => Number(a.pct) - Number(b.pct));
-console.log(want + ' · ' + hits.length + ' من ' + rows.length + ' منتجاً مفرداً');
-console.log('نِسَب مختلفة: ' + [...new Set(hits.map((h) => h.pct))].length);
-console.log('');
-for (const h of hits) console.log('  ' + (h.pct + '%').padStart(6) + '  ' + h.name);
+/** عدد المنتجات المفردة الحيّة · المقام بأي عبارة «X من Y» */
+export const عدد_المفردات = rows.length;
+
+/* 🔴 الحارس · الملف صار **مكتبة كمان**. بلاه أي استيراد بيطبع الجرد
+   كاملاً على المخرَج، وبوابة بتطبع ١٦ سطراً كل تشغيلة بتنتجاهل. */
+const CLI = process.argv[1] && process.argv[1].endsWith('ingredient-map.mjs');
+const want = process.argv[2];
+
+/* 🔴 كل الطباعة جوّا دالة · وبتنادى **بس** لما ينشغّل من سطر الأوامر.
+   بلاها الاستيراد بيطبع الجرد كاملاً، والأخطر: `process.exit(0)` اللي
+   جوّا فرع «بلا وسيط» كان **بيقتل المستورِد** بصمت. */
+function cli() {
+  
+  if (!want) {
+    console.log('المنتجات المفردة الحيّة: ' + rows.length);
+    console.log('');
+    for (const r of rows) {
+      console.log('  ' + r.name.slice(0, 30).padEnd(32) +
+        r.actives.map((a) => a.pct + '% ' + a.name).join(' · ').slice(0, 92));
+    }
+    /* أكثر المكوّنات تكراراً · وهاد اللي بيصلح لمقال */
+    const tally = {};
+    for (const r of rows) for (const a of r.actives) (tally[a.name] = tally[a.name] || []).push({ n: r.name, p: a.pct });
+    console.log('');
+    console.log('المكوّنات المتكرّرة (منتجان فأكثر):');
+    for (const [k, v] of Object.entries(tally).sort((a, b) => b[1].length - a[1].length)) {
+      if (v.length < 2) continue;
+      console.log('  ' + k.padEnd(22) + String(v.length + '/' + rows.length).padStart(6) +
+        '   ' + [...new Set(v.map((x) => x.p))].sort((a, b) => a - b).join(' · ') + ' %');
+    }
+    process.exit(0);
+  }
+  
+  const hits = [];
+  for (const r of rows) for (const a of r.actives) if (a.name.includes(want)) hits.push({ name: r.name, pct: a.pct, slug: r.slug });
+  hits.sort((a, b) => Number(a.pct) - Number(b.pct));
+  console.log(want + ' · ' + hits.length + ' من ' + rows.length + ' منتجاً مفرداً');
+  console.log('نِسَب مختلفة: ' + [...new Set(hits.map((h) => h.pct))].length);
+  console.log('');
+  for (const h of hits) console.log('  ' + (h.pct + '%').padStart(6) + '  ' + h.name);
+  
+}
+
+if (CLI) cli();

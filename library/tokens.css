@@ -12981,3 +12981,43 @@ html body {
 .luvit-steps > :last-child::after,
 .luvit-steps--compact > :last-child::after { content: none; }
 /* STEPS-COUNT:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ABOUT-SHOT:START · صورة عبوة جنب نصّ · على شريط فاتح
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 صفحة «من نحن» كانت **بلا ولا صورة** · خمس سكاشن كلها نصّ وبطاقات،
+      وهاد مع رؤوس موسّطة و٤ eyebrow بيعطي نمط «صفحة مبنية بالذكاء
+      الاصطناعي» المقيس بـ`design-taste-frontend`.
+
+   ⚠️ وما استعملت `.luvit-ing-split__shot` الموجود · ظلّه
+      `rgba(2, 26, 30, .38)` **مضبوط لخلفية غامقة** (سكشن المكوّنات
+      بالرئيسية)، وعلى شريط فاتح بيطلع بقعة تقيلة.
+      ⤷ الدرس المتكرّر: كلاس بيحمل افتراضات سياقه معه.          */
+
+.luvit-about-split {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: clamp(var(--space-5), 4vw, var(--space-8));
+  align-items: center;
+}
+.luvit-about-shot { margin: 0; }
+.luvit-about-shot img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-inline-size: 280px;
+  margin-inline: auto;
+  /* ظلّ فاتح · نصف عتمة ظلّ الغامق تقريباً */
+  filter: drop-shadow(0 14px 26px rgba(26, 37, 41, .16));
+}
+.luvit-about-shot figcaption {
+  margin-block-start: var(--space-3);
+  text-align: center;
+  font-size: var(--fs-sm, .875rem);
+  color: var(--color-ink-soft, rgba(26, 37, 41, .62));
+}
+@media (max-width: 860px) {
+  .luvit-about-split { grid-template-columns: minmax(0, 1fr); }
+  .luvit-about-shot img { max-inline-size: 200px; }
+}
+/* ABOUT-SHOT:END */
