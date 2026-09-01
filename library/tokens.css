@@ -11319,3 +11319,19 @@ body.admin-bar #hero-seq .hero-story__cue {
 .wc-block-components-product-name.wc-block-components-product-name {
   text-decoration: none;
 }
+
+/* ── روابط الشروط بالشيك أوت ───────────────────────────────────────
+   🔴 كانت **نصاً بلا روابط** · الزبونة بتوافق على شروط ما بتقدر تقراها.
+      السبب: كتلة الشروط عندها نص مخصّص بيدهس نص ووكومرس الافتراضي
+      اللي بيولّد الروابط لحاله. انحلّت بحقن <a> جوّا النص المخصّص.
+
+   ⚠️ **والتسطير هون بينبقى بقصد** · عكس باقي روابط ووكومرس.
+      رابط موافقة قانونية لازم يبيّن إنه رابط · وإخفاؤه بيخلّي السطر
+      يقرا كنص عادي، وهاد بالضبط اللي كان صايراً.                     */
+.wc-block-checkout__terms a,
+.wc-block-checkout__terms a:visited {
+  color: var(--aqua-700);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.wc-block-checkout__terms a:hover { color: var(--aqua-800); }
