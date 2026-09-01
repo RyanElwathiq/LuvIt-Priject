@@ -11306,3 +11306,16 @@ body.admin-bar #hero-seq .hero-story__cue {
   color: var(--color-ink);
   text-decoration: none;
 }
+
+/* 🔴 وهاي المرة الثالثة بنفس اليوم مع نفس القاعدة:
+       .comments-area a, .page-content a { text-decoration: underline }
+   خصوصيتها (0,1,1) · فأي قاعدة عنّا بكلاس واحد (0,1,0) **بتخسر**.
+   و`text-decoration` ما بتنشال من العنصر الابن · لازم تنشال من نفس
+   العنصر اللي انفرضت عليه، يعني من الرابط الحاوي.
+   الحل بكل مرة: **مضاعفة الكلاس** لا !important.                    */
+.wc-block-grid__product-link.wc-block-grid__product-link,
+.wc-block-grid__product-add-to-cart .wp-block-button__link.wp-block-button__link,
+.woocommerce-LoopProduct-link.woocommerce-LoopProduct-link,
+.wc-block-components-product-name.wc-block-components-product-name {
+  text-decoration: none;
+}
