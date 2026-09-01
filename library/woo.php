@@ -210,6 +210,12 @@ add_filter(
 
 				/* رسائل الخطأ · كانت بالمذكّر كمان */
 				'Please enter a valid order ID'   => 'اكتبي رقم طلب صحيح',
+
+				/* النصّ داخل الخانات · كان مذكّراً («ستجده» · «الذي استخدمته») */
+				'Found in your order confirmation email.'
+					=> 'بتلاقيه برسالة تأكيد الطلب.',
+				'Email you used during checkout.'
+					=> 'الإيميل اللي استعملتيه وقت الطلب.',
 				'Please enter a valid email address' => 'اكتبي إيميل صحيح',
 			);
 		}
