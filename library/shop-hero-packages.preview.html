@@ -340,17 +340,17 @@
   }
 
   /* المؤشّر المنزلق · transform بس، ولا width ولا left */
-  .pk__ind {
-    position: absolute; inset-block: 5px; inset-inline-start: 0;
-    inline-size: 10px; border-radius: 100px; z-index: 0;
-    /* 🔴 aqua-700→800 لا 600→700 · محسوب: أبيض على aqua-600 بيعطي
-       **4.25:1** يعني تحت AA، وعلى aqua-700 بيعطي **6.04:1**. */
-    background: linear-gradient(140deg, var(--aqua-700, #196B7D), var(--aqua-800, #124D5A));
-    transform-origin: 0 50%;
-    transition: transform .42s cubic-bezier(.22,.61,.36,1);
-    will-change: transform;
-  }
-  [dir="rtl"] .pk__ind { transform-origin: 100% 50%; }
+  /* 🔴 المؤشّر المنزلق **انشال** ١ أيلول · بعد ثلاث محاولات.
+     كان <span> منفصلاً بينحرّك بالقياس فوق التبويب المختار. وعلى الموقع
+     ضلّ عرضه **صفراً**: `select(0)` بتشتغل والسكشن تحت الطيّة بلا مقاس
+     مرسوم، فالقياس بيرجّع صفراً. جرّبت transform (ما انطبّق)، ثم مقاساً
+     وموضعاً، ثم ResizeObserver · وكلها فشلت على الموقع ونجحت بالمعاينة
+     لأن السكشن فيها أعلى الصفحة.
+
+     🔴 والدرس: **بنيت آلية بتحتاج قياساً صحيحاً باللحظة الصحيحة، وفي
+        آلية ما بتحتاج قياساً أصلاً.** تلوين التبويب المختار مباشرةً
+        بيعطي نفس النتيجة البصرية وما بيقدر يفشل.
+     الخسارة: انزلاق المؤشّر بين التبويبات · والمكسب: بيشتغل. */
 
   .pk__goal {
     position: relative; z-index: 1; flex: 1 1 0; min-inline-size: max-content;
@@ -361,7 +361,15 @@
     color: var(--color-ink-soft, #47555B);
     transition: color .3s ease;
   }
-  .pk__goal:hover { color: var(--color-ink, #1A2529); }
+  /* 🔴 القالب فيه:  button:hover { background: rgb(204,51,102) }
+     فأي مرور على تبويب هدف كان **بيصير وردياً** · وقاعدتنا كانت بتغيّر
+     اللون بس فخلفية القالب بتغلب. مقيس ١ أيلول وريّان شافه.
+     ومضاعفة الكلاس عشان نغلب `button:hover` بخصوصية (0,1,1). */
+  .pk__goal.pk__goal:hover {
+    color: var(--color-ink, #1A2529);
+    background: rgba(41, 169, 192, .10);
+  }
+  .pk__goal.pk__goal[aria-selected="true"]:hover { background: none; }
   .pk__goal:focus-visible { outline: 2px solid var(--aqua-500, #29A9C0); outline-offset: 2px; }
   .pk__goal b {
     font-family: var(--font-heading, inherit);
@@ -373,7 +381,10 @@
     font-size: 11.5px; font-variant-numeric: tabular-nums;
     color: var(--color-ink-soft, #47555B);
   }
-  .pk__goal[aria-selected="true"] { color: #FFFFFF; }
+  .pk__goal[aria-selected="true"] {
+    color: #FFFFFF;
+    background: linear-gradient(140deg, var(--aqua-700, #196B7D), var(--aqua-800, #124D5A));
+  }
   .pk__goal[aria-selected="true"] small { color: rgba(255,255,255,.88); }
 
   /* 🔴 شارة «جديد» · **جنب الاسم** لا معلّقة بحافّة الزر.
@@ -588,8 +599,12 @@
     background:
       radial-gradient(58% 70% at 96% 0%, rgba(76,197,218,.10), transparent 60%),
       linear-gradient(178deg, #F8FCFD, #F1F8FA);
-    box-shadow: 0 0 0 100vmax #F5FBFC;
-    clip-path: inset(0 -100vmax);
+    /* 🔴 كان box-shadow بـ100vmax مع clip-path · وبيخلّف **خطاً رأسياً
+       مرئياً** على حافّتي الشريط (شافه ريّان عند التونرات والعلاج الموضعي
+       والحماية). السبب إن القص بمسافة منتهية بيرسم حدّاً عند طرفه.
+       والبديل تقنية العرض الكامل القياسية · بلا قص وبلا حواف. */
+    margin-inline: calc(50% - 50vw);
+    padding-inline: calc(50vw - 50%);
   }
   /* 🔴 الشريط المتناوب بيمدّ ظلاً بعرض الشاشة، وهو جوّا .cat__inner
      اللي z-index:1 · يعني **بيرسم فوق حبيبات السكشن ويطمسها**.
@@ -763,15 +778,9 @@
 
       </div>
 
-      <!-- 🔴 الحقائق **برّا** كتلة الكلام · لأن .shop-hero__copy نفسها
-           absolute، فلو ضلّت جوّاها بينحسب inset-block-end من قاعها هي
-           مش من قاع اللوح · وبترجع تقعد فوق العبوات من جديد. -->
-      <div class="shop-hero__facts">
-        <div class="shop-hero__fact"><b>١٢</b><span>منتجاً بالتشكيلة</span></div>
-        <div class="shop-hero__fact"><b>٤</b><span>روتينات جاهزة</span></div>
-        <div class="shop-hero__fact"><b>يوم لِيومين</b><span>توصيل لكل الأردن</span></div>
-        <div class="shop-hero__fact"><b>٢ د.أ</b><span>وبلاش مع أي روتين</span></div>
-      </div>
+      <!-- 🔴 شريط الحقائق (١٢ منتجاً · ٤ روتينات · يوم ليومين · ٢ د.أ)
+           **انحذف ١ أيلول بطلب ريّان.** والوسم المفتوح تبعه ضلّ يتيماً
+           فأوقف البناء · مسكه فاحص توازن الوسوم بالمجمّع قبل ما ينزل. -->
 
       <div class="shop-hero__wave" aria-hidden="true">
         <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
@@ -799,7 +808,6 @@
 
     <!-- شريط الأهداف · tablist حقيقي عشان الكيبورد وقارئ الشاشة -->
     <div class="pk__rail" role="tablist" aria-label="اختاري هدفك" id="pkrail">
-      <span class="pk__ind" aria-hidden="true" id="pkind"></span>
     </div>
 
     <p class="pk__quiz">
@@ -1168,9 +1176,8 @@ var GROUPS = [
       بين المجموع والتفصيل.                                          */
 (function () {
   var rail = document.getElementById('pkrail');
-  var ind = document.getElementById('pkind');
   var panel = document.getElementById('pkpanel');
-  if (!rail || !ind || !panel) return;
+  if (!rail || !panel) return;
 
   var U = 'https://plasmajo.com/wp-content/uploads/2026/08/';
   var AR_D = '٠١٢٣٤٥٦٧٨٩';
@@ -1219,17 +1226,6 @@ var GROUPS = [
     tabs[n].focus();
   });
 
-  /* المؤشّر · transform بس · ولا left ولا width (قاعدة أداء ثابتة) */
-  function moveInd() {
-    var el = tabs[active];
-    if (!el) return;
-    var r = el.getBoundingClientRect();
-    var rr = rail.getBoundingClientRect();
-    var rtl = getComputedStyle(rail).direction === 'rtl';
-    /* بالـRTL نقيس من الحافّة اليمنى لأن inset-inline-start هناك */
-    var off = rtl ? (rr.right - r.right) : (r.left - rr.left);
-    ind.style.transform = 'translateX(' + (rtl ? -off : off) + 'px) scaleX(' + (r.width / 10) + ')';
-  }
 
   /* ── اللوح ──────────────────────────────────────────────────────── */
   function render(p) {
@@ -1291,7 +1287,6 @@ var GROUPS = [
       b.setAttribute('aria-selected', n === i ? 'true' : 'false');
       b.tabIndex = n === i ? 0 : -1;
     });
-    moveInd();
     /* 🔴 بلا هاد، اختيار بالكيبورد أو تبويب برّا المنظر بيتفعّل
        وهو مش ظاهر · المستخدم بيحس إنه ما صار إشي. */
     if (tabs[i] && tabs[i].scrollIntoView) {
@@ -1301,10 +1296,20 @@ var GROUPS = [
   }
 
   select(0);
+
+  /* 🔴 المؤشّر كان بيطلع بعرض صفر على الموقع · مقيس ١ أيلول.
+     السبب: `select(0)` بتشتغل عند التهيئة، والسكشن وقتها **تحت الطيّة
+     وما إله مقاس مرسوم** · فـ`getBoundingClientRect().width` بترجّع صفراً
+     والمؤشّر بينحفظ على صفر وما بينصحّح أبداً.
+
+     والمعاينة ما كشفته لأن السكشن فيها أعلى الصفحة.
+
+     فبدل ما نعتمد على لحظة التحميل، بنراقب **متى صار للشريط مقاس فعلاً**.
+     ResizeObserver بتطلق أول مرة العنصر بياخد أبعاداً، وبتطلق كمان مع أي
+     تغيير عرض · فبتغني عن مستمع resize كمان. */
+
   /* الخطوط بتوصل متأخرة وبتغيّر عرض التبويب · فبنعيد القياس بعدها */
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveInd);
-  window.addEventListener('resize', moveInd);
-})();
+  })();
 
 /* ══════════════════════════════════════════════════════════════════════
    الحركة · مبنية بمكتبة توازَن · مش صورة ذكاء اصطناعي.

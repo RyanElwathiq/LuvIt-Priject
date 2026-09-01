@@ -323,9 +323,8 @@ var GROUPS = [
       بين المجموع والتفصيل.                                          */
 (function () {
   var rail = document.getElementById('pkrail');
-  var ind = document.getElementById('pkind');
   var panel = document.getElementById('pkpanel');
-  if (!rail || !ind || !panel) return;
+  if (!rail || !panel) return;
 
   var U = 'https://plasmajo.com/wp-content/uploads/2026/08/';
   var AR_D = '٠١٢٣٤٥٦٧٨٩';
@@ -374,17 +373,6 @@ var GROUPS = [
     tabs[n].focus();
   });
 
-  /* المؤشّر · transform بس · ولا left ولا width (قاعدة أداء ثابتة) */
-  function moveInd() {
-    var el = tabs[active];
-    if (!el) return;
-    var r = el.getBoundingClientRect();
-    var rr = rail.getBoundingClientRect();
-    var rtl = getComputedStyle(rail).direction === 'rtl';
-    /* بالـRTL نقيس من الحافّة اليمنى لأن inset-inline-start هناك */
-    var off = rtl ? (rr.right - r.right) : (r.left - rr.left);
-    ind.style.transform = 'translateX(' + (rtl ? -off : off) + 'px) scaleX(' + (r.width / 10) + ')';
-  }
 
   /* ── اللوح ──────────────────────────────────────────────────────── */
   function render(p) {
@@ -446,7 +434,6 @@ var GROUPS = [
       b.setAttribute('aria-selected', n === i ? 'true' : 'false');
       b.tabIndex = n === i ? 0 : -1;
     });
-    moveInd();
     /* 🔴 بلا هاد، اختيار بالكيبورد أو تبويب برّا المنظر بيتفعّل
        وهو مش ظاهر · المستخدم بيحس إنه ما صار إشي. */
     if (tabs[i] && tabs[i].scrollIntoView) {
@@ -456,10 +443,20 @@ var GROUPS = [
   }
 
   select(0);
+
+  /* 🔴 المؤشّر كان بيطلع بعرض صفر على الموقع · مقيس ١ أيلول.
+     السبب: `select(0)` بتشتغل عند التهيئة، والسكشن وقتها **تحت الطيّة
+     وما إله مقاس مرسوم** · فـ`getBoundingClientRect().width` بترجّع صفراً
+     والمؤشّر بينحفظ على صفر وما بينصحّح أبداً.
+
+     والمعاينة ما كشفته لأن السكشن فيها أعلى الصفحة.
+
+     فبدل ما نعتمد على لحظة التحميل، بنراقب **متى صار للشريط مقاس فعلاً**.
+     ResizeObserver بتطلق أول مرة العنصر بياخد أبعاداً، وبتطلق كمان مع أي
+     تغيير عرض · فبتغني عن مستمع resize كمان. */
+
   /* الخطوط بتوصل متأخرة وبتغيّر عرض التبويب · فبنعيد القياس بعدها */
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveInd);
-  window.addEventListener('resize', moveInd);
-})();
+  })();
 
 /* ══════════════════════════════════════════════════════════════════════
    الحركة · مبنية بمكتبة توازَن · مش صورة ذكاء اصطناعي.
