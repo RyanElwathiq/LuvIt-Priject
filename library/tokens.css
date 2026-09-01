@@ -12222,3 +12222,84 @@ body.admin-bar #hero-seq .hero-story__cue {
 #routines .luvit-card--routine + .luvit-card--routine {
   margin-block-start: var(--space-6);
 }
+
+/* ══ رأس صفحة الروتينات · تدفّق الخطوات ═══════════════════════════════
+   🔴 ريّان ١ أيلول: «ضايل تعمل شكل ممتاز للصفحة اللي فوق · ما فيها
+      تصميم من الأساس». وكان محقاً · كانت بريدكرَمب وعنوان وفقرة على
+      أرضية بيضا و٤٠٠px فراغ.
+
+   والفكرة: الصفحة كلها عن **الترتيب** · فالرأس لازم **يقوله بصرياً**
+   لا يكتبه. أربع محطات على خيط واحد بتقرا «واحد بعد التاني» بلمحة،
+   وهاي أطروحة الصفحة كاملة قبل ما تنزل سطر.
+
+   وعلى ماء عميق لأن الرأس كان أفلت مكان بالموقع · وباقي الصفحات فيها
+   عمق وأشعة وفقاعات.
+   ⚠️ والموجة تحته لازم `background` = **#0B9198 بالضبط** · وهو آخر لون
+      بتدرّج .luvit-deep. أي اختلاف بسيط بيطلع شريطاً عائماً (فخّ مسجّل). */
+/* 🔴 الشريط بيكسر حدّ عرض الرأس · `.luvit-section__head--start` عليه
+   max-width للقراءة (٦٠ حرفاً تقريباً) وهاد صح **للنصّ**، بس بيخنق
+   الشريط ويخلّي نصّ العرض فاضياً. فبيتحرّر لعرض الحاوية كاملاً. */
+.rt-flow {
+  max-inline-size: none;
+  inline-size: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-block-start: var(--space-6);
+  padding: 0;
+  list-style: none;
+  position: relative;
+}
+/* الخيط الواصل · بيمرّ **ورا** المحطات ويوقف عند أول وآخر وحدة */
+.rt-flow::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 17px;
+  inset-inline: 12.5%;
+  block-size: 1px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,.14), rgba(255,255,255,.42), rgba(255,255,255,.14));
+}
+.rt-flow__item {
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+.rt-flow__dot {
+  inline-size: 34px;
+  block-size: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-latin);
+  font-size: 13px;
+  font-weight: 600;
+  color: #08262E;
+  background: #EAF7FA;
+  box-shadow: 0 0 0 5px rgba(234, 247, 250, .12);
+}
+.rt-flow__label {
+  font-family: var(--font-heading);
+  font-size: clamp(13px, 1.5vw, 15.5px);
+  line-height: 1.3;
+  color: #FFFFFF;
+}
+.rt-flow__note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.84);
+  max-inline-size: 20ch;
+}
+
+/* الرأس نفسه · نص أبيض على الماء العميق */
+/* الرأس نفسه بيتحرّر كمان · العنوان بيضل محدوداً للقراءة والشريط لأ */
+.rt-head .luvit-section__head--start { max-inline-size: none; }
+.rt-head .luvit-section__title { color: #FFFFFF; max-inline-size: 22ch; }
+.rt-head .luvit-section__sub { max-inline-size: 54ch; }
+.rt-head .luvit-section__sub { color: rgba(255, 255, 255, .82); }
+.rt-head .luvit-section__eyebrow { color: var(--aqua-300, #8FDCE9); }
+.rt-head nav a { color: rgba(255, 255, 255, .78); }
+.rt-head nav [aria-current] { color: #FFFFFF; }
