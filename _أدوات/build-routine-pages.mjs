@@ -32,6 +32,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ROUTINES, عدد, منطوق, معرَّف, غير } from './routines.mjs';
 
 const HERE   = path.dirname(fileURLToPath(import.meta.url));
 const LIB    = path.resolve(HERE, '..', 'library');
@@ -81,59 +82,68 @@ for (const rec of cat.منتجات) {
   };
 }
 
-/* بوابة: كل منتج مذكور بالروتينات لازم يكون انحلّ */
-const ROUTINES = [
-  {
-    key: 'hydration', file: 'rt1-hydration.html', wooId: 205,
-    en: 'Hydration & Support', ar: 'روتين الترطيب والدعم اليومي',
-    slug: 'hydration-support-routine',
-    sub: 'روتين يومي يساعد بشرتك تحس براحة وترطيب وتوازن يدوم طول اليوم.',
-    who: ['البشرة الجافة', 'البشرة الحسّاسة', 'مين بتحس بشدّ بعد الغسيل'],
-    steps: [
-      ['L111', 'تنظيف',       'لبشرة نظيفة ومنعشة'],
-      ['L114', 'ترطيب عميق',  'يحضّر البشرة ويدعم توازنها'],
-      ['L102', 'ترطيب مكثّف',  'يغذّي البشرة ويزيد من نعومتها'],
-      ['L116', 'قفل الترطيب', 'يحافظ على الترطيب ويعزّز الحماية'],
-    ],
-    benefits: ['ترطيب مستمر وطويل الأمد', 'بشرة أكثر نعومة ونضارة',
-               'دعم حاجز البشرة وحمايتها', 'إحساس بالراحة والانتعاش'],
-  },
-  {
-    key: 'glow', file: 'rt2-glow.html', wooId: 203,
-    en: 'Brighten & Glow', ar: 'روتين الإشراقة',
-    slug: 'brighten-glow-routine',
-    sub: 'لبشرة باهتة وغير متجانسة · يساعد على أن تبدو أكثر إشراقاً وحيوية وتوازناً.',
-    who: ['البشرة الباهتة', 'تفاوت لون البشرة', 'مين بتدوّر على إشراقة يومية'],
-    steps: [
-      ['L111', 'تنظيف لطيف',   'ينظّف البشرة ويهيّئها'],
-      ['L114', 'ترطيب وتحضير', 'يرطّب البشرة ويدعم امتصاص الخطوات التالية'],
-      ['L101', 'إشراقة مركّزة', 'يساعد على الإشراق ويمنح مظهراً أكثر حيوية'],
-      ['L116', 'قفل الترطيب',  'يحافظ على الترطيب ويعزّز النعومة'],
-    ],
-    benefits: ['إشراقة يومية صحية', 'مظهر أكثر حيوية وتوازن',
-               'ترطيب يدعم النضارة', 'نعومة وانتعاش يومي'],
-  },
-  {
-    key: 'clarify', file: 'rt3-clarify.html', wooId: 204,
-    en: 'Clarify & Balance', ar: 'روتين التنقية والتوازن',
-    slug: 'clarify-balance-routine',
-    sub: 'روتين يومي يساعد البشرة الدهنية والمختلطة على أن تبدو أنقى وأكثر توازناً وراحة طول اليوم.',
-    who: ['البشرة الدهنية', 'البشرة المختلطة', 'مين بتزعجها اللمعة ومظهر المسام'],
-    steps: [
-      ['L110', 'تنظيف متوازن',             'ينظّف بلطف ويزيل الزيوت الزائدة والشوائب'],
-      ['L105', 'تنقية وتقليل مظهر المسام', 'ينقّي البشرة بعمق ويساعد على تقليل مظهر المسام'],
-      ['L101', 'تفتيح وإشراقة',            'يساعد على توحيد لون البشرة ويمنحها إشراقة صحية'],
-      ['L116', 'ترطيب خفيف',               'يرطّب ويعزّز الحاجز الطبيعي لبشرة مريحة'],
-    ],
-    benefits: ['تقليل مظهر اللمعان الزائد', 'مظهر أنقى وأكثر توازناً',
-               'المساعدة في تنقية المسام', 'ترطيب خفيف بدون ثِقَل'],
-  },
-];
+/* 🔴 والكتالوج **مش جرد المتجر** · هو لقطة ٩ منتجات من بروفايل الصيدليات.
+   المتجر فيه ١٢ مفرداً · تلاتة أحدث منه (L103 سنتيلا · L112 واقي الشمس ·
+   L119 ألفا أربوتين) موجودين بووكومرس وحده.
+   وبلا هالحلقة، أي روتين فيه وحدة منهم **بيوقف البناء** بـ«SKU مش موجود».
+   ⤷ الاسم والسعر والصورة من ووكومرس · و`actives` بتضل فاضية لأن النِسَب
+     الرسمية مصدرها الكتالوج، وما منخترعها من وصف تسويقي. */
+/* 🔴 الحجم للمنتجات اللي برّا الكتالوج · بينستخرج من ووكومرس لا بينترك فاضياً.
+   بلاها كان بيطبع **`null` نصاً على الصفحة الحيّة** تحت خطوتين
+   («null · عبوة كاملة») · شفتها بلقطة ١ أيلول.
+   ⚠️ والأرقام بتيجي **بصيغتين**: `30ml` لاتيني، و«٥٠ مل» بأرقام عربية
+      وكلمة عربية · فالسحب لازم يمسك الاثنين. */
+const عربي = { '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9' };
+function حجم(w) {
+  const t = ((w.name || '') + ' ' + (w.short || ''))
+    .replace(/[٠-٩]/g, (d) => عربي[d]);
+  const m = t.match(/(\d+)\s*(?:ml|مل)/i);
+  return m ? m[1] + 'ml' : null;
+}
 
-const AR = ['', '١', '٢', '٣', '٤'];
+for (const w of woo.منتجات) {
+  if (/^روتين /.test(w.name)) continue;              /* البكجات مش قطعاً */
+  if (Object.values(P).some((x) => x.id === w.id)) continue;
+  const sku = (w.sku || ('W' + w.id));
+  P[sku] = {
+    ar: w.name, slug: w.slug, price: w.price, ml: حجم(w), id: w.id,
+    img: (w.images[0] || {}).src || null, pct: null, active: null,
+    fromWooOnly: true,
+  };
+}
+
+/* 🔴 الروتينات **انتقلت لـ`_أدوات/routines.mjs`** · هي المصدر الوحيد،
+   وبتقرا منها كمان `build-home.mjs` و`build-shop-page.mjs`.
+   كانت معرَّفة هون وبملفّين تانيين، فانحرفوا: المتجر أربعة والروتينات
+   تلاتة · وريّان هو اللي مسكها ١ أيلول لا أي بوابة. */
+
+/* ⚠️ خمسة لا أربعة · روتين توحيد اللون خطواته خمس */
+const AR = ['', '١', '٢', '٣', '٤', '٥'];
 
 /* كلاسات ووكومرس بتيجي من الإضافة مش من tokens.css · مستثناة بقصد */
 const WOO = new Set(['add_to_cart_button', 'ajax_add_to_cart']);
+
+/* 🔴 قيمة جافاسكربت فاضية بتوصل الصفحة **نصاً** · «null · عبوة كاملة»
+   ظهرت تحت خطوتين بروتين توحيد اللون على الموقع الحيّ، لأن `ml` كانت
+   `null` للمنتجات اللي برّا الكتالوج والقالب طبعها كما هي.
+   ⚠️ ولا بوابة مسكتها: الكلاسات صحيحة والوسوم متوازنة والسعر مضبوط ·
+      **الماركب كان سليماً والمحتوى كذّاب.**
+   ⤷ الفحص على **النص الظاهر** لا على الماركب · وسمة اسمها data-null
+     أو كلاس فيه null ما بتزعج. */
+function assertNoEmpty(html, file) {
+  const نص = html
+    .replace(/<!--[sS]*?-->/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+  const bad = [];
+  for (const w of ['null', 'undefined', 'NaN', '[object Object]']) {
+    const n = نص.split(w).length - 1;
+    if (n) bad.push(w + ' ×' + n);
+  }
+  if (bad.length) {
+    console.error('🔴 ' + file + ' · قيم فاضية وصلت النص الظاهر: ' + bad.join(' · '));
+    process.exit(1);
+  }
+}
 
 function assertClasses(html, file) {
   const used = new Set();
@@ -282,7 +292,7 @@ ${r.steps.map(([k]) => {
         <div class="luvit-ing__body">
           <p class="luvit-ing__name">المجموع</p>
           <p class="luvit-ing__note">
-            سعر البكج هو مجموع المنتجات الأربعة بالضبط · البكج بيسهّل عليك
+            سعر البكج هو مجموع المنتجات ${معرَّف(r.steps.length)} بالضبط · البكج بيسهّل عليك
             الاختيار والترتيب، مش خصماً.
           </p>
         </div>
@@ -326,7 +336,7 @@ ${featureCards(r.benefits, '✦')}
   <div class="luvit-cta__panel" data-luvit="reveal">
     <h2 class="luvit-cta__title luvit-cta__accent">مش هاد روتينك؟</h2>
     <p class="luvit-cta__sub">
-      في تلات روتينات · وكل واحد لهدف مختلف. وإذا محتارة، خمس أسئلة بتحسمها.
+      في ${منطوق(others.length)} روتينات تانية · وكل واحد لهدف مختلف. وإذا محتارة، خمس أسئلة بتحسمها.
     </p>
     <div class="luvit-section__foot">
       <a class="luvit-btn luvit-btn--arrow" href="/quiz">جرّبي الاختبار</a>
@@ -368,7 +378,7 @@ ${others.map((o) => `      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-da
      ٤ · النصّ اللي بيشرح انضغط لسطر جوّا السكشن، مش سكشناً لحاله.
    ══════════════════════════════════════════════════════════════════════ */
 function hub() {
-  /* العبوات الأربع لكل روتين · بتنسحب من نفس مصدر الأسعار */
+  /* عبوات الروتين · بتنسحب من نفس مصدر الأسعار · وعددها من الروتين لا مكتوب */
   const bottles = (r) => r.steps.map(([k], n) =>
     `<li class="luvit-step"><span class="luvit-step__num">${AR[n + 1]}</span><span class="luvit-step__media"><img src="${P[k].img}" alt="${P[k].ar}" width="400" height="500" loading="lazy" decoding="async"></span><span class="luvit-step__body"><span class="luvit-step__title">${P[k].ar}</span><span class="luvit-step__text">${r.steps[n][1]}</span></span></li>`).join("");
 
@@ -557,6 +567,7 @@ let n = 0;for (const r of ROUTINES) {
   validate(html, r.file);
 
   const nClasses = assertClasses(html, r.file);
+  assertNoEmpty(html, r.file);
   fs.writeFileSync(path.join(OUT, r.file), html, 'utf8');
   const total = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
   console.log(`✅ ${r.file.padEnd(22)} ${String(total).padStart(2)} د.أ · ${nClasses} كلاس كلهم معرّفين · ${html.length} حرف`);
@@ -566,6 +577,7 @@ let n = 0;for (const r of ROUTINES) {
 const hubHtml = hub();
 validate(hubHtml, 'r0-hub.html');
 const hubClasses = assertClasses(hubHtml, 'r0-hub.html');
+  assertNoEmpty(hubHtml, 'r0-hub.html');
 fs.writeFileSync(path.join(OUT, 'r0-hub.html'), hubHtml, 'utf8');
 console.log(`✅ ${'r0-hub.html'.padEnd(22)} الهَب · ${hubClasses} كلاس كلهم معرّفين · ${hubHtml.length} حرف`);
 
@@ -610,7 +622,8 @@ console.log((n + 1) + ' صفحات · متوازنة · بلا روابط ميت
       ريّان متعوّد عليه بلا سبب.
    ══════════════════════════════════════════════════════════════════════ */
 const PAGE_IDS = { 'r0-hub.html': 211, 'rt1-hydration.html': 213,
-                   'rt2-glow.html': 214, 'rt3-clarify.html': 212 };
+                   'rt2-glow.html': 214, 'rt3-clarify.html': 212,
+                   'rt4-eventone.html': 368 };
 
 const INBOX = path.join(path.resolve(HERE, '..'), '_وارد');
 fs.mkdirSync(INBOX, { recursive: true });

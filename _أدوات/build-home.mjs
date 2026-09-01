@@ -57,6 +57,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ROUTINES as ROUTINES_SRC, عدد, منطوق, أطوال } from './routines.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '..');
@@ -85,25 +86,43 @@ for (const rec of cat.منتجات) {
   };
 }
 
-const AR = ['', '١', '٢', '٣', '٤'];
+/* 🔴 والكتالوج **مش جرد المتجر** · هو لقطة ٩ منتجات من بروفايل الصيدليات،
+   والمتجر فيه ١٢ مفرداً. التلاتة الزيادة (L103 سنتيلا · L112 واقي الشمس ·
+   L119 ألفا أربوتين) موجودين بووكومرس وحده · وبلاهم روتين توحيد اللون
+   بيوقف البناء بـ«SKU مش موجود». (نفس الحلقة موجودة بـbuild-routine-pages.) */
+/* 🔴 الحجم للمنتجات اللي برّا الكتالوج · بينستخرج من ووكومرس لا بينترك فاضياً.
+   بلاها كان بيطبع **`null` نصاً على الصفحة الحيّة** تحت خطوتين
+   («null · عبوة كاملة») · شفتها بلقطة ١ أيلول.
+   ⚠️ والأرقام بتيجي **بصيغتين**: `30ml` لاتيني، و«٥٠ مل» بأرقام عربية
+      وكلمة عربية · فالسحب لازم يمسك الاثنين. */
+const عربي = { '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9' };
+function حجم(w) {
+  const t = ((w.name || '') + ' ' + (w.short || '')).replace(/[٠-٩]/g, (d) => عربي[d]);
+  const m = t.match(/(d+)s*(?:ml|مل)/i);
+  return m ? m[1] + 'ml' : null;
+}
 
-const ROUTINES = [
-  {
-    key: 'hydration', en: 'Hydration & Support', ar: 'روتين الترطيب والدعم اليومي',
-    who: 'للبشرة الجافة والحسّاسة',
-    steps: ['L111', 'L114', 'L102', 'L116'],
-  },
-  {
-    key: 'glow', en: 'Brighten & Glow', ar: 'روتين الإشراقة',
-    who: 'للبشرة الباهتة وتفاوت اللون',
-    steps: ['L111', 'L114', 'L101', 'L116'],
-  },
-  {
-    key: 'clarify', en: 'Clarify & Balance', ar: 'روتين التنقية والتوازن',
-    who: 'للبشرة الدهنية والمختلطة',
-    steps: ['L110', 'L105', 'L101', 'L116'],
-  },
-];
+for (const w of woo.منتجات) {
+  if (/^روتين /.test(w.name)) continue;              /* البكجات مش قطعاً */
+  if (Object.values(P).some((x) => x.id === w.id)) continue;
+  P[w.sku || ('W' + w.id)] = {
+    ar: w.name, slug: w.slug, price: w.price, id: w.id,
+    img: (w.images[0] || {}).src || null, actives: [],
+  };
+}
+
+/* ⚠️ خمسة لا أربعة · روتين توحيد اللون خطواته خمس */
+const AR = ['', '١', '٢', '٣', '٤', '٥'];
+
+/* 🔴 الروتينات من `_أدوات/routines.mjs` · المصدر الوحيد.
+   كانت مكتوبة هون **تلاتة** ومكرَّرة بملفّين تانيين، والمتجر بيقرا من
+   ووكومرس فبيعرض أربعة · فالرئيسية كانت بتخبّي روتيناً موجوداً للبيع.
+   ⚠️ و`steps` هون كانت لستة SKU مسطّحة، وبالمصدر ثلاثيّات
+      [SKU, عنوان, وصف] · فبنسحب العمود الأول. */
+const ROUTINES = ROUTINES_SRC.map((r) => ({
+  key: r.key, en: r.en, ar: r.ar, who: r.tag,
+  steps: r.steps.map((x) => x[0]),
+}));
 
 /* بوابة · كل SKU مذكور لازم يكون انحلّ من ووكومرس */
 for (const r of ROUTINES) {
@@ -207,8 +226,8 @@ const sRoutine = () => H(`
       <p class="luvit-section__eyebrow">Our routines</p>
       <h2 class="luvit-section__title">الترتيب هو الفكرة كلها</h2>
       <p class="luvit-section__sub">
-        تلات روتينات · كل واحد أربع خطوات بنفس الترتيب، واللي بيتغيّر
-        المنتجات حسب اللي بدك توصليله. وسعر الروتين مجموع قطعه بالضبط.
+        ${منطوق(عدد)} روتينات · نفس الترتيب بكلهن، واللي بيتغيّر المنتجات
+        حسب اللي بدك توصليله. وسعر الروتين مجموع قطعه بالضبط.
       </p>
     </div>
 
@@ -585,7 +604,7 @@ const LIVE = new Set([
   '/', '/products', '/cart', '/checkout', '/my-account', '/track', '/routines',
   '/quiz', '/shipping', '/faq', '/journal', '/about', '/contact', '/returns',
   '/privacy', '/terms',
-  '/routines/hydration', '/routines/glow', '/routines/clarify',
+  ...ROUTINES.map((r) => '/routines/' + r.key),
   ...cat.منتجات.filter((r) => P[r.sku]).map((r) => '/product/' + P[r.sku].slug),
 ]);
 

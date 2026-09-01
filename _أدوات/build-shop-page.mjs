@@ -30,6 +30,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ROUTINES, عدد, منطوق, أطوال, بالسلَغ } from './routines.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '..');
@@ -115,9 +116,34 @@ const singles = woo.منتجات
   })
   .sort((a, b) => a.step.n - b.step.n || parseFloat(a.price) - parseFloat(b.price));
 
-const packages = woo.منتجات
-  .filter((p) => p.cats.includes('packages'))
-  .map((p) => ({ ...p, parts: (p.short || '').split('+').map((s) => s.trim()).filter(Boolean) }));
+const fail = (m) => { console.error('🔴 ' + m); process.exit(1); };
+
+/* 🔴 كان الفلتر `p.cats.includes('packages')` واللقطة فيها **`بكجات`**
+   بالعربي · فـ`packages` كانت **مصفوفة فاضية**، والصفحة بتنبني بشبكة
+   بكجات **فاضية تماماً** و**ولا بوابة بتحكي**. أعلى وحدة قيمة بالصفحة
+   بتختفي والبناء بيقول «✅ ٨ سكشن».
+   ⤷ الترتيب صار من `routines.mjs` لا من ووكومرس · كل بكج **لازم** يكون
+     إله روتين، وكل روتين **لازم** يكون إله بكج · والبوابتان تحت. */
+const بكج = Object.fromEntries(woo.منتجات.map((p) => [p.slug, p]));
+const packages = ROUTINES.map((r) => {
+  const p = بكج[r.slug];
+  if (!p) fail('روتين ' + r.key + ' بلا بكج بووكومرس (سلَغ ' + r.slug + ')');
+  const parts = (p.short || '').split('+').map((s) => s.trim()).filter(Boolean);
+  if (parts.length !== r.steps.length) {
+    fail('بكج ' + r.slug + ' فيه ' + parts.length + ' قطعة والروتين ' + r.steps.length + ' خطوات');
+  }
+  return { ...p, parts };
+});
+
+/* والعكس · بكج بووكومرس بلا روتين بيختفي بصمت من الصفحة */
+const فئة_البكجات = ['بكجات', 'packages'];
+for (const p of woo.منتجات) {
+  if (!p.cats.some((c) => فئة_البكجات.includes(c))) continue;
+  if (!ROUTINES.some((r) => r.slug === p.slug)) {
+    fail('بكج «' + p.name + '» بووكومرس وما إله روتين بـroutines.mjs');
+  }
+}
+if (!packages.length) fail('شبكة البكجات فاضية');
 
 /* ── ٢ · أدوات ماركب ──────────────────────────────────────────────── */
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -168,13 +194,11 @@ function productCard(p) {
 
 /* ── ربط كل بكج بروتينه · عشان اللون والرابط ────────────────────────
    المفتاح هو السلَغ · وهو الجسر الوحيد الموثوق بين ووكومرس والروتينات. */
-const PACK_GOAL = {
-  'hydration-support-routine': { goal: 'hydration', route: '/routines/hydration' },
-  'clarify-balance-routine':   { goal: 'clarify',   route: '/routines/clarify' },
-  'brighten-glow-routine':     { goal: 'glow',      route: '/routines/glow' },
-};
+const PACK_GOAL = Object.fromEntries(
+  ROUTINES.map((r) => [r.slug, { goal: r.key, route: '/routines/' + r.key }]),
+);
 
-/* 🔴 القطعة المشتركة بين الروتينات الثلاثة · محسوبة من البيانات مش مكتوبة.
+/* 🔴 القطعة المشتركة بين كل البكجات · محسوبة من البيانات مش مكتوبة.
    لو تغيّر تركيب بكج، الحساب بيتغيّر معه بدل ما يضل نصاً بايتاً. */
 const partCount = {};
 for (const p of packages) for (const s of p.parts) partCount[s] = (partCount[s] || 0) + 1;
@@ -189,7 +213,7 @@ function packageCard(p) {
        فـ`::after` بينزل صفاً جديداً وبتبيّن العلامة يتيمة تحت الاسم.
        انمسكت باللقطة. */
     return `            <li${shared ? ' data-shared' : ''}>${esc(s)}` +
-           `${shared ? ' <small>بالثلاثة</small>' : ''}</li>`;
+           `${shared ? ' <small>بكلهن</small>' : ''}</li>`;
   }).join('\n');
 
   return [
@@ -321,7 +345,7 @@ function s2() {
   <div class="luvit-section__inner">
     <div class="luvit-section__head" data-luvit="reveal">
       <h2 class="luvit-section__title">روتين كامل بطلبية وحدة</h2>
-      <p class="luvit-section__sub">أربع خطوات مرتّبة بترتيبها الصح · والتوصيل مجاني مع أي روتين.</p>
+      <p class="luvit-section__sub">خطوات مرتّبة بترتيبها الصح · والتوصيل مجاني مع أي روتين.</p>
     </div>
 
     <div class="luvit-card-grid luvit-card-grid--wide" data-luvit="stagger">
@@ -340,11 +364,14 @@ function s3() {
      بيحرق الثقة · شفناه عند بيوتي بوكس على ١٥٦ منتجاً.
      ⚠️ والمرساة skin-types محفوظة من الصفحة القديمة مع إن المحتوى
         صار بالهدف · تغيير الـid بيكسر أي رابط قديم بلا ما يحكي. */
-  const gates = [
-    { href: '/routines/hydration', goal: 'hydration', icon: I.drop, label: 'ترطيب ودعم', note: 'للبشرة الجافة أو الحسّاسة' },
-    { href: '/routines/clarify', goal: 'clarify', icon: I.leaf, label: 'تنقية وتوازن', note: 'للبشرة الدهنية أو المختلطة' },
-    { href: '/routines/glow', goal: 'glow', icon: I.sun, label: 'إشراقة', note: 'للبهتان وتفاوت اللون' },
-  ];
+  /* 🔴 كانت **تلات بوابات مكتوبة بالإيد** وسكشن البكجات فوقها بيقرا من
+     ووكومرس · فالمتجر كان بيعرض أربع بكجات وتلات بوابات بنفس الصفحة.
+     صارت من `routines.mjs` · بتنمو معه لحالها. */
+  const gates = ROUTINES.map((r) => ({
+    href: '/routines/' + r.key, goal: r.key, icon: I[r.gate.icon],
+    label: r.gate.label, note: r.gate.note,
+  }));
+  for (const g of gates) if (!g.icon) fail('أيقونة مش موجودة لبوابة ' + g.goal);
   return `<!--
   LUVIT · صفحة المتجر (/products/) · سكشن ٣ من ٨ · بوابات الهدف
   🔴 مولّد · لا تعدّله بالإيد.

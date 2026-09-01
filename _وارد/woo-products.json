@@ -1,7 +1,7 @@
 {
  "_مصدر": "https://plasmajo.com/wp-json/wc/store/v1/products",
  "_ملاحظة": "مولَّدة بـ_أدوات/sync-woo-snapshot.mjs · لا تعدّلها بالإيد · شغّل الأداة.",
- "_تاريخ": "2026-08-31",
+ "_تاريخ": "2026-09-01",
  "فئات": [
   "بكجات",
   "منتجات مفردة"
@@ -9,6 +9,7 @@
  "منتجات": [
   {
    "id": 191,
+   "sku": "L101",
    "slug": "vitamin-c-serum",
    "name": "سيروم فيتامين سي",
    "price": "19.00",
@@ -39,6 +40,7 @@
   },
   {
    "id": 201,
+   "sku": "L111",
    "slug": "hydrating-gel-cleanser",
    "name": "غسول البشرة الجافة والحساسة",
    "price": "14.00",
@@ -69,6 +71,7 @@
   },
   {
    "id": 202,
+   "sku": "L114",
    "slug": "8d-hyaluronic-acid-toner",
    "name": "تونر البشرة الجافة والحساسة",
    "price": "13.00",
@@ -99,6 +102,7 @@
   },
   {
    "id": 203,
+   "sku": "BRIGHTEN_GLOW_ROUTINE",
    "slug": "brighten-glow-routine",
    "name": "روتين الإشراقة",
    "price": "61.00",
@@ -117,6 +121,7 @@
   },
   {
    "id": 204,
+   "sku": "CLARIFY_BALANCE_ROUTINE",
    "slug": "clarify-balance-routine",
    "name": "روتين التنقية والتوازن",
    "price": "61.00",
@@ -135,6 +140,7 @@
   },
   {
    "id": 205,
+   "sku": "HYDRATION_SUPPORT_ROUTINE",
    "slug": "hydration-support-routine",
    "name": "روتين الترطيب والدعم اليومي",
    "price": "60.00",
@@ -153,6 +159,7 @@
   },
   {
    "id": 275,
+   "sku": "L102",
    "slug": "intensive-hydrating-serum",
    "name": "سيروم الترطيب المكثّف",
    "price": "18.00",
@@ -183,6 +190,7 @@
   },
   {
    "id": 276,
+   "sku": "L103",
    "slug": "centella-blemish-cream",
    "name": "كريم سنتيلا للبقع",
    "price": "18.00",
@@ -213,6 +221,7 @@
   },
   {
    "id": 277,
+   "sku": "L104",
    "slug": "pore-tightening-brightening-serum",
    "name": "سيروم تضييق المسامات",
    "price": "16.00",
@@ -243,6 +252,7 @@
   },
   {
    "id": 278,
+   "sku": "L105",
    "slug": "clarifying-pore-tightening-toner",
    "name": "تونر تضييق المسامات",
    "price": "13.00",
@@ -273,6 +283,7 @@
   },
   {
    "id": 279,
+   "sku": "L106",
    "slug": "aha-bha-peeling-serum",
    "name": "سيروم التقشير",
    "price": "16.00",
@@ -303,6 +314,7 @@
   },
   {
    "id": 280,
+   "sku": "L110",
    "slug": "sebum-balancing-gel-cleanser",
    "name": "غسول البشرة الدهنية",
    "price": "14.00",
@@ -333,6 +345,7 @@
   },
   {
    "id": 281,
+   "sku": "L116",
    "slug": "moisturizing-repairing-cream",
    "name": "كريم الترطيب والترميم",
    "price": "15.00",
@@ -363,6 +376,7 @@
   },
   {
    "id": 282,
+   "sku": "L119",
    "slug": "alpha-arbutin-complex-serum",
    "name": "سيروم ألفا أربوتين المركّب",
    "price": "22.00",
@@ -389,10 +403,11 @@
   },
   {
    "id": 318,
-   "slug": "%d9%88%d8%a7%d9%82%d9%8a-%d8%a7%d9%84%d8%b4%d9%85%d8%b3-%d8%a7%d9%84%d9%8a%d9%88%d9%85%d9%8a-%c2%b7-spf50",
+   "sku": "L112",
+   "slug": "daily-sunscreen-spf50",
    "name": "واقي الشمس اليومي · SPF50+",
    "price": "17.95",
-   "permalink": "https://plasmajo.com/product/%d9%88%d8%a7%d9%82%d9%8a-%d8%a7%d9%84%d8%b4%d9%85%d8%b3-%d8%a7%d9%84%d9%8a%d9%88%d9%85%d9%8a-%c2%b7-spf50/",
+   "permalink": "https://plasmajo.com/product/daily-sunscreen-spf50/",
    "stock": "instock",
    "cats": [
     "منتجات مفردة"
@@ -414,6 +429,25 @@
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-high-protection-sunscreen-4-box-angle.webp",
      "alt": "واقي الشمس اليومي · العلبة بزاوية"
+    }
+   ]
+  },
+  {
+   "id": 367,
+   "sku": "EVEN_TONE_ROUTINE",
+   "slug": "even-tone-routine",
+   "name": "روتين توحيد اللون",
+   "price": "81.95",
+   "permalink": "https://plasmajo.com/product/even-tone-routine/",
+   "stock": "instock",
+   "cats": [
+    "بكجات"
+   ],
+   "short": "غسول البشرة الدهنية + تونر تضييق المسامات + سيروم ألفا أربوتين المركّب + كريم الترطيب والترميم + واقي الشمس اليومي · SPF50+",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-eventone.webp",
+     "alt": ""
     }
    ]
   }

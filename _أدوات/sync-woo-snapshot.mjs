@@ -63,6 +63,12 @@ const منتجات = live
   .sort((a, b) => a.id - b.id)
   .map((p) => ({
     id: p.id,
+    /* 🔴 الرمز إلزامي · هو مفتاح الربط مع `_خطة/بيانات-المنتجات-الرسمية.json`.
+       كان ناقصاً من اللقطة، فأي منتج **برّا الكتالوج** ما كان إله مفتاح
+       يُنادى فيه · وبناء الروتين الرابع وقف عليها ١ أيلول
+       (`Cannot read properties of undefined (reading 'price')`)
+       لأن L119 وL112 موجودين بووكومرس وحده. */
+    sku: p.sku || null,
     slug: p.slug,
     name: (p.name || '').trim(),
     price: money(p.prices),
@@ -102,7 +108,18 @@ priced.forEach((p) => {
   console.log(`  ~ ${p.id}  ${p.name}  ${o.price} → ${p.price}`);
 });
 
-const stale = added.length || removed.length || priced.length;
+/* 🔴 المقارنة كانت **بثلاث إشارات بس** (مضاف · محذوف · تغيّر سعر)، فأي
+   تغيير تاني ما كان بينكشف · وتغيير **شكل** السجل تحديداً ما كان بيوصل
+   للقطة **ولا مرة**: بتضيف حقلاً للأداة، بتشغّلها، بتقول «ولا فرق» وبتخرج.
+   صار فعلاً ١ أيلول لما انضاف `sku` · وبناء الروتين الرابع ضلّ واقفاً
+   والسبب مخبّى بأداة قالت «تمام».
+   ⤷ المقارنة صارت على **الشكل الكامل**، والإشارات التلاتة ضلّت عشان
+     المخرَج يضل مفيداً (بيقول شو تغيّر لا «في فرق» وبس). */
+const shapeChanged = JSON.stringify(next.منتجات) !== JSON.stringify(prev.منتجات || []);
+const stale = added.length || removed.length || priced.length || shapeChanged;
+if (shapeChanged && !added.length && !removed.length && !priced.length) {
+  console.log('  ~ الشكل تغيّر · نفس المنتجات بحقول مختلفة');
+}
 if (CHECK) {
   console.log(stale ? '🔴 اللقطة بايتة · شغّل الأداة بلا --check' : '✅ اللقطة مطابقة للموقع');
   process.exit(stale ? 1 : 0);
