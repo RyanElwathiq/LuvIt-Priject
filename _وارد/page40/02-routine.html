@@ -1,0 +1,98 @@
+<!--
+  ============================================================================
+  LUVIT — ROUTINE SECTION
+  Drop-in for an Elementor "HTML" widget.
+  ============================================================================
+  NEEDS: tokens.css (styles) and motion.js (the reveal/stagger animation).
+  Both are already installed as WPCode snippets.
+
+  ⚠ THE CONTAINER THIS GOES INTO MUST HAVE CSS ID = routine
+     Elementor -> the containing Section/Container -> Advanced -> CSS ID
+     The hero's "اكتشفي روتينك" button scrolls to #routine. Without this ID
+     that button does nothing.
+
+  ⚠ AND the same container needs, under Advanced -> Attributes:
+         data-nav-bg|light
+     (pipe, not equals). Without it the nav bar is treated as sitting on a
+     dark section and turns white-on-white over this one.
+
+  ⚠ THIS FILE IS THE SOURCE OF TRUTH FOR THIS SECTION — it has FOUR cards.
+     home-preview.html only has three (it is missing "البشرة المختلطة").
+     Paste from here, not from the preview.
+
+  WHAT TO EDIT:
+    1. the four images   -> see the IMAGE GUIDE comment above the first card
+    2. the four links    -> every href="#" needs the real routine page URL
+    3. the copy          -> the text is mine; check it says what you mean
+  ============================================================================
+-->
+
+<section class="luvit-section band-light" data-nav-bg="light" id="routine">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">Our Routines</p>
+      <h2 class="luvit-section__title">روتين على قدّ هدفك إنتِ</h2>
+      <p class="luvit-section__sub">
+        تلات روتينات · كل واحد أربع خطوات بنفس الترتيب، واللي بيتغيّر
+        المنتجات حسب اللي بدك توصليله.
+      </p>
+    </div>
+
+    <div class="luvit-card-grid" data-luvit="stagger">
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين الترطيب والدعم اليومي" src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-routine-hydration.webp">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Hydration & Support</p>
+          <h3 class="luvit-card__title">
+            <a class="luvit-card__link" href="/routines/hydration">روتين الترطيب والدعم اليومي</a>
+          </h3>
+          <p class="luvit-card__text">للبشرة الجافة والحسّاسة</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">60.00 د.أ</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين الإشراقة" src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-routine-glow.webp">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Brighten & Glow</p>
+          <h3 class="luvit-card__title">
+            <a class="luvit-card__link" href="/routines/glow">روتين الإشراقة</a>
+          </h3>
+          <p class="luvit-card__text">للبشرة الباهتة وتفاوت اللون</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">61.00 د.أ</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="luvit-card luvit-card--routine">
+        <div class="luvit-card__media">
+          <img loading="lazy" decoding="async" alt="روتين التنقية والتوازن" src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-routine-clarify.webp">
+        </div>
+        <div class="luvit-card__body">
+          <p class="luvit-card__eyebrow">Clarify & Balance</p>
+          <h3 class="luvit-card__title">
+            <a class="luvit-card__link" href="/routines/clarify">روتين التنقية والتوازن</a>
+          </h3>
+          <p class="luvit-card__text">للبشرة الدهنية والمختلطة</p>
+          <div class="luvit-card__footer">
+            <span class="luvit-card__price">61.00 د.أ</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--arrow" href="/quiz">مش متأكدة؟ جرّبي الاختبار</a>
+      <a class="luvit-btn luvit-btn--ghost" href="/routines">كل الروتينات</a>
+    </div>
+
+  </div>
+</section>

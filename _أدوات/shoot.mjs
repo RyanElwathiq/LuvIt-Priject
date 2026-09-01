@@ -133,6 +133,27 @@ for (let i = 0; i < 180; i++) {
 }
 console.log('loader: ' + loaderState);
 
+/* 4.5) سكربت تمهيدي اختياري · ملف JS بينتنفّذ بعد التحميل وقبل اللقطات
+   ───────────────────────────────────────────────────────────────────────
+   🔴 ليش انضاف · ١ أيلول:
+   الموقع الحيّ خلف قفل «قريباً» تبع هوستنجر، **بس القفل بيخبّي بالـCSS
+   بس** (`html *:not(body):not(.hsr-coming-soon-body > *) { display:none }`)
+   والماركب الحقيقي بينتبعت كامل. يعني متصفّح نظيف بيقدر يرندر الصفحة
+   الحقيقية لو انشالت كتلة القفل · وهاد فحص لصفحتنا إحنا، مش تحايلاً
+   على حاجز.
+
+   والبديل كان أسوأ: لقطات من متصفّح ريّان بتفشل على هالصفحة
+   (`Page.captureScreenshot` بينتهي وقته لأن canvas الهيرو بيرسم كل فريم)،
+   والحكم بلا لقطة = ادعاء بلا دليل. */
+const PRELUDE = process.argv[7];
+if (PRELUDE) {
+  if (!fs.existsSync(PRELUDE)) { console.error('🔴 ما لقيت السكربت التمهيدي: ' + PRELUDE); process.exit(1); }
+  const js = fs.readFileSync(PRELUDE, 'utf8');
+  const r = await evalJS('(async () => { ' + js + ' })()');
+  console.log('prelude: ' + JSON.stringify(r));
+  await sleep(1200);
+}
+
 // 5) خريطة السكاشن بالـviewport الحالي
 const map = await evalJS(`(() => {
   const secs = [...document.querySelectorAll('section, footer.luvit-footer')];

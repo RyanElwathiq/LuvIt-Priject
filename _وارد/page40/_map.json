@@ -1,0 +1,86 @@
+[
+ {
+  "root": 0,
+  "widgetId": "c009678",
+  "domId": "hero-seq",
+  "file": "00-hero-seq.html",
+  "chars": 56065
+ },
+ {
+  "root": 1,
+  "widgetId": "3a273c6",
+  "domId": "sec1",
+  "file": "01-sec1.html",
+  "chars": 3143
+ },
+ {
+  "root": 2,
+  "widgetId": "5db08dc",
+  "domId": "routine",
+  "file": "02-routine.html",
+  "chars": 4349
+ },
+ {
+  "root": 3,
+  "widgetId": "8b90fbf",
+  "domId": "quiz",
+  "file": "03-quiz.html",
+  "chars": 3593
+ },
+ {
+  "root": 4,
+  "widgetId": "1d1f09b",
+  "domId": "products",
+  "file": "04-products.html",
+  "chars": 5971
+ },
+ {
+  "root": 5,
+  "widgetId": "d2f1f55",
+  "domId": "ingredients",
+  "file": "05-ingredients.html",
+  "chars": 3175
+ },
+ {
+  "root": 6,
+  "widgetId": "0a83774",
+  "domId": "sec6",
+  "file": "06-sec6.html",
+  "chars": 2835
+ },
+ {
+  "root": 7,
+  "widgetId": "a200f43",
+  "domId": "why",
+  "file": "07-why.html",
+  "chars": 2608
+ },
+ {
+  "root": 8,
+  "widgetId": "4989794",
+  "domId": "how",
+  "file": "08-how.html",
+  "chars": 2241
+ },
+ {
+  "root": 9,
+  "widgetId": "52e71fd",
+  "domId": "sec9",
+  "file": "09-sec9.html",
+  "chars": 4378
+ },
+ {
+  "root": 10,
+  "widgetId": "630fed2",
+  "domId": "faq",
+  "file": "10-faq.html",
+  "chars": 2891
+ },
+ {
+  "root": 11,
+  "widgetId": "5ce3e55",
+  "domId": "sec11",
+  "file": "11-sec11.html",
+  "chars": 1272
+ }
+]

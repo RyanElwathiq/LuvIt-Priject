@@ -3527,7 +3527,9 @@ body.luvit-locked { overflow: hidden; }
   font-size: var(--text-body-sm);
   color: var(--color-ink-faint);
 }
-.luvit-quiz--on-dark .luvit-quiz__hint { color: rgba(255,255,255,.7); }
+/* 🔴 كان .7 · مقيس 4.03:1 على الماء العميق بعرض ٣٩٠ · راسب لنص
+   صغير (المطلوب 4.5). .84 بيوصلها فوق الحد. مقيس مش مقدَّر. */
+.luvit-quiz--on-dark .luvit-quiz__hint { color: rgba(255,255,255,.84); }
 
 
 /* ==========================================================================
@@ -11055,11 +11057,30 @@ body.admin-bar #hero-seq .hero-story__cue {
 @media (min-width: 860px) {
   .luvit-step__buy { justify-content: center; }
 }
-/* 🔴 وخط الماء اللي بيربط الخطوات كان محسوباً على رقم بارتفاع ٢٦px ·
-   بعد ما انضافت الصورة صار لازم ينزل تحتها، وإلا بيمرق فوق الصور. */
+/* 🔴 خط الماء اللي بيربط الخطوات · وقصّته مرّتان ────────────────────────
+   ١ · كان محسوباً على رقم بارتفاع ٢٦px · وبعد ما انضافت الصورة صار لازم
+       ينزل تحتها وإلا بيمرق فوقها.
+   ٢ · فانحلّت بـ`top: calc(210px + 26px)` · **رقم حرّ مقاس على ارتفاع
+       صورة صفحة الروتينات وبس.** وأول ما استعملت `--compact` بالرئيسية
+       بصندوق ٢٦٩px، وقع الخط **جوّا الصورة** عند ٨٨٪ من ارتفاعها
+       وطلع كأنه ظلّ مكسور. مسكها ريّان بعينه ١ أيلول قبل ما أمسكها أنا.
+
+   ⤷ الدرس: رقم مكتوب بالإيد بيوصف تخطيطاً واحداً · وأول ما ينتنسخ
+     الكلاس لمكان تاني بينكسر بصمت.
+
+   فالارتفاع صار **متغيّراً**، واللي بده يغيّر الصورة بيغيّر مكان واحد. */
+.luvit-steps { --step-media-h: 210px; }
 @media (min-width: 860px) {
-  .luvit-step:has(.luvit-step__media)::after { top: calc(210px + 26px); }
+  .luvit-step:has(.luvit-step__media)::after {
+    top: calc(var(--step-media-h) + 26px);
+  }
 }
+
+/* وبطاقة الروتين بالرئيسية · **بلا خط أصلاً**
+   صندوقها `aspect-ratio: 1/1` يعني ارتفاعه بيتغيّر مع عرض الشاشة، فما
+   في رقم ثابت بينفع. والخط أصلاً ما إله معنى هون: الأرقام شارات صغيرة
+   بزاوية كل عبوة لا محطات على مسار. */
+.luvit-home-rt .luvit-step::after { content: none; }
 
 /* ==========================================================================
    5.54 · الغوص · عبوة بتطلع من الضوء وبتغطس بالماء  (30 Aug)
@@ -12303,3 +12324,340 @@ body.admin-bar #hero-seq .hero-story__cue {
 .rt-head .luvit-section__eyebrow { color: var(--aqua-300, #8FDCE9); }
 .rt-head nav a { color: rgba(255, 255, 255, .78); }
 .rt-head nav [aria-current] { color: #FFFFFF; }
+
+/* ══ HOME-SHAPES:START · أشكال الصفحة الرئيسية ═══════════════════════════
+   🔴 ريّان ١ أيلول: «شكل الصفحة فيها تكرار كثير · بتحس ما فيها إبداع».
+
+   والقياس أثبته، بس **مش من حيث اللون**: الصفحة فيها ٤ سكاشن غامقة من
+   ١٢ (إيقاع لوني موجود فعلاً · وأنا غلطت أول مرة وقلت وحدة). اللي
+   مكرَّر هو **الشكل**:
+     · ٨ رؤوس من ٨ **كلها بمحاذاة وسط**
+     · ٩ سكاشن من ١٢ بنفس القالب: عنوان + سطر تحته + شبكة
+     · ٤ سكاشن **بلا ولا صورة** · ٢٥١٨px نصّ خالص
+
+   فالعلاج **تنويع الشكل** لا تبديل الألوان. وهاي الكتلة بتضيف تلات
+   أشكال ما كانت موجودة: رأس جانبي ملتصق · زوج قبل/بعد · اقتباسات
+   بأحجام مختلفة.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── ١ · الرأس الجانبي الملتصق ─────────────────────────────────────────
+   العنوان بيثبت وبيمرق المحتوى جنبه · شكل ما تكرر بالصفحة ولا مرة.
+   ⚠️ `position: sticky` بتموت بصمت لو أي جدّ عليه `overflow` غير visible.
+      فالحاوية هون **ما بتاخد overflow** أبداً · ولو انضاف بيوقف اللصق
+      بلا أي رسالة خطأ. (نفس فئة الفخ تبع الستايل المحسوب البايت.) */
+.luvit-split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(var(--space-6), 5vw, var(--space-9));
+  align-items: start;
+}
+.luvit-split__aside {
+  position: sticky;
+  /* النافبار ثابت · بلا هالإزاحة العنوان بيلزق تحته */
+  inset-block-start: calc(var(--nav-h, 58px) + var(--nav-inset, 12px) * 2 + var(--space-5));
+}
+.luvit-split__list {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.luvit-split__item {
+  padding-block: var(--space-5);
+  border-block-start: 1px solid var(--color-line-soft, rgba(26, 37, 41, .10));
+}
+.luvit-split__item:first-child { border-block-start: 0; padding-block-start: 0; }
+.luvit-split__n {
+  font-family: var(--font-latin);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  /* ⚠️ ولا سطر اتجاه هون · بقصد.
+     حطّيت أول مرة `direction: ltr; text-align: start` وكسرت الشكل:
+     **بسياق ltr كلمة start بتعني يسار**، فـالرقم راح لأقصى اليسار
+     بصفحة RTL. و`.luvit-section__eyebrow` بالنظام ما فيها ولا سطر
+     اتجاه أصلاً وبتشتغل · لأن اللاتيني بلا علامة ترقيم بآخره بينضبط
+     بالـbidi لحاله. الفخّ المسجَّل بيخصّ اللي بآخره `!` أو `.` بس. */
+  display: block;
+  color: var(--aqua-700, #16788C);
+  margin-block-end: var(--space-2);
+}
+.luvit-split__t {
+  font-family: var(--font-heading);
+  font-size: clamp(19px, 2.2vw, 24px);
+  line-height: 1.35;
+  color: var(--color-ink);
+  margin: 0 0 var(--space-2);
+}
+.luvit-split__p {
+  font-size: clamp(14.5px, 1.5vw, 16px);
+  line-height: 1.85;
+  color: var(--color-ink-soft);
+  margin: 0;
+}
+@media (max-width: 860px) {
+  .luvit-split { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+  /* اللصق بلا معنى بعمود واحد · وبيعمل قفزة وقت السكرول */
+  .luvit-split__aside { position: static; }
+}
+
+/* ── ٢ · زوج قبل/بعد ───────────────────────────────────────────────────
+   🔴 **الحجم محكوم بالمصدر مش بالذوق.** أوسع لوحة باللقطة الأصلية
+      ١٧٤ بكسل · فأي عرض أكبر من ٢٤٠px بيهرسها. المتغيّر تحت هو السقف،
+      **ولا ترفعه** بلا صور أعلى دقة من صاحب العلامة.
+   وشكل الصغر مقصود: صورة هاتف صغيرة بتقرا «حقيقية» والمنفوخة بتقرا
+   «مزوّرة». مشروح كامل بـ_أدوات/crop-before-after.mjs. */
+.luvit-case { --case-w: 240px; }
+.luvit-case__pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, var(--case-w)));
+  gap: var(--space-4);
+  justify-content: center;
+}
+.luvit-case__fig { margin: 0; position: relative; }
+.luvit-case__fig img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--radius-md);
+  /* الصورة مقصوصة أصلاً لنفس النسبة · هاي بس ضمانة لو انبدّل ملف */
+  aspect-ratio: 130 / 203;
+  object-fit: cover;
+  background: var(--color-mist, #F1F7F9);
+}
+.luvit-case__tag {
+  position: absolute;
+  inset-block-end: var(--space-3);
+  inset-inline-start: var(--space-3);
+  font-family: var(--font-heading);
+  font-size: 13px;
+  line-height: 1;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  color: #FFFFFF;
+  background: rgba(10, 34, 40, .72);
+  /* الهيرو ممنوع عليه backdrop-filter · هون مسموح · صورة ساكنة مش canvas */
+  backdrop-filter: blur(6px);
+}
+/* الشرح جنب الصور لا تحتها · بعرض ١٤٤٠ كان السكشن نصّه فراغاً
+   لأن الزوج ٥٢٠px بس (وهاد سقف مفروض من دقة المصدر لا من الذوق).
+   ⚠️ و`auto` بالعمود الأول مقصودة · الزوج عرضه ثابت، فلو أخذ `1fr`
+      بيتمدّد وبيكسر السقف اللي بنينا عليه كل شي. */
+@media (min-width: 900px) {
+  .luvit-case {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(var(--space-6), 4vw, var(--space-8));
+    align-items: center;
+  }
+  .luvit-case__body { align-self: center; }
+  .luvit-case__note { margin-block-start: 0; }
+}
+.luvit-case__body .luvit-section__foot { margin-block-start: var(--space-5); }
+
+.luvit-case__note {
+  margin-block-start: var(--space-4);
+  font-size: 13px;
+  line-height: 1.75;
+  /* 🔴 مقيس 2.97:1 بـink-faint على band-mist · راسب لنص صغير.
+     وهاد **مش** نصّاً ثانوياً · هون بينكتب من وين الصورة وشو ما
+     منوعد فيه. أقلّ نصّ يستاهل يكون باهتاً بالصفحة كلها. */
+  color: var(--color-ink-soft);
+  max-inline-size: 62ch;
+}
+.luvit-case__note strong { color: var(--color-ink-soft); font-weight: 600; }
+
+/* ── ٣ · اقتباسات بأحجام مختلفة ────────────────────────────────────────
+   الآراء القديمة كانت أربع بطاقات متطابقة · وهاد جزء من التكرار.
+   هون الاقتباس الطويل بياخد مساحة أكبر، والقصير بيضل قصيراً، فالعين
+   بتلاقي إيقاعاً بدل صف موحّد. */
+.luvit-quotes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+.luvit-quote {
+  margin: 0;
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  background: #FFFFFF;
+  border: 1px solid var(--color-line-soft, rgba(26, 37, 41, .10));
+  box-shadow: var(--shadow-sm);
+}
+.luvit-quote--wide { grid-column: span 2; }
+@media (max-width: 700px) { .luvit-quote--wide { grid-column: auto; } }
+.luvit-quote__mark {
+  display: block;
+  font-family: var(--font-latin);
+  font-size: 30px;
+  line-height: .8;
+  /* 🔴 كان aqua-300 · مقيس 1.58:1 على بطاقة بيضا · يعني العلامة
+     تقريباً مش موجودة، وهي زخرفة موضوعة **لتنشاف**.
+     aqua-500 بيعطي 3.9:1 · مرئي وضمن الحدّ الزخرفي (3:1). */
+  color: var(--aqua-600, #1E869C);
+  margin-block-end: var(--space-2);
+}
+.luvit-quote__text {
+  font-family: var(--font-heading);
+  font-size: clamp(15.5px, 1.7vw, 18px);
+  line-height: 1.8;
+  color: var(--color-ink);
+  margin: 0;
+}
+.luvit-quote--wide .luvit-quote__text { font-size: clamp(17px, 2vw, 21px); }
+.luvit-quote__by {
+  display: block;
+  margin-block-start: var(--space-4);
+  font-size: 12.5px;
+  line-height: 1.6;
+  /* 🔴 ink-faint على أبيض = 3.16:1 · راسب لنص صغير (المطلوب 4.5).
+     نفس التصليح المتكرّر بالمشروع · ink-soft = 7.7:1. */
+  color: var(--color-ink-soft);
+}
+
+/* ── ٤ · المكوّنات مع صورة العبوة ──────────────────────────────────────
+   السكشن كان نصّاً خالصاً · والصورة بتعطيه شكلاً وبتثبت الادعاء
+   («النِسَب مكتوبة عالعبوة») بدل ما تقوله وبس. */
+.luvit-ing-split {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+  gap: clamp(var(--space-5), 4vw, var(--space-8));
+  align-items: center;
+}
+.luvit-ing-split__shot { margin: 0; }
+.luvit-ing-split__shot img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-inline-size: 320px;
+  margin-inline: auto;
+  filter: drop-shadow(0 18px 34px rgba(2, 26, 30, .38));
+}
+@media (max-width: 860px) {
+  .luvit-ing-split { grid-template-columns: minmax(0, 1fr); }
+  .luvit-ing-split__shot img { max-inline-size: 210px; }
+}
+
+/* ── ٥ · بطاقة الروتين بالرئيسية ───────────────────────────────────────
+   🔴 المعاينة مسكت الباغ قبل الموقع: أول محاولة استعملت
+      `.luvit-card--routine` تبع صفحة الروتينات · وهاي فوق 900px
+      **شبكة عمودين** (٣٤٪ للصورة + الباقي للمحتوى). وبطاقة الرئيسية
+      بلا صورة بكج بقصد، فالعمود الأول ضلّ **فاضياً تماماً** ونص البطاقة
+      راح هدراً.
+      ⤷ الدرس المتكرّر: كلاس بيوصف **تخطيطاً** مش بس شكلاً · استعارته
+        بتجيب افتراضاته معها.
+
+   فالرئيسية إلها شكلها: صف علوي (العنوان على جهة البداية · السعر والزر
+   على النهاية) وتحته العبوات الأربع بعرض البطاقة كامل. مختلف عن صفحة
+   الروتينات بقصد · هاي **تشويقة** وهناك **صفحة شراء**.                */
+.luvit-home-rt {
+  padding: clamp(var(--space-5), 3vw, var(--space-7));
+  border-radius: var(--radius-lg);
+  background: #FFFFFF;
+  border: 1px solid var(--color-line-soft, rgba(26, 37, 41, .10));
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .28s ease, transform .28s ease;
+}
+.luvit-home-rt + .luvit-home-rt { margin-block-start: var(--space-5); }
+@media (hover: hover) {
+  .luvit-home-rt:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .luvit-home-rt, .luvit-home-rt:hover { transition: none; transform: none; }
+}
+.luvit-home-rt__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.luvit-home-rt__id { min-inline-size: min(100%, 22ch); }
+.luvit-home-rt__eyebrow {
+  font-family: var(--font-latin);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  /* ⚠️ ولا سطر اتجاه هون · بقصد.
+     حطّيت أول مرة `direction: ltr; text-align: start` وكسرت الشكل:
+     **بسياق ltr كلمة start بتعني يسار**، فـاسم الروتين اللاتيني راح لأقصى اليسار
+     بصفحة RTL. و`.luvit-section__eyebrow` بالنظام ما فيها ولا سطر
+     اتجاه أصلاً وبتشتغل · لأن اللاتيني بلا علامة ترقيم بآخره بينضبط
+     بالـbidi لحاله. الفخّ المسجَّل بيخصّ اللي بآخره `!` أو `.` بس. */
+  display: block;
+  color: var(--aqua-700, #16788C);
+  margin: 0 0 var(--space-2);
+}
+.luvit-home-rt__title {
+  font-family: var(--font-heading);
+  font-size: clamp(20px, 2.4vw, 27px);
+  line-height: 1.3;
+  color: var(--color-ink);
+  margin: 0;
+}
+.luvit-home-rt__title a { color: inherit; text-decoration: none; }
+.luvit-home-rt__title a:hover { color: var(--aqua-700, #16788C); }
+.luvit-home-rt__who {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-ink-soft);
+  margin: var(--space-2) 0 0;
+}
+.luvit-home-rt__buy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.luvit-home-rt__price {
+  font-family: var(--font-heading);
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 1;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+/* العبوات بعرض البطاقة كامل · `--compact` جاهزة ومعرَّفة فوق */
+.luvit-home-rt .luvit-steps--compact { margin-block: var(--space-5) 0; }
+@media (max-width: 620px) {
+  .luvit-home-rt__buy { inline-size: 100%; justify-content: space-between; }
+}
+
+/* ══ HOME-SHAPES:END ═══════════════════════════════════════════════════ */
+
+/* ══ STICKY-FIX:START · إعادة الحياة لـposition:sticky ═══════════════════
+   🔴 **باغ ظهر على الموقع الحيّ وما ظهر بالمعاينة أبداً.**
+
+   الرأس الجانبي الملتصق بسكشن «ليش لَف إت» اشتغل تماماً محلياً وطلع
+   **ميتاً** على ووردبريس · مقيس بالحركة لا بالنظر:
+       سكرول +٦٠٠px  →  العنصر نزل ٦٠٠px  (يعني ما لصق ولا مرة)
+
+   والسبب: `body` محسوبة عنده `overflow: hidden auto`. ولمّا يكون
+   `html` كمان مش `visible`، الـbody **بتصير حاوية سكرول بحالها**،
+   والعنصر اللاصق بيلصق بالنسبة لسكرول‌بورت الـbody · وهي بطول المحتوى
+   كله، فما بيوصل يلصق ولا مرة.
+
+   ولا وحدة من الـ٤٨ ورقة ستايل بالصفحة فيها هالقاعدة (فحصت
+   `document.styleSheets` و`adoptedStyleSheets`)، فمصدرها برّا
+   ما نتحكّم فيه · وهاد بالضبط ليش التصليح **مضاد** لا مصدري.
+
+   ── والقياس هو اللي اختار الحل ────────────────────────────────────────
+   جرّبت ثلاث حالات على الصفحة الحيّة:
+       بلا تعديل  → انزياح ٣٠٠px  · ما بيلصق
+       body فقط   → انزياح **صفر** · بيلصق ✅
+       html فقط   → انزياح ٣٠٠px  · ما بيلصق
+   فالتغيير على `body` **وبس** · أقلّ تدخّل بيحلّ المشكلة.
+
+   ⚠️ و`clip` مش `hidden` بقصد: الاثنان بيقصّوا أفقياً، بس `hidden`
+      بتعمل حاوية سكرول (وهي أصل الباغ) و`clip` **لأ**. هاي الطريقة
+      الموصى فيها لمنع السكرول الأفقي بلا ما تقتل اللصق.
+   ⚠️ و`html body` بدل `body` لرفع الخصوصية بلا `!important` ·
+      قاعدة المشروع. لو ما غلبت، ارفعها بوعي لا بالعادة.
+   ══════════════════════════════════════════════════════════════════════ */
+html body {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+/* ══ STICKY-FIX:END ════════════════════════════════════════════════════ */
