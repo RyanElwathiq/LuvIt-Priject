@@ -44,7 +44,13 @@ function luvit_cover( $post_id, $size = 'large' ) {
 		array( 'rgb(234,250,253)', 'rgb(166,231,241)' ),
 	);
 	$p   = $pairs[ $post_id % count( $pairs ) ];
-	$svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'>"
+	/* 🔴 width و height إلزاميان مع viewBox.
+	 * SVG بـviewBox وحده **ما إله مقاس أصلي** جوّا <img>، فالمتصفح
+	 * ما بيقدر يحسب أبعاده وما بيرسمه · ومع loading="lazy" بيضل
+	 * complete=false وnaturalWidth=0 للأبد.
+	 * مقيس ١ أيلول على /journal: تلات بطاقات · صناديقها ٣٨٢×٢١٥
+	 * محجوزة صح و**ولا صورة ظهرت**. وريّان شافها فاضية. */
+	$svg = "<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'>"
 		. "<defs><linearGradient id='g{$post_id}' x1='0' y1='0' x2='1' y2='1'>"
 		. "<stop offset='0' stop-color='{$p[0]}'/><stop offset='1' stop-color='{$p[1]}'/>"
 		. '</linearGradient></defs>'

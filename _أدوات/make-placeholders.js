@@ -71,7 +71,11 @@ function svg(key) {
   const halo = a.halo ? `<circle cx='320' cy='190' r='78' fill='${C.white}' opacity='.5'/>` : '';
   /* خط الماء بأسفل الصورة · تنبيه التركيب بيقول اترك آخر 45px هادية */
   const wave = `<path d='M0 320 C 120 300, 240 340, 360 320 S 560 300, 640 316 L640 360 L0 360 Z' fill='${C.white}' opacity='.22'/>`;
-  return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'>` +
+/* 🔴 width/height إلزاميان · SVG بـviewBox وحده ما إله مقاس أصلي
+   جوّا <img>، فالمتصفح ما بيرسمه أبداً · مع loading="lazy" بيضل
+   complete=false وnaturalWidth=0. مقيس ١ أيلول على صفحة المقالات:
+   الصندوق ٣٨٢×٢١٥ والصورة **ما بتظهر**. */
+  return `<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'>` +
     `<defs><linearGradient id='${id}' ${coords}>` +
     `<stop offset='0' stop-color='${a.from}'/><stop offset='1' stop-color='${a.to}'/>` +
     `</linearGradient></defs>` +
