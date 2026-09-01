@@ -106,3 +106,30 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 add_filter( 'rank_math/opengraph/facebook/og_locale', function ( $locale ) {
 	return 'ar_JO';
 } );
+
+/**
+ * صفحة `noindex` ما بتنحط بخريطة الموقع.
+ *
+ * 🔴 كانت `/cart/` و`/checkout/` و`/my-account/` **بالخريطة وهنّ
+ *    `noindex, follow`** · وهاد تناقض: الخريطة بتقول لجوجل «هاي مهمة
+ *    ازحفها» والوسم بيقول «لا تفهرسها». نفس الحالة كانت مع `/shop/`
+ *    وهي تحويل ٣٠١.
+ *
+ * ⚠️ وليش فلتر لا إعداد: ضبط `rank_math_robots` على الصفحات **انحفظ
+ *    فعلاً** (رد 200) و**الخريطة ما تغيّرت** · وRank Math بيخزّن الخريطة
+ *    وما لقيت اسم إجراء يمسح كاشها من `toolsAction` (جرّبت أربعة).
+ *    فالاستبعاد هون بينحسب وقت التوليد ومش معتمداً على كاش.
+ *
+ * ⤷ وهو **عام لا قائمة أسماء**: أي صفحة تتعلّم `noindex` بالمستقبل
+ *   بتختفي من الخريطة لحالها بلا ما نعدّل هون.
+ */
+add_filter( 'rank_math/sitemap/entry', function ( $url, $type, $object ) {
+	if ( 'post' !== $type || empty( $object->ID ) ) {
+		return $url;
+	}
+	$robots = get_post_meta( $object->ID, 'rank_math_robots', true );
+	if ( is_array( $robots ) && in_array( 'noindex', $robots, true ) ) {
+		return false;
+	}
+	return $url;
+}, 10, 3 );
