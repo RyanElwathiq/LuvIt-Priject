@@ -12898,4 +12898,52 @@ html body {
 }
 /* شرائح التصنيف · بتقعد بجهة البداية لا بالوسط · بتقرا كفلتر لا كزينة */
 #journal-cats .luvit-rail__chips { justify-content: flex-start; }
+/* ── ٧ · جدول جوّا المقال ───────────────────────────────────────────────
+   انضاف لما صار في مقال بيقارن نِسَب النياسيناميد بخمس منتجات · وجدول
+   بيوصّل مقارنة أوضح من خمس فقرات.
+
+   وشكل ووردبريس الافتراضي حدود ٠٫٨px حوالين **كل خانة**، وهاي شبكة
+   بتشتّت العين. المعتمد هون: **خطوط أفقية بس** · سطر تحت الترويسة وسطر
+   بين كل صفّين، والباقي فراغ.
+
+   ⚠️ و`overflow-x: auto` على الـfigure إلزامي · جدول تلات أعمدة على
+      شاشة ٣٩٠px بيمدّ الصفحة أفقياً لو ما انحبس. (قاعدة المشروع:
+      المحتوى العريض بيسكرول جوّا صندوقه، والصفحة **ما بتسكرول أفقياً**.) */
+.single-post .page-content .wp-block-table {
+  margin-block: var(--space-6);
+  overflow-x: auto;
+}
+.single-post .page-content table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: clamp(14.5px, 1.6vw, 16px);
+  line-height: 1.7;
+}
+.single-post .page-content th,
+.single-post .page-content td {
+  /* ولا حدود جانبية · الشبكة بتشتّت */
+  border: 0;
+  border-block-end: 1px solid var(--color-line-soft, rgba(26, 37, 41, .10));
+  padding: var(--space-3) var(--space-2);
+  text-align: start;
+  vertical-align: top;
+}
+.single-post .page-content th {
+  font-family: var(--font-heading);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--aqua-700, #196B7D);
+  border-block-end: 2px solid var(--aqua-200, #A6E7F1);
+  white-space: nowrap;
+}
+.single-post .page-content tbody tr:last-child td { border-block-end: 0; }
+/* عمود النسبة · رقم لاتيني بسياق عربي، فبينعزل عشان ما ينط */
+.single-post .page-content td strong {
+  unicode-bidi: isolate;
+}
+@media (max-width: 560px) {
+  .single-post .page-content th,
+  .single-post .page-content td { padding: var(--space-2) 6px; }
+}
+
 /* ══ JOURNAL:END ═══════════════════════════════════════════════════════ */
