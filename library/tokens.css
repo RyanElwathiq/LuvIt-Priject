@@ -11173,7 +11173,12 @@ body.admin-bar #hero-seq .hero-story__cue {
 }
 
 /* ── شبكة «وصلنا جديد» ─────────────────────────────────────────────── */
-.wc-block-grid__products {
+/* 🔴 مضاعفة الكلاس · ووكومرس بيفرض `display: flex` على نفس العنصر،
+   فقاعدتنا بكلاس واحد كانت **بتوصل وتخسر**. والنتيجة أخبث من فشل صريح:
+   `grid-template-columns` بتضل مكتوبة بالـcomputed style (فبتقرا كأنها
+   شغّالة) وهي **خاملة**، لأنها ما بتنطبّق إلا على grid.
+   مقيس ١ أيلول: ثلاث بطاقات · اثنتان بصف والثالثة نزلت لحالها. */
+.wc-block-grid__products.wc-block-grid__products {
   display: grid;
   gap: var(--space-4);
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
