@@ -3162,6 +3162,16 @@ body.luvit-locked { overflow: hidden; }
 .luvit-section--dark .luvit-section__title { color: #fff; }
 .luvit-section--dark .luvit-section__sub   { color: rgba(255,255,255,.82); }
 .luvit-section--dark .luvit-section__eyebrow { color: var(--aqua-200); }
+/* 🔴 البريدكرَمب ما كان مغطّى · القاعدة فوق بتقلب العنوان والسطر
+   والـeyebrow وبس، فمسار التنقّل كان بيضل غامقاً على ماء غامق = غير
+   مقروء. انكشفت ١ أيلول لما رأس صفحة المقالات صار عميقاً.
+   ⚠️ وهالتعليق نفسه انكتب ناقصاً أول مرة: مرّرته بـ`node -e` جوّا
+      علامتَي اقتباس مزدوجتين بالباش، والباش نفّذ اللي جوّا الـbacktick
+      كأمر وبلعه. **أي نصّ فيه backtick بينكتب بملف سكربت لا بـ-e.** */
+.luvit-section--dark nav a,
+.luvit-section--dark nav [aria-current] { color: rgba(255, 255, 255, .80); }
+.luvit-section--dark nav a:hover { color: #FFFFFF; }
+.luvit-section--dark nav [aria-hidden] { color: rgba(255, 255, 255, .45); }
 
 /* The closing call to action, sitting in deep water. */
 .luvit-cta {
@@ -12661,3 +12671,231 @@ html body {
   overflow-y: visible;
 }
 /* ══ STICKY-FIX:END ════════════════════════════════════════════════════ */
+
+/* ══ JOURNAL:START · المقالات · القائمة وصفحة المقال ═════════════════════
+   🔴 ريّان ١ أيلول: «صفحة المقالات كشكل عام برضه ما تحدثت ولا صارلها إشي».
+
+   والقياس على الحيّ أعطى أربع مشاكل، وأكبرها **مش** بصفحة القائمة:
+
+   ١ · **صفحة المقال الواحد ما إلها تصميم أصلاً** · قالب Hello الخام:
+       `.page-header > h1` ثم `.page-content` ثم فورم تعليقات ووردبريس.
+       ولا رأس، ولا تصنيف، ولا تاريخ، ولا مقالات مقترحة، ولا مخرج.
+   ٢ · **العنوان بيصطدم بالنافبار** · ما في إزاحة علوية خالص.
+   ٣ · **النص بعرض 1140px** · سطر بهالطول ما بينقرا · العين بتضيع
+       بالرجوع لأول السطر التالي. المقاس المقروء ٦٠ لـ٧٥ حرفاً.
+   ٤ · **فورم تعليقات مفتوح** بآخر كل مقال · مصيدة سبام وشكل غير محترف.
+
+   والقائمة: تلات بطاقات متطابقة، أغلفتها تدرّجات شبه بيضا ما بتبيّن،
+   وحشوة فاضية فوقهن. ولا تسلسل ولا عمق.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── ١ · رأس المقال · شريط ماء عميق ────────────────────────────────────
+   القالب بيطبع `.page-header` قبل المحتوى · فبنحوّله لشريط بدل ما نخفيه
+   ونعيد طباعة `h1` بالمحتوى (وهاد بيعمل عنوانين h1 بنفس الصفحة). */
+.single-post .page-header {
+  position: relative;
+  /* full-bleed · نفس تقنية شريط المتجر · ولا `100vw` ولا ظلال ضخمة */
+  margin-inline: calc(50% - 50vw);
+  padding-inline: calc(50vw - 50%);
+  /* 🔴 النافبار ثابت · بلا هالإزاحة العنوان بيقعد تحته · مقيس ١ أيلول */
+  padding-block: calc(var(--nav-h, 58px) + var(--nav-inset, 12px) * 2 + clamp(28px, 5vh, 64px))
+                 clamp(48px, 7vh, 88px);
+  margin-block-end: 0;
+  /* 🔴 الغلاف تحت التدرّج · والمتغيّر بينطبع من PHP لكل مقال.
+     والتدرّج **بألفا** لا صلباً عشان الصورة تبين تحته · وبنفس ألوان
+     `.luvit-deep` فالشريط بيضل من نفس العائلة حتى لو ما في غلاف.
+     ⚠️ و`none` قيمة صالحة بقائمة `background-image`، فبلا غلاف
+        بينزل التدرّج الصلب لحاله بلا ما تنكسر القاعدة. */
+  background-image:
+    linear-gradient(180deg,
+      rgba(8, 38, 46, .90) 0%,
+      rgba(12, 51, 60, .84) 34%,
+      rgba(18, 77, 90, .78) 70%,
+      rgba(11, 145, 152, .74) 100%),
+    var(--art-cover, none);
+  background-color: #0C333C;
+  background-size: cover;
+  background-position: center;
+  overflow: clip;
+}
+.single-post .page-header::after {
+  /* الموجة · نفس فيل السكشن اللي تحت بالضبط (أبيض) */
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: -1px;
+  block-size: 56px;
+  background: var(--color-paper, #FFFFFF);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 56 L0 26 C 220 4 420 46 720 30 C 1010 14 1240 44 1440 22 L1440 56 Z' fill='%23000'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 56 L0 26 C 220 4 420 46 720 30 C 1010 14 1240 44 1440 22 L1440 56 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.single-post .page-header .entry-title {
+  max-inline-size: 22ch;
+  margin-inline: auto;
+  font-family: var(--font-heading);
+  font-size: clamp(27px, 4.2vw, 46px);
+  line-height: 1.28;
+  color: #FFFFFF;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ── ٢ · جسم المقال · المقاس هو التصميم ──────────────────────────────
+   🔴 كان 1140px · والمقروء ٦٠ لـ٧٥ حرفاً. `ch` بتقيس بعرض الرقم صفر
+      بالخط الحالي، فهي أصدق من `px` لنصّ عربي. */
+.single-post .page-content {
+  max-inline-size: 68ch;
+  margin-inline: auto;
+  padding-block: clamp(var(--space-6), 5vh, var(--space-8));
+  padding-inline: var(--space-5);
+  font-size: clamp(16.5px, 1.7vw, 18.5px);
+  line-height: 1.95;
+  color: var(--color-ink);
+}
+.single-post .page-content > * { margin-block: 0 var(--space-5); }
+.single-post .page-content > :last-child { margin-block-end: 0; }
+.single-post .page-content h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(21px, 2.6vw, 27px);
+  line-height: 1.35;
+  color: var(--color-ink);
+  margin-block: var(--space-7) var(--space-3);
+}
+.single-post .page-content h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 2.1vw, 21px);
+  line-height: 1.4;
+  margin-block: var(--space-6) var(--space-2);
+}
+.single-post .page-content strong { font-weight: 600; color: var(--color-ink); }
+.single-post .page-content a {
+  color: var(--aqua-700, #196B7D);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.single-post .page-content a:hover { color: var(--aqua-600, #1E869C); }
+.single-post .page-content ul,
+.single-post .page-content ol { padding-inline-start: var(--space-5); }
+.single-post .page-content li { margin-block-end: var(--space-2); }
+.single-post .page-content blockquote {
+  margin-inline: 0;
+  padding: var(--space-5);
+  /* الحدّ على جهة البداية · `border-inline-start` بتنقلب لحالها بالـRTL */
+  border-inline-start: 3px solid var(--aqua-400, #4CC5DA);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: var(--color-mist, #F2F7F9);
+  font-family: var(--font-heading);
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.75;
+}
+.single-post .page-content blockquote p:last-child { margin-block-end: 0; }
+.single-post .page-content img {
+  max-inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--radius-md);
+}
+
+/* ── ٣ · سطر بيانات المقال ─────────────────────────────────────────── */
+.luvit-artmeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-end: var(--space-6);
+  padding-block-end: var(--space-4);
+  border-block-end: 1px solid var(--color-line-soft, rgba(26, 37, 41, .10));
+  font-size: 13.5px;
+  color: var(--color-ink-soft);
+}
+/* 🔴 التسطير · `.single-post .page-content a` خصوصيتها (0,3,1) أعلى من
+   `.luvit-artmeta__cat` (0,1,0)، وهي بتعدّل سماكة الخط تحت **بلا** ما
+   تلغيه · فالتسطير الافتراضي بيضل على الشريحة و«كل المقالات».
+   مقيس ١ أيلول من اللقطة الحيّة. والحل خصوصية مطابقة لا `!important`. */
+.single-post .page-content .luvit-artmeta a { text-decoration: none; }
+.single-post .page-content .luvit-artmeta__back:hover { text-decoration: underline; }
+.luvit-artmeta__cat {
+  font-family: var(--font-heading);
+  font-size: 12.5px;
+  line-height: 1;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  color: var(--aqua-700, #196B7D);
+  background: var(--aqua-50, #EAFAFD);
+  text-decoration: none;
+}
+.luvit-artmeta__cat:hover { background: var(--aqua-100, #D0F3F9); }
+.luvit-artmeta__back { margin-inline-start: auto; color: var(--aqua-700, #196B7D); }
+
+/* ── ٤ · مقالات مقترحة + الختام ────────────────────────────────────── */
+.luvit-related {
+  margin-block-start: clamp(var(--space-7), 6vh, var(--space-9));
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--color-line-soft, rgba(26, 37, 41, .10));
+}
+/* كتلة الختام بالوسط · نهاية مقال لا قائمة · وبتنفصل عن «اقرأي كمان» */
+.luvit-related--cta { text-align: center; }
+.luvit-related--cta .luvit-section__foot { justify-content: center; }
+.luvit-related__title {
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 2.2vw, 22px);
+  color: var(--color-ink);
+  margin: 0 0 var(--space-5);
+}
+.luvit-related__list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.luvit-related__item a {
+  display: block;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-mist, #F2F7F9);
+  text-decoration: none;
+  transition: background .22s ease;
+}
+@media (hover: hover) { .luvit-related__item a:hover { background: var(--aqua-50, #EAFAFD); } }
+@media (prefers-reduced-motion: reduce) { .luvit-related__item a { transition: none; } }
+.luvit-related__eyebrow {
+  display: block;
+  font-family: var(--font-latin);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--aqua-700, #196B7D);
+  margin-block-end: 4px;
+}
+.luvit-related__name {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(15.5px, 1.8vw, 17.5px);
+  line-height: 1.45;
+  color: var(--color-ink);
+}
+
+/* ── ٥ · فورم التعليقات ينشال ─────────────────────────────────────────
+   بينتقفل بالـPHP (`comments_open` = false) · وهاي حماية تانية لو ضلّ
+   إشي منه مطبوعاً من قالب أو إضافة. */
+.single-post #comments,
+.single-post .comments-area { display: none; }
+
+/* ── ٦ · صفحة القائمة · المقال الأول بيتصدّر ──────────────────────────
+   🔴 تلات بطاقات متطابقة = ولا وحدة مهمة. الأولى بتاخد عمودين وغلافاً
+      أكبر، فالعين بتعرف من وين تبدأ. وبتتراجع لعمود واحد على الموبايل
+      عشان ما تصير شريطاً ممدوداً. */
+@media (min-width: 900px) {
+  #posts .luvit-card-grid > .luvit-card--post:first-child { grid-column: span 2; }
+  #posts .luvit-card-grid > .luvit-card--post:first-child .luvit-card__media { aspect-ratio: 21 / 9; }
+  #posts .luvit-card-grid > .luvit-card--post:first-child .luvit-card__title {
+    font-size: clamp(21px, 2.6vw, 28px);
+  }
+}
+/* شرائح التصنيف · بتقعد بجهة البداية لا بالوسط · بتقرا كفلتر لا كزينة */
+#journal-cats .luvit-rail__chips { justify-content: flex-start; }
+/* ══ JOURNAL:END ═══════════════════════════════════════════════════════ */

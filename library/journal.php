@@ -37,11 +37,15 @@ function luvit_cover( $post_id, $size = 'large' ) {
 		return get_the_post_thumbnail( $post_id, $size, array( 'loading' => 'lazy', 'decoding' => 'async' ) );
 	}
 	/* بذرة ثابتة من رقم المقال · نفس المقال بياخد نفس التدرّج كل مرة */
+	/* 🔴 كانت التدرّجات تبدأ من شبه أبيض (234,250,253) وتنتهي فاتحة ·
+	 * فالغلاف كان **بينختفي** بالبطاقة البيضا، وريّان شافه فراغاً.
+	 * الأزواج تحت بتبدأ من عمق فعلي · الغلاف صار يقرا كصورة لا كفراغ،
+	 * وبيمشي مع لغة الماء تبع باقي الموقع بدل ما يكون رمادياً محايداً. */
 	$pairs = array(
-		array( 'rgb(234,250,253)', 'rgb(116,214,231)' ),
-		array( 'rgb(208,243,249)', 'rgb(41,169,192)' ),
-		array( 'rgb(208,243,249)', 'rgb(30,134,156)' ),
-		array( 'rgb(234,250,253)', 'rgb(166,231,241)' ),
+		array( 'rgb(18,77,90)',   'rgb(76,197,218)' ),
+		array( 'rgb(8,38,46)',    'rgb(41,169,192)' ),
+		array( 'rgb(30,134,156)', 'rgb(166,231,241)' ),
+		array( 'rgb(12,51,60)',   'rgb(116,214,231)' ),
 	);
 	$p   = $pairs[ $post_id % count( $pairs ) ];
 	/* 🔴 width و height إلزاميان مع viewBox.
@@ -54,7 +58,17 @@ function luvit_cover( $post_id, $size = 'large' ) {
 		. "<defs><linearGradient id='g{$post_id}' x1='0' y1='0' x2='1' y2='1'>"
 		. "<stop offset='0' stop-color='{$p[0]}'/><stop offset='1' stop-color='{$p[1]}'/>"
 		. '</linearGradient></defs>'
-		. "<rect width='640' height='360' fill='url(%23g{$post_id})'/>"
+		/* 🔴 `#` حرفي · **مش** `%23`.
+		 * الترميز `%23` لازم لمّا الـSVG بينحط بـ`data:image/svg+xml;utf8,`
+		 * لأنه وقتها **جوّا رابط**، و`#` بتقطع الرابط عند الشظية.
+		 * بس الصورة انتحوّلت لـbase64 (هربًا من wptexturize) و**الترميز ضلّ
+		 * مكانه** · فصار الـXML المفكوك فيه `fill='url(%23g225)'` وهاد
+		 * **مرجع غير صالح**، فالمستطيل ما انرسم ولا مرة والغلاف طلع شفافاً.
+		 * ⤷ يعني الأغلفة كانت فاضية **من يوم ما انبنت**، واللي كنا نشوفه
+		 *   خلفية البطاقة + الموجة البيضا (فيلها حرفي فاشتغل).
+		 * ⚠️ والفخّ الأصلي (base64 بدل utf8) انحلّ صح · اللي انتنسي إنه
+		 *   **تغيير الوعاء بيبطّل هروب الوعاء القديم**. */
+		. "<rect width='640' height='360' fill='url(#g{$post_id})'/>"
 		. "<path d='M0 320 C 120 300, 240 340, 360 320 S 560 300, 640 316 L640 360 L0 360 Z' "
 		. "fill='rgb(255,255,255)' opacity='.28'/>"
 		. '</svg>';
@@ -112,7 +126,9 @@ function luvit_journal_cats() {
 
 	/* نفس سبب الحاوية بشورتكود الشبكة · ناتج الشورتكود بينطبع بمحتوى الصفحة
 	   مباشرة وما بينلفّ بشي، فبيمتد على عرض الشاشة. */
-	$out  = '<section class="luvit-section luvit-section--tight band-light" data-nav-bg="light">';
+	/* المعرّف مطلوب · CSS بتحاذي الشرائح لجهة البداية عبره، عشان تقرا
+	   كفلتر لا كزينة بالوسط */
+	$out  = '<section class="luvit-section luvit-section--tight band-light" data-nav-bg="light" id="journal-cats">';
 	$out .= '<div class="luvit-section__inner">';
 	$out .= '<div class="luvit-rail__chips" role="group" aria-label="تصنيفات المقالات">';
 	$out .= sprintf(
@@ -222,3 +238,140 @@ function luvit_journal( $atts ) {
 	return $out;
 }
 add_shortcode( 'luvit_journal', 'luvit_journal' );
+
+/* ===========================================================================
+ * صفحة المقال الواحد
+ * ===========================================================================
+ * 🔴 ريّان ١ أيلول: «صفحة المقالات كشكل عام برضه ما تحدثت». وفتحت المقال
+ *    نفسه ولقيت إنه **ما إله تصميم أبداً** · قالب Hello الخام:
+ *        .page-header > h1   ثم   .page-content   ثم   فورم تعليقات
+ *    ولا تصنيف، ولا تاريخ، ولا مدة قراءة، ولا مقالات مقترحة، ولا مخرج.
+ *    والعنوان بيصطدم بالنافبار، والنص بعرض **1140px** · سطر ما بينقرا.
+ *
+ * ── وليش `the_content` لا قالب ─────────────────────────────────────────
+ * القالب بيطبع `h1` **قبل** المحتوى، فما بقدر أحقن الرأس فوقه من هون.
+ * والبديل (إخفاء `.page-header` وإعادة طباعة `h1` جوّا المحتوى) بيعمل
+ * **عنوانين h1 بنفس الصفحة** · ضرر SEO حقيقي مقابل مكسب تجميلي.
+ *
+ * ⤷ فالتقسيم: الشريط العميق بينعمل **بالـCSS** على `.page-header`
+ *   الموجودة، والبيانات والمقترحات بينحقنوا هون. كل واحد بمكانه الصح.
+ *
+ * ⚠️ والحارس تحت مش زينة: `the_content` بينده بسياقات كثيرة (المقتطفات ·
+ *    حلقات تانية · فيدات RSS). بلا `is_main_query` و`in_the_loop` بيصير
+ *    الرأس ينطبع جوّا بطاقات القائمة كمان.
+ * ========================================================================= */
+function luvit_single_article( $content ) {
+	if ( ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+
+	$id   = get_the_ID();
+	$cats = get_the_category( $id );
+
+	/* ── سطر البيانات · تصنيف · تاريخ · مدة · ورجعة للقائمة ── */
+	$meta  = '<p class="luvit-artmeta">';
+	if ( $cats && ! empty( $cats[0] ) ) {
+		$meta .= sprintf(
+			'<a class="luvit-artmeta__cat" href="%s">%s</a>',
+			esc_url( add_query_arg( 'cat', $cats[0]->slug, home_url( '/journal/' ) ) ),
+			esc_html( $cats[0]->name )
+		);
+	}
+	$meta .= sprintf(
+		'<time datetime="%s">%s</time>',
+		esc_attr( get_the_date( 'c', $id ) ),
+		esc_html( get_the_date( 'j F Y', $id ) )
+	);
+	$meta .= '<span aria-hidden="true">·</span>';
+	$meta .= 'قراءة ' . esc_html( luvit_minutes_ar( luvit_read_minutes( get_post( $id ) ) ) );
+	$meta .= '<a class="luvit-artmeta__back" href="' . esc_url( home_url( '/journal/' ) ) . '">كل المقالات</a>';
+	$meta .= '</p>';
+
+	/* ── المقترحات · من نفس التصنيف أول، وبتكمّل من الأحدث ──
+	 * 🔴 ولا مرة `orderby => rand` · بتكسر كاش الصفحات وبتخلي نفس القارئة
+	 *    تشوف ترتيباً مختلفاً كل تحديث بلا سبب. */
+	$related = '';
+	$ids     = array();
+	if ( $cats && ! empty( $cats[0] ) ) {
+		$ids = get_posts( array(
+			'post_type'        => 'post',
+			'posts_per_page'   => 3,
+			'post__not_in'     => array( $id ),
+			'category__in'     => array( (int) $cats[0]->term_id ),
+			'fields'           => 'ids',
+			'suppress_filters' => false,
+		) );
+	}
+	if ( count( $ids ) < 3 ) {
+		$more = get_posts( array(
+			'post_type'      => 'post',
+			'posts_per_page' => 3 - count( $ids ),
+			'post__not_in'   => array_merge( array( $id ), $ids ),
+			'fields'         => 'ids',
+		) );
+		$ids = array_merge( $ids, $more );
+	}
+
+	if ( $ids ) {
+		$related .= '<aside class="luvit-related">';
+		$related .= '<h2 class="luvit-related__title">اقرأي كمان</h2>';
+		$related .= '<ul class="luvit-related__list">';
+		foreach ( $ids as $rid ) {
+			$rc       = get_the_category( $rid );
+			$related .= '<li class="luvit-related__item"><a href="' . esc_url( get_permalink( $rid ) ) . '">';
+			if ( $rc && ! empty( $rc[0] ) ) {
+				$related .= '<span class="luvit-related__eyebrow">' . esc_html( $rc[0]->name ) . '</span>';
+			}
+			$related .= '<span class="luvit-related__name">' . esc_html( get_the_title( $rid ) ) . '</span>';
+			$related .= '</a></li>';
+		}
+		$related .= '</ul></aside>';
+	}
+
+	/* ── المخرج · مقال بلا مخرج صفحة ميتة ── */
+	$cta  = '<aside class="luvit-related luvit-related--cta">';
+	$cta .= '<h2 class="luvit-related__title">وإذا بدك تطبّقي اللي قريتيه</h2>';
+	$cta .= '<p class="luvit-section__foot">';
+	$cta .= '<a class="luvit-btn luvit-btn--arrow" href="' . esc_url( home_url( '/quiz/' ) ) . '">اكتشفي روتينك</a> ';
+	$cta .= '<a class="luvit-btn luvit-btn--ghost" href="' . esc_url( home_url( '/routines/' ) ) . '">شوفي الروتينات</a>';
+	$cta .= '</p></aside>';
+
+	return $meta . $content . $related . $cta;
+}
+add_filter( 'the_content', 'luvit_single_article' );
+
+/**
+ * التعليقات مقفولة على المقالات.
+ *
+ * 🔴 كان فورم تعليقات ووردبريس مفتوحاً بآخر كل مقال · مصيدة سبام على موقع
+ *    تجاري ما فيه إدارة تعليقات، وشكله الخام بيكسر الإحساس بموقع مصمَّم.
+ * ⚠️ وبينقفل **بالعرض** لا بالبيانات · ما بيلمس ولا تعليقاً محفوظاً (وما
+ *    في ولا واحد الآن)، فلو ريّان بدّه يرجّعها بيشيل هالفلتر وبس.
+ */
+add_filter( 'comments_open', function ( $open, $post_id ) {
+	return ( 'post' === get_post_type( $post_id ) ) ? false : $open;
+}, 10, 2 );
+
+/**
+ * غلاف المقال كخلفية لشريط الرأس.
+ *
+ * بينطبع متغيّر CSS بالـhead، والـCSS بتركّبه تحت تدرّج غامق. وليش متغيّر
+ * لا خاصية مباشرة: الستايل كله بـtokens.css (سنيبت واحد · مصدر حقيقة
+ * واحد)، وهون بينمرّر **الرابط وبس**.
+ *
+ * ⚠️ والتدرّج فوق الصورة مش زينة · هو اللي بيضمن إن العنوان الأبيض يضل
+ *    مقروءاً مهما كان الغلاف فاتحاً. غلاف «الترتيب» تحديداً شبه أبيض،
+ *    وبلا الطبقة الغامقة العنوان بيختفي.
+ * 🔴 والتباين **بينقاس** بعد أي تغيير على شفافية الطبقة · مش بينشاف.
+ */
+add_action( 'wp_head', function () {
+	if ( ! is_singular( 'post' ) || ! has_post_thumbnail() ) {
+		return;
+	}
+	$url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+	if ( ! $url ) {
+		return;
+	}
+	echo '<style id="luvit-art-cover">.single-post .page-header{--art-cover:url('
+		. esc_url( $url ) . ')}</style>';
+}, 20 );
