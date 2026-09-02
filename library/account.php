@@ -353,3 +353,34 @@ add_action( 'woocommerce_before_reset_password_form', function () {
 		. '<p class="luvit-acct-head__sub">مرتين عشان نتأكد إنها نفسها · وبعدها بتسجّلي دخولك فيها.</p>'
 		. '</header>';
 }, 5 );
+
+/* ═════════════════════════════════════════════════
+   ٥ · شيل إشعار «قم بتأكيد عنوان بريدك» من تبويب الطلبات · ٣ أيلول
+   ═════════════════════════════════════════════════
+   ريّان: «بدي العميل يعمل الطلب وينشئ الحساب بأقل احتكاك ممكن».
+   الإشعار من ووكومرس 11 (src/Internal/CustomerEmailVerification/
+   VerificationController.php) · بيطلع لكل زبونة مسجّلة ما أكّدت إيميلها
+   (should_show_prompt: مسجّلة + غير موثّقة + بلا كلمة سر مؤقتة) · وهدفه
+   ربط طلبات الضيف القديمة بالحساب. ما إله مفتاح إطفاء ولا فلتر، فبنشيل
+   الخطافين عن نفس النسخة اللي بالحاوية (الكونستركتور هو اللي ربطهم).
+   ⚠️ الصنف داخلي (@internal) · لو اتغيّر اسمه بنسخة جاية الـtry بيبلع
+      الخطأ والإشعار بيرجع يبين · مش بيوقع الموقع.                    */
+add_action( 'init', function () {
+	global $wp_filter;
+	if ( empty( $wp_filter['woocommerce_before_account_orders'] ) ) {
+		return;
+	}
+	/* ⚠️ أول محاولة كانت بـwc_get_container()->get(...) وما شالته (٣ أيلول) ·
+	   فالمسح هون على الخطافات المسجّلة فعلاً: أي دالة صاحبها كائن من صنف
+	   بمساره CustomerEmailVerification بتنشال · بلا اعتماد على الحاوية. */
+	$hook = $wp_filter['woocommerce_before_account_orders'];
+	foreach ( $hook->callbacks as $priority => $callbacks ) {
+		foreach ( $callbacks as $callback ) {
+			$fn = $callback['function'];
+			if ( is_array( $fn ) && isset( $fn[0] ) && is_object( $fn[0] )
+				&& false !== strpos( get_class( $fn[0] ), 'CustomerEmailVerification' ) ) {
+				remove_action( 'woocommerce_before_account_orders', $fn, $priority );
+			}
+		}
+	}
+}, 99 );

@@ -249,3 +249,52 @@ add_filter(
 	20,
 	4
 );
+
+/* ═════════════════════════════════════════════════
+   ١٢ · تعريب إضافة Power Coupons · ٣ أيلول
+   ═════════════════════════════════════════════════
+   ريّان: «قبل الإطلاق لازم يكون فيه كوبونات كثيرة · والكوبونات مهمة كثير
+   باستراتيجية البيع» · فالإضافة بتضل (درج كوبونات للزبونة بالسلة والشيك أوت)
+   بس نصوصها إنجليزية. ستة نصوص انعرّبوا من إعداداتها (Text Customization)،
+   والباقي (رسائل النجاح والخطأ وأزرار الدرج) بيمرّ من __() بنطاق الإضافة،
+   فبيتعرّب هون. المطابقة حرفية على الإنجليزي كما بملفات الإضافة 1.0.6.  */
+add_filter( 'gettext', function ( $translated, $text, $domain ) {
+	if ( 'power-coupons' !== $domain && 'power-coupons-for-woocommerce' !== $domain ) {
+		return $translated;
+	}
+	static $map = array(
+		'Coupon applied successfully!'                     => 'انطبّق الكوبون · الخصم صار بالمجموع.',
+		'Coupon code copied!'                              => 'انسخ الكود.',
+		'Coupon removed.'                                  => 'انشال الكوبون.',
+		'This coupon is already applied.'                  => 'هالكوبون مطبّق أصلاً.',
+		'Applying...'                                      => 'لحظة…',
+		'Removing...'                                      => 'لحظة…',
+		'Apply Coupon'                                     => 'طبّقي الكوبون',
+		'Copy Code'                                        => 'انسخي الكود',
+		'Remove'                                           => 'شيلي',
+		'View Details'                                     => 'التفاصيل',
+		'Available Coupons'                                => 'الكوبونات المتاحة',
+		'View Available Coupons'                           => 'شوفي الكوبونات المتاحة',
+		'No coupons available at this time.'               => 'ما في كوبونات هلأ.',
+		'Loading coupons...'                               => 'منجيب الكوبونات…',
+		'Failed to apply coupon.'                          => 'ما انطبّق الكوبون · جرّبي مرة تانية.',
+		'Failed to apply coupon. Please try again.'        => 'ما انطبّق الكوبون · جرّبي مرة تانية.',
+		'Failed to remove coupon.'                         => 'ما انشال الكوبون · جرّبي مرة تانية.',
+		'Failed to remove coupon. Please try again.'       => 'ما انشال الكوبون · جرّبي مرة تانية.',
+		'Failed to load coupons. Please try again.'        => 'ما قدرنا نجيب الكوبونات · جرّبي مرة تانية.',
+		'Connection error.'                                => 'انقطع الاتصال · جرّبي مرة تانية.',
+		'Connection error. Please try again.'              => 'انقطع الاتصال · جرّبي مرة تانية.',
+		'Sorry, something went wrong. Please try again.'   => 'صار خطأ · جرّبي مرة تانية.',
+		'Applied'                                          => 'انطبّق',
+	);
+	if ( isset( $map[ $text ] ) ) {
+		return $map[ $text ];
+	}
+	if ( 0 === strpos( $text, 'This coupon cannot be applied' ) ) {
+		return 'هالكوبون ما بينطبّق على سلّتك الحالية.';
+	}
+	if ( 0 === strpos( $text, 'Connection error. Please check' ) ) {
+		return 'انقطع الاتصال · تأكّدي من الإنترنت وجرّبي مرة تانية.';
+	}
+	return $translated;
+}, 20, 3 );

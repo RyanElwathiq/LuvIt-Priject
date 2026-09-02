@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة فحص · تواصلي معنا</title>
+<link rel="stylesheet" href="../../library/tokens.css">
+<style>html{overflow-x:clip}body{margin:0;background:#fff}</style>
+</head>
+<body>
+<a class="luvit-skip" href="#main">تخطّي إلى المحتوى</a>
+
+<header class="luvit-nav" id="luvit-nav">
+  <div class="luvit-nav__bar">
+    <span class="luvit-nav__drop" aria-hidden="true"></span>
+
+    <a class="luvit-nav__brand" href="/" aria-label="Luv it! Jordan"><img class="luvit-nav__logo" src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-logo.png" alt="Luv it! Jordan" width="417" height="220" decoding="async"></a>
+
+    <nav class="luvit-nav__links" aria-label="التنقل الرئيسي">
+      <a class="luvit-nav__link" href="/">الرئيسية</a>
+      <a class="luvit-nav__link" href="/products">المتجر</a>
+      <a class="luvit-nav__link" href="/routines">الروتينات</a>
+      <a class="luvit-nav__link" href="/journal">المقالات</a>
+      <a class="luvit-nav__link" href="/about">من نحن</a>
+    </nav>
+
+    <div class="luvit-nav__actions">
+      <a class="luvit-nav__icon-btn luvit-nav__icon-btn--wide" href="/wishlist" aria-label="المفضّلة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20.3 4.6 13a4.7 4.7 0 0 1 0-6.7 4.7 4.7 0 0 1 6.7 0l.7.7.7-.7a4.7 4.7 0 0 1 6.7 0 4.7 4.7 0 0 1 0 6.7z"/>
+        </svg>
+        <span class="luvit-nav__count" id="luvit-wish-count" hidden>0</span>
+      </a>
+
+      <a class="luvit-nav__icon-btn luvit-nav__icon-btn--wide" href="/my-account" aria-label="حسابي">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8.2" r="3.6"/>
+          <path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>
+        </svg>
+      </a>
+
+      <a class="luvit-nav__icon-btn" href="/cart" aria-label="سلة التسوّق">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="luvit-nav__count" id="luvit-cart-count">0</span>
+      </a>
+
+      <button class="luvit-nav__icon-btn luvit-nav__toggle" type="button"
+              aria-label="فتح القائمة" aria-expanded="false" aria-controls="luvit-drawer">
+        <span class="luvit-nav__burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="luvit-drawer" id="luvit-drawer" role="dialog" aria-modal="true"
+     aria-label="قائمة التنقل" aria-hidden="true">
+  <div class="luvit-drawer__water" aria-hidden="true"></div>
+
+  <nav class="luvit-drawer__panel" aria-label="قائمة الجوال">
+    <a class="luvit-drawer__link" href="/">الرئيسية</a>
+    <a class="luvit-drawer__link" href="/products">المتجر</a>
+    <a class="luvit-drawer__link" href="/routines">الروتينات</a>
+    <a class="luvit-drawer__link" href="/journal">المقالات</a>
+    <a class="luvit-drawer__link" href="/quiz">اختبار نوع البشرة</a>
+    <a class="luvit-drawer__link" href="/about">من نحن</a>
+
+    <div class="luvit-drawer__sep" role="presentation"></div>
+
+    <a class="luvit-drawer__link luvit-drawer__small" href="/my-account">حسابي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/wishlist">المفضّلة</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/track">تتبّع طلبي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/shipping">الشحن والتوصيل</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/faq">الأسئلة الشائعة</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/contact">تواصلي معنا</a>
+  </nav>
+</div>
+
+<nav class="luvit-dock" aria-label="التنقل السريع">
+  <a class="luvit-dock__item" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>
+    </svg>
+    <span>الرئيسية</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/products">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/>
+    </svg>
+    <span>المتجر</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/routines">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/>
+    </svg>
+    <span>الروتينات</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/cart">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+      <path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/>
+    </svg>
+    <span>السلة</span>
+  </a>
+</nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="../../library/motion.js"></script>
+<script src="../../library/wishlist.js"></script>
+<main id="main">
+<!-- ══════════════════════════════════════════════════════════════════════
+     تواصلي معنا · /contact
+     ══════════════════════════════════════════════════════════════════════
+     الترتيب:
+
+       ١. ترويسة الصفحة (فتات الخبز · h1 · جملة وصف)
+       ٢. الفورم · قلب الصفحة · luvit-form بماركب المكتبة
+       ٣. قبل ما تكتبيلنا · أكورديون بيوجّه السؤال لصفحته
+       ٤. الدرزة · سكشن غامق قصير + الموجة
+
+     كيف بينركّب بإلمنتور:
+       ١. لكل سكشن ويدجت HTML جوّا كونتينر لحاله
+       ٢. الصق نص السكشن
+       ٣. اختار الكونتينر (مش الويدجت) ← Advanced ← Attributes:
+              data-nav-bg|light   أو   data-nav-bg|dark   حسب المكتوب بالوسم
+          ⚠ الفاصل خط عامودي | مش يساوي =
+       ٤. CSS ID لكل كونتينر = قيمة id المكتوبة بالوسم
+       ٥. Update، وبعدها LiteSpeed ← Purge All، وافحص بنافذة تصفّح خفي
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴 قفل ١ · ولا قناة تواصل بهالصفحة · وهاد سبب وجودها أصلاً
+     ══════════════════════════════════════════════════════════════════════
+     ما في ولا قناة مثبتة: ولا رقم تلفون، ولا واتساب، ولا حساب سوشال، ولا
+     إيميل (الدومين بلا سجل MX فما بيستقبل إيميل أصلاً).
+
+     فالصفحة **ما بتعرض ولا واحد منهم**. الفورم هو البديل، مش الإضافة.
+
+     ⤷ انثبّت رقم أو واتساب أو إيميل؟ **هون مكانه** · بينزاد سكشن بين
+       الفورم والأكورديون، وبنفس اللحظة بينحدّث:
+         · s1-shipping.html · «قفل ٣» بيقول إن ما في صفحة /contact أصلاً
+         · p7-faq.html · جملة «تواصلي معنا» المكتوبة بلا رابط عن قصد
+         · 13-footer.html · إذا فيه مكان لقنوات التواصل
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴 قفل ٢ · ولا وعد بوقت رد · ولا كلمة إن الرسالة بتوصل على إيميل
+     ══════════════════════════════════════════════════════════════════════
+     ممنوع بهالملف: «منرد خلال ٢٤ ساعة» · «منرد بسرعة» · «بنفس اليوم» ·
+     «رسالتك بتوصلنا على الإيميل» · وأي صياغة بتوعد بوقت.
+
+     المكتوب هو اللي بيصير فعلاً: **الرسالة بتتسجّل عندنا**. ولا كلمة زيادة.
+     ⤷ انربط الفورم بمسار وصول مؤكد (بند لاحق)؟ الجملة بسكشن ٢ هي مكانها.
+
+     ══════════════════════════════════════════════════════════════════════
+     🔴 قفل ٣ · ولا سطر جافاسكربت بهالملف
+     ══════════════════════════════════════════════════════════════════════
+     الربط بينعمل بخطوة لاحقة. اللي موجود هون **ماركب وبس**:
+       · data-luvit-contact  ← معلّم للخطوة الجاية · ما بيعمل إشي لحاله
+       · <div class="luvit-form__status" data-contact-status hidden>
+         ← الصندوق اللي بتنكتب فيه رسالة النتيجة. فاضي عن قصد.
+     ⚠ و motion.js بيربط كل .luvit-form لحاله (التحقق بالعربي · حالة التحميل
+       على زر الإرسال · وصندوق الحالة). فما بده ولا سطر هون.
+     ⚠ و novalidate مقصودة: بدونها المتصفح بيعرض رسائله هو بلغته قبل ما
+       يشتغل motion.js، فبتضيع رسائل الخطأ العربية اللي المكتبة كاتبتها.
+       (نفس اللي معمول بـforms-demo.html.)
+
+     ══════════════════════════════════════════════════════════════════════
+     ملاحظات بناء
+     ══════════════════════════════════════════════════════════════════════
+     · الروابط: / و/track و/faq و/quiz و/shipping و/products · كلها حية.
+       ولا رابط فاضي (الشباك المجرّد).
+     · h1 واحد بالضبط · بسكشن ١.
+     · كل حقل: for على الليبل = id على الحقل، و<p class="luvit-field__error">
+       بتضل **فاضية** لأن motion.js بيكتب فيها الرسالة العربية.
+     · الشريط: ١ mist · ٢ light · ٣ mist · ٤ غامق.
+       والفورم على band-light لأن خلفية الحقول #FFFFFF وحدودها #C7D7DD،
+       فبتبيّن على الورق الأبيض بحدّها مش بلونها.
+     · max-inline-size:560px على inner سكشن ٢ = نفس max-width تبع .luvit-form،
+       فالفورم بيتوسّط بلا ما نكتب margin عليه.
+     · الموجة الأخيرة منسوخة حرفياً من r1-oily.html وs1-shipping.html.
+     · وكل كلاس بهالملف متفحوص إنه موجود بـtokens.css.
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<!-- ═══════════════ ١ · ترويسة الصفحة ═══════════════ -->
+<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
+         data-nav-bg="light" id="page-head">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">تواصلي معنا</span>
+      </nav>
+
+      <h1 class="luvit-section__title">تواصلي معنا</h1>
+      <p class="luvit-section__sub">
+        اكتبيلنا من الفورم اللي تحت · وتحته أربع أسئلة بتتكرر كثير،
+        يمكن سؤالك واحد منهم وجوابه جاهز بصفحته.
+      </p>
+
+      <!-- الرقم من ريّان ١ أيلول · 0797940176
+           🔴 ولا ساعات دوام مكتوبة · ما وصلتنا وما بتنختلق.
+           ⚠️ و`dir=ltr` مع العزل إلزاميان · رقم لاتيني بسياق عربي
+              بينقلب بلاهم. -->
+      <p class="luvit-section__sub">
+        أو اتصلي على
+        <a href="tel:+962797940176" dir="ltr" style="unicode-bidi:isolate">079 794 0176</a>.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٢ · الفورم ═══════════════
+     🔴 اقرأ «قفل ٢» و«قفل ٣» بأول الملف قبل ما تلمس كلمة هون.
+     ⚠ الحقول الأربعة مقصودة بهالترتيب: الاسم · التلفون · الموضوع · الرسالة.
+       وما في حقل إيميل عن قصد، لأننا ما منقدر نرد على إيميل أصلاً.
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-section band-light" data-nav-bg="light" id="contact-form">
+  <div class="luvit-section__inner" style="max-inline-size:560px">
+
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
+      <h2 class="luvit-section__title">اكتبيلنا</h2>
+      <p class="luvit-section__sub">أربع خانات وبتخلصي.</p>
+      <!-- 🔴 الجملة الجاية هي كل اللي منقدر نوعد فيه · اقرأ «قفل ٢» -->
+      <p class="luvit-section__sub">
+        رسالتك بتتسجّل عندنا لمّا تبعثيها · وما رح نحكيلك وقتاً للرد
+        لأننا ما منعرفه لحد الآن.
+      </p>
+    </div>
+
+    <form class="luvit-form" data-luvit-contact method="post" novalidate>
+
+      <div class="luvit-field">
+        <label class="luvit-field__label" for="c-name">
+          الاسم <span class="luvit-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="luvit-field__control">
+          <input class="luvit-input" id="c-name" name="name" type="text"
+                 autocomplete="name" required placeholder="مثال: سارة">
+        </div>
+        <!-- 🔴 اتركها فاضية · motion.js بيكتب فيها رسالة الخطأ بالعربي -->
+        <p class="luvit-field__error"></p>
+      </div>
+
+      <div class="luvit-field">
+        <label class="luvit-field__label" for="c-phone">
+          رقم التلفون <span class="luvit-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="luvit-field__control luvit-field__control--prefix">
+          <span class="luvit-field__prefix">+962</span>
+          <input class="luvit-input" id="c-phone" name="phone" type="tel"
+                 inputmode="numeric" autocomplete="tel" required
+                 pattern="[0-9]{9,10}" placeholder="7XXXXXXXX">
+        </div>
+        <p class="luvit-field__hint">٩ أرقام بعد مفتاح الدولة</p>
+        <p class="luvit-field__error"></p>
+      </div>
+
+      <div class="luvit-field">
+        <label class="luvit-field__label" for="c-topic">الموضوع</label>
+        <div class="luvit-field__control">
+          <select class="luvit-select" id="c-topic" name="topic">
+            <option value="">اختاري…</option>
+            <option>سؤال عن منتج</option>
+            <option>طلبي وين وصل</option>
+            <option>الشحن والتوصيل</option>
+            <option>شي تاني</option>
+          </select>
+        </div>
+        <p class="luvit-field__hint">اختياري · بس بيوفّر علينا وقت</p>
+      </div>
+
+      <div class="luvit-field">
+        <label class="luvit-field__label" for="c-msg">
+          الرسالة <span class="luvit-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="luvit-field__control">
+          <textarea class="luvit-textarea" id="c-msg" name="message" rows="5"
+                    required placeholder="اكتبي سؤالك هون"></textarea>
+        </div>
+        <p class="luvit-field__hint">كل ما تكتبي تفاصيل أكثر، كل ما فهمنا أسرع</p>
+        <p class="luvit-field__error"></p>
+      </div>
+
+      <div class="luvit-section__foot">
+        <button type="submit" class="luvit-btn">ابعثي الرسالة</button>
+      </div>
+
+      <!-- 🔴 فاضي عن قصد · هون بتطلع رسالة النتيجة بالخطوة الجاية -->
+      <div class="luvit-form__status" data-contact-status hidden></div>
+
+    </form>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٣ · قبل ما تكتبيلنا ═══════════════
+     ⚠ الفكرة إن نص اللي بيوصل سؤاله مجاوب أصلاً بصفحة موجودة · فكل جواب
+       هون بيوجّه لصفحته الحية بدل ما يعيد شرحها.
+     🔴 وجواب «الشحن والتوصيل» ما بيحمل مدة ولا رقم أجرة · نفس أقفال
+        s1-shipping.html بالضبط.
+     ⚠ الشريط band-mist مقصود · .luvit-acc__item خلفيته --color-paper فبده
+       canvas تحته.
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-section band-mist" data-nav-bg="light" id="before-you-write">
+  <div class="luvit-section__inner" style="max-inline-size:820px">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <p class="luvit-section__eyebrow">First</p>
+      <h2 class="luvit-section__title">قبل ما تكتبيلنا</h2>
+      <p class="luvit-section__sub">أربع أسئلة بتتكرر · وكل وحدة إلها صفحة جاهزة.</p>
+    </div>
+
+    <div class="luvit-acc" data-acc-single>
+
+      <details class="luvit-acc__item" open>
+        <summary class="luvit-acc__q">
+          وين طلبي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            من صفحة <a href="/track">تتبّع الطلب</a> · بتكتبي رقم الطلب
+            والإيميل اللي طلبتِ فيه، وبتشوفي حالته بلا ما تستنّي حدا يرد عليكِ.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          كيف أطلب؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            الخطوات مشروحة بصفحة <a href="/faq">الأسئلة الشائعة</a> ·
+            من إضافة المنتج للسلة لحد الدفع عند الاستلام.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          شو بيناسب بشرتي؟
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            <a href="/quiz">اختبار البشرة</a> بيسألك كم سؤال قصير وبيدلّك
+            على الروتين الأقرب لنوع بشرتك · وبتقدري تشوفي
+            <a href="/routines">كل الروتينات</a> بحالها كمان.
+          </p>
+        </div>
+      </details>
+
+      <details class="luvit-acc__item">
+        <summary class="luvit-acc__q">
+          الشحن والتوصيل
+          <span class="luvit-acc__sign" aria-hidden="true"></span>
+        </summary>
+        <div class="luvit-acc__a">
+          <p>
+            كل اللي منعرفه مكتوب بصفحة <a href="/shipping">الشحن والتوصيل</a> ·
+            الشحن جوّا الأردن، والدفع عند الاستلام، وأجرة التوصيل بتبيّن
+            بصفحة إتمام الطلب.
+          </p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ ٤ · الدرزة ═══════════════
+     ⚠ هاد السكشن ما بياخد كلاس band · .luvit-cta بيرسم مياهه الغامقة بحاله.
+     ⚠ luvit-cut-top بياكل ٧٠px من أعلى العنصر · وهاد مقصود عشان يقص الشريط
+       اللي فوقه بدل ما ينحط شريط لون قائم بذاته.
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-cta luvit-deep luvit-cut-top" data-nav-bg="dark"
+         data-luvit-bubbles="12" id="contact-cta">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-cta__panel" data-luvit="reveal">
+    <h2 class="luvit-cta__title luvit-cta__accent">لقيتِ جوابك فوق؟</h2>
+    <p class="luvit-cta__sub">كمّلي من هون · وإذا لسا في سؤال، الفورم فوق مفتوح.</p>
+    <div class="luvit-section__foot">
+      <a class="luvit-btn luvit-btn--arrow" href="/products">شوفي المنتجات</a>
+      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/quiz">اعملي الاختبار</a>
+    </div>
+  </div>
+</section>
+
+<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
+
+</main>
+<footer class="luvit-footer luvit-cut-top" data-nav-bg="dark">
+  <div class="luvit-footer__inner">
+
+    <div>
+      <p class="luvit-footer__brand">
+        <img src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-logo.png"
+             alt="Luv it!" width="132" height="52" loading="lazy" decoding="async">
+      </p>
+      <p class="luvit-footer__tag">
+        عناية بالبشرة مبنية على حاجتك، ومرافقة حقيقية قبل الطلب وبعده.
+        بشرتك بدها حب.
+      </p>
+      <div class="luvit-footer__social">
+        <a href="https://www.instagram.com/luvit.skin.jordan/" target="_blank" rel="noopener" aria-label="إنستغرام">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </a>
+        <a href="#" aria-label="تيك توك">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3v9.5a3.5 3.5 0 1 1-3-3.46"/><path d="M15 6.5A4.5 4.5 0 0 0 19.5 11"/></svg>
+        </a>
+        <a href="#" aria-label="واتساب">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-9A8.4 8.4 0 1 1 21 11.5z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <p class="luvit-footer__h">تسوّقي</p>
+      <ul class="luvit-footer__list">
+        <li><a href="/products">كل المنتجات</a></li>
+        <li><a href="/routines">الروتينات</a></li>
+        <li><a href="/products#ingredients">المكوّنات</a></li>
+        <li><a href="/quiz">اختبار نوع البشرة</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="luvit-footer__h">مساعدة</p>
+      <ul class="luvit-footer__list">
+        <li><a href="/#how">كيف تطلبي</a></li>
+        <li><a href="/track">تتبّع طلبي</a></li>
+        <li><a href="/faq">الأسئلة الشائعة</a></li>
+          <li><a href="/journal">المقالات</a></li>
+        <li><a href="/contact">تواصلي معنا</a></li>
+        <li><a href="/returns">سياسة الاستبدال</a></li>
+            <li><a href="/shipping">الشحن والتوصيل</a></li>
+            <li><a href="/privacy">سياسة الخصوصية</a></li>
+            <li><a href="/terms">الشروط والأحكام</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="luvit-footer__bar">
+    <span>© 2026 Luv it Jordan · جميع الحقوق محفوظة</span>
+    <span class="luvit-footer__pay">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg>
+      الدفع عند الاستلام
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
