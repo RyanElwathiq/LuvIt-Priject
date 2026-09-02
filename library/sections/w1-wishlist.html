@@ -8,18 +8,36 @@
        ٢ · المفضّلة بتختلف من زبونة لزبونة، فأي ماركب مطبوع بيكون غلط
            لأغلب الناس.
 
+  🔴 رأس الصفحة سكشن لحاله بـluvit-page-top · بلاه العنوان بيقعد تحت
+     النافبار الثابت. واللي كان باين تحت النافبار فعلاً (٢ أيلول · لقطة
+     ريّان) هو **عنوان القالب** (.entry-title) لأن قالب الصفحة كان
+     default · صار elementor_header_footer زي باقي الصفحات.
+
   ⚠️ ولازم الصفحة تحمّل wishlist.js · هو سنيبت WPCode (Footer).
      بلاه بتطلع الصفحة فاضية دايماً وبتشبه باغاً.
 
   البلوك الوحيد اللي بينلصق: هالملف كله بويدجت HTML بصفحة /wishlist.
 -->
+<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">المفضّلة</span>
+      </nav>
+
+      <p class="luvit-section__eyebrow">Wishlist</p>
+      <h1 class="luvit-section__title">المفضّلة</h1>
+      <p class="luvit-section__sub">اللي حبّيتيه ومحتفظة فيه لبعدين · بتقدري تضيفيه للسلة من هون على طول.</p>
+
+    </div>
+  </div>
+</section>
+
 <section class="luvit-section band-light" data-nav-bg="light" id="wishlist">
   <div class="luvit-section__inner">
-
-    <div class="luvit-section__head" data-luvit="reveal">
-      <h2 class="luvit-section__title">المفضّلة</h2>
-      <p class="luvit-section__sub">اللي حبّيتيه ومحتفظة فيه لبعدين · بتقدري تضيفيه للسلة من هون على طول.</p>
-    </div>
 
     <!-- سطر الحالة · بينشاف وقت الجلب أو لو صار خطأ، وبينختفي غير هيك -->
     <p class="luvit-section__sub" id="luvit-wish-status" role="status" aria-live="polite" hidden></p>

@@ -94,9 +94,14 @@ function volume(rec, wooProduct) {
 }
 
 const CERT_AR = cat.شهادات;
-function certs(rec) {
-  if (!rec || !rec.certs) return null;
-  const names = rec.certs.map((c) => CERT_AR[c]).filter(Boolean).slice(0, 3);
+/* 🔴 كلمة ريّان ٢ أيلول: «كل المنتجات مفحوصة جلدياً» · التلاتة اللي مش
+   بالكتالوج الرسمي (سنتيلا 276 · ألفا أربوتين 282 · واقي الشمس 318) ما
+   عندهم صفحة كتالوج، فشهادتهم الوحيدة المثبتة هي هاي · والباقي ما بينكتب. */
+const EXTRA_CERTS = { 276: ['dermatologically-tested'], 282: ['dermatologically-tested'], 318: ['dermatologically-tested'] };
+function certs(rec, id) {
+  const list = rec && rec.certs ? rec.certs : (EXTRA_CERTS[id] || null);
+  if (!list) return null;
+  const names = list.map((c) => CERT_AR[c]).filter(Boolean).slice(0, 3);
   return names.length ? names.join(' · ') : null;
 }
 
@@ -120,10 +125,10 @@ const singles = woo.منتجات
       step: step || { n: 3, label: 'علاج' },
       active: topActive(rec, p),
       ml: volume(rec, p),
-      certs: certs(rec),
+      certs: certs(rec, p.id),
       inCatalogue: !!rec,
       /* 🔴 التنبيه على سيروم التقشير وحده · وعلى البطاقة مش بصفحة المنتج */
-      warn: rec && rec.cat === 'TOPICAL TREATMENT' ? 'مرتين بالأسبوع · مش يومي' : null,
+      warn: rec && rec.cat === 'TOPICAL TREATMENT' ? 'بالليل · مرة بالأسبوع بالبداية · مش يومي' : null,
     };
   })
   .sort((a, b) => a.step.n - b.step.n || parseFloat(a.price) - parseFloat(b.price));
@@ -325,36 +330,29 @@ const I = {
 
 /* ── ١ · الوعد والترويسة ─────────────────────────────────────────────── */
 function s1() {
+  /* 🔴 رأس المتجر هو هيرو «القطرة» · تسلسل canvas مسحوب بالسكرول (١٢٠ فريماً
+     على السيرفر بـuploads/hero-seq/drop/) · والماركب مصدره الوحيد ملف
+     المعاينة library/shop-hero-packages.preview.html · بينسحب من هون وقت
+     البناء عشان ما يصير نسختين. انركّب ١ أيلول (0d6d7db) وانداس برأس نصّي
+     لما انبنت الصفحة من هالمولّد يوم ٢ أيلول · ريّان: «كل شوي كنت تحذفه».
+     · luvit-shop-root مرساة CSS (قسم 5.16 بـtokens.css) · بتضل على الهيرو.
+     · الرابط الثاني بيوصل لـ#products (اسم الكتالوج بهالصفحة، مش #catalogue). */
+  const src = fs.readFileSync(new URL('../library/shop-hero-packages.preview.html', import.meta.url), 'utf8');
+  const m = src.match(/<section class="shop-hero"[\s\S]*?<\/section>/);
+  if (!m) fail('هيرو القطرة مش موجود بملف المعاينة');
+  const hero = m[0]
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/\n[ \t]*\n+/g, '\n')
+    .replace('<section class="shop-hero"', '<section class="shop-hero luvit-shop-root"')
+    .replace('href="#catalogue"', 'href="#products"');
+  if (!hero.includes('luvit-shop-root') || !hero.includes('href="#products"')) fail('هيرو القطرة · التعديلان ما انطبّقا');
   return `<!--
-  LUVIT · صفحة المتجر الموحّدة (/products/) · سكشن ١ من ٨ · الوعد والترويسة
-  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد، عدّل المولّد.
-
-  · شريط الوعد أول شي بالصفحة **قبل أي سعر** · صفحة متجر بيوتي بوكس تركت
-    نفس المساحة فاضية بالكود، وصفحتها ما فيها ولا كلمة عن الشحن أو الدفع.
-  · luvit-shop-root مرساة CSS · قسم 5.16 بـtokens.css بيستعملها عشان
-    يطفي الـbackdrop-filter بالموبايل على هالصفحة (وهي مش صفحة ووكومرس
-    فما بتاخد كلاس woocommerce-shop).
+  LUVIT · صفحة المتجر الموحّدة (/products/) · سكشن ١ من ٨ · هيرو «القطرة»
+  🔴 مولّد بـ_أدوات/build-shop-page.mjs من library/shop-hero-packages.preview.html
+     · لا تعدّله بالإيد · عدّل المعاينة وأعد البناء.
+  · التسلسل بيرسمه سكربت المتجر بالفوتر (SEQ_BASE → uploads/hero-seq/drop/).
 -->
-<section class="luvit-section luvit-section--tight band-mist luvit-shop-root" data-nav-bg="light" id="page-head">
-  <div class="luvit-promise">
-    <span class="luvit-promise__item">${icon(I.wallet, 18)} الدفع عند الاستلام</span>
-    <span class="luvit-promise__item">${icon(I.truck, 18)} التوصيل من يوم ليومين</span>
-    <span class="luvit-promise__item">${icon(I.flask, 18)} منوصّيكِ باللي بيناسبك</span>
-  </div>
-
-  <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Shop</p>
-      <h1 class="luvit-section__title">التشكيلة كاملة · ومنساعدك تختاري منها</h1>
-      <p class="luvit-section__sub">${singles.length} منتجاً مفرداً و${packages.length} روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
-
-      <div class="luvit-section__foot">
-        <a class="luvit-btn luvit-btn--arrow" href="#packages">ابدئي بروتين جاهز</a>
-        <a class="luvit-btn luvit-btn--ghost" href="#products">أو شوفي المنتجات وحدة وحدة</a>
-      </div>
-    </div>
-  </div>
-</section>
+${hero}
 `;
 }
 
@@ -590,9 +588,12 @@ ${rows}
    والبديل مبني على المؤكد وحده · الشهادات من الكتالوج الرسمي،
    **وأعدادها محسوبة من البيانات مش مكتوبة**. */
 function s6() {
-  const total = cat.منتجات.length;
+  /* المجموع = الكتالوج + التلاتة برّاه · ولازم يساوي المفردات بالمتجر */
+  const total = cat.منتجات.length + Object.keys(EXTRA_CERTS).length;
+  if (total !== singles.length) fail('الشهادات · ' + total + ' منتجاً بالعدّ مقابل ' + singles.length + ' مفردة بالمتجر');
   const tally = {};
   for (const p of cat.منتجات) for (const c of (p.certs || [])) tally[c] = (tally[c] || 0) + 1;
+  for (const list of Object.values(EXTRA_CERTS)) for (const c of list) tally[c] = (tally[c] || 0) + 1;
   const rows = Object.entries(tally)
     .map(([k, n]) => ({ n, label: cat.شهادات[k] || k }))
     .filter((r) => r.label)
@@ -618,7 +619,7 @@ function s6() {
   <div class="luvit-section__inner">
     <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
       <h2 class="luvit-section__title">مفحوص، ومكتوب على العبوة</h2>
-      <p class="luvit-section__sub">المواد الخام كورية والتصنيع بتركيا · و${all} شهادات على <b>كل</b> منتج بالتشكيلة، مش على واحد مختار.</p>
+      <p class="luvit-section__sub">المواد الخام كورية والتصنيع بتركيا · ${all === 1 ? 'و<b>كل</b> منتج بالتشكيلة مفحوص من ناحية جلدية، والباقي مكتوب رقماً برقم' : 'و' + all + ' شهادات على <b>كل</b> منتج بالتشكيلة، مش على واحد مختار'}.</p>
     </div>
 
     <div class="luvit-certs" data-luvit="stagger">
@@ -644,7 +645,7 @@ function s7() {
         ما انطلق بعد فولا سؤال «وصل». */
   const qa = [
     ['كم بتوصل الطلبية؟',
-     'من يوم ليومين · لكل محافظات الأردن بـ٢ دنانير. والتوصيل <strong>مجاني</strong> مع أي روتين جاهز.'],
+     'من يوم ليومين · لكل محافظات الأردن بدينارين ونص. والتوصيل <strong>مجاني</strong> مع أي روتين جاهز.'],
     ['وإذا المنتج ما ناسب بشرتي؟',
      'المفتوح ما بيرجع، وهاد معيار صناعة مستحضرات التجميل كلها لأسباب صحية · والمعيب بيرجع دايماً.'],
     ['ليش ما في خصومات؟',
@@ -654,7 +655,7 @@ function s7() {
     ['أشتري روتين كامل ولا منتج واحد؟',
      'لو مبلّشة، الروتين الجاهز بيوفّر عليكِ الاختيار ومرتّب بترتيبه الصح · ولو ناقصك خطوة وحدة بس، المنتج المفرد أوفر.'],
     ['بقدر أستعمل أكثر من سيروم؟',
-     'نعم، بس مش بنفس الوقت · وسيروم التقشير تحديداً مرتين بالأسبوع مش يومي. الروتينات الجاهزة مرتّبة بحيث ما يتعارضوا.'],
+     'نعم، بس مش بنفس الوقت · وسيروم التقشير تحديداً بالليل، مرة بالأسبوع بالبداية ولحد مرتين لما تتعوّد بشرتك · والأفضل بالشتاء أو بعيداً عن الشمس، وواقي الشمس الصبح إلزامي. الروتينات الجاهزة مرتّبة بحيث ما يتعارضوا.'],
   ];
 
   return `<!--

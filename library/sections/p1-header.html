@@ -1,29 +1,33 @@
 <!--
-  LUVIT · صفحة المتجر الموحّدة (/products/) · سكشن ١ من ٨ · الوعد والترويسة
-  🔴 مولّد بـ_أدوات/build-shop-page.mjs · لا تعدّله بالإيد، عدّل المولّد.
-
-  · شريط الوعد أول شي بالصفحة **قبل أي سعر** · صفحة متجر بيوتي بوكس تركت
-    نفس المساحة فاضية بالكود، وصفحتها ما فيها ولا كلمة عن الشحن أو الدفع.
-  · luvit-shop-root مرساة CSS · قسم 5.16 بـtokens.css بيستعملها عشان
-    يطفي الـbackdrop-filter بالموبايل على هالصفحة (وهي مش صفحة ووكومرس
-    فما بتاخد كلاس woocommerce-shop).
+  LUVIT · صفحة المتجر الموحّدة (/products/) · سكشن ١ من ٨ · هيرو «القطرة»
+  🔴 مولّد بـ_أدوات/build-shop-page.mjs من library/shop-hero-packages.preview.html
+     · لا تعدّله بالإيد · عدّل المعاينة وأعد البناء.
+  · التسلسل بيرسمه سكربت المتجر بالفوتر (SEQ_BASE → uploads/hero-seq/drop/).
 -->
-<section class="luvit-section luvit-section--tight band-mist luvit-shop-root" data-nav-bg="light" id="page-head">
-  <div class="luvit-promise">
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg> الدفع عند الاستلام</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V6h11v10"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg> التوصيل من يوم ليومين</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6.5L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M7.5 15h9"/></svg> منوصّيكِ باللي بيناسبك</span>
-  </div>
-
-  <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Shop</p>
-      <h1 class="luvit-section__title">التشكيلة كاملة · ومنساعدك تختاري منها</h1>
-      <p class="luvit-section__sub">12 منتجاً مفرداً و4 روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
-
-      <div class="luvit-section__foot">
-        <a class="luvit-btn luvit-btn--arrow" href="#packages">ابدئي بروتين جاهز</a>
-        <a class="luvit-btn luvit-btn--ghost" href="#products">أو شوفي المنتجات وحدة وحدة</a>
+<section class="shop-hero luvit-shop-root" id="page-head" data-nav-bg="dark">
+  <div class="shop-hero__track">
+    <div class="shop-hero__pin">
+      <canvas class="shop-hero__canvas" id="seqCanvas" aria-hidden="true"></canvas>
+      <span class="shop-hero__scrim" aria-hidden="true"></span>
+      <div class="shop-hero__load" id="seqLoad" aria-hidden="true"><i></i></div>
+      <div class="shop-hero__copy">
+        <p class="shop-hero__eyebrow">التشكيلة كاملة</p>
+        <h1>كل خطوة إلها <em>شغلة</em>، وكل مكوّن إله سبب</h1>
+        <p class="shop-hero__sub">
+          منظّف بينضّف بلا ما يشدّ · تونر بيهيّئ بشرتك تمتصّ اللي بعده · سيروم
+          بيشتغل على همّك إنتِ · وكريم بيقفل الترطيب لآخر اليوم. اختاري بهدفك،
+          وإحنا رتّبنا الباقي.
+        </p>
+        <div class="shop-hero__cta">
+          <a class="luvit-btn" href="#packages">ابدئي بروتين جاهز</a>
+          <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="#products">أو شوفي المنتجات وحدة وحدة</a>
+        </div>
+      </div>
+      
+      <div class="shop-hero__wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+          <path d="M0,52 C220,88 380,10 620,32 C860,54 1040,92 1240,64 C1330,52 1390,40 1440,34 L1440,90 L0,90 Z" fill="#FFFFFF"/>
+        </svg>
       </div>
     </div>
   </div>

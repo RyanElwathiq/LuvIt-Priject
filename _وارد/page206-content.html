@@ -1,20 +1,28 @@
 <!-- wp:html -->
-<section class="luvit-section luvit-section--tight band-mist luvit-shop-root" data-nav-bg="light" id="page-head">
-  <div class="luvit-promise">
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg> الدفع عند الاستلام</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V6h11v10"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg> التوصيل من يوم ليومين</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6.5L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M7.5 15h9"/></svg> منوصّيكِ باللي بيناسبك</span>
-  </div>
-
-  <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Shop</p>
-      <h1 class="luvit-section__title">التشكيلة كاملة · ومنساعدك تختاري منها</h1>
-      <p class="luvit-section__sub">12 منتجاً مفرداً و4 روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
-
-      <div class="luvit-section__foot">
-        <a class="luvit-btn luvit-btn--arrow" href="#packages">ابدئي بروتين جاهز</a>
-        <a class="luvit-btn luvit-btn--ghost" href="#products">أو شوفي المنتجات وحدة وحدة</a>
+<section class="shop-hero luvit-shop-root" id="page-head" data-nav-bg="dark">
+  <div class="shop-hero__track">
+    <div class="shop-hero__pin">
+      <canvas class="shop-hero__canvas" id="seqCanvas" aria-hidden="true"></canvas>
+      <span class="shop-hero__scrim" aria-hidden="true"></span>
+      <div class="shop-hero__load" id="seqLoad" aria-hidden="true"><i></i></div>
+      <div class="shop-hero__copy">
+        <p class="shop-hero__eyebrow">التشكيلة كاملة</p>
+        <h1>كل خطوة إلها <em>شغلة</em>، وكل مكوّن إله سبب</h1>
+        <p class="shop-hero__sub">
+          منظّف بينضّف بلا ما يشدّ · تونر بيهيّئ بشرتك تمتصّ اللي بعده · سيروم
+          بيشتغل على همّك إنتِ · وكريم بيقفل الترطيب لآخر اليوم. اختاري بهدفك،
+          وإحنا رتّبنا الباقي.
+        </p>
+        <div class="shop-hero__cta">
+          <a class="luvit-btn" href="#packages">ابدئي بروتين جاهز</a>
+          <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="#products">أو شوفي المنتجات وحدة وحدة</a>
+        </div>
+      </div>
+      
+      <div class="shop-hero__wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+          <path d="M0,52 C220,88 380,10 620,32 C860,54 1040,92 1240,64 C1330,52 1390,40 1440,34 L1440,90 L0,90 Z" fill="#FFFFFF"/>
+        </svg>
       </div>
     </div>
   </div>
@@ -334,7 +342,7 @@
           <p class="luvit-card__certs">مفحوص من ناحية جلدية · نباتي ١٠٠٪ · خالٍ من العطور</p>
           <p class="luvit-card__warn">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 8v5"/><path d="M12 16.5h.01"/><circle cx="12" cy="12" r="9"/></svg>
-            مرتين بالأسبوع · مش يومي
+            بالليل · مرة بالأسبوع بالبداية · مش يومي
           </p>
           <div class="luvit-card__footer">
             <span class="luvit-card__price"><span dir="ltr">16.00</span> د.أ</span>
@@ -393,6 +401,7 @@
             </p>
           </div>
           <h3 class="luvit-card__title"><a href="/product/centella-blemish-cream/">كريم سنتيلا للبقع</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية</p>
           <div class="luvit-card__footer">
             <span class="luvit-card__price"><span dir="ltr">18.00</span> د.أ</span>
             <a href="/?add-to-cart=276" rel="nofollow"
@@ -450,6 +459,7 @@
             </p>
           </div>
           <h3 class="luvit-card__title"><a href="/product/alpha-arbutin-complex-serum/">سيروم ألفا أربوتين المركّب</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية</p>
           <div class="luvit-card__footer">
             <span class="luvit-card__price"><span dir="ltr">22.00</span> د.أ</span>
             <a href="/?add-to-cart=282" rel="nofollow"
@@ -505,6 +515,7 @@
             </p>
           </div>
           <h3 class="luvit-card__title"><a href="/product/daily-sunscreen-spf50/">واقي الشمس اليومي · SPF50+‎</a></h3>
+          <p class="luvit-card__certs">مفحوص من ناحية جلدية</p>
           <div class="luvit-card__footer">
             <span class="luvit-card__price"><span dir="ltr">17.95</span> د.أ</span>
             <a href="/?add-to-cart=318" rel="nofollow"
@@ -588,18 +599,18 @@
   <div class="luvit-section__inner">
     <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
       <h2 class="luvit-section__title">مفحوص، ومكتوب على العبوة</h2>
-      <p class="luvit-section__sub">المواد الخام كورية والتصنيع بتركيا · و3 شهادات على <b>كل</b> منتج بالتشكيلة، مش على واحد مختار.</p>
+      <p class="luvit-section__sub">المواد الخام كورية والتصنيع بتركيا · و<b>كل</b> منتج بالتشكيلة مفحوص من ناحية جلدية، والباقي مكتوب رقماً برقم.</p>
     </div>
 
     <div class="luvit-certs" data-luvit="stagger">
-      <span class="luvit-certs__item" data-all><b><span dir="ltr">9 / 9</span></b> مفحوص من ناحية جلدية</span>
-      <span class="luvit-certs__item" data-all><b><span dir="ltr">9 / 9</span></b> خالٍ من العطور</span>
-      <span class="luvit-certs__item" data-all><b><span dir="ltr">9 / 9</span></b> خالٍ من البارابين</span>
-      <span class="luvit-certs__item"><b><span dir="ltr">8 / 9</span></b> خالٍ من الملوّنات</span>
-      <span class="luvit-certs__item"><b><span dir="ltr">7 / 9</span></b> خالٍ من الكحول</span>
-      <span class="luvit-certs__item"><b><span dir="ltr">6 / 9</span></b> نباتي ١٠٠٪</span>
-      <span class="luvit-certs__item"><b><span dir="ltr">2 / 9</span></b> خالٍ من SLS وSLES</span>
-      <span class="luvit-certs__item"><b><span dir="ltr">1 / 9</span></b> لا يسدّ المسام</span>
+      <span class="luvit-certs__item" data-all><b><span dir="ltr">12 / 12</span></b> مفحوص من ناحية جلدية</span>
+      <span class="luvit-certs__item"><b><span dir="ltr">9 / 12</span></b> خالٍ من العطور</span>
+      <span class="luvit-certs__item"><b><span dir="ltr">9 / 12</span></b> خالٍ من البارابين</span>
+      <span class="luvit-certs__item"><b><span dir="ltr">8 / 12</span></b> خالٍ من الملوّنات</span>
+      <span class="luvit-certs__item"><b><span dir="ltr">7 / 12</span></b> خالٍ من الكحول</span>
+      <span class="luvit-certs__item"><b><span dir="ltr">6 / 12</span></b> نباتي ١٠٠٪</span>
+      <span class="luvit-certs__item"><b><span dir="ltr">2 / 12</span></b> خالٍ من SLS وSLES</span>
+      <span class="luvit-certs__item"><b><span dir="ltr">1 / 12</span></b> لا يسدّ المسام</span>
     </div>
 
     <div class="luvit-section__foot">
@@ -619,7 +630,7 @@
     <dl class="luvit-qa" data-luvit="stagger">
       <div>
         <dt>كم بتوصل الطلبية؟</dt>
-        <dd>من يوم ليومين · لكل محافظات الأردن بـ٢ دنانير. والتوصيل <strong>مجاني</strong> مع أي روتين جاهز.</dd>
+        <dd>من يوم ليومين · لكل محافظات الأردن بدينارين ونص. والتوصيل <strong>مجاني</strong> مع أي روتين جاهز.</dd>
       </div>
       <div>
         <dt>وإذا المنتج ما ناسب بشرتي؟</dt>
@@ -639,7 +650,7 @@
       </div>
       <div>
         <dt>بقدر أستعمل أكثر من سيروم؟</dt>
-        <dd>نعم، بس مش بنفس الوقت · وسيروم التقشير تحديداً مرتين بالأسبوع مش يومي. الروتينات الجاهزة مرتّبة بحيث ما يتعارضوا.</dd>
+        <dd>نعم، بس مش بنفس الوقت · وسيروم التقشير تحديداً بالليل، مرة بالأسبوع بالبداية ولحد مرتين لما تتعوّد بشرتك · والأفضل بالشتاء أو بعيداً عن الشمس، وواقي الشمس الصبح إلزامي. الروتينات الجاهزة مرتّبة بحيث ما يتعارضوا.</dd>
       </div>
     </dl>
 

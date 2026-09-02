@@ -11333,7 +11333,7 @@ body.admin-bar #hero-seq .hero-story__cue {
       ⚠️ يعني عنصر بهوامش سالبة بين سكشنين **بيكسر أي قصّ بينهم** ·
          والرقم كان دليلاً مباشراً لأنه طابق `--cut-h` حرفياً.
 
-   **والحل ٣ · مطلق جوّا السكشن الفاتح.** خارج التدفّق موافقة على الكلاً فصفر إزاحة،
+   **والحل ٣ · مطلق جوّا السكشن الفاتح.** خارج التدفّق تماماً فصفر إزاحة،
       وبلا أي تلاصق هوامش، و`#products` عنده `overflow: visible` (مقيس)
       فالعبوة بتقدر تتدلّى تحت حافته.
       🔴 ولا تحطه جوّا `#ingredients` · عنده `overflow: hidden` من
@@ -11705,17 +11705,21 @@ body.admin-bar #hero-seq .hero-story__cue {
         rgba(255,255,255,.12) 21%, rgba(255,255,255,0) 32%),
       linear-gradient(180deg,
         rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .30) 26%, rgba(var(--lagoon-rgb), 0) 54%),
+      /* 🔴 ٢ أيلول · الوسط اتقوّى (.20 → .46 عند ٤٨٪) · هناك بينتهي سطر
+         الوصف، وبآخر القوس العبوات البيضا بتقعد تحته · مقيس ١٫٩:١ قبل. */
       linear-gradient(to left,
-        rgba(var(--lagoon-rgb), .88) 0%, rgba(var(--lagoon-rgb), .64) 24%,
-        rgba(var(--lagoon-rgb), .20) 48%, rgba(var(--lagoon-rgb), 0) 66%);
+        rgba(var(--lagoon-rgb), .88) 0%, rgba(var(--lagoon-rgb), .72) 22%,
+        rgba(var(--lagoon-rgb), .46) 46%, rgba(var(--lagoon-rgb), .16) 60%,
+        rgba(var(--lagoon-rgb), 0) 70%);
   }
   [dir="ltr"] .shop-hero__scrim {
     background:
       linear-gradient(180deg,
         rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .30) 26%, rgba(var(--lagoon-rgb), 0) 54%),
       linear-gradient(to right,
-        rgba(var(--lagoon-rgb), .88) 0%, rgba(var(--lagoon-rgb), .64) 24%,
-        rgba(var(--lagoon-rgb), .20) 48%, rgba(var(--lagoon-rgb), 0) 66%);
+        rgba(var(--lagoon-rgb), .88) 0%, rgba(var(--lagoon-rgb), .72) 22%,
+        rgba(var(--lagoon-rgb), .46) 46%, rgba(var(--lagoon-rgb), .16) 60%,
+        rgba(var(--lagoon-rgb), 0) 70%);
   }
 
   /* ── الكلام · قاعد فوق الشريط الغامق طول القوس ─────────────────
@@ -11739,6 +11743,23 @@ body.admin-bar #hero-seq .hero-story__cue {
     max-inline-size: min(640px, 84vw);
   }
 
+  /* 🔴 أرضية الكلام نفسها · ٢ أيلول · ريّان: «مافيه أي مشاكل بالتباين».
+     المشكلة مقيسة: بآخر القوس العبوات البيضا (لمعان ≤ ٢٣٧) بتقعد تحت
+     الوصف والأزرار، والسكريم الأفقي عند نهاية السطر كان .20 · أبيض على
+     عبوة #E8E8E8 بهالقدر = **١٫٩:١**.
+     والحساب للضمان: أبيض فوق عبوة نموذجية بده lagoon ≥ .76 عشان يعدّي AA.
+     فالأرضية **شعاعية بهضبة .74 وبتروح لصفر عند حافّتها** (closest-side)
+     · يعني ما إلها حدّ مستطيل يبين، وهاد بالضبط اللي منع أي أرضية محصورة
+     قبل (شوف تعليق السكريم فوق). والصندوق أكبر من الكلام بكثير عشان
+     الهضبة تغطي زوايا الكلام والتلاشي يصير برّاه.
+     ⚠️ ولا backdrop-filter هون · قاعدة أداء الهيرو. */
+  .shop-hero__copy::before {
+    content: ""; position: absolute; z-index: -1; pointer-events: none;
+    inset: -55% -42%;
+    background: radial-gradient(closest-side,
+      rgba(var(--lagoon-rgb), .74) 0%, rgba(var(--lagoon-rgb), .74) 58%,
+      rgba(var(--lagoon-rgb), .42) 82%, rgba(var(--lagoon-rgb), 0) 100%);
+  }
   .shop-hero__eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     margin: 0 0 12px; font-size: 13px; font-weight: 600; letter-spacing: 0;
@@ -11868,7 +11889,7 @@ body.admin-bar #hero-seq .hero-story__cue {
 
   /* ══ النسيج · حبيبات دقيقة على الأسطح الكبيرة ═════════════════════
      🔴 الجرد قال: ٨ أسطح لون صلب و١٥ تدرّجاً خطّياً و**شعاعيان بس**.
-        يعني كل شي أملس موافقة على الكلاً · وredesign-existing-projects بيسمّيها
+        يعني كل شي أملس تماماً · وredesign-existing-projects بيسمّيها
         «Flat design with zero texture · pure flat vectors feel sterile»
         و«Perfectly even gradients».
 
@@ -12775,7 +12796,7 @@ body.admin-bar #hero-seq .hero-story__cue {
    🔴 المعاينة مسكت الباغ قبل الموقع: أول محاولة استعملت
       `.luvit-card--routine` تبع صفحة الروتينات · وهاي فوق 900px
       **شبكة عمودين** (٣٤٪ للصورة + الباقي للمحتوى). وبطاقة الرئيسية
-      بلا صورة بكج بقصد، فالعمود الأول ضلّ **فاضياً موافقة على الكلاً** ونص البطاقة
+      بلا صورة بكج بقصد، فالعمود الأول ضلّ **فاضياً تماماً** ونص البطاقة
       راح هدراً.
       ⤷ الدرس المتكرّر: كلاس بيوصف **تخطيطاً** مش بس شكلاً · استعارته
         بتجيب افتراضاته معها.
@@ -12861,7 +12882,7 @@ body.admin-bar #hero-seq .hero-story__cue {
 /* ══ STICKY-FIX:START · إعادة الحياة لـposition:sticky ═══════════════════
    🔴 **باغ ظهر على الموقع الحيّ وما ظهر بالمعاينة أبداً.**
 
-   الرأس الجانبي الملتصق بسكشن «ليش لَف إت» اشتغل موافقة على الكلاً محلياً وطلع
+   الرأس الجانبي الملتصق بسكشن «ليش لَف إت» اشتغل تماماً محلياً وطلع
    **ميتاً** على ووردبريس · مقيس بالحركة لا بالنظر:
        سكرول +٦٠٠px  →  العنصر نزل ٦٠٠px  (يعني ما لصق ولا مرة)
 

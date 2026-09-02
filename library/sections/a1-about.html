@@ -3,7 +3,7 @@
      ══════════════════════════════════════════════════════════════════════
      الترتيب:
 
-       ١. ترويسة الصفحة (فتات الخبز · h1 · جملة وصف)
+       ١. ترويسة الصفحة · رأس غامق luvit-deep (فتات الخبز · h1 · المسار ١‑٢‑٣ · زرّان) + موجة للأبيض
        ٢. ليش بلّشنا · 🟡 قصة مؤقتة
        ٣. اللي منوعد فيه · أربع بطاقات luvit-card--feature · ✅ كلها مثبتة
        ٤. كيف منشتغل · luvit-steps · 🟡 محتوى مؤقت
@@ -80,17 +80,21 @@
      ══════════════════════════════════════════════════════════════════════ -->
 
 <!-- ═══════════════ ١ · ترويسة الصفحة ═══════════════ -->
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
-         data-nav-bg="light" id="page-head">
-
-  <div class="luvit-promise">
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M5 8h14"/><path d="M7 13h10"/><path d="M9 18h6"/></svg> روتين على قدّ حاجتك</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12"/><path d="M11 12V4.5a1.5 1.5 0 0 1 3 0V12"/><path d="M14 12V6.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1a5 5 0 0 1-4.4-2.6L4 13.5a1.6 1.6 0 0 1 2.6-1.8L8 13.5"/></svg> منرشدك قبل الطلب وبعده</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg> الدفع عند الاستلام</span>
-  </div>
-
+<!-- 🔴 كانت شريط وعد + عنوان على بند mist · ريّان ٢ أيلول: «راس الصفحة ماله
+     تصميم مع إني حكيت بالموضوع أكثر من مرة». صارت رأساً غامقاً بعمق الماء
+     (luvit-deep · أشعة · فقاعات) زي رأس الروتينات، والوعود الثلاثة صارت
+     مساراً مرقّماً (rt-flow) لأنها هي أطروحة الصفحة: منسألك ← منركّب ← منضل معك.
+     · rt-head مش «خاص بالروتينات» · هو ستايل الرأس الغامق (عنوان أبيض
+       وعرض العنوان) ومعرّف مرة وحدة بـtokens.css.
+     · الموجة بعده بتقص للأبيض لأن سكشن ٢ band-light · وخلفيتها آخر لون
+       بتدرّج .luvit-deep (#0B9198) · قاعدة الموجات ٩ آب.
+     · شريط الوعد (الدفع عند الاستلام · التوصيل) انشال من هون · حقائقه
+       بصفحة المتجر وبالأسئلة، والرأس الغامق ما إله نسخة وعد. -->
+<section class="luvit-section luvit-deep luvit-page-top rt-head"
+         data-nav-bg="dark" data-luvit-bubbles="14" id="page-head">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
 
       <nav aria-label="مسار التنقّل">
         <a href="/">الرئيسية</a>
@@ -105,14 +109,34 @@
         على قدّ حاجتك، ومنضل معك بعد ما يوصل الطلب.
       </p>
 
+      <ol class="rt-flow" data-luvit="stagger">
+        <li class="rt-flow__item">
+          <span class="rt-flow__dot">١</span>
+          <span class="rt-flow__label">منسألك</span>
+          <span class="rt-flow__note">اختبار قصير عن بشرتك وهمّك · مش عن نوعها بس</span>
+        </li>
+        <li class="rt-flow__item">
+          <span class="rt-flow__dot">٢</span>
+          <span class="rt-flow__label">منركّب</span>
+          <span class="rt-flow__note">خطوات بترتيبها الصح · وكل خطوة إلها سبب</span>
+        </li>
+        <li class="rt-flow__item">
+          <span class="rt-flow__dot">٣</span>
+          <span class="rt-flow__label">منضل معك</span>
+          <span class="rt-flow__note">بعد ما يوصل الطلب · سؤال أو تعديل على الروتين، إحنا هون</span>
+        </li>
+      </ol>
+
       <div class="luvit-section__foot">
         <a class="luvit-btn luvit-btn--arrow" href="/quiz">جرّبي الاختبار</a>
-        <a class="luvit-btn luvit-btn--ghost" href="/routines">أو شوفي الروتينات</a>
+        <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/routines">أو شوفي الروتينات</a>
       </div>
 
     </div>
   </div>
 </section>
+<!-- 🔴 background لازم يطابق آخر لون بتدرّج .luvit-deep بالضبط · #0B9198 -->
+<div class="luvit-wave" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
 
 
 <!-- ═══════════════ ٢ · ليش بلّشنا ═══════════════
