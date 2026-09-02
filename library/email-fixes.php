@@ -146,3 +146,98 @@ unset( $luvit_order_email_hook );
  */
 add_action( 'woocommerce_before_resend_order_emails', 'luvit_email_switch_locale', 5 );
 add_action( 'woocommerce_after_resend_order_email', 'luvit_email_restore_locale', 15 );
+
+/**
+ * 3 · Month names. Levantine, not Gulf.
+ *
+ * Ryan, 2 Sept, approving the blast radius below: «اه اعمله».
+ *
+ * The order email prints «٢١ أغسطس ٢٠٢٦». Jordan says «آب». Both are correct
+ * Arabic; they are simply different regional conventions, and a Jordanian
+ * brand writing to Jordanian women should use the Jordanian one.
+ *
+ * The source is NOT WooCommerce, not the template, and not our gettext filter:
+ *
+ *   WP_Locale::init()  ·  wp-includes/class-wp-locale.php
+ *   $this->month['08'] = __( 'August' );          ← domain `default`
+ *
+ * 🔴 So the gettext filter in snippet 200 provably cannot reach it: that
+ *    filter returns early for any domain that is not `woocommerce`. And even
+ *    without the guard it would need BOTH `gettext` and `gettext_with_context`,
+ *    because month_genitive is built with _x().
+ *
+ * Writing to the object directly is simpler and has no domain problem.
+ *
+ * TWO hooks, and the second is the one that matters:
+ *   `init`          · covers the front end and wp-admin.
+ *   `change_locale` · WP_Locale_Switcher::change_locale() does
+ *                     `$wp_locale = new WP_Locale();` and THEN fires
+ *                     `change_locale`. Every locale switch rebuilds the object
+ *                     and wipes our values, so we rewrite after each one.
+ *                     Customer emails switch locale, and block 2 above now
+ *                     switches it for admin emails too, so both are covered.
+ *
+ * 🔴 month_abbrev is keyed by the FULL month name, not by the number, so it
+ *    has to be rebuilt from the new names. Skip that and the `M` date format
+ *    returns empty.
+ *
+ * ⚠️ Guarded to Arabic locales. Without the guard, an English admin profile
+ *    would see «كانون الثاني» inside English admin screens.
+ *
+ * ⚠️ SCOPE, stated plainly because Ryan approved it knowing this: the whole
+ *    site in Arabic, not just email. Journal post dates and the my-account
+ *    order list become «آب» too. That is the consistent choice for a Jordanian
+ *    brand, and it is a bigger blast radius than an email fix.
+ */
+if ( ! function_exists( 'luvit_levant_month_names' ) ) {
+
+	function luvit_levant_month_names( $locale = '' ) {
+
+		global $wp_locale;
+
+		if ( ! ( $wp_locale instanceof WP_Locale ) ) {
+			return;
+		}
+
+		if ( '' === $locale || ! is_string( $locale ) ) {
+			$locale = function_exists( 'determine_locale' ) ? determine_locale() : get_locale();
+		}
+
+		if ( 0 !== strpos( $locale, 'ar' ) ) {
+			return;
+		}
+
+		$luvit_months = array(
+			'01' => 'كانون الثاني',
+			'02' => 'شباط',
+			'03' => 'آذار',
+			'04' => 'نيسان',
+			'05' => 'أيار',
+			'06' => 'حزيران',
+			'07' => 'تموز',
+			'08' => 'آب',
+			'09' => 'أيلول',
+			'10' => 'تشرين الأول',
+			'11' => 'تشرين الثاني',
+			'12' => 'كانون الأول',
+		);
+
+		$wp_locale->month          = $luvit_months;
+		$wp_locale->month_genitive = $luvit_months;
+
+		/* Arabic has no month abbreviations, so the abbreviation IS the name.
+		   The key must be the new name, not the number. */
+		$wp_locale->month_abbrev = array();
+		foreach ( $luvit_months as $luvit_month_name ) {
+			$wp_locale->month_abbrev[ $luvit_month_name ] = $luvit_month_name;
+		}
+	}
+}
+
+add_action( 'init', 'luvit_levant_month_names', 20 );
+add_action( 'change_locale', 'luvit_levant_month_names' );
+
+/* If WPCode runs this snippet after `init` has already passed, the direct call
+   covers the current request. Safe to call twice: it checks the object and the
+   locale itself. */
+luvit_levant_month_names();
