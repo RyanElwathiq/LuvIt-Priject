@@ -1,0 +1,47 @@
+<!--
+  LUVIT · صفحة المفضّلة (/wishlist/)
+
+  🔴 الشبكة **فاضية بالماركب** · بتنعبّى من library/wishlist.js من
+     Store API تبع ووكومرس. وهاد مقصود لسببين:
+       ١ · السعر والصورة بيجوا من **نفس المصدر اللي بيحاسب** بالسلة،
+           فما بيصير عندنا رقمين مختلفين زي ما صار قبل بملفات السكاشن.
+       ٢ · المفضّلة بتختلف من زبونة لزبونة، فأي ماركب مطبوع بيكون غلط
+           لأغلب الناس.
+
+  ⚠️ ولازم الصفحة تحمّل wishlist.js · هو سنيبت WPCode (Footer).
+     بلاه بتطلع الصفحة فاضية دايماً وبتشبه باغاً.
+
+  البلوك الوحيد اللي بينلصق: هالملف كله بويدجت HTML بصفحة /wishlist.
+-->
+<section class="luvit-section band-light" data-nav-bg="light" id="wishlist">
+  <div class="luvit-section__inner">
+
+    <div class="luvit-section__head" data-luvit="reveal">
+      <h2 class="luvit-section__title">المفضّلة</h2>
+      <p class="luvit-section__sub">اللي حبّيتيه ومحتفظة فيه لبعدين · بتقدري تضيفيه للسلة من هون على طول.</p>
+    </div>
+
+    <!-- سطر الحالة · بينشاف وقت الجلب أو لو صار خطأ، وبينختفي غير هيك -->
+    <p class="luvit-section__sub" id="luvit-wish-status" role="status" aria-live="polite" hidden></p>
+
+    <!-- الشبكة · بتنعبّى بالـJS -->
+    <div class="luvit-card-grid" id="luvit-wish-list"></div>
+
+    <!-- الحالة الفاضية · مخفية أول ما تكون في مفضّلة -->
+    <div class="luvit-empty" id="luvit-wish-empty" hidden>
+      <span class="luvit-empty__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20.3 4.6 13a4.7 4.7 0 0 1 0-6.7 4.7 4.7 0 0 1 6.7 0l.7.7.7-.7a4.7 4.7 0 0 1 6.7 0 4.7 4.7 0 0 1 0 6.7z"/>
+        </svg>
+      </span>
+      <h3 class="luvit-empty__title">مفضّلتك لساها فاضية</h3>
+      <p class="luvit-empty__sub">اضغطي القلب على أي منتج وبيتحفظ هون · وبتقدري ترجعيله وقت ما بدك بلا ما تسجّلي دخول.</p>
+      <div class="luvit-empty__foot">
+        <a class="luvit-btn" href="/products">شوفي المنتجات</a>
+        <a class="luvit-btn luvit-btn--ghost" href="/quiz">اختبار البشرة</a>
+      </div>
+    </div>
+
+  </div>
+</section>

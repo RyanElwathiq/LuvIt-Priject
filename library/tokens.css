@@ -758,6 +758,59 @@ h1, h2, h3, h4, .luvit-heading {
 :root { --badge-accent-bg: var(--color-ink); }
 .luvit-card__badge--accent { background: var(--badge-accent-bg); color: #fff; }
 
+/* ---- زر المفضّلة ----------------------------------------------------
+   بالزاوية المقابلة للشارة · الشارة على inset-inline-start فالقلب على
+   inset-inline-end، فما بيتصادموا لا بالعربي ولا لو انقلب الاتجاه.
+
+   z-index 4 لأن الميديا عندها ::before (1) و::after (2) والشارة (3) ·
+   وبلا الرقم الزر بينحجب تحت الموجة وما بينضغط.
+
+   والفوشيا هون **أيقونة مش خلفية** · نفس استثناء نقطة السلة بالضبط،
+   والقاعدة «ولا مرة كخلفية» بتضل سارية على الكتل. */
+.luvit-wish {
+  position: absolute;
+  z-index: 4;
+  top: var(--space-3);
+  inset-inline-end: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--duration-instant) var(--ease-out-soft),
+              transform var(--duration-instant) var(--ease-out-soft),
+              color var(--duration-instant) var(--ease-out-soft);
+}
+.luvit-wish svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: fill var(--duration-instant) var(--ease-out-soft);
+}
+.luvit-wish:hover { background: #fff; transform: scale(1.06); }
+.luvit-wish:active { transform: scale(0.92); }
+
+/* مضافة · القلب بينتعبّى */
+.luvit-wish[aria-pressed="true"] { color: var(--fuchsia-500); }
+.luvit-wish[aria-pressed="true"] svg { fill: currentColor; }
+
+@media (prefers-reduced-motion: reduce) {
+  .luvit-wish, .luvit-wish svg { transition: none; }
+  .luvit-wish:hover, .luvit-wish:active { transform: none; }
+}
+
 /* ---- Body ---- */
 .luvit-card__body {
   display: flex;
@@ -1414,6 +1467,14 @@ h1, h2, h3, h4, .luvit-heading {
 .luvit-nav__icon-btn:hover { background: rgba(255, 255, 255, 0.22); }
 .luvit-nav__icon-btn:active { transform: scale(0.94); }
 .luvit-nav__icon-btn svg { width: 21px; height: 21px; }
+
+/* المفضّلة والحساب · بالـpill على الديسكتوب بس.
+   على الموبايل الـpill فيها اللوجو والسلة والبرغر، وزيادة أيقونتين
+   بتخنقها · فالاتنين موجودتان بالدرج بدل هيك. */
+.luvit-nav__icon-btn--wide { display: none; }
+@media (min-width: 1024px) {
+  .luvit-nav__icon-btn--wide { display: inline-flex; }
+}
 
 /* Cart count bubble — a little water bead. */
 .luvit-nav__count {

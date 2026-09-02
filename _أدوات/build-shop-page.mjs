@@ -176,6 +176,13 @@ function productCard(p) {
   if (p.active) {
     parts.push(`          <span class="luvit-card__badge">${ltr(p.active.pct)} ${esc(p.active.name)}</span>`);
   }
+  /* 🔴 زر المفضّلة · جوّا الميديا وبالزاوية المقابلة للشارة.
+     المعرّف هو معرّف ووكومرس نفسه · هو الجسر الوحيد بين البطاقة وصفحة
+     المفضّلة، وأي مفتاح تاني (سلَغ · اسم) بينكسر أول ما ينتغيّر. */
+  parts.push(`          <button class="luvit-wish" type="button" data-wish="${p.id}"`);
+  parts.push(`                  aria-pressed="false" aria-label="أضيفي ${esc(p.name)} للمفضّلة">`);
+  parts.push('            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.6 13a4.7 4.7 0 0 1 0-6.7 4.7 4.7 0 0 1 6.7 0l.7.7.7-.7a4.7 4.7 0 0 1 6.7 0 4.7 4.7 0 0 1 0 6.7z"/></svg>');
+  parts.push('          </button>');
   parts.push(`          <img decoding="async" width="800" height="1000"`);
   parts.push(`               src="${esc(img.src)}" alt="${esc(p.name)}">`);
   parts.push('        </div>');
