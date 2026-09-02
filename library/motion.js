@@ -1412,7 +1412,15 @@ window.LUVIT.anchorScroll = { init: luvitAnchorScroll };
    polling, no timers.
    -------------------------------------------------------------------------- */
 function luvitCartCount() {
-  var nodes = document.querySelectorAll('.luvit-nav__count, #luvit-cart-count');
+  /* 🔴 الاستثناء مش تجميلاً · شارة المفضّلة (٢ أيلول) بتستعمل نفس الكلاس
+     `.luvit-nav__count` عشان الستايل، فالمحدِّد القديم كان بياخدها كمان
+     وبيكتب عليها **عدد السلة**. النتيجة المقيسة على الموقع الحي: المفضّلة
+     فيها منتجان والشارة بتقول صفر.
+
+     وهاد نمط تكرر عندنا: تعليق هالقسم نفسه بيقول «الهيدر أصلاً بيرسم
+     .luvit-nav__count» · وهو كان صحيحاً لما كانت الشارة وحدة. إضافة شارة
+     تانية بنفس الكلاس كسرت قارئاً ما كان أحد يفكر فيه. */
+  var nodes = document.querySelectorAll('.luvit-nav__count:not(#luvit-wish-count), #luvit-cart-count');
   if (!nodes.length) return;
 
   var painted = null;   /* last value actually written, so we repaint nothing */
