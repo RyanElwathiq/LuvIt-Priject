@@ -355,32 +355,12 @@ add_action( 'woocommerce_before_reset_password_form', function () {
 }, 5 );
 
 /* ═════════════════════════════════════════════════
-   ٥ · شيل إشعار «قم بتأكيد عنوان بريدك» من تبويب الطلبات · ٣ أيلول
+   ٥ · إشعار «قم بتأكيد عنوان بريدك» بتبويب الطلبات · **بيضل** · ٣ أيلول
    ═════════════════════════════════════════════════
-   ريّان: «بدي العميل يعمل الطلب وينشئ الحساب بأقل احتكاك ممكن».
-   الإشعار من ووكومرس 11 (src/Internal/CustomerEmailVerification/
-   VerificationController.php) · بيطلع لكل زبونة مسجّلة ما أكّدت إيميلها
-   (should_show_prompt: مسجّلة + غير موثّقة + بلا كلمة سر مؤقتة) · وهدفه
-   ربط طلبات الضيف القديمة بالحساب. ما إله مفتاح إطفاء ولا فلتر، فبنشيل
-   الخطافين عن نفس النسخة اللي بالحاوية (الكونستركتور هو اللي ربطهم).
-   ⚠️ الصنف داخلي (@internal) · لو اتغيّر اسمه بنسخة جاية الـtry بيبلع
-      الخطأ والإشعار بيرجع يبين · مش بيوقع الموقع.                    */
-add_action( 'init', function () {
-	global $wp_filter;
-	if ( empty( $wp_filter['woocommerce_before_account_orders'] ) ) {
-		return;
-	}
-	/* ⚠️ أول محاولة كانت بـwc_get_container()->get(...) وما شالته (٣ أيلول) ·
-	   فالمسح هون على الخطافات المسجّلة فعلاً: أي دالة صاحبها كائن من صنف
-	   بمساره CustomerEmailVerification بتنشال · بلا اعتماد على الحاوية. */
-	$hook = $wp_filter['woocommerce_before_account_orders'];
-	foreach ( $hook->callbacks as $priority => $callbacks ) {
-		foreach ( $callbacks as $callback ) {
-			$fn = $callback['function'];
-			if ( is_array( $fn ) && isset( $fn[0] ) && is_object( $fn[0] )
-				&& false !== strpos( get_class( $fn[0] ), 'CustomerEmailVerification' ) ) {
-				remove_action( 'woocommerce_before_account_orders', $fn, $priority );
-			}
-		}
-	}
-}, 99 );
+   انشال لساعة (مسح $wp_filter · شوف الذاكرة wc-internal-hooks-remove-by-scan)
+   ثم ريّان: «خلّي إشعار تأكيد البريد واتأكد إنها شغّالة والمنطق تبعها شغّال».
+   فرجع · وهو ميزة ووكومرس 11: الزبونة بتضغط «تأكيد عنوان البريد» ← رابط
+   لمرة وحدة على إيميلها ← بعد التأكيد طلبات الضيف القديمة بنفس الإيميل
+   بتنربط بحسابها (woocommerce_customer_email_verified →
+   wc_update_new_customer_past_orders). النصوص من ترجمة ووكومرس العربية. */
+
