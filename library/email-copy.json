@@ -1,20 +1,27 @@
 {
-  "_ملاحظة": "كوبي إيميلات ووكومرس · الزبونة تُخاطَب بالمؤنث · ولا شرطة طويلة · ولا وعد بمدة أو نتيجة ما حدا أكّدها",
+  "_ملاحظة": "كوبي إيميلات ووكومرس · مصدر اللصق لإعدادات ووكومرس · القيم هون لازم تطابق الموقع",
   "_قواعد": [
-    "ما في ولا رقم ولا مدة توصيل · لأنها لساها ما انأكّدت من المندوب",
-    "ما في «ردّي على هالإيميل» · الدومين بلا سجل MX فالرد بيروح بالفراغ",
-    "الدفع عند الاستلام مذكور لأنه الحقيقة الوحيدة المؤكدة عن الدفع"
+    "الاسم \"Luvit\" باللاتيني دايماً · **ولا مرة معرَّباً** · ريّان ٢ أيلول: «كلمة ما بتتعرب أصلاً»",
+    "مدة التوصيل «من يوم ليومين» · وهاي **مؤكدة** · وأي صيغة تانية بالموقع تناقض",
+    "الرد على الإيميل **بيشتغل** · info@ و orders@ بيستقبلوا فعلاً من ٢ أيلول",
+    "الدفع عند الاستلام مذكور لأنه الحقيقة الوحيدة المؤكدة عن الدفع",
+    "ولا شرطة طويلة · والزبونة تُخاطَب بالمؤنث"
   ],
   "email": {
-    "woocommerce_email_from_name": "Luv it!",
+    "woocommerce_email_from_name": "Luvit",
     "woocommerce_email_base_color": "#29A9C0",
     "woocommerce_email_background_color": "#FAFCFD",
     "woocommerce_email_body_background_color": "#FFFFFF",
     "woocommerce_email_text_color": "#1A2529",
-    "woocommerce_email_footer_text": "{site_title}"
+    "woocommerce_email_footer_text": "Luvit · plasmajo.com",
+    "woocommerce_email_from_address": "no-reply@plasmajo.com",
+    "_reply_to_name": "Luvit",
+    "_reply_to_address": "info@plasmajo.com",
+    "_ملاحظة_المرسِل": "From = no-reply@ (المرسِل الآلي اللي بتشوفه الزبونة) و Reply-To = info@ عشان لو ضغطت «رد» يوصل صندوق حقيقي مش يرتد. و WP Mail SMTP عنده Force From Email = OFF عمداً، وإلا بيدهس هالإعداد.",
+    "_ملاحظة_الفوتر": "{site_title} بيطبع اسم الموقع بووردبريس وهو «لَف إت» معرَّباً · ممنوع. انكتب صريحاً بدل المتغيّر."
   },
   "email_new_order": {
-    "subject": "[{site_title}] طلب جديد #{order_number}",
+    "subject": "[Luvit] طلب جديد #{order_number}",
     "heading": "طلب جديد #{order_number}",
     "additional_content": "الدفع عند الاستلام."
   },
@@ -59,7 +66,7 @@
     "additional_content": ""
   },
   "email_customer_new_account": {
-    "subject": "أهلاً فيكِ بـ{site_title}",
+    "subject": "أهلاً فيكِ بـLuvit",
     "heading": "أهلاً فيكِ",
     "additional_content": "حسابك جاهز، وبتقدري تتابعي طلباتك منه."
   },
@@ -69,13 +76,14 @@
     "additional_content": "بتقدري تعيدي الطلب من الموقع."
   },
   "email_failed_order": {
-    "subject": "[{site_title}] طلب فاشل #{order_number}",
+    "subject": "[Luvit] طلب فاشل #{order_number}",
     "heading": "طلب فاشل #{order_number}",
     "additional_content": ""
   },
   "email_cancelled_order": {
-    "subject": "[{site_title}] طلب ملغى #{order_number}",
+    "subject": "[Luvit] طلب ملغى #{order_number}",
     "heading": "طلب ملغى #{order_number}",
     "additional_content": ""
-  }
+  },
+  "_تاريخ_آخر_قياس": "2026-09-02"
 }
