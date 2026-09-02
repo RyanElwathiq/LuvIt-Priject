@@ -241,3 +241,35 @@ add_action( 'change_locale', 'luvit_levant_month_names' );
    covers the current request. Safe to call twice: it checks the object and the
    locale itself. */
 luvit_levant_month_names();
+
+/**
+ * 4 · The product thumbnail in order emails. OFF, for now.
+ *
+ * It is not broken: it loads fine and renders a SOLID BLACK SQUARE. Measured
+ * 2 Sept: the file the template actually requests is `-100x100.webp`, an
+ * extended WebP with an ALPH chunk; 8,998 of 10,000 pixels fully transparent
+ * and 8,394 of those carry RGB (0,0,0). Gmail's image proxy converts WebP to
+ * JPEG, JPEG cannot carry alpha, and the transparent area flattens onto the
+ * black underneath. Same root cause as the logo that was caught the same day
+ * (see the flattened `luvit-logo-email.png`).
+ *
+ * NOT fixed with `woocommerce_order_item_thumbnail` returning '' — the
+ * `<td class="email-order-item-thumbnail" style="width:72px">` is echoed
+ * WITH that filter inline (email-order-items.php), so emptying it leaves a
+ * permanent 72px gutter beside every product name. The `if ( $show_image )`
+ * gate wraps the whole cell, so the args filter is the right lever.
+ *
+ * NOT fixed with bgcolor or a CSS background either: the alpha is flattened
+ * by the proxy before any CSS runs, and `bgcolor` is not in kses' img
+ * allowlist. And not with a data: URI (wp_allowed_protocols has no `data`).
+ *
+ * Ryan, 2 Sept: stage 8 replaces every product image with the real photos
+ * from the site owner. The cheapest correct path is to make "no transparency
+ * in the email version" a rule of that handover and keep this off until then.
+ */
+add_filter( 'woocommerce_email_order_items_args', function ( $args ) {
+	if ( is_array( $args ) ) {
+		$args['show_image'] = false;
+	}
+	return $args;
+}, 20 );
