@@ -1,0 +1,241 @@
+/**
+ * LUV IT · صفحة الحساب بهوية العلامة · الطريقة «ب» · ٢ أيلول
+ *
+ * ريّان: «ما عملتلها تصميم» · واختار «ب» من ثلاث طرق: **الفورمات تضل
+ * ووكومرس** (دخول · تسجيل · كلمة سر · عناوين · بيانات) · **والغلاف
+ * ولوحة الترحيب ماركبنا**. ولا فورم فيه كلمة سر بينكتب بإيدنا · خط أحمر.
+ *
+ * ثلاث طبقات، كلها **بخطافات** لا باستبدال قوالب · فتحديثات ووكومرس
+ * ما بتكسرها ولا بتطلّع تحذير «قالب قديم»:
+ *
+ *   ١ · رأس الصفحة (وهي داخلة)   · woocommerce_before_account_navigation
+ *   ٢ · بطاقات لوحة الترحيب        · woocommerce_account_dashboard
+ *   ٣ · رأس صفحة الدخول (وهي طالعة) · woocommerce_before_customer_login_form
+ *
+ * الخطافات الثلاثة مؤكدة من مرجعين خارجيين (Business Bloomer ·
+ * StoreCustomizer) لا من الذاكرة · لأن خطاف بالاسم الغلط بيفشل بصمت
+ * وبيبين زي اللي شغّال.
+ *
+ * ⚠️ سطر التحية «أهلاً %s (مش إنتِ؟ …)» **مكتوب بالقالب فوق خطاف اللوحة**
+ *    فما بينحط شي فوقه · ونصّه بينعدّل بـgettext (تحت) لا بالماركب.
+ *
+ * 🔴 السابقة: «قطراتك» بـlibrary/woo.php معمولة بنفس الأسلوب بالضبط.
+ */
+
+/* ══════════════════════════════════════════════════════════════════════
+   ٠ · نصوص · بأولوية 21 عشان تغلب خريطة woo.php (20) بالسلاسل المشتركة
+   ══════════════════════════════════════════════════════════════════════
+   ريّان ٢ أيلول ومعه لقطة اللوحة: «اطلعي» لتسجيل الخروج **بتنقرا "اطلعي
+   برّا"** · التباس ونبرة غلط. صارت «تسجيل الخروج» · نفس نص التبويب بالقائمة.
+
+   🔴 المطابقة على الأصل الإنجليزي **حرفياً** كما بقالب ووكومرس · أي حرف
+      غلط = الفلتر ما بيمسك وبيبين زي اللي شغّال. السلاسل تحت قصيرة
+      ومستقرة عبر النسخ · والطويلة (الخصوصية مثلاً) تُركت عمداً لتدقيق
+      الكوبي الجاري بدل ما تنكتب من الذاكرة.
+   ══════════════════════════════════════════════════════════════════════ */
+add_filter(
+	'gettext',
+	function ( $translated, $text, $domain ) {
+		if ( 'woocommerce' !== $domain ) {
+			return $translated;
+		}
+		static $map = null;
+		if ( null === $map ) {
+			$map = array(
+				/* لوحة الحساب · التحية · «اطلعي» → «تسجيل الخروج» */
+				'Hello %1$s (not %1$s? <a href="%2$s">Log out</a>)'
+					=> 'أهلاً %1$s (مش إنتِ؟ <a href="%2$s">تسجيل الخروج</a>)',
+
+				/* فورم الدخول · form-login.php · مؤنث */
+				'Username or email address' => 'الإيميل أو اسم المستخدم',
+				'Remember me'               => 'خلّيني مسجّلة',
+				'Lost your password?'       => 'نسيتِ كلمة السر؟',
+				'Log in'                    => 'دخول',
+				'Login'                     => 'دخول',
+				'Register'                  => 'إنشاء حساب',
+
+				/* استرجاع كلمة السر · form-lost-password.php */
+				'Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.'
+					=> 'نسيتِ كلمة السر؟ اكتبي إيميلك وبيوصلك رابط تعملي فيه كلمة سر جديدة.',
+				'Reset password'            => 'إعادة تعيين كلمة السر',
+
+				/* الطلبات · orders.php · الحالة الفاضية */
+				'No order has been made yet.' => 'لسا ما طلبتِ ولا مرة.',
+				'Browse products'             => 'شوفي المنتجات',
+			);
+		}
+		return isset( $map[ $text ] ) ? $map[ $text ] : $translated;
+	},
+	21,
+	3
+);
+
+/* ══════════════════════════════════════════════════════════════════════
+   أدوات صغيرة · اسم الزبونة بأمان
+   ══════════════════════════════════════════════════════════════════════ */
+if ( ! function_exists( 'luvit_account_first_name' ) ) {
+	function luvit_account_first_name() {
+		$u = wp_get_current_user();
+		if ( ! $u || ! $u->ID ) {
+			return '';
+		}
+		/* الاسم الأول لو موجود · وأول كلمة منه بس عشان التحية تقرا أحلى.
+		   ولو ما في اسم أول، اسم العرض **كاملاً** لا أول كلمة منه ·
+		   مقيس ٢ أيلول: «Luv it» صار «أهلاً، Luv» لما انقطع. */
+		$first = trim( (string) $u->first_name );
+		if ( '' !== $first ) {
+			$parts = preg_split( '/\s+/', $first );
+			return $parts && '' !== $parts[0] ? $parts[0] : '';
+		}
+		return trim( (string) $u->display_name );
+	}
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ١ · رأس الصفحة · وهي داخلة
+   ══════════════════════════════════════════════════════════════════════
+   بينطبع **جوّا** غلاف .woocommerce اللي §5.2 حوّله لشبكة عمودين ·
+   فالـCSS بيمدّه على العمودين (grid-column: 1 / -1).
+   بلا موجة وبلا شريط غامق · نسخة هادئة من لغة الماء: هون بتقرا
+   طلباتها مش بتنبهر.
+   ══════════════════════════════════════════════════════════════════════ */
+add_action( 'woocommerce_before_account_navigation', function () {
+	if ( ! is_user_logged_in() ) {
+		return;
+	}
+	$name = luvit_account_first_name();
+	$hi   = '' !== $name ? 'أهلاً، ' . esc_html( $name ) : 'أهلاً فيكِ';
+	echo '<header class="luvit-acct-head">'
+		. '<p class="luvit-acct-head__eyebrow">حسابك على <span dir="ltr">Luv it</span></p>'
+		. '<h1 class="luvit-acct-head__title">' . $hi . '</h1>'
+		. '<p class="luvit-acct-head__sub">طلباتك وعناوينك وقطراتك · كلها هون بمكان واحد.</p>'
+		. '</header>';
+}, 5 );
+
+/* ══════════════════════════════════════════════════════════════════════
+   ٢ · لوحة الترحيب · ثلاث بطاقات بعد فقرة ووكومرس
+   ══════════════════════════════════════════════════════════════════════
+   كل بطاقة بتقول **حقيقة من الحساب** لا كوبي عام: آخر طلب برقمه وحالته
+   وتاريخه، وعنوان التوصيل لو موجود، وقطراتك. والفاضي بيقول إنه فاضي
+   وبيعطي الخطوة الجاية · لا شاشة مكسورة ولا وعد.
+
+   🔴 كل قيمة من ووكومرس بتمرّ بـesc_html · وولا رقم مكتوب بالإيد.
+   ══════════════════════════════════════════════════════════════════════ */
+add_action( 'woocommerce_account_dashboard', function () {
+	$uid = get_current_user_id();
+	if ( ! $uid ) {
+		return;
+	}
+
+	/* آخر طلب */
+	$last   = null;
+	$orders = function_exists( 'wc_get_orders' ) ? wc_get_orders( array(
+		'customer_id' => $uid,
+		'limit'       => 1,
+		'orderby'     => 'date',
+		'order'       => 'DESC',
+		'return'      => 'objects',
+	) ) : array();
+	if ( ! empty( $orders ) ) {
+		$last = $orders[0];
+	}
+
+	/* عنوان التوصيل · من كائن الزبونة */
+	$city = '';
+	$addr = '';
+	if ( class_exists( 'WC_Customer' ) ) {
+		try {
+			$c    = new WC_Customer( $uid );
+			$city = trim( (string) $c->get_shipping_city() );
+			$addr = trim( (string) $c->get_shipping_address_1() );
+			if ( '' === $city && '' === $addr ) {
+				$city = trim( (string) $c->get_billing_city() );
+				$addr = trim( (string) $c->get_billing_address_1() );
+			}
+		} catch ( Exception $e ) {
+			$city = '';
+			$addr = '';
+		}
+	}
+
+	$u_orders = esc_url( wc_get_account_endpoint_url( 'orders' ) );
+	$u_addr   = esc_url( wc_get_account_endpoint_url( 'edit-address' ) );
+	$u_drops  = esc_url( wc_get_account_endpoint_url( 'drops' ) );
+	$u_shop   = esc_url( home_url( '/products/' ) );
+
+	echo '<div class="luvit-acct-grid">';
+
+	/* ── آخر طلب ── */
+	echo '<article class="luvit-acct-card">';
+	echo '<p class="luvit-acct-card__eyebrow">آخر طلب</p>';
+	if ( $last ) {
+		$num    = esc_html( $last->get_order_number() );
+		$status = esc_html( wc_get_order_status_name( $last->get_status() ) );
+		$when   = $last->get_date_created() ? esc_html( wc_format_datetime( $last->get_date_created() ) ) : '';
+		echo '<h3 class="luvit-acct-card__title"><span dir="ltr">#' . $num . '</span></h3>';
+		echo '<p class="luvit-acct-card__line">' . $status . ( $when ? ' · ' . $when : '' ) . '</p>';
+		echo '<a class="luvit-acct-card__link" href="' . esc_url( $last->get_view_order_url() ) . '">تفاصيل الطلب</a>';
+	} else {
+		echo '<h3 class="luvit-acct-card__title">لسا ما طلبتِ</h3>';
+		echo '<p class="luvit-acct-card__line">أول طلب بيظهر هون مع حالته خطوة خطوة.</p>';
+		echo '<a class="luvit-acct-card__link" href="' . $u_shop . '">شوفي المنتجات</a>';
+	}
+	echo '</article>';
+
+	/* ── عنوان التوصيل ── */
+	echo '<article class="luvit-acct-card">';
+	echo '<p class="luvit-acct-card__eyebrow">عنوان التوصيل</p>';
+	if ( '' !== $city || '' !== $addr ) {
+		echo '<h3 class="luvit-acct-card__title">' . esc_html( '' !== $city ? $city : $addr ) . '</h3>';
+		if ( '' !== $city && '' !== $addr ) {
+			echo '<p class="luvit-acct-card__line">' . esc_html( $addr ) . '</p>';
+		}
+		echo '<a class="luvit-acct-card__link" href="' . $u_addr . '">تعديل العنوان</a>';
+	} else {
+		echo '<h3 class="luvit-acct-card__title">ما في عنوان لسا</h3>';
+		echo '<p class="luvit-acct-card__line">أضيفيه مرة، وبيتعبّى لحاله بكل طلب.</p>';
+		echo '<a class="luvit-acct-card__link" href="' . $u_addr . '">أضيفي عنوانك</a>';
+	}
+	echo '</article>';
+
+	/* ── قطراتك ── */
+	echo '<article class="luvit-acct-card luvit-acct-card--drops">';
+	echo '<p class="luvit-acct-card__eyebrow">قطراتك</p>';
+	echo '<h3 class="luvit-acct-card__title">قيد التجهيز</h3>';
+	echo '<p class="luvit-acct-card__line">كل طلبية بتجمّعلك قطرات · وبتتحوّل خصومات على طلباتك الجاية.</p>';
+	echo '<a class="luvit-acct-card__link" href="' . $u_drops . '">شو القصة</a>';
+	echo '</article>';
+
+	echo '</div>';
+}, 10 );
+
+/* ══════════════════════════════════════════════════════════════════════
+   ٣ · رأس صفحة الدخول · وهي طالعة
+   ══════════════════════════════════════════════════════════════════════
+   ووكومرس بيعرض «دخول» و«إنشاء حساب» جنب بعض (التسجيل مفتوح بالإعدادات ·
+   مقيس ٢ أيلول). الرأس بيقول شو هالصفحة بجملة، وCSS §5.2b بيحوّل العمودين
+   لبطاقتين وبيحط «أول مرة هون؟» فوق التسجيل.
+
+   ⚠️ [DOC] · شكل الفورمات وهي طالعة **ما بينشاف من أي متصفح داخل**
+      («قريباً» بتحجبه) · بينفحص من نافذة خاصة عند ريّان أو يوم الإطلاق.
+   ══════════════════════════════════════════════════════════════════════ */
+add_action( 'woocommerce_before_customer_login_form', function () {
+	echo '<header class="luvit-acct-head luvit-acct-head--login">'
+		. '<p class="luvit-acct-head__eyebrow">حسابك على <span dir="ltr">Luv it</span></p>'
+		. '<h1 class="luvit-acct-head__title">أهلاً فيكِ</h1>'
+		. '<p class="luvit-acct-head__sub">سجّلي دخولك، أو اعملي حساباً بدقيقة · عشان تتابعي طلباتك وتحفظي عنوانك.</p>'
+		. '</header>';
+}, 5 );
+
+/* ══════════════════════════════════════════════════════════════════════
+   ٣ب · سطر صغير فوق عنوان التسجيل · «أول مرة هون؟»
+   ══════════════════════════════════════════════════════════════════════
+   بخطاف جوّا الفورم (form-login.php: woocommerce_register_form_start)
+   لا بـCSS content · الكوبي بالماركب عشان ينقرأ وينترجم وينفحص.
+   ⚠️ الخطاف بينطلق **بعد** وسم <form> وقبل الحقول · وعنوان h2 «إنشاء حساب»
+      فوقه بالقالب · فالسطر بيظهر تحت العنوان لا فوقه. §5.2b بيرفعه
+      بصرياً بـorder داخل العمود لو لزم · وإلا بيضل تحته وبيقرا طبيعي.
+   ══════════════════════════════════════════════════════════════════════ */
+add_action( 'woocommerce_register_form_start', function () {
+	echo '<p class="luvit-acct-first">أول مرة هون؟ بياخد دقيقة.</p>';
+}, 5 );
