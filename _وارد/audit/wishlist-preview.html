@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة · المفضّلة</title>
+<link rel="stylesheet" href="../../library/tokens.css">
+<style>html{overflow-x:clip}body{margin:0;background:#fff}</style>
+</head>
+<body>
+<a class="luvit-skip" href="#main">تخطّي إلى المحتوى</a>
+
+<header class="luvit-nav" id="luvit-nav">
+  <div class="luvit-nav__bar">
+    <span class="luvit-nav__drop" aria-hidden="true"></span>
+
+    <a class="luvit-nav__brand" href="/" aria-label="Luv it! Jordan"><img class="luvit-nav__logo" src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-logo.png" alt="Luv it! Jordan" width="417" height="220" decoding="async"></a>
+
+    <nav class="luvit-nav__links" aria-label="التنقل الرئيسي">
+      <a class="luvit-nav__link" href="/">الرئيسية</a>
+      <a class="luvit-nav__link" href="/products">المتجر</a>
+      <a class="luvit-nav__link" href="/routines">الروتينات</a>
+      <a class="luvit-nav__link" href="/journal">المقالات</a>
+      <a class="luvit-nav__link" href="/about">من نحن</a>
+    </nav>
+
+    <div class="luvit-nav__actions">
+      <a class="luvit-nav__icon-btn luvit-nav__icon-btn--wide" href="/wishlist" aria-label="المفضّلة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20.3 4.6 13a4.7 4.7 0 0 1 0-6.7 4.7 4.7 0 0 1 6.7 0l.7.7.7-.7a4.7 4.7 0 0 1 6.7 0 4.7 4.7 0 0 1 0 6.7z"/>
+        </svg>
+        <span class="luvit-nav__count" id="luvit-wish-count" hidden>0</span>
+      </a>
+
+      <a class="luvit-nav__icon-btn luvit-nav__icon-btn--wide" href="/my-account" aria-label="حسابي">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8.2" r="3.6"/>
+          <path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>
+        </svg>
+      </a>
+
+      <a class="luvit-nav__icon-btn" href="/cart" aria-label="سلة التسوّق">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="luvit-nav__count" id="luvit-cart-count">0</span>
+      </a>
+
+      <button class="luvit-nav__icon-btn luvit-nav__toggle" type="button"
+              aria-label="فتح القائمة" aria-expanded="false" aria-controls="luvit-drawer">
+        <span class="luvit-nav__burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="luvit-drawer" id="luvit-drawer" role="dialog" aria-modal="true"
+     aria-label="قائمة التنقل" aria-hidden="true">
+  <div class="luvit-drawer__water" aria-hidden="true"></div>
+
+  <nav class="luvit-drawer__panel" aria-label="قائمة الجوال">
+    <a class="luvit-drawer__link" href="/">الرئيسية</a>
+    <a class="luvit-drawer__link" href="/products">المتجر</a>
+    <a class="luvit-drawer__link" href="/routines">الروتينات</a>
+    <a class="luvit-drawer__link" href="/journal">المقالات</a>
+    <a class="luvit-drawer__link" href="/quiz">اختبار نوع البشرة</a>
+    <a class="luvit-drawer__link" href="/about">من نحن</a>
+
+    <div class="luvit-drawer__sep" role="presentation"></div>
+
+    <a class="luvit-drawer__link luvit-drawer__small" href="/my-account">حسابي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/wishlist">المفضّلة</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/track">تتبّع طلبي</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/shipping">الشحن والتوصيل</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/faq">الأسئلة الشائعة</a>
+    <a class="luvit-drawer__link luvit-drawer__small" href="/contact">تواصلي معنا</a>
+  </nav>
+</div>
+
+<nav class="luvit-dock" aria-label="التنقل السريع">
+  <a class="luvit-dock__item" href="/">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>
+    </svg>
+    <span>الرئيسية</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/products">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/>
+    </svg>
+    <span>المتجر</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/routines">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3s6 6.5 6 10.5A6 6 0 0 1 6 13.5C6 9.5 12 3 12 3z"/>
+    </svg>
+    <span>الروتينات</span>
+  </a>
+
+  <a class="luvit-dock__item" href="/cart">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+      <path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/>
+    </svg>
+    <span>السلة</span>
+  </a>
+</nav>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="../../library/motion.js"></script>
+<script src="../../library/wishlist.js"></script>
+<main id="main">
+<!--
+  LUVIT · صفحة المفضّلة (/wishlist/)
+
+  🔴 الشبكة **فاضية بالماركب** · بتنعبّى من library/wishlist.js من
+     Store API تبع ووكومرس. وهاد مقصود لسببين:
+       ١ · السعر والصورة بيجوا من **نفس المصدر اللي بيحاسب** بالسلة،
+           فما بيصير عندنا رقمين مختلفين زي ما صار قبل بملفات السكاشن.
+       ٢ · المفضّلة بتختلف من زبونة لزبونة، فأي ماركب مطبوع بيكون غلط
+           لأغلب الناس.
+
+  🔴 رأس الصفحة سكشن لحاله بـluvit-page-top · بلاه العنوان بيقعد تحت
+     النافبار الثابت. واللي كان باين تحت النافبار فعلاً (٢ أيلول · لقطة
+     ريّان) هو **عنوان القالب** (.entry-title) لأن قالب الصفحة كان
+     default · صار elementor_header_footer زي باقي الصفحات.
+
+  ⚠️ ولازم الصفحة تحمّل wishlist.js · هو سنيبت WPCode (Footer).
+     بلاه بتطلع الصفحة فاضية دايماً وبتشبه باغاً.
+
+  البلوك الوحيد اللي بينلصق: هالملف كله بويدجت HTML بصفحة /wishlist.
+-->
+<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head" data-luvit="reveal">
+
+      <nav aria-label="مسار التنقّل">
+        <a href="/">الرئيسية</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">المفضّلة</span>
+      </nav>
+
+      <p class="luvit-section__eyebrow">Wishlist</p>
+      <h1 class="luvit-section__title">المفضّلة</h1>
+      <p class="luvit-section__sub">اللي حبّيتيه ومحتفظة فيه لبعدين · بتقدري تضيفيه للسلة من هون على طول.</p>
+
+    </div>
+  </div>
+</section>
+
+<section class="luvit-section band-light" data-nav-bg="light" id="wishlist">
+  <div class="luvit-section__inner">
+
+    <!-- سطر الحالة · بينشاف وقت الجلب أو لو صار خطأ، وبينختفي غير هيك -->
+    <p class="luvit-section__sub" id="luvit-wish-status" role="status" aria-live="polite" hidden></p>
+
+    <!-- الشبكة · بتنعبّى بالـJS -->
+    <div class="luvit-card-grid" id="luvit-wish-list"></div>
+
+    <!-- الحالة الفاضية · مخفية أول ما تكون في مفضّلة -->
+    <div class="luvit-empty" id="luvit-wish-empty" hidden>
+      <span class="luvit-empty__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20.3 4.6 13a4.7 4.7 0 0 1 0-6.7 4.7 4.7 0 0 1 6.7 0l.7.7.7-.7a4.7 4.7 0 0 1 6.7 0 4.7 4.7 0 0 1 0 6.7z"/>
+        </svg>
+      </span>
+      <h3 class="luvit-empty__title">مفضّلتك لساها فاضية</h3>
+      <p class="luvit-empty__sub">اضغطي القلب على أي منتج وبيتحفظ هون على متصفحك · وبتقدري ترجعيله من نفس الجهاز وقت ما بدك بلا ما تسجّلي دخول.</p>
+      <div class="luvit-empty__foot">
+        <a class="luvit-btn" href="/products">شوفي المنتجات</a>
+        <a class="luvit-btn luvit-btn--ghost" href="/quiz">اختبار البشرة</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+</body>
+</html>

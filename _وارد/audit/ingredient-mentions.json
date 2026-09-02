@@ -1,0 +1,182 @@
+[
+ {
+  "file": "_أدوات/build-home.mjs",
+  "line": 71,
+  "comment": true,
+  "text": "والنِسَب من الكتالوج الرسمي. أي رقم مكتوب نصّاً بهالملف = باغ. */"
+ },
+ {
+  "file": "_أدوات/build-home.mjs",
+  "line": 371,
+  "comment": true,
+  "text": "والنِسَب بتنسحب من الكتالوج الرسمي · ولا رقم مكتوب هون. */"
+ },
+ {
+  "file": "_أدوات/build-shop-page.mjs",
+  "line": 68,
+  "comment": true,
+  "text": "*  رقم **قابل للفحص على العبوة**، وأقوى من نجمة مجهولة المصدر."
+ },
+ {
+  "file": "_أدوات/build-shop-page.mjs",
+  "line": 442,
+  "comment": true,
+  "text": "وهاي **بديل النجوم** عندنا: رقم قابل للفحص على العبوة، بينما ولا"
+ },
+ {
+  "file": "_أدوات/build-shop-page.mjs",
+  "line": 460,
+  "comment": true,
+  "text": "/* ── ٥ · سلّم البانثينول · «الرقم هو اللي بيحاسبنا» ────────────────────"
+ },
+ {
+  "file": "_أدوات/build-shop-page.mjs",
+  "line": 462,
+  "comment": true,
+  "text": "> «معلومة النِسَب هاي مادة تسويقية كـUSP مش نحطها بالهبل هذا · أكيد"
+ },
+ {
+  "file": "_أدوات/build-shop-page.mjs",
+  "line": 567,
+  "comment": false,
+  "text": "<h2 class=\"luvit-section__title\">الرقم هو اللي بيحاسبنا</h2>"
+ },
+ {
+  "file": "_أدوات/build-shop-page.mjs",
+  "line": 621,
+  "comment": false,
+  "text": "<h2 class=\"luvit-section__title\">مفحوص، ومكتوب على العبوة</h2>"
+ },
+ {
+  "file": "_أدوات/build-shop-page.mjs",
+  "line": 653,
+  "comment": false,
+  "text": "['كيف بعرف إن النِسَب صحيحة؟',"
+ },
+ {
+  "file": "_أدوات/build-shop-page.mjs",
+  "line": 654,
+  "comment": false,
+  "text": "'كل نسبة معروضة هون مكتوبة على العبوة نفسها · تقدري تقريها لمّا توصلك وتتأكدي بنفسك.'],"
+ },
+ {
+  "file": "_أدوات/build-routine-pages.mjs",
+  "line": 51,
+  "comment": true,
+  "text": "_خطة/بيانات-المنتجات-الرسمية.json  ← الاسم الرسمي والنِسَب والحجم"
+ },
+ {
+  "file": "_أدوات/build-routine-pages.mjs",
+  "line": 89,
+  "comment": true,
+  "text": "⤷ الاسم والسعر والصورة من ووكومرس · و`actives` بتضل فاضية لأن النِسَب"
+ },
+ {
+  "file": "_أدوات/build-routine-pages.mjs",
+  "line": 184,
+  "comment": true,
+  "text": "🔴 «صباحاً ومساءً» مكتوبة على ظهر كل عبوة حرفياً · الروتين ما انقسم"
+ },
+ {
+  "file": "_أدوات/build-routine-pages.mjs",
+  "line": 235,
+  "comment": false,
+  "text": "نفس الترتيب صباحاً ومساءً · زي ما مكتوب على ظهر كل عبوة."
+ },
+ {
+  "file": "_أدوات/build-seo-meta.mjs",
+  "line": 26,
+  "comment": true,
+  "text": "* ريّان ٢ أيلول: «غلط ينذكروا [النِسَب] كأنها الميزة الأساسية عننا · هاي"
+ },
+ {
+  "file": "_أدوات/build-seo-meta.mjs",
+  "line": 120,
+  "comment": false,
+  "text": "/* 🔴 الموضعة · النِسَب بديهية مش ميزة */"
+ },
+ {
+  "file": "_أدوات/build-seo-meta.mjs",
+  "line": 121,
+  "comment": false,
+  "text": "if (/نِسَب مكتوب|مكتوبة على العبوة|مكوّنات واضحة/.test(p.description)) {"
+ },
+ {
+  "file": "_أدوات/build-seo-meta.mjs",
+  "line": 122,
+  "comment": false,
+  "text": "errs.push(p.slug + ' · الوصف بيبيع كتابة النِسَب · وهي بديهية');"
+ },
+ {
+  "file": "_أدوات/build-seo-meta.mjs",
+  "line": 142,
+  "comment": false,
+  "text": "'🔴 الميزة: مبني على حاجة الزبونة ومرافقة قبل الطلب وبعده · **مش** كتابة النِسَب',"
+ },
+ {
+  "file": "library/sections/a1-about.html",
+  "line": 33,
+  "comment": true,
+  "text": "(النِسَب مكتوبة · الروتينات الأربعة حيّة · وقاعدة «ما منعرف»"
+ },
+ {
+  "file": "library/sections/a1-about.html",
+  "line": 46,
+  "comment": true,
+  "text": "⤷ والأرقام الوحيدة المسموحة بالصفحة هي **النِسَب الأربع** (مكتوبة"
+ },
+ {
+  "file": "library/sections/a1-about.html",
+  "line": 47,
+  "comment": true,
+  "text": "على العبوة) و**عدد الروتينات** (أربع صفحات حيّة، بتنعدّ من الموقع)."
+ },
+ {
+  "file": "library/sections/a1-about.html",
+  "line": 173,
+  "comment": false,
+  "text": "alt=\"عبوة سيروم فيتامين سي · النِسَب مطبوعة على الملصق\""
+ },
+ {
+  "file": "library/sections/a1-about.html",
+  "line": 175,
+  "comment": false,
+  "text": "<figcaption>النِسَب مطبوعة على العبوة نفسها</figcaption>"
+ },
+ {
+  "file": "library/sections/a1-about.html",
+  "line": 186,
+  "comment": true,
+  "text": "١. النِسَب الأربع مكتوبة على العبوة (فيتامين سي 10% · نياسيناميد 2% ·"
+ },
+ {
+  "file": "library/sections/a1-about.html",
+  "line": 274,
+  "comment": true,
+  "text": "· خطوة ٢ · النِسَب مكتوبة على العبوة (مثبت)."
+ },
+ {
+  "file": "library/sections/a1-about.html",
+  "line": 322,
+  "comment": false,
+  "text": "نفس الترتيب صباحاً ومساءً، زي ما مكتوب على ظهر كل عبوة · ومكتوب"
+ },
+ {
+  "file": "library/sections/f1-faq.html",
+  "line": 199,
+  "comment": true,
+  "text": "<!-- ⚠ النِسَب الأربع مكتوبة على العبوة · اتّهمت مرة بالاختراع وطلعت صحيحة · لا تشيلها ولا تغيّرها -->"
+ },
+ {
+  "file": "library/sections/f1-faq.html",
+  "line": 202,
+  "comment": false,
+  "text": "شو النِسَب المكتوبة على العبوة؟"
+ },
+ {
+  "file": "library/sections/f1-faq.html",
+  "line": 205,
+  "comment": false,
+  "text": "<div class=\"luvit-acc__a\"><p>كل منتج إله نِسَبه · مثلاً سيروم فيتامين سي: فيتامين سي 10% · نياسيناميد 2% · حمض الهيالورونيك 2% · بانثينول 2%. النِسَب مكتوبة زي ما هي على العبوة، وبتلاقي نِسَب كل منتج بصفحته وبصفحة <a hre"
+ }
+]
