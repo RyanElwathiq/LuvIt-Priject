@@ -126,6 +126,11 @@ add_filter(
 					=> 'بانتظار التأكيد',
 				'Failed'
 					=> 'ما اكتمل',
+				/* فورم تفاصيل الحساب · ووكومرس بيقول «كلمة المرور» بسطرين والباقي «كلمة السر» · توحيد (٢ أيلول · لقطة ريّان) */
+				'Password change'
+					=> 'تغيير كلمة السر',
+				'Confirm new password'
+					=> 'تأكيد كلمة السر الجديدة',
 				'Order #%1$s was placed on %2$s and is currently %3$s.'
 					=> 'طلبك رقم %1$s انعمل بتاريخ %2$s، وحالته هلأ: %3$s.',
 				'Contact information'
@@ -322,4 +327,29 @@ add_action( 'woocommerce_before_customer_login_form', function () {
    ══════════════════════════════════════════════════════════════════════ */
 add_action( 'woocommerce_register_form_start', function () {
 	echo '<p class="luvit-acct-first">أول مرة هون؟ بياخد دقيقة.</p>';
+}, 5 );
+
+/* ═════════════════════════════════════════════════
+   ٤ · رأس صفحة «نسيت كلمة السر» و«كلمة سر جديدة» · ٢ أيلول
+   ═════════════════════════════════════════════════
+   الفورم كان بيطلع على أبيض بلا عنوان ولا غلاف (لقطة الفحص الليلي) ·
+   نفس رأس الدخول عشان الزبونة تحس إنها لسا بنفس المكان.
+   الخطافان من قوالب ووكومرس نفسها:
+     myaccount/form-lost-password.php  → woocommerce_before_lost_password_form
+     myaccount/form-reset-password.php → woocommerce_before_reset_password_form
+   ⚠️ جملة «نسيتِ كلمة السر؟ اكتبي إيميلك…» موجودة أصلاً جوّا الفورم (gettext فوق)
+      فالرأس ما بيعيدها · عنوانه قصير وسطره بيكمّلها.                       */
+add_action( 'woocommerce_before_lost_password_form', function () {
+	echo '<header class="luvit-acct-head luvit-acct-head--login">'
+		. '<p class="luvit-acct-head__eyebrow">حسابك على <span dir="ltr">Luv it</span></p>'
+		. '<h1 class="luvit-acct-head__title">كلمة سر جديدة</h1>'
+		. '<p class="luvit-acct-head__sub">دقيقة وبترجعي لحسابك · الرابط بيوصل على إيميلك.</p>'
+		. '</header>';
+}, 5 );
+add_action( 'woocommerce_before_reset_password_form', function () {
+	echo '<header class="luvit-acct-head luvit-acct-head--login">'
+		. '<p class="luvit-acct-head__eyebrow">حسابك على <span dir="ltr">Luv it</span></p>'
+		. '<h1 class="luvit-acct-head__title">اختاري كلمة سر جديدة</h1>'
+		. '<p class="luvit-acct-head__sub">مرتين عشان نتأكد إنها نفسها · وبعدها بتسجّلي دخولك فيها.</p>'
+		. '</header>';
 }, 5 );
