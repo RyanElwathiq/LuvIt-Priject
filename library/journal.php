@@ -200,7 +200,7 @@ function luvit_journal( $atts ) {
 			. '<div class="luvit-section__inner">'
 			. '<div class="luvit-journal__empty"><p>'
 			. ( $slug
-				? 'ما في مقالات بهذا التصنيف لهلأ.'
+				? 'ما في مقالات بهالتصنيف لهلأ.'
 				: 'المقالات لسا بتتكتب · وأول ما تنزل بتلاقيها هون.' )
 			. '</p></div></div></section>';
 	}
@@ -333,7 +333,7 @@ function luvit_single_article( $content ) {
 
 	if ( $ids ) {
 		$related .= '<aside class="luvit-related">';
-		$related .= '<h2 class="luvit-related__title">اقرأي كمان</h2>';
+		$related .= '<h2 class="luvit-related__title">اقري كمان</h2>';
 		$related .= '<ul class="luvit-related__list">';
 		foreach ( $ids as $rid ) {
 			$rc       = get_the_category( $rid );

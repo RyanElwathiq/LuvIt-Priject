@@ -151,12 +151,12 @@ const QUOTES = [
   {
     wide: true, src: 'm22352-12',
     text: 'انا مبسوطة من نتيجة الفيتامين سي الحمدلله أبدا ما تحسست منه وبحطه كل يوم قبل ما انام وبعدين مرطب وكان عندي حبة كبيرة بلش ينشفها',
-    by: 'زبونة · رسالة خاصة نشرتها لَف إت على إنستجرام',
+    by: 'زبونة · رسالة خاصة نشرتها Luv it على إنستجرام',
   },
   {
     wide: true, src: 'm22352-14',
     text: 'انا مبسوطة كتير ع الغسول و المرطب لطيفين جدا و بتحسي الوجه بينظف بحق الله. اختي وجهها فرق كتير ماشالله الحبوب خفت و مفتتح الحمدلله',
-    by: 'زبونة · رسالة خاصة نشرتها لَف إت على إنستجرام',
+    by: 'زبونة · رسالة خاصة نشرتها Luv it على إنستجرام',
   },
   {
     src: 'm22352-03',
@@ -498,7 +498,7 @@ const sCta = () => H(`
 <section class="luvit-cta luvit-deep luvit-cut-top" data-nav-bg="dark" data-luvit-bubbles="16">
   <span class="luvit-deep__rays" aria-hidden="true"></span>
   <div class="luvit-cta__panel" data-luvit="reveal">
-    <h2 class="luvit-cta__title luvit-cta__accent">بشرتك مستنّية مِنـــك خطوة.</h2>
+    <h2 class="luvit-cta__title luvit-cta__accent">بشرتك مستنّية مِنِّك خطوة.</h2>
     <p class="luvit-cta__sub">ابدئي باختبار قصير، ومنبنيلك روتين على قدّك، والدفع عند الاستلام.</p>
     <a href="/quiz" class="luvit-btn luvit-btn--arrow">اكتشفي روتينك</a>
   </div>

@@ -33,7 +33,7 @@
   "email_customer_on_hold_order": {
     "subject": "طلبك #{order_number} قيد المراجعة",
     "heading": "طلبك قيد المراجعة",
-    "additional_content": "بنراجع طلبك وبنرجعلك أول ما يجهز."
+    "additional_content": "منراجع طلبك ومنرجعلك أول ما يجهز."
   },
   "email_customer_completed_order": {
     "subject": "طلبك #{order_number} وصل",
@@ -42,15 +42,15 @@
   },
   "email_customer_cancelled_order": {
     "enabled": "yes",
-    "subject": "تم إلغاء طلبك #{order_number}",
-    "heading": "تم إلغاء طلبك",
+    "subject": "انلغى طلبك #{order_number}",
+    "heading": "انلغى طلبك",
     "additional_content": "ما انسحب منك أي مبلغ، لأن الدفع عند الاستلام."
   },
   "email_customer_refunded_order": {
-    "subject_full": "تم استرجاع مبلغ طلبك #{order_number}",
-    "heading_full": "تم الاسترجاع",
-    "subject_partial": "تم استرجاع جزء من مبلغ طلبك #{order_number}",
-    "heading_partial": "استرجاع جزئي",
+    "subject_full": "رجّعنالك مبلغ طلبك #{order_number}",
+    "heading_full": "رجّعنالك المبلغ",
+    "subject_partial": "رجّعنالك جزء من مبلغ طلبك #{order_number}",
+    "heading_partial": "رجّعنالك جزء من المبلغ",
     "additional_content": ""
   },
   "email_customer_invoice": {

@@ -906,29 +906,29 @@ function luvitErrorMessage(control) {
   if (custom) return custom;
 
   var v = control.validity;
-  if (!v) return 'هذا الحقل مطلوب';
+  if (!v) return 'هاي الخانة مطلوبة';
 
   if (v.valueMissing) {
-    if (control.type === 'checkbox' || control.type === 'radio') return 'الرجاء الاختيار';
-    if (control.tagName === 'SELECT') return 'الرجاء الاختيار من القائمة';
-    return 'هذا الحقل مطلوب';
+    if (control.type === 'checkbox' || control.type === 'radio') return 'لازم تختاري';
+    if (control.tagName === 'SELECT') return 'اختاري من القائمة';
+    return 'هاي الخانة مطلوبة';
   }
   if (v.typeMismatch) {
-    if (control.type === 'email') return 'الرجاء إدخال بريد إلكتروني صحيح';
-    if (control.type === 'url')   return 'الرجاء إدخال رابط صحيح';
-    return 'القيمة غير صحيحة';
+    if (control.type === 'email') return 'اكتبي إيميل صحيح';
+    if (control.type === 'url')   return 'اكتبي رابط صحيح';
+    return 'القيمة مش صحيحة';
   }
   if (v.patternMismatch) {
-    if (control.type === 'tel') return 'الرجاء إدخال رقم هاتف صحيح';
-    return 'الصيغة غير صحيحة';
+    if (control.type === 'tel') return 'اكتبي رقم تلفون صحيح';
+    return 'الصيغة مش صحيحة';
   }
-  if (v.tooShort)  return 'النص قصير جدًا، الحد الأدنى ' + control.minLength + ' حرفًا';
-  if (v.tooLong)   return 'النص طويل جدًا';
+  if (v.tooShort)  return 'النص قصير · أقل شي ' + control.minLength + ' حروف';
+  if (v.tooLong)   return 'النص طويل كثير';
   if (v.rangeUnderflow) return 'القيمة أقل من المسموح';
   if (v.rangeOverflow)  return 'القيمة أكبر من المسموح';
-  if (v.stepMismatch)   return 'القيمة غير مسموحة';
-  if (v.badInput)       return 'القيمة غير صحيحة';
-  return 'القيمة غير صحيحة';
+  if (v.stepMismatch)   return 'القيمة مش مسموحة';
+  if (v.badInput)       return 'القيمة مش صحيحة';
+  return 'القيمة مش صحيحة';
 }
 
 function luvitFieldOf(control) {
@@ -2152,7 +2152,7 @@ function luvitQuiz() {
     hydration: { ar: 'روتين الترطيب والدعم اليومي', href: '/routines/hydration',
                  line: 'أربع خطوات بتحبس المي بالبشرة · تنظيف، تونر، سيروم، وقفل ترطيب.' },
     glow:      { ar: 'روتين الإشراقة', href: '/routines/glow',
-                 line: 'نفس الأربع خطوات، بس بفيتامين سي بمكان السيروم · للبهتان وتفاوت اللون.' },
+                 line: 'نفس الأربع خطوات، بس السيروم هون فيتامين سي · للبهتان وتفاوت اللون.' },
     clarify:   { ar: 'روتين التنقية والتوازن', href: '/routines/clarify',
                  line: 'تنظيف موازن للدهون وتونر بيقلّل مظهر المسام · للبشرة الدهنية والمختلطة.' },
     eventone:  { ar: 'روتين توحيد اللون', href: '/routines/eventone',

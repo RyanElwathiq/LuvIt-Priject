@@ -148,7 +148,7 @@ add_action( 'init', function () {
 add_action( 'woocommerce_account_drops_endpoint', function () {
 	echo '<div class="luvit-drops">'
 		. '<h2 class="luvit-drops__title">قطراتك</h2>'
-		. '<p class="luvit-drops__sub">كل طلبية بتجمّعلك قطرات، والقطرات بتتحوّل خصومات على طلباتك الجاية.</p>'
+		. '<p class="luvit-drops__sub">كل طلبية بتجمّعلك قطرات · وشو بتعمل فيهن منقولك أول ما يجهز البرنامج.</p>'
 		. '<p class="luvit-drops__soon">البرنامج قيد التجهيز · وأول ما يشتغل بتلاقي رصيدك هون.</p>'
 		. '</div>';
 } );
@@ -189,7 +189,7 @@ add_filter(
 				   الأصل بيقول: اكتبي رقم الطلب، اضغطي الزر، ورقم الطلب
 				   موجود بالإيصال وبإيميل التأكيد. ولا معلومة زيادة. */
 				'To track your order please enter your Order ID in the box below and press the "Track" button. This was given to you on your receipt and in the confirmation email you should have received.'
-					=> 'اكتبي رقم الطلب والإيميل اللي طلبتِ فيه، واضغطي «تتبّع الطلب» · ورقم الطلب بيطلعلك بصفحة تأكيد الطلب وبيوصلك بإيميل التأكيد كمان.',
+					=> 'رقم الطلب بيطلعلك بصفحة تأكيد الطلب وبيوصلك بإيميل التأكيد كمان.',
 
 				/* لوحة الحساب · نفس الشي، مؤنث وبلا «الخاص بك» */
 				/* الصيغة الحقيقية بالقالب · الوسم **جوّا** المفتاح */
@@ -199,9 +199,8 @@ add_filter(
 				'From your account dashboard you can view your <a href="%1$s">recent orders</a>, manage your <a href="%2$s">billing address</a>, and <a href="%3$s">edit your password and account details</a>.'
 					=> 'من لوحة حسابك بتقدري تشوفي <a href="%1$s">طلباتك الأخيرة</a>، وتظبّطي <a href="%2$s">عنوان الفاتورة</a>، و<a href="%3$s">تعدّلي كلمة السر وبيانات حسابك</a>.',
 
-				/* وجملة التحية فوقها · مذكّرة كمان */
-				'Hello %1$s (not %1$s? <a href="%2$s">Log out</a>)'
-					=> 'أهلاً %1$s (مش إنتِ؟ <a href="%2$s">اطلعي</a>)',
+				/* جملة التحية · انتقلت لـaccount.php بأولوية 21 · «اطلعي» كانت بتنقرا
+				   «اطلعي برّا» (ريّان ٢ أيلول) وصارت «تسجيل الخروج» هناك. */
 
 				/* أزرار وحقول بتظهر بنفس الصفحة */
 				'Track'        => 'تتبّع الطلب',

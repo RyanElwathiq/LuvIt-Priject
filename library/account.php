@@ -62,6 +62,90 @@ add_filter(
 				/* الطلبات · orders.php · الحالة الفاضية */
 				'No order has been made yet.' => 'لسا ما طلبتِ ولا مرة.',
 				'Browse products'             => 'شوفي المنتجات',
+
+				/* ── ٤٠ سلسلة من تدقيق الكوبي ٢ أيلول · بالمؤنث وبصوت الموقع ──
+				   المفاتيح الإنجليزية كما بقوالب ووكومرس · أي مفتاح غلط بيفشل بصمت
+				   (ما بيمسك) وما بيكسر شي · [DOC] لحد ما تنفحص كل شاشة بعين. */
+				'Sorry, the order could not be found. Please contact us if you are having difficulty finding your order details.'
+					=> 'ما لقينا طلباً بهالرقم وهالإيميل · تأكّدي منهم من إيميل التأكيد، وإذا ما زبط اكتبيلنا من صفحة تواصلي معنا.',
+				'Add to cart: “%s”'
+					=> 'أضيفي %s إلى السلة',
+				'Add to cart'
+					=> 'أضيفي إلى السلة',
+				'Thank you. Your order has been received.'
+					=> 'شكراً · استلمنا طلبك وبلّشنا نجهّزه.',
+				'Order received'
+					=> 'استلمنا طلبك',
+				'We were unable to verify the email address you provided. Please try again.'
+					=> 'الإيميل اللي كتبتيه مش مطابق للطلب · جرّبي مرة تانية.',
+				'Enter a new password below.'
+					=> 'اكتبي كلمة السر الجديدة.',
+				'Re-enter new password'
+					=> 'كلمة السر مرة تانية',
+				'Current password (leave blank to leave unchanged)'
+					=> 'كلمة السر الحالية (اتركيها فاضية لو ما بدك تغيّريها)',
+				'New password (leave blank to leave unchanged)'
+					=> 'كلمة السر الجديدة (اتركيها فاضية لو ما بدك تغيّريها)',
+				'Please enter your current password.'
+					=> 'اكتبي كلمة السر الحالية.',
+				'Enter a username or email address.'
+					=> 'اكتبي إيميلك أو اسم المستخدم.',
+				'Invalid username or email.'
+					=> 'ما لقينا حساباً بهالإيميل أو الاسم.',
+				'You have not set up this type of address yet.'
+					=> 'لسا ما حفظتِ عنواناً هون.',
+				'The following addresses will be used on the checkout page by default.'
+					=> 'هدول العناوين بتنعبّى لحالها بصفحة إتمام الطلب.',
+				'%1$s for %2$s item'
+					=> '[0] %1$s لـ%2$s قطعة | [1] %1$s لقطعة وحدة | [2] %1$s لقطعتين | [3] %1$s لـ%2$s قطع | [4] %1$s لـ%2$s قطعة | [5] %1$s لـ%2$s قطعة',
+				'Dashboard'
+					=> 'لوحة الحساب',
+				'Password'
+					=> 'كلمة السر',
+				'Username or email'
+					=> 'الإيميل أو اسم المستخدم',
+				'Are you sure you want to log out? <a href="%s">Confirm and log out</a>'
+					=> 'أكيد بدك تسجّلي خروجك؟ <a href="%s">أكّدي وسجّلي الخروج</a>',
+				'Password reset email has been sent.'
+					=> 'بعثنالك رابط تغيير كلمة السر على الإيميل.',
+				'A password reset email has been sent to the email address on file for your account, but may take several minutes to show up in your inbox. Please wait at least 10 minutes before attempting another reset.'
+					=> 'الرابط راح على الإيميل المسجّل بحسابك · وممكن يتأخّر كم دقيقة. استنّي ١٠ دقايق قبل ما تطلبي رابطاً تانياً.',
+				'Your password has been reset successfully.'
+					=> 'تغيّرت كلمة السر · بتقدري تسجّلي دخولك فيها هلأ.',
+				'On hold'
+					=> 'قيد المراجعة',
+				'Processing'
+					=> 'قيد التجهيز',
+				'Completed'
+					=> 'وصل',
+				'Cancelled'
+					=> 'ملغى',
+				'Refunded'
+					=> 'مسترجَع',
+				'Pending payment'
+					=> 'بانتظار التأكيد',
+				'Failed'
+					=> 'ما اكتمل',
+				'Order #%1$s was placed on %2$s and is currently %3$s.'
+					=> 'طلبك رقم %1$s انعمل بتاريخ %2$s، وحالته هلأ: %3$s.',
+				'Contact information'
+					=> 'بيانات التواصل',
+				'Proceed to Checkout'
+					=> 'كمّلي الطلب',
+				'Please enter a valid email address'
+					=> 'اكتبي إيميل صحيح',
+				'Be the first to review “%s”'
+					=> 'كوني أول وحدة بتقيّم “%s”',
+				'Not that bad'
+					=> 'مش بطّال',
+				'Your review'
+					=> 'رأيك',
+				'Reviews'
+					=> 'الآراء',
+				'Add a review'
+					=> 'اكتبي رأيك',
+				'There are no reviews yet.'
+					=> 'ما في آراء لهلأ.',
 			);
 		}
 		return isset( $map[ $text ] ) ? $map[ $text ] : $translated;
@@ -202,7 +286,7 @@ add_action( 'woocommerce_account_dashboard', function () {
 	echo '<article class="luvit-acct-card luvit-acct-card--drops">';
 	echo '<p class="luvit-acct-card__eyebrow">قطراتك</p>';
 	echo '<h3 class="luvit-acct-card__title">قيد التجهيز</h3>';
-	echo '<p class="luvit-acct-card__line">كل طلبية بتجمّعلك قطرات · وبتتحوّل خصومات على طلباتك الجاية.</p>';
+	echo '<p class="luvit-acct-card__line">كل طلبية بتجمّعلك قطرات · وشو بتعمل فيهن منقولك أول ما يجهز البرنامج.</p>';
 	echo '<a class="luvit-acct-card__link" href="' . $u_drops . '">شو القصة</a>';
 	echo '</article>';
 

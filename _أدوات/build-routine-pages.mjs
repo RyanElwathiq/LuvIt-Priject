@@ -229,8 +229,8 @@ ${featureCards(r.who, '◇')}
   <div class="luvit-section__inner">
 
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Four steps</p>
-      <h2 class="luvit-section__title">الخطوات الأربع</h2>
+      <p class="luvit-section__eyebrow">Five steps</p>
+      <h2 class="luvit-section__title">الخطوات الخمس</h2>
       <p class="luvit-section__sub">
         نفس الترتيب صباحاً ومساءً · زي ما مكتوب على ظهر كل عبوة.
       </p>
@@ -272,7 +272,7 @@ ${r.steps.map(([k, title, role], i) => {
 
     <div class="luvit-section__head" data-luvit="reveal">
       <h2 class="luvit-section__title">شو جوّا البكج</h2>
-      <p class="luvit-section__sub">أربع عبوات كاملة · مش عيّنات. والرقم بالدينار.</p>
+      <p class="luvit-section__sub">خمس عبوات كاملة · مش عيّنات. والرقم بالدينار.</p>
     </div>
 
     <div class="luvit-ing" data-luvit="stagger">
@@ -405,7 +405,7 @@ function hub() {
       <p class="luvit-section__eyebrow">Our routines</p>
       <h1 class="luvit-section__title">روتين كامل · مرتّب ومحسوب</h1>
       <p class="luvit-section__sub">
-        أربع خطوات بترتيبها الصح، وسعر الروتين مجموع قطعه بالضبط.
+        أربع خطوات بترتيبها الصح · وخمس بروتين توحيد اللون لأن الحماية جزء منه · وسعر الروتين مجموع قطعه بالضبط.
         اختاري هدفك وإحنا رتّبنا الباقي.
       </p>
 
@@ -502,7 +502,7 @@ ${bottles(r)}
       </div>
       <div class="luvit-trust__item">
         <p class="luvit-trust__title">التوصيل مجاني مع أي روتين</p>
-        <p class="luvit-trust__note">ديناران على القطعة المفردة · وصفر مع الروتين.</p>
+        <p class="luvit-trust__note">دينارين على القطعة المفردة · وصفر مع الروتين.</p>
       </div>
       <div class="luvit-trust__item">
         <p class="luvit-trust__title">وسعره مجموع قطعه</p>
@@ -523,7 +523,7 @@ ${bottles(r)}
   <div class="luvit-cta__panel" data-luvit="reveal">
     <h2 class="luvit-cta__title luvit-cta__accent">مش متأكدة أي واحد يناسبك؟</h2>
     <p class="luvit-cta__sub">
-      خمس أسئلة عن بشرتك، وبنقولك أي روتين يناسبها وليش.
+      خمس أسئلة عن بشرتك، ومنقولك أي روتين يناسبها وليش.
     </p>
     <div class="luvit-section__foot">
       <a class="luvit-btn luvit-btn--arrow" href="/quiz">ابدئي الاختبار</a>

@@ -1,7 +1,7 @@
 {
  "_مصدر": "https://plasmajo.com/wp-json/wc/store/v1/products",
  "_ملاحظة": "مولَّدة بـ_أدوات/sync-woo-snapshot.mjs · لا تعدّلها بالإيد · شغّل الأداة.",
- "_تاريخ": "2026-09-01",
+ "_تاريخ": "2026-09-02",
  "فئات": [
   "بكجات",
   "منتجات مفردة"
@@ -405,14 +405,14 @@
    "id": 318,
    "sku": "L112",
    "slug": "daily-sunscreen-spf50",
-   "name": "واقي الشمس اليومي · SPF50+",
+   "name": "واقي الشمس اليومي · SPF50+‎",
    "price": "17.95",
    "permalink": "https://plasmajo.com/product/daily-sunscreen-spf50/",
    "stock": "instock",
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "واقي شمس يومي بملمس خفيف غير مرئي · SPF50+ وPA++++ · حماية من UVA وUVB ومن الضوء الأزرق. ٥٠ مل · مفحوص جلدياً.",
+   "short": "واقي شمس يومي بملمس خفيف غير مرئي · SPF50+‎ وPA++++ · حماية من UVA وUVB ومن الضوء الأزرق. ٥٠ مل · مفحوص جلدياً.",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-high-protection-sunscreen-1-bottle.webp",
@@ -443,7 +443,7 @@
    "cats": [
     "بكجات"
    ],
-   "short": "غسول البشرة الدهنية + تونر تضييق المسامات + سيروم ألفا أربوتين المركّب + كريم الترطيب والترميم + واقي الشمس اليومي · SPF50+",
+   "short": "غسول البشرة الدهنية + تونر تضييق المسامات + سيروم ألفا أربوتين المركّب + كريم الترطيب والترميم + واقي الشمس اليومي · SPF50+‎",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-eventone.webp",

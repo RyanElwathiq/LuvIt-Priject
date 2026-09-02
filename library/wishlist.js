@@ -115,7 +115,7 @@
 
     if (!ids.length) { renderEmptyIfNeeded(); if (status) status.hidden = true; return; }
 
-    if (status) { status.hidden = false; status.textContent = 'عم بنجيب مفضّلتك…'; }
+    if (status) { status.hidden = false; status.textContent = 'لحظة، منجيب مفضّلتك…'; }
 
     fetch('/wp-json/wc/store/v1/products?per_page=100&include=' + ids.join(','), {
       credentials: 'same-origin'
@@ -151,7 +151,7 @@
       .catch(function () {
         if (status) {
           status.hidden = false;
-          status.textContent = 'ما قدرنا نجيب المفضّلة هلق · جرّبي تحدّثي الصفحة.';
+          status.textContent = 'ما قدرنا نجيب المفضّلة هلأ · جرّبي تحدّثي الصفحة.';
         }
       });
   }

@@ -59,7 +59,10 @@ const STEPS = {
 };
 /* المنتجان اللي مش بالكتالوج · خطوتهم من طبيعتهم مش من تخمين:
    سيروم بيوضع بعد التونر، وكريم للبقع علاج موضعي. */
-const STEP_FALLBACK = { 276: { n: 3, label: 'علاج' }, 282: { n: 3, label: 'علاج' } };
+const STEP_FALLBACK = { 276: { n: 3, label: 'علاج' }, 282: { n: 3, label: 'علاج' },
+  /* واقي الشمس · الخطوة ٥ «حماية» · زي /eventone/ و/routines/ والمنتج 367 · كان بياخد
+     الافتراضي «٣ · علاج» (تدقيق الكوبي ٢ أيلول · تناقض #12). */
+  318: { n: 5, label: 'حماية' } };
 
 /** المادة الفعّالة البطلة · وهي بديل النجوم على البطاقة.
  *  رقم **قابل للفحص على العبوة**، وأقوى من نجمة مجهولة المصدر.
@@ -137,7 +140,9 @@ const بكج = Object.fromEntries(woo.منتجات.map((p) => [p.slug, p]));
 const packages = ROUTINES.map((r) => {
   const p = بكج[r.slug];
   if (!p) fail('روتين ' + r.key + ' بلا بكج بووكومرس (سلَغ ' + r.slug + ')');
-  const parts = (p.short || '').split('+').map((s) => s.trim()).filter(Boolean);
+  /* 🔴 التقسيم على «+» محاط بفراغات · لا على أي «+» · لأن «SPF50+» كان بينقطع
+     لـ«SPF50» (تدقيق الكوبي ٢ أيلول · #43 · تناقض #15). */
+  const parts = (p.short || '').split(' + ').map((s) => s.trim()).filter(Boolean);
   if (parts.length !== r.steps.length) {
     fail('بكج ' + r.slug + ' فيه ' + parts.length + ' قطعة والروتين ' + r.steps.length + ' خطوات');
   }
@@ -334,7 +339,7 @@ function s1() {
   <div class="luvit-promise">
     <span class="luvit-promise__item">${icon(I.wallet, 18)} الدفع عند الاستلام</span>
     <span class="luvit-promise__item">${icon(I.truck, 18)} التوصيل من يوم ليومين</span>
-    <span class="luvit-promise__item">${icon(I.flask, 18)} منوصّيكي باللي بيناسبك</span>
+    <span class="luvit-promise__item">${icon(I.flask, 18)} منوصّيكِ باللي بيناسبك</span>
   </div>
 
   <div class="luvit-section__inner">
@@ -344,7 +349,7 @@ function s1() {
       <p class="luvit-section__sub">${singles.length} منتجاً مفرداً و${packages.length} روتينات جاهزة · مرتّبة بترتيب استعمالها، فتقدري تشوفي مكان كل وحدة بروتينك قبل ما تشتري.</p>
 
       <div class="luvit-section__foot">
-        <a class="luvit-btn luvit-btn--arrow" href="#packages">ابدأي بروتين جاهز</a>
+        <a class="luvit-btn luvit-btn--arrow" href="#packages">ابدئي بروتين جاهز</a>
         <a class="luvit-btn luvit-btn--ghost" href="#products">أو شوفي المنتجات وحدة وحدة</a>
       </div>
     </div>
@@ -496,7 +501,7 @@ function s5() {
     { pct: '5%', slug: 'intensive-hydrating-serum', product: 'سيروم الترطيب المكثّف',
       note: 'نص جرعة الكريم · وبالروتين بيجي قبله.' },
     { pct: '2%', slug: 'vitamin-c-serum', product: 'سيروم فيتامين سي',
-      note: 'ترطيب حاجز البشرة · هون البانثينول مساعد، والبطل ١٠٪ فيتامين سي.' },
+      note: 'ترطيب حاجز البشرة · هون البانثينول مساعد، والبطل 10% فيتامين سي.' },
     { pct: '1%', slug: 'clarifying-pore-tightening-toner', product: 'تونر تضييق المسامات',
       note: 'ترطيب طبقات البشرة · بيوازن الحموضة اللي بيشيلها التقشير.' },
     { pct: '0.5%', slug: 'hydrating-gel-cleanser', product: 'غسول البشرة الجافة والحساسة',
@@ -645,7 +650,7 @@ function s7() {
     ['ليش ما في خصومات؟',
      'سعر الموقع هو نفس سعر الصيدلية بالضبط · خصم أونلاين بيخلق تضارب أسعار مع الصيدليات اللي بتبيع نفس المنتج.'],
     ['كيف بعرف إن النِسَب صحيحة؟',
-     'كل نسبة معروضة هون مكتوبة على العبوة نفسها · تقدري تقرأيها لمّا توصلك وتتأكدي بنفسك.'],
+     'كل نسبة معروضة هون مكتوبة على العبوة نفسها · تقدري تقريها لمّا توصلك وتتأكدي بنفسك.'],
     ['أشتري روتين كامل ولا منتج واحد؟',
      'لو مبلّشة، الروتين الجاهز بيوفّر عليكِ الاختيار ومرتّب بترتيبه الصح · ولو ناقصك خطوة وحدة بس، المنتج المفرد أوفر.'],
     ['بقدر أستعمل أكثر من سيروم؟',
