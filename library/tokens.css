@@ -1239,9 +1239,9 @@ h1, h2, h3, h4, .luvit-heading {
    sits ON TOP of our fixed nav and clips the pill. WordPress adds .admin-bar
    to <body> only for logged-in users, so this shifts the nav down just for
    them — visitors are unaffected. (WP uses 32px, and 46px below 783px wide.) */
-.admin-bar .luvit-nav { top: calc(var(--nav-inset) + 32px); }
+.admin-bar .luvit-nav { top: calc(var(--nav-inset) + var(--topbar-h, 0px) + 32px); }
 @media screen and (max-width: 782px) {
-  .admin-bar .luvit-nav { top: calc(var(--nav-inset) + 46px); }
+  .admin-bar .luvit-nav { top: calc(var(--nav-inset) + var(--topbar-h, 0px) + 46px); }
 }
 
 /* Skip link — flagged High priority in the accessibility guidelines. */
@@ -1269,7 +1269,8 @@ h1, h2, h3, h4, .luvit-heading {
 .luvit-nav {
   position: fixed;
   z-index: 160;
-  top: var(--nav-inset);
+  /* `--topbar-h` صفر إلا لما ينرسم شريط الإطلاق · شوف كتلة LUVIT-TOPBAR */
+  top: calc(var(--nav-inset) + var(--topbar-h, 0px));
   inset-inline: 0;
   display: flex;
   justify-content: center;
@@ -1285,7 +1286,15 @@ h1, h2, h3, h4, .luvit-heading {
   gap: var(--space-4);
   width: min(980px, 100%);
   min-height: var(--nav-h);
-  padding: 8px 8px 8px 18px;
+  /* 🔴 كانت مختصرة فيزيائية `8px 8px 8px 18px` · والموقع RTL فاللوجو
+     على اليمين، يعني كان بياخد **٨px** والأيقونات على اليسار **١٨px**.
+     ريّان: «اللوجو اللي بالناف بار ملزق كثير بالزاويه بس ابعده شوي».
+     المقيس قبل: حافة اللوجو لحافة الشريط **9px**، وحافة الأيقونات
+     **19px** · فرق ١٠px والمزنوق هو اللوجو.
+     ⤷ صارت منطقية ومتناظرة: الطرفان ١٨px، فالفراغان بيتساووا على
+       ١٩px، وما بينعكس غلط لو انقلب الاتجاه يوماً. */
+  padding-block: 8px;
+  padding-inline: 18px;
   border-radius: var(--nav-radius);
   background-color: var(--nav-glass-bg);
   border: 1px solid var(--nav-glass-border);
@@ -9777,7 +9786,7 @@ body.woocommerce-page .woocommerce-result-count {
    offset tracks it instead of guessing at it. */
 .luvit-page-top {
   padding-block-start: calc(
-    var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-6, 2rem)
+    var(--nav-inset, 14px) + var(--topbar-h, 0px) + var(--nav-h, 76px) + var(--space-6, 2rem)
   );
 }
 @media (max-width: 767px) {
@@ -13868,6 +13877,27 @@ body.single-product div.product .woocommerce-tabs ul.tabs li {
 }
 body.single-product div.product .woocommerce-tabs ul.tabs li::before,
 body.single-product div.product .woocommerce-tabs ul.tabs li::after { content: none; }
+/* 🔴 **والفرع النشط لازمه سطره الخاص** · ريّان: «لقيت عند المراجعات
+   فيه صندوق ابيض صغير وراها شيله مش حلو».
+
+   المقيس: الشريحة المدوّرة مرسومة على الـ`a` (`radius: 999px` وخلفية
+   `aqua-50`)، والـ`li` اللي تحتها **بنفس الحجم بالضبط** (74×40 ·
+   صفر تجاوز بكل الجهات) وخلفيته **أبيض بانحناء صفر** · فزوايا
+   الشريحة المدوّرة بتكشف زوايا المربع الأبيض ورا. وهاد «الصندوق».
+
+   وليش الريست فوق ما مسكها · **خصوصية مقيسة**:
+     ووكومرس  `.woocommerce div.product … ul.tabs li.active`  (0,5,3)
+     ريستنا   `body.single-product … ul.tabs li`              (0,4,4)
+   يعني ريستنا بتغلب على الـ`li` العادي وبتخسر على `.active` · فالتبويب
+   النشط وحده هو اللي بيطلع فيه الأبيض، والباقي نضاف. وهاد بالضبط ليش
+   الخلل بيتنقّل مع أي تبويب تفتحه.
+   ⤷ فالفرع بينكتب صراحةً بـ(0,5,4) · بلا `!important`. */
+body.single-product div.product .woocommerce-tabs ul.tabs li.active {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
 body.single-product div.product .woocommerce-tabs ul.tabs li a {
   display: inline-flex;
   align-items: center;
@@ -18425,3 +18455,124 @@ body.page-id-481 .luvit-affiliate {
   );
 }
 /* LEGAL-HEAD:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LUVIT-TOPBAR:START · شريط الإطلاق · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان: «نضيف زي شريط باعلى الموقع … او كوبون عام يكون مبين للكل عشان
+   الاطلاق».
+
+   الماركب بينطبع من `LUVIT_TOPBAR` بـwoo.php، وبيقرا **كوبون ووكومرس
+   حقيقي** · فولا رقم هون ولا نصّ عرض مكتوب بالـCSS.
+
+   ⚠️ والتخطيط ما بينلمس بإيد: النافبار بتقعد على
+     `top: calc(var(--nav-inset) + var(--topbar-h, 0px))`
+   ورؤوس الصفحات بتضيف نفس المتغيّر لحشوتها العليا. القيمة الافتراضية
+   **صفر**، فبلا شريط ما بينتغيّر ولا بكسل · والفرق كله بسطر واحد على
+   `body.has-topbar` بيحطّه السكربت.
+   🔴 والكلاس بينحطّ **بجافاسكربت لا بالـPHP** بقصد: لو الزبونة سكّرت
+      الشريط قبل، ما بدنا الصفحة تنرسم بحشوة زايدة ثم تقفز. السكربت
+      بيقرا `localStorage` وبيقرّر قبل أول رسم.
+
+   التباين مقيس: أبيض على `--aqua-700 #196B7D` = **6.10:1** ·
+   وشريحة الكود ورق أبيض ونصّها `--aqua-800 #124D5A`، وهي أعلى بكثير
+   وبتقرا «إشي بينتنسخ» لا نصّاً عادياً.
+   ⚠️ والكود لاتيني بسياق عربي · فـ`direction: ltr` عليه **مع محاذاة
+      صريحة** (الواجب المسجَّل) وإلا بينقلب.
+   ═══════════════════════════════════════════════════════════════════════ */
+body.has-topbar { --topbar-h: 40px; }
+
+.luvit-topbar {
+  position: fixed;
+  z-index: 170;                       /* فوق النافبار (160) */
+  inset-block-start: 0;
+  inset-inline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3, .75rem);
+  block-size: 40px;
+  padding-inline: var(--container-gutter, 20px);
+  background: var(--aqua-700, #196B7D);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  line-height: 1;
+  letter-spacing: 0;                  /* عربي · صفر تباعد */
+}
+.admin-bar .luvit-topbar { inset-block-start: 32px; }
+@media screen and (max-width: 782px) {
+  .admin-bar .luvit-topbar { inset-block-start: 46px; }
+}
+
+.luvit-topbar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, .5rem);
+  min-inline-size: 0;
+}
+.luvit-topbar__offer { font-weight: 600; }
+.luvit-topbar__sep,
+.luvit-topbar__label { color: rgba(255, 255, 255, .78); }
+
+/* شريحة الكود · ورق أبيض ونصّ غامق عشان تقرا «انسخيني» */
+.luvit-topbar__code {
+  appearance: none;
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
+  padding: 5px 12px;
+  background: #FFFFFF;
+  color: var(--aqua-800, #124D5A);
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: inherit;
+  font-weight: 700;
+  letter-spacing: .04em;              /* لاتيني · التباعد مسموح هون */
+  direction: ltr;
+  text-align: center;                 /* إلزامية بعد direction · فخّ مسجَّل */
+  unicode-bidi: isolate;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-topbar__code:hover { transform: translateY(-1px); }
+}
+.luvit-topbar__code:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+/* تأكيد النسخ · بلا نصّ جديد ينحقن بالـDOM */
+.luvit-topbar__code.is-copied::after {
+  content: " ✓";
+  font-weight: 700;
+}
+
+.luvit-topbar__close {
+  position: absolute;
+  inset-inline-end: 8px;
+  display: grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, .8);
+  cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-topbar__close:hover { background: rgba(255, 255, 255, .14); color: #FFFFFF; }
+}
+.luvit-topbar__close:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+/* الموبايل · الشريط بيضل سطراً واحداً، والفاصل بينشال عشان يوسع */
+@media (max-width: 559px) {
+  .luvit-topbar { gap: var(--space-2, .5rem); font-size: 13px; }
+  .luvit-topbar__sep,
+  .luvit-topbar__label { display: none; }
+  .luvit-topbar__close { inset-inline-end: 4px; }
+}
+/* LUVIT-TOPBAR:END */

@@ -607,3 +607,116 @@ add_filter( 'woocommerce_account_menu_items', function ( $items ) {
 
 	return $items;
 }, 20 );
+
+/* ==========================================================================
+   LUVIT_TOPBAR · شريط الإطلاق · ٣ أيلول
+   ==========================================================================
+   ريّان: «قاعد بفكر باننا نضيف زي شريط باعلى الموقع للمستخدمين الجدد او
+   كوبون عام يكون مبين للكل عشان الاطلاق».
+
+   🔴 **ولا رقم مكتوب بالإيد هون.** الشريط بيقرا **كوبون ووكومرس حقيقي**
+      ويطبع نوعه وقيمته من الكوبون نفسه · فلو ريّان غيّر الخصم من لوحة
+      الكوبونات، الشريط بيتغيّر معه بنفس اللحظة. وهاي مش أناقة، هاي
+      الطريقة الوحيدة اللي بتمنع رقماً بالشريط يخالف الرقم بالسلة.
+
+   🔴 **وبيفشل مقفولاً.** ما في كود مضبوط · ولا كوبون بهالاسم · منتهي ·
+      وصل حدّ الاستعمال · معطّل → **ما بينرسم إشي أصلاً**. أهون بكثير من
+      شريط بيوعد بخصم ما بيشتغل عند الدفع.
+
+   الضبط: خيار ووردبريس واحد اسمه `luvit_topbar_coupon` فيه كود الكوبون.
+   فاضي = الشريط مطفي. يعني ريّان بيقدر يطفيه ويشغّله بلا ما يلمس كود.
+
+   ⚠️ والتخطيط: النافبار `fixed` على `top: var(--nav-inset)`، ورؤوس
+      الصفحات بتحسب حشوتها العليا بنفس المتغيّر. فالشريط **ما بيزيح ولا
+      عنصر بإيده** · بيضيف `--topbar-h` على `body` والقاعدتان بتقراه.
+      قيمته الافتراضية صفر، فبلا شريط ما بينتغيّر ولا بكسل.
+   ========================================================================== */
+/* الخيار بينتسجّل بالـREST عشان ينتغيّر من برّا بلا ما ينلمس كود ·
+   `manage_options` مطلوبة، فما بيقدر يوصله إلا أدمن. */
+add_action( 'init', function () {  // luvit_topbar_coupon_setting
+	register_setting( 'options', 'luvit_topbar_coupon', array(
+		'type'              => 'string',
+		'default'           => '',
+		'show_in_rest'      => true,
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+} );
+
+add_action( 'wp_body_open', function () {
+	if ( is_admin() ) {
+		return;
+	}
+	if ( ! function_exists( 'wc_get_coupon_id_by_code' ) ) {
+		return;
+	}
+
+	$code = trim( (string) get_option( 'luvit_topbar_coupon', '' ) );
+	if ( $code === '' ) {
+		return;
+	}
+
+	$id = wc_get_coupon_id_by_code( $code );
+	if ( ! $id ) {
+		return;
+	}
+	$c = new WC_Coupon( $id );
+
+	/* منتهي؟ */
+	$exp = $c->get_date_expires();
+	if ( $exp && $exp->getTimestamp() < time() ) {
+		return;
+	}
+	/* خلص استعماله؟ */
+	$limit = $c->get_usage_limit();
+	if ( $limit && $c->get_usage_count() >= $limit ) {
+		return;
+	}
+
+	$type   = $c->get_discount_type();
+	$amount = (float) $c->get_amount();
+	if ( $amount <= 0 ) {
+		return;
+	}
+
+	/* الصياغة من نوع الكوبون · ولا حالة تانية بتنكتب */
+	if ( $type === 'percent' ) {
+		$offer = 'خصم ' . wc_format_decimal( $amount, false, true ) . '%';
+	} elseif ( $type === 'fixed_cart' || $type === 'fixed_product' ) {
+		$offer = 'خصم ' . wp_strip_all_tags( wc_price( $amount ) );
+	} else {
+		return;
+	}
+
+	/* الكود لاتيني · فبده عزلاً صريحاً ومحاذاة، وإلا بينقلب بسياق عربي */
+	echo '<div class="luvit-topbar" id="luvit-topbar" role="region" aria-label="عرض الإطلاق">'
+		. '<div class="luvit-topbar__inner">'
+		. '<span class="luvit-topbar__offer">' . esc_html( $offer ) . '</span>'
+		. '<span class="luvit-topbar__sep" aria-hidden="true">·</span>'
+		. '<span class="luvit-topbar__label">بكود</span>'
+		. '<button type="button" class="luvit-topbar__code" data-code="' . esc_attr( $c->get_code() ) . '"'
+		. ' dir="ltr" aria-label="انسخي الكود">' . esc_html( strtoupper( $c->get_code() ) ) . '</button>'
+		. '</div>'
+		. '<button type="button" class="luvit-topbar__close" aria-label="إغلاق الشريط">'
+		. '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+		. '</button>'
+		. '</div>';
+
+	/* 🔴 السكربت **جوّا نفس المخرَج ومباشرةً بعد الشريط** بقصد: بيشيله قبل
+	   أول رسم لو الزبونة سكّرته قبل، فما في وميض. ولو حطّيناه بالفوتر
+	   بتشوفه لجزء من الثانية بكل زيارة · وهاد بيقرا عطلاً. */
+	echo '<script>(function(){try{'
+		. 'var b=document.getElementById("luvit-topbar");'
+		. 'if(!b)return;'
+		. 'var k="luvit-topbar-dismissed:"+b.querySelector(".luvit-topbar__code").dataset.code;'
+		. 'if(localStorage.getItem(k)){b.remove();return;}'
+		. 'document.body.classList.add("has-topbar");'
+		. 'b.querySelector(".luvit-topbar__close").addEventListener("click",function(){'
+		. 'try{localStorage.setItem(k,"1")}catch(e){}'
+		. 'document.body.classList.remove("has-topbar");b.remove();});'
+		. 'b.querySelector(".luvit-topbar__code").addEventListener("click",function(){'
+		. 'var c=this.dataset.code;'
+		. 'if(navigator.clipboard)navigator.clipboard.writeText(c);'
+		. 'this.classList.add("is-copied");'
+		. 'var t=this;setTimeout(function(){t.classList.remove("is-copied")},1600);});'
+		. '}catch(e){}})();</script>';
+}, 5 );

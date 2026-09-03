@@ -1,13 +1,12 @@
 <!-- luvit-blocks: shortcode=woocommerce_order_tracking -->
-<!-- 🔴 السطر فوق **تصريح آلي** · بيقوله الفحص إن هالملف رأس صفحة
-     وبس، وإن الصفحة محتاجة كتل wp:shortcode منفصلة تحته.
-     بلاه أي سكربت دفع بيلفّ الملف بكتلة html وحدة **وبيمسح
-     الشورتكودات** · صار فعلاً بصفحة المقالات ٢ أيلول وراحت
-     قائمة المقالات كلها من الموقع الحيّ.
-     ⚠️ التحذير كان مكتوباً بالتعليق تحت من زمان · بس بلغة
-        بني آدم، وسكربت ما بيقراها. -->
+<!-- 🔴 السطر فوق **تصريح آلي** وهو لازم يضل السطر الأول · بيقوله الفحص
+     إن هالملف رأس صفحة وبس، وإن الصفحة محتاجة كتلة wp:shortcode منفصلة
+     تحته. بلاه أي سكربت دفع بيلفّ الملف بكتلة html وحدة **وبيمسح
+     الشورتكود** · صار فعلاً بصفحة المقالات ٢ أيلول.
+     ⚠️ والتحذير التالي بلغة بني آدم، والسكربت ما بيقراها · السطر فوق هو
+        اللي بيقراه. -->
 <!-- ══════════════════════════════════════════════════════════════════════
-     تتبّع الطلب · /track
+     تتبّع الطلب · /track · «بيان الشحن» بخانة فاضية
      ══════════════════════════════════════════════════════════════════════
      ويدجت HTML واحد بإلمنتور، وتحته **ويدجت Shortcode منفصل** فيه:
 
@@ -16,32 +15,74 @@
      🔴 الشورتكود ما بينفّذ جوّا ويدجت HTML تبع إلمنتور · لازم ويدجت
         Shortcode. حطّه بنفس الكونتينر بعد هالسكشن مباشرة.
 
-     🔴 ولا كلمة مخترعة هون. الفورم كله من ووكومرس، والنص بيوصف الفورم
-        وبس: ما في وعد بمدة، ولا بحالة، ولا بخطوة جاية.
+     🔴 الفكرة: نفس طريق صفحة الشحن بالضبط (نفس الطرفين ونفس الشعرة)،
+        بس **نصّه فاضي** · لأن هالصفحة ما بتعرف الجواب، الفورم تحت بيعرفه.
+        فالخانة المتقطّعة بتشاور تحت بسهم، وما بتوعد بولا حالة ولا مدة.
+     🔴 ولا كلمة مخترعة هون · ولا رقم ولا حالة ولا خطوة جاية.
+     🔴 ولا زر · الفورم تحت مباشرةً وأي زر بينافسه.
 
-     ⚠️ وكل كلاس هون **متفحوص إنه موجود بـtokens.css** · أول مسودة اخترعت
-        أربع كلاسات (`luvit-container` · `luvit-h1` · `luvit-lede` ·
-        `luvit-note`) وولا وحدة منهم موجودة. هاد نفس الفخ اللي خلّى ألوان
-        السكاشن ما تشحن ولا مرة: كلاس بملف معاينة ≠ كلاس بالستايل شيت.
+     ⚠️ ولا `data-goal` على السكشن · التينت من `.sh-head`.
+     ⚠️ وكل كلاس هون متفحوص إنه موجود بـtokens.css أو معرَّف كاملاً
+        بكتلة SHIP-HEAD · كلاس بملف معاينة ≠ كلاس بالستايل شيت.
      ══════════════════════════════════════════════════════════════════════ -->
 
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
+<section class="luvit-section luvit-page-top rt-shallow sh-head"
          data-nav-bg="light" id="track">
+
+  <span class="rt-shallow__wash" aria-hidden="true"></span>
+
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
+    <div class="sh-head__grid">
 
-      <nav aria-label="مسار التنقّل">
-        <a href="/">الرئيسية</a>
-        <span aria-hidden="true">›</span>
-        <span aria-current="page">تتبّع طلبي</span>
-      </nav>
+      <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
 
-      <p class="luvit-section__eyebrow">Order tracking</p>
-      <h1 class="luvit-section__title">وين وصل طلبك</h1>
-      <p class="luvit-section__sub">
-        اكتبي رقم الطلب والإيميل اللي طلبتِ فيه · وبتشوفي حالته.
-      </p>
+        <nav aria-label="مسار التنقّل">
+          <a href="/">الرئيسية</a>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">تتبّع طلبي</span>
+        </nav>
 
+        <p class="luvit-section__eyebrow">Order tracking</p>
+        <h1 class="luvit-section__title">وين وصل طلبك</h1>
+        <p class="luvit-section__sub">
+          اكتبي رقم الطلب والإيميل اللي طلبتِ فيه · وبتشوفي حالته.
+        </p>
+
+      </div>
+
+      <!-- 🔴 البيان هون **بلا حقول** · ما في حقيقة تنقال بهالصفحة، في
+           سؤال. فما في `.sh-slip__fields`، وقاعدة
+           `.sh-slip__fields + .sh-slip__route` بتخلّي شعرة الفصل ما
+           تنرسم أصلاً · ولا كلاس إلغاء ولا مودِفاير. -->
+      <div class="sh-slip" data-luvit="reveal" data-luvit-delay="0.1">
+
+        <p class="sh-slip__route sh-route sh-route--ask">
+          <span class="sh-route__cap">
+            <span class="sh-route__mark sh-route__mark--from" aria-hidden="true"></span>
+            <span class="sh-route__name">من عندنا</span>
+          </span>
+
+          <span class="sh-route__gap">
+            <span class="sh-route__rule" aria-hidden="true"><span class="sh-route__glow"></span></span>
+
+            <span class="sh-route__slot">
+              <span class="sh-route__slot-label">حالة طلبك</span>
+              <span class="sh-route__slot-hint">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>
+                الجواب تحت
+              </span>
+            </span>
+
+            <span class="sh-route__rule" aria-hidden="true"><span class="sh-route__glow"></span></span>
+          </span>
+
+          <span class="sh-route__cap">
+            <span class="sh-route__mark sh-route__mark--to" aria-hidden="true"></span>
+            <span class="sh-route__name">لعندك</span>
+          </span>
+        </p>
+
+      </div>
     </div>
   </div>
 </section>
