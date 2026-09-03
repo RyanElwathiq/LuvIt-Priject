@@ -1,0 +1,582 @@
+/* ==========================================================================
+   5.56 · القطرة · سلسلة الكوبون كاملة  (3 أيلول)
+   --------------------------------------------------------------------------
+   ريّان: «زبط كلمه القسيمه وخلي السكشن تبع الكوبون اوضح · واضافه قسيمه الكلمه
+   مش واضحه · وملزقه كثير بالمربع · شوف سلسله الحركه تبعه الكوبون اول اش مربع
+   او قطره زي زر اذا بينضغط عليه انميشن حلو وسلسل»
+
+   ══ العطل اللي صوّره · والسبب طلع عنّا مش عند ووكومرس ══
+
+   مقيس اليوم على /checkout/ الحيّ، الحالة المطوية:
+       الزرّ    75.0 × 44  ·  padding-inline = 0 على الجهتين
+       الأيقونة svg موضعها absolute · left:0 · 24×24
+       صندوق النص   480.0 → 555.0      (75px)
+       صندوق الأيقونة 480.0 → 504.0     (24px)
+       ⇒ تراكب 24px بالضبط · الحروف مطبوعة تحت الأيقونة
+
+   وووكومرس أصلاً حاجز المساحة. بملف `packages-style-rtl.css` (ونسخته
+   `checkout-rtl.css`) الحيّ:
+       .wc-block-components-panel__button{padding-right:0!important;
+                                          padding-left:32px; position:relative}
+       .wc-block-components-panel__button>...__button-icon{position:absolute;left:0}
+   الـ32px هي حجز الأيقونة بالـRTL. وقاعدتنا بـ5.27 جزء ٤ بتحط
+   `padding-inline: 0` بخصوصية (0,4,1) فبتغلب حجز ووكومرس (0,1,0) وبتشيله،
+   والأيقونة بتضل absolute مكانها. العربي بالـRTL بينتهي عاليسار، وهناك بالضبط
+   قاعدة الأيقونة. فالعطل عنّا.
+
+   ══ وفخّ لازم ينكتب: أي جهة نقدر نحطّ عليها padding ══
+
+   مفحوص بالتجربة على الصفحة الحيّة (حقنّا قاعدة وقِسنا، ورجّعناها):
+       على خصوصية (0,5,1) بلا !important:
+           padding-inline-end  = 41px  ✅ مشيت
+           padding-inline-start = 0px   ❌ رفضت
+       ونفس القاعدة مع !important مشّت الاثنتين.
+   ⇒ `padding-right:0!important` بتقفل **بداية السطر** بالـRTL (اليمين)، وهي
+     الجهة اللي بتبدأ منها الكلمة العربية. و!important ممنوع بالمشروع.
+   🔴 يعني **ما بنقدر نعطي الكلمة تنفّس من جهة بدايتها بالـpadding أبداً.**
+
+   ══ الحل · ولمّا القيد صار هو التصميم ══
+
+   الجهة المقفولة بنحط فيها **عنصر flex بيحمل هامشه بنفسه**، والهامش ولا حدا
+   بينازعنا عليه (مفحوص: margin-top مشيت من أول تجربة).
+   فالأيقونة بتصير `position: static` · بتتحوّل لعنصر flex حقيقي، فبتوقف عن
+   الطباعة فوق النص، وبتصير `gap` الموجودة أصلاً تشتغل، وبتاخد هي
+   `margin-inline-start` اللي بتعمل التنفّس اللي الـpadding ما بيقدر يعمله.
+
+   مقيس بعد الإصلاح على الصفحة الحيّة:
+       [14px هامش الأيقونة][24 أيقونة][8 gap][75 الكلمة][14 padding-inline-end]
+       = 136.6 × 44  ·  والتراكب = CLEAR
+
+   ليش 14px بالذات: نصف قطر الزاوية 22px (نصف الـ44)، وناقص نصف الأيقونة 12px
+   بيضل 10px هي الحدّ الأدنى قبل ما الأيقونة تصطدم بالقوس. و14 بتزيد 4px
+   خلوص بصري. أقلّ من هيك بتلزق بالقوس، وأكثر بتوسّع القطرة لحدّ ما تزاحم.
+
+   ══ الكشيدة · لأ · والسبب ══
+
+   ١. الكلمة ما كانت مش واضحة بسبب الخط · كانت مش واضحة لأن أيقونة 24px مطبوعة
+      فوقها. انحلّ السبب، فالوضوح رجع بلا ما نلمس الحروف.
+   ٢. التطويل (U+0640) بيغيّر تسلسل المحارف: «إضـــافة» مش «إضافة». قارئ الشاشة
+      بيتلعثم فيها، والبحث بالموقع وRank Math ما بيطابقوا الكلمة العادية.
+   ٣. ما بتنعمل بالـCSS أصلاً · `text-justify: kashida` ميتة و`font-feature-settings`
+      ما بتحقن تطويل. يعني تعديل نصّ الترجمة، وهو مسار React اللي woo.php موثّق
+      إنه عدائي.
+   ٤. و`letter-spacing` على العربي ممنوع بالمشروع وبيكسر الوصل.
+   الروافع الصادقة: شيل التراكب · وزن 600 · و14px تنفّس. وكلهن تحت.
+
+   ══ التوتر اللي طلبه ريّان محلول صراحةً ══
+   «واضح لأن الكوبونات أساس البيع» ضد «ما يصرخ على وحدة ما معها كود»:
+   القطرة **محدَّدة بحدّ لا بحشوة**. حدّ 1.5px aqua-600 (4.25:1 على الأبيض،
+   3.96:1 على تعبئتها) بيقول «أنا زرّ» بوضوح، وتعبئة aqua-50 (1.07:1 على
+   الأبيض) خفيفة لدرجة ما بتنافس «أكّدي الطلب». وعرضها 136px من عمود 340px
+   يعني 40% · موجودة، مش مسيطرة. شريط بعرض كامل كان بيصرخ.
+
+   التباين محسوب لا متخمَّن:
+       aqua-700 #196B7D على aqua-50 #EAFAFD  = 5.69:1  ✅
+       حدّ aqua-600 #1E869C على الأبيض        = 4.25:1  ✅ (المطلوب 3:1 لحدّ عنصر)
+       ink-soft #47555B على الأبيض            = 7.72:1  ✅
+       fuchsia-600 #B01F6E على الأبيض         = 5.97:1  ✅ (نصّ الخطأ)
+       fuchsia-500 #D02D86 على الأبيض         = 4.77:1  ✅ (الحدّ والأيقونة)
+
+   ══ الحركة · وشو بينحرّك فعلياً ══
+   الزرّ المطوي **ما بينشال من الـDOM أبداً** (مفحوص: aria-expanded بيتقلّب على
+   نفس العنصر)، فهو المكان الوحيد بالمكوّن كله اللي بيقبل انتقالاً باتجاهين.
+   وكل اللي بينتقل عليه **طلاء بحت**: background-color · border-color · color ·
+   border-radius. ولا خاصية تخطيط بتنحرّك، والعرض بيضل `auto` فما في width
+   بينتحرّك. الحركة المتحوّلة (ripple · دخول السطح · ظهور تطبيق) كلها
+   `transform` و`opacity` بس.
+
+   🔴 وصدق لازم ينقال: React بيشيل `__content` **فوراً** عند الطي، فما في
+      حركة خروج ممكنة. الفتح بيكون سلساً والإغلاق فوري. عدم التماثل هاد قرار
+      مقصود مش مفاجأة.
+
+   🔴 وتسليم الاستمرارية: ما بنقدر نخلّي الزرّ **يصير** الحقل، لأن ووكومرس
+      بيركّب الحقل **تحته** لا مكانه. فالاستمرارية انبنت بنقل العلامة: ذيل
+      القطرة (زاوية 8px ببداية السطر) **بيهاجر** من الحبّة للحقل · الحبّة
+      بتفكّ ذيلها وبتتحوّل لبيضاوي كامل باللحظة اللي الحقل بيطلع فيها بنفس
+      الذيل وبحجم أكبر. نفس الصورة الظلّية، كبرت. وبينها الـripple بتنقل العين.
+   ========================================================================== */
+
+/* ---- ١ · القطرة · الحالة المطوية (STATE 1) ----------------------------
+   ثلاثية الكلاس = (0,5,1)، بتغلب 5.27 جزء ٤ (0,4,1) وبتغلب 4898 (0,3,0).
+   والعرض `auto` مقصود: ما بده يمتد لعرض الصف، عشان يضل حبّة لا شريطاً. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-2, 0.5rem);
+  inline-size: auto;
+  max-inline-size: 100%;
+  min-block-size: 44px;
+  /* padding-block لأن ووكومرس بيحط `padding-top:.375em` فبينزل النص 6px عن
+     المركز، و`padding-inline: 0` القديمة ما كانت بتلمسه. */
+  padding-block: 0;
+  /* الجهة الوحيدة المسموح فيها · بداية السطر مقفولة بـ!important عند ووكومرس */
+  padding-inline-end: 14px;
+  background-color: var(--aqua-50, #EAFAFD);
+  border: 1.5px solid var(--aqua-600, #1E869C);
+  /* القطرة: ثلاث زوايا مدوّرة كاملة وواحدة مسحوبة لرأس. والزاوية المسحوبة
+     منطقية فبتنقلب لحالها بالـLTR. */
+  border-start-start-radius: 8px;
+  border-start-end-radius: var(--radius-pill, 999px);
+  border-end-end-radius: var(--radius-pill, 999px);
+  border-end-start-radius: var(--radius-pill, 999px);
+  color: var(--aqua-700, #196B7D);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0;      /* قاعدة المشروع · صفر على العربي دايماً */
+  cursor: pointer;
+  position: relative;     /* موجودة عند ووكومرس · مكتوبة للتوضيح ولمرساة الـripple */
+  transition:
+    background-color 260ms var(--ease-out-soft, ease),
+    border-color 260ms var(--ease-out-soft, ease),
+    color 260ms var(--ease-out-soft, ease),
+    border-start-start-radius 260ms var(--ease-out-soft, ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button:hover,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button:hover {
+    background-color: var(--aqua-100, #D0F3F9);
+    border-color: var(--aqua-700, #196B7D);
+  }
+}
+
+/* الزرّ عنصر div عليه role=button · فما في :disabled وما في ستايل متصفّح
+   نلغيه، بس :focus-visible بيشتغل لأنه tabbable. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button:focus-visible,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+}
+
+/* ---- ٢ · إصلاح العطل نفسه · الأيقونة بتصير عنصر flex --------------------
+   `position: static` بتشيل التراكب من جذره: الأيقونة بتوقف تكون طبقة فوق
+   النص وبتصير بندًا بالصف، فالـ`gap` فوق بتشتغل (وهي كانت ميتة لأن العنصر
+   المطلق مش بند flex). وما منخبّيها · هي مرئية وبمكانها.
+   وهامشها هو التنفّس اللي الـpadding المقفولة ما بتقدر تعطيه. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button .wc-block-components-panel__button-icon,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button .wc-block-components-panel__button-icon,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button > svg,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button > svg {
+  position: static;
+  inset: auto;
+  transform: none;        /* ووكومرس بيحط translateY(-50%) للتوسيط المطلق */
+  flex: 0 0 auto;
+  inline-size: 24px;
+  block-size: 24px;
+  margin-inline-start: 14px;
+  margin-inline-end: 0;
+  fill: currentColor;
+}
+
+/* ---- ٣ · الـripple · القطرة لما تنزل على السطح -------------------------
+   حلقة واحدة بتتوسّع وبتغيب. مركزها على مركز الأيقونة بالضبط:
+   14px هامش + 12px نصف الأيقونة = 26px من بداية السطر، فـ17px + نصف الـ18 = 26.
+   بتشتغل مرة كل فتحة، لأن القاعدة بتوقف تطابق عند الطي فبتنشال الحركة
+   وبترجع تنطبّق من أولها بالفتحة الجاية. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button::after,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 17px;
+  inset-block-start: 50%;
+  inline-size: 18px;
+  block-size: 18px;
+  margin-block-start: -9px;
+  border: 1.5px solid var(--aqua-500, #29A9C0);
+  border-radius: var(--radius-pill, 999px);
+  opacity: 0;
+  pointer-events: none;
+}
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button[aria-expanded="true"]::after,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button[aria-expanded="true"]::after {
+  animation: luvit-coupon-ripple 560ms var(--ease-out-soft, ease-out) both;
+}
+@keyframes luvit-coupon-ripple {
+  from { transform: scale(0.35); opacity: 0.65; }
+  to   { transform: scale(3.2);  opacity: 0; }
+}
+
+/* ---- ٤ · الحبّة بتفكّ ذيلها لما تنفتح (STATE 2) -------------------------
+   التعبئة والحدّ بيروحوا، والذيل بيستدير كامل · يعني القطرة سابت شكلها،
+   وباللحظة نفسها الحقل تحت بياخد نفس الذيل بحجم أكبر. الزرّ بيضل 44px
+   عشان يضل هدف لمس للإغلاق، بس بيصير سطر توضيحي هادئ لا حبّة تنافس الحقل. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button[aria-expanded="true"],
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button[aria-expanded="true"] {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-ink-soft, #47555B);
+  border-start-start-radius: var(--radius-pill, 999px);
+}
+
+/* ---- ٥ · السطح · دخول لوح الكوبون --------------------------------------
+   `__content` **بينركّب** عند الفتح (مش بينخبّى)، فحركة CSS بتشتغل عليه بلا
+   أي JS. وما منستعمل scaleY: بيسحّج نصّ الحقل والـplaceholder. إزاحة وشفافية
+   بس، والإحساس بالانتشار بيجي من الـripple فوق. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__content,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__content {
+  animation: luvit-coupon-surface 320ms var(--ease-out-soft, ease-out) both;
+}
+@keyframes luvit-coupon-surface {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---- ٦ · الحقل هو القطرة وقد كبرت ---------------------------------------
+   الصف كان flex فيه الحقل والزرّ جنب بعض. صار الحقل يملأ السطر كامل والزرّ
+   بينزل **جوّاه** (جزء ٧). فالفورم بيصير block وبيصير مرساة للزرّ المطلق.
+   ⚠️ وبين `__content` و`__content` الحقيقي في **div-ين بلا كلاس** (غلاف
+   LoadingMask وابنه)، فأي `>` هون بتكون غلط · لهيك كل المحدِّدات نسل لا أبناء. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form.wc-block-components-totals-coupon__form,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form.wc-block-components-totals-coupon__form {
+  display: block;
+  position: relative;
+  gap: 0;
+}
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input.wc-block-components-totals-coupon__input,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input.wc-block-components-totals-coupon__input {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  margin-block-end: 0;
+}
+/* نفس الصورة الظلّية تبع الحبّة · ذيل ببداية السطر وباقي الزوايا مدوّرة */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input.wc-block-components-totals-coupon__input input,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input.wc-block-components-totals-coupon__input input {
+  inline-size: 100%;
+  /* 78px محجوزة لزرّ «تطبيق»: 6px إزاحة + 63px عرض مقيس + 9px خلوص.
+     🔴 الرقم مقيس لكلمة «تطبيق» تحديداً · لو تغيّرت الكلمة لازم يتعاد قياسه. */
+  padding-inline-end: 78px;
+  border-start-start-radius: 8px;
+  border-start-end-radius: var(--field-radius, 16px);
+  border-end-end-radius: var(--field-radius, 16px);
+  border-end-start-radius: var(--field-radius, 16px);
+  transition:
+    border-color 200ms var(--ease-out-soft, ease),
+    background-color 200ms var(--ease-out-soft, ease);
+}
+
+/* ---- ٧ · «تطبيق» بيطلع جوّا الحقل أول ما تكتب (STATE 3) ------------------
+   ووكومرس بيحط `disabled` أصلية على الزرّ طول ما الحقل فاضي، ومفحوصة اليوم
+   حيّة (`btn.disabled === true` عند الفتح). فهاي هي إشارة «كتبت» الوحيدة
+   الموثوقة، وهي حالة React فما بتنفكّ عن الواقع. بلا JS ولا :has().
+
+   🔴 وما منلمس `.wc-block-components-button__text` أبداً: السبينر **جوّاه**
+      لا جنبه، وووكومرس بيخبّي الغلاف بـvisibility وبيرجّع السبينر بـvisibility.
+      فمنحرّك شفافية **الزرّ نفسه** وبس، والآلية الأصلية بتضل شغّالة.
+   ⚠️ و`:placeholder-shown` ممنوعة كبديل: الـplaceholder بينحقن من motion.js §12
+      بعد 32ms من كل فتحة، فبتومض حالة «كتبت» كاذبة كل مرة. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button {
+  position: absolute;
+  inset-inline-end: 6px;
+  inset-block-start: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 40px;
+  min-block-size: 40px;
+  padding-inline: 14px;
+  padding-block: 0;
+  border: 1px solid var(--aqua-600, #1E869C);
+  border-radius: var(--radius-pill, 999px);
+  background-color: var(--aqua-50, #EAFAFD);
+  color: var(--aqua-700, #196B7D);      /* 5.69:1 على aqua-50 */
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: none;
+  /* مخفي وقت الفراغ · بيطلع أول ما تكتب */
+  opacity: 0;
+  transform: scale(0.86);
+  pointer-events: none;
+  transition:
+    opacity 200ms var(--ease-out-soft, ease),
+    transform 200ms var(--ease-out-soft, ease),
+    background-color 180ms var(--ease-out-soft, ease),
+    border-color 180ms var(--ease-out-soft, ease);
+}
+/* كتبت حرفاً · أو الطلب طاير (وقتها بده يضل مرئياً عشان السبينر يبان).
+   🔴 ومحدِّد الـ--loading مربّع الكلاس عمداً: `.TCB.TCB--loading` لحاله بيطلع
+      (0,4,1) وبيخسر أمام القاعدة الأساسية (0,5,1)، فحالة الإرسال بتضل شفافية
+      صفر والسبينر ما بيبان أبداً. انمسكت بالفحص، مش بالقراءة. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:not(:disabled),
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:not(:disabled),
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button--loading,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button--loading {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+@media (hover: hover) and (pointer: fine) {
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:hover:not(:disabled),
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:hover:not(:disabled) {
+    background-color: var(--aqua-100, #D0F3F9);
+    border-color: var(--aqua-700, #196B7D);
+  }
+}
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:focus-visible,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+/* غلاف LoadingMask بيطفّي أولاده لـ.25 وبيقطع النقر · بس بيلزمنا الزرّ
+   مقروءاً وقت الإرسال عشان السبينر يعني شي. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-loading-mask .wc-block-components-loading-mask__children,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-loading-mask .wc-block-components-loading-mask__children {
+  opacity: 0.65;
+  transition: opacity 180ms var(--ease-out-soft, ease);
+}
+
+/* ---- ٨ · الكود غلط (STATE 4) --------------------------------------------
+   ووكومرس **ما بيطلّع notice-banner** بهالمسار · بيروح لمخزن التحقّق:
+   `.has-error` بتنحط على غلاف الحقل، و`aria-invalid="true"` على الـinput،
+   وبينركّب `div.wc-block-components-validation-error[role=alert]` **أخت
+   للفورم** تحته. تلات مرابط مباشرة بلا أي :has().
+
+   والقاعدة الموجودة بـ5.3.6 محصورة بـ`.wc-block-checkout` · يعني صفحة السلة
+   كانت بلا أي ستايل خطأ. هون الاثنتين.
+
+   وفوشيا كنصّ لا كخلفية · نفس قرار 5.3.6، وقاعدة العلامة محفوظة.
+   واللون مش وحده الإشارة: الحدّ بيغلظ لـ2px كمان. */
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input.has-error input,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input.has-error input,
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input input[aria-invalid="true"],
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input input[aria-invalid="true"] {
+  border-width: 2px;
+  border-color: var(--fuchsia-500, #D02D86);
+  color: var(--fuchsia-600, #B01F6E);     /* 5.97:1 على الأبيض */
+  caret-color: var(--fuchsia-500, #D02D86);
+  background-color: var(--color-paper, #FFFFFF);   /* فوشيا ولا مرة خلفية */
+}
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-validation-error,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-validation-error {
+  margin-block-start: var(--space-2, 0.5rem);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  line-height: 1.6;
+  letter-spacing: 0;
+  color: var(--fuchsia-600, #B01F6E);     /* 5.97:1 · وهو أصغر نصّ بالمكوّن */
+  animation: luvit-coupon-error-in 240ms var(--ease-out-soft, ease-out) both;
+}
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-validation-error p,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-validation-error p {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 0.5rem);
+  margin: 0;
+  color: inherit;
+}
+body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-validation-error svg,
+body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-validation-error svg {
+  flex: 0 0 auto;
+  inline-size: 18px;
+  block-size: 18px;
+  margin-block-start: 2px;
+  /* اللون ما بيورث لجوّا svg · لازم fill صريحة */
+  fill: var(--fuchsia-500, #D02D86);
+}
+@keyframes luvit-coupon-error-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+/* ✅ ببلاش: أول حرف بتكتبه بينده `hideValidationError` فبتنشال `.has-error`
+   وبينفكّ تركيب سطر الرسالة · نفس سلوك المرجع بالضبط، بلا سطر كود. */
+
+/* ---- ٩ · الكود ظبط (STATE 5) --------------------------------------------
+   🔴 ووكومرس بيطوي اللوح على حاله بعد النجاح (`setIsCouponFormVisible(false)`)
+      وبيفضّي الحقل · يعني المرجع اللي بعت ريّان (الحقل بيضل والمجموع بينزل)
+      **ما بينطبّق حرفياً**. فالمكافأة انحطّت وين ووكومرس فعلاً بيحطها:
+      **سطر الخصم** بحاوية أخت. وهاد أول شي بينركّب، فبياخد الدخول الأوضح.
+   وهاي المساحة كانت **بلا أي ستايل عندنا** (فتّشنا: صفر قواعد على
+   totals-discount وعلى components-chip)، فما في نزاع خصوصية هون. */
+body.woocommerce-cart .wc-block-components-totals-discount,
+body.woocommerce-checkout .wc-block-components-totals-discount {
+  animation: luvit-coupon-win 460ms var(--ease-out-soft, ease-out) both;
+}
+body.woocommerce-cart .wc-block-components-totals-discount .wc-block-components-totals-item__label,
+body.woocommerce-checkout .wc-block-components-totals-discount .wc-block-components-totals-item__label {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--color-ink, #1A2529);
+}
+/* الرقم بالسالب · لاتيني ومعزول عشان الإشارة ما تنقلب بالـRTL، وaqua-700
+   لأن الخصم خبر حلو ويستاهل يتلوّن (6.10:1 على الأبيض). */
+body.woocommerce-cart .wc-block-components-totals-discount .wc-block-components-totals-item__value,
+body.woocommerce-checkout .wc-block-components-totals-discount .wc-block-components-totals-item__value {
+  font-family: var(--font-latin);
+  font-weight: 700;
+  color: var(--aqua-700, #196B7D);
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  /* محاذاة صريحة · `start` مع direction:ltr بتعني يسار وهي القيمة الابتدائية */
+  text-align: end;
+}
+/* شارة الكوبون · نفس صوت القطرة بالضبط: تعبئة فاتحة وحدّ بيحمل التمييز */
+body.woocommerce-cart .wc-block-components-totals-discount__coupon-list,
+body.woocommerce-checkout .wc-block-components-totals-discount__coupon-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 0.5rem);
+  margin: var(--space-2, 0.5rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+body.woocommerce-cart .wc-block-components-totals-discount__coupon-list-item.wc-block-components-chip,
+body.woocommerce-checkout .wc-block-components-totals-discount__coupon-list-item.wc-block-components-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25rem);
+  min-block-size: 32px;
+  padding-inline: var(--space-3, 0.75rem);
+  padding-block: 0;
+  border: 1px solid var(--aqua-600, #1E869C);
+  border-radius: var(--radius-pill, 999px);
+  background-color: var(--aqua-50, #EAFAFD);
+  color: var(--aqua-700, #196B7D);        /* 5.69:1 */
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  animation: luvit-coupon-chip-in 320ms var(--ease-out-soft, ease-out) both;
+}
+/* كود الكوبون نفسه لاتيني · معزول عشان أي `!` أو `.` بآخره ما يقفز */
+body.woocommerce-cart .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__text,
+body.woocommerce-checkout .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__text {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+}
+/* زرّ الشيل · 32px بصرياً و44px بالمس عبر طبقة شفافة، بلا ما تكبر الشارة */
+body.woocommerce-cart .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__remove,
+body.woocommerce-checkout .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__remove {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 20px;
+  block-size: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
+  background: none;
+  color: var(--aqua-700, #196B7D);
+  cursor: pointer;
+}
+body.woocommerce-cart .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__remove::after,
+body.woocommerce-checkout .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__remove::after {
+  content: "";
+  position: absolute;
+  /* 20 + 12 + 12 = 44px هدف لمس */
+  inset: -12px;
+}
+body.woocommerce-cart .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__remove-icon,
+body.woocommerce-checkout .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__remove-icon {
+  inline-size: 16px;
+  block-size: 16px;
+  fill: currentColor;     /* اللون ما بيورث لجوّا svg */
+}
+body.woocommerce-cart .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__remove:focus-visible,
+body.woocommerce-checkout .wc-block-components-totals-discount__coupon-list-item .wc-block-components-chip__remove:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+}
+@keyframes luvit-coupon-win {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes luvit-coupon-chip-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---- ١٠ · تحسينات :has() · كل وحدة بكتلتها لحالها -----------------------
+   🔴 قائمة محدِّدات كاملة بتنرمى لو واحد فيها ما انفهم، فممنوع نحط :has()
+      بنفس الكتلة مع بديلها · وإلا فايرفوكس تحت 121 بيخسر الاثنين.
+   وكل وحدة هون **زيادة** فوق حالة صحيحة أصلاً · فالمتصفّح القديم بيشوف
+   تصميماً سليماً أهدأ، مش مكسوراً. */
+@supports selector(:has(*)) {
+  /* الحقل بيحسّ إنه صار فيه محتوى · توهّج خفيف بيسبق ضغطة «تطبيق» */
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form:has(.wc-block-components-totals-coupon__button:not(:disabled)) input,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form:has(.wc-block-components-totals-coupon__button:not(:disabled)) input {
+    border-color: var(--aqua-400, #4CC5DA);
+    background-color: var(--aqua-50, #EAFAFD);
+  }
+}
+@supports selector(:has(*)) {
+  /* في كوبون مطبَّق أصلاً · القطرة بتهدا لأنها خلصت شغلها. الشارة ساكنة
+     بحاوية **أخت**، وما في طريقة تانية نوصلها غير :has() على الجدّ المشترك. */
+  body.woocommerce-cart .wp-block-woocommerce-cart-order-summary-block:has(.wc-block-components-totals-discount) .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button[aria-expanded="false"],
+  body.woocommerce-checkout .wp-block-woocommerce-checkout-order-summary-block:has(.wc-block-components-totals-discount) .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button[aria-expanded="false"] {
+    background-color: transparent;
+    border-color: var(--color-line, #E1E9EC);
+    color: var(--color-ink-soft, #47555B);
+  }
+}
+
+/* ---- ١١ · احترام تقليل الحركة ------------------------------------------
+   الحالات كلها بتضل زي ما هي · بس بلا حركة. */
+@media (prefers-reduced-motion: reduce) {
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button,
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button,
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input input,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__input input {
+    transition: none;
+  }
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button::after,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button::after,
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__content,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__content,
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-validation-error,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-validation-error,
+  body.woocommerce-cart .wc-block-components-totals-discount,
+  body.woocommerce-checkout .wc-block-components-totals-discount,
+  body.woocommerce-cart .wc-block-components-totals-discount__coupon-list-item.wc-block-components-chip,
+  body.woocommerce-checkout .wc-block-components-totals-discount__coupon-list-item.wc-block-components-chip {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  /* الحلقة ما بدها تضل ظاهرة ساكنة · إلغاء الحركة بيرجّعها لـopacity:0 الأساسية */
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button[aria-expanded="true"]::after,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button[aria-expanded="true"]::after {
+    opacity: 0;
+  }
+}
+
+/* ---- ١٢ · العروض الضيقة · وإبطال تكديس 5.27 جزء ٦ -----------------------
+   5.27 كانت بتكدّس الزرّ تحت الحقل تحت 359px لأنهم كانوا جنب بعض. صار الزرّ
+   **جوّا** الحقل فما في شي ينكدّس · وقواعد الـflex القديمة صارت بلا معنى على
+   فورم `display:block` وزرّ `position:absolute`، بس بنبطّلها صراحةً عشان
+   ما تضل فخّاً لحدا بيقرا الملف بعدين.
+   مقيس: على 360px العمود بيجي ~250px · الحقل بيضل فيه ~156px للكتابة بعد
+   16px بداية و78px نهاية · وهي مساحة كافية لكود خصم. */
+@media (max-width: 359px) {
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form.wc-block-components-totals-coupon__form,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__form.wc-block-components-totals-coupon__form {
+    flex-wrap: nowrap;
+  }
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button.wc-block-components-totals-coupon__button {
+    flex: 0 0 auto;
+    inline-size: auto;
+  }
+  /* القطرة ما بتاخد أكثر من السطر · الكلمة بتضل سطراً واحداً */
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button.wc-block-components-panel__button {
+    padding-inline-end: 12px;
+  }
+  body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button > svg,
+  body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button.wc-block-components-panel__button > svg {
+    margin-inline-start: 12px;
+  }
+}

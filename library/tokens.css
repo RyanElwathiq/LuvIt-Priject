@@ -4894,6 +4894,15 @@ body.woocommerce-account #customer_login h2 {
 .wc-block-cart .wc-block-components-totals-coupon.wc-block-components-totals-coupon {
   padding-block: var(--space-2);
 }
+/* 🔴 ريّان ٣ أيلول: «وملزقه كثير بالمربع تبع القسيمه».
+   وزرّ الإفصاح نفسه ما بينبعّد من عنده: ووكومرس قافل
+   `padding-right: 0 !important` (وهي inline-start بالعربي)، وقاعدة
+   المشروع بتمنع !important. ⤷ فمنبعّد **الحاوية** بدل الزرّ · نفس
+   النتيجة البصرية وبلا معركة خصوصية. */
+body.woocommerce-cart .wc-block-components-totals-coupon.wc-block-components-totals-coupon,
+body.woocommerce-checkout .wc-block-components-totals-coupon.wc-block-components-totals-coupon {
+  padding-inline: var(--space-1, 0.25rem);
+}
 /* [DOC] the disclosure link */
 .wc-block-cart .wc-block-components-totals-coupon .wc-block-components-panel__button {
   min-block-size: 44px;
@@ -8633,8 +8642,32 @@ body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-pa
   min-block-size: 44px;
   padding-inline: 0;
 }
+/* 🔴 `position: static` هي **الإصلاح** لا تجميل · ريّان صوّرها مرتين:
+   «واضافه قسيمه الكلمه مش واضحه».
+
+   السبب مقيس على الموقع الحي، و**قاعدتنا إحنا** هي المسبّبة لا ووكومرس:
+     ووكومرس (packages-style-rtl.css) بيحجز مكان السهم:
+       .wc-block-components-panel__button { padding-left: 32px; position: relative }
+       > .panel__button-icon              { position: absolute; left: 0 }
+     والقاعدة فوق (٨٦٢٥) بتكتب `padding-inline: 0` بخصوصية (0,4,1) فبتغلب
+     ووكومرس (0,1,0) و**بتشيل الحجز**، والسهم بيضل `absolute; left: 0`.
+     وبالعربي الكلمة بتخلص **عاليسار** · بالضبط مكان السهم.
+     ⤷ المقيس: صندوق النصّ 486.8→561.8 والسهم 486.8→510.8 = **تراكب 24px**
+       بالسلة وبالشيك أوت سوا.
+
+   🔴 وكل الباقي بهالكتلة كان مكتوباً صح من قبل وما اشتغل ولا مرة:
+      `gap: var(--space-2)` و`justify-content: flex-start` و`flex: 0 0 auto`
+      كلهن بيخاطبوا **عنصر فليكس**، والعنصر المطلق مش عنصر فليكس أصلاً.
+      فسطر واحد بيرجّعه للتدفّق وبيشغّل الأربعة اللي فوقه.
+
+   ⚠️ ومنشيل `transform` و`inset` كمان · ووكومرس حاطط
+      `top: 50%; transform: translateY(-50%)` وهدول بيزيحوا العنصر
+      لو ضلّوا بعد ما يرجع static. */
 body.woocommerce-checkout .wc-block-components-totals-coupon .wc-block-components-panel__button svg,
 body.woocommerce-cart .wc-block-components-totals-coupon .wc-block-components-panel__button svg {
+  position: static;
+  inset: auto;
+  transform: none;
   flex: 0 0 auto;
   margin-inline: 0;
   fill: currentColor;
