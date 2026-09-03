@@ -116,20 +116,36 @@ var SEQ = {
   function draw() {
     var v = cache[key];
     var cw = pin.clientWidth, ch = pin.clientHeight;
-    if (!v || !v.n) return;
-    var i = Math.max(0, Math.min(v.n - 1, Math.round(p * (v.n - 1))));
-    if (i === last) return;
+    /* 🔴 الكانفاس `alpha:false` يعني أرضيته **سودا** لحد ما ينرسم أول فريم ·
+       فكان الرأس أسود على الموبايل لحد ما يخلص التسلسل كله (مقيس بتقرير
+       الفحص ٣ أيلول). هلأ: أي استدعاء بيملّي بلون العلامة أول، وبعدين
+       بيرسم الفريم لو جاهز · وأرضية Lagoon أحسن حالة ممكنة بلا فريم. */
+    var i = (v && v.n)
+      ? Math.max(0, Math.min(v.n - 1, Math.round(p * (v.n - 1))))
+      : -1;
+    if (i >= 0 && i === last) return;   /* نفس الفريم · ولا داعي لإعادة الرسم */
+    var img = null;
+    if (i >= 0) {
+      img = v.img[i];
+      /* الفريم المطلوب لساه ما نزل · أقرب فريم جاهز قبله بدل كادر فاضي */
+      if (!img || !img.naturalWidth) {
+        for (var b = i - 1; b >= 0; b--) {
+          var cand = v.img[b];
+          if (cand && cand.naturalWidth) { img = cand; break; }
+        }
+      }
+      if (img && !img.naturalWidth) img = null;
+    }
+    ctx.fillStyle = LAGOON;
+    ctx.fillRect(0, 0, cw, ch);
+    if (!img) return;
     last = i;
-    var img = v.img[i];
-    if (!img || !img.naturalWidth) return;
     var fill = SEQ[key].fill || 0;
     var scale = cw / img.naturalWidth;
     var dh = img.naturalHeight * scale;
     if (fill && dh < ch * fill) { scale = ch * fill / img.naturalHeight; dh = ch * fill; }
     var dw = img.naturalWidth * scale;
-    /* بينقرا من التوكن · فلو تغيّر Lagoon بمكان واحد بيتغيّر هون كمان */
-    ctx.fillStyle = LAGOON;
-    ctx.fillRect(0, 0, cw, ch);
+    /* الملء صار فوق قبل أي خروج · واللون بينقرا من التوكن زي ما كان */
     ctx.drawImage(img, (cw - dw) / 2, ch - dh, dw, dh);
   }
 
@@ -164,6 +180,8 @@ var SEQ = {
             var fin = function () {
               done++;
               if (bar && k === key) bar.style.inlineSize = Math.round(done / v.n * 100) + '%';
+              /* أول فريم بيفكّ بيتعرض فوراً · الباقي بيكمّل بالخلفية */
+              if (k === key && done === 1) { last = -1; draw(); }
               res();
             };
             if (im.decode) im.decode().then(fin).catch(function () { im.onload = im.onerror = fin; });
@@ -187,6 +205,8 @@ var SEQ = {
     });
   }
 
+  /* أرضية العلامة قبل أي تحميل · بلاها الكادر أسود لثوانٍ */
+  resize();
   activate(pick());
 
   /* 🔴 حركة مخفّضة: بنوقف السحب ونعرض **آخر فريم** — يعني العبوات
@@ -525,23 +545,23 @@ var GROUPS = [
  *   ٥) prefers-reduced-motion بتحترم دايماً: المحتوى بيظهر ثابتاً، ما بينحجب.
  */
 
-/* ═══ بنك المنحنيات · مقيس من المواقع الستة ═══ */const EASES = {
+/* ═══ بنك المنحنيات · مقيس من المواقع الستة ═══ */const EASES = {
   base: 'cubic-bezier(.23,1,.32,1)',     // Miu Miu ×18 · الأساس لكل شي
   reveal: 'cubic-bezier(.16,1,.3,1)',    // الكشف الطويل
   soft: 'cubic-bezier(.22,1,.36,1)',     // Aventura · التمايل الناعم
   snap: 'cubic-bezier(0,0,0,1)',         // wamdigital · الحسم
   settle: 'cubic-bezier(.33,0,.11,1)',   // LAVA · بداية هادية ونهاية حاسمة
   pop: 'cubic-bezier(.2,2.5,.4,1)',      // LAVA · بيتجاوز الهدف وبيرجع، للحظات الفرح
-};const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+};const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ═══ تقسيم كلمات عربي آمن · بديل SplitText الخفيف ═══ */const splitWords = (el) => {
+/* ═══ تقسيم كلمات عربي آمن · بديل SplitText الخفيف ═══ */const splitWords = (el) => {
   el.innerHTML = el.textContent.trim().split(/\s+/)
     .map((w) => '<span style="display:inline-block;overflow:clip;vertical-align:bottom">'
       + '<i style="display:inline-block;font-style:normal">' + w + '</i></span>').join(' ');
   return el.querySelectorAll(':scope span > i');
 };
 
-/* ═══ ١ · كشف الكلمات المتدرّج · dongwon ═══ */const wordReveal = (target, { delay = 0, stagger = .08, dur = 1.05 } = {}) => {
+/* ═══ ١ · كشف الكلمات المتدرّج · dongwon ═══ */const wordReveal = (target, { delay = 0, stagger = .08, dur = 1.05 } = {}) => {
   const words = typeof SplitText !== 'undefined'
     ? new SplitText(target, { type: 'words' }).words
     : splitWords(document.querySelector(target));
@@ -550,14 +570,14 @@ var GROUPS = [
   return gsap.to(words, { yPercent: 0, opacity: 1, duration: dur, stagger, delay, ease: 'expo.out' });
 };
 
-/* ═══ ٢ · كشف أسطر بقناع · بيحتاج SplitText 3.15+ ═══ */const lineMask = (target, trigger, start = 'top 74%') => {
+/* ═══ ٢ · كشف أسطر بقناع · بيحتاج SplitText 3.15+ ═══ */const lineMask = (target, trigger, start = 'top 74%') => {
   const s = new SplitText(target, { type: 'lines', mask: 'lines' });
   if (reduced()) return;
   gsap.from(s.lines, { yPercent: 105, duration: 1, stagger: .12, ease: 'expo.out',
     scrollTrigger: { trigger: trigger || target, start } });
 };
 
-/* ═══ ٣ · بلور-فيد-أب العام · لكل عنصر .rv ═══ */const revealAll = (sel = '.rv', { blur = true } = {}) => {
+/* ═══ ٣ · بلور-فيد-أب العام · لكل عنصر .rv ═══ */const revealAll = (sel = '.rv', { blur = true } = {}) => {
   if (reduced()) return gsap.set(sel, { opacity: 1 });
   gsap.utils.toArray(sel).forEach((el) => {
     gsap.fromTo(el,
@@ -568,7 +588,7 @@ var GROUPS = [
 };
 
 /* ═══ ٤ · تعبئة نص بالتمرير · كلمة كلمة ═══
- * colorFn دالّة عشان تنقرا حيّة · وعند قلب الثيم: نادِ ‪.invalidate()‬ على الراجع */const scrubFill = (target, trigger, colorFn) => {
+ * colorFn دالّة عشان تنقرا حيّة · وعند قلب الثيم: نادِ ‪.invalidate()‬ على الراجع */const scrubFill = (target, trigger, colorFn) => {
   const words = typeof SplitText !== 'undefined'
     ? new SplitText(target, { type: 'words' }).words
     : splitWords(document.querySelector(target));
@@ -577,7 +597,7 @@ var GROUPS = [
 };
 
 /* ═══ ٥ · مراحل مثبّتة بتزامن حتمي · القاعدة ٣ ═══
- * steps عناصر متراكبة · onIndex(i) بتنستدعى لما تتغيّر المرحلة (رقم، نقاط، تعليق…) */const pinnedSteps = ({ trigger, steps, length = '+=280%', scrub = .55, onIndex, onProgress }) => {
+ * steps عناصر متراكبة · onIndex(i) بتنستدعى لما تتغيّر المرحلة (رقم، نقاط، تعليق…) */const pinnedSteps = ({ trigger, steps, length = '+=280%', scrub = .55, onIndex, onProgress }) => {
   const els = gsap.utils.toArray(steps);
   gsap.set(els[0], { opacity: 1, visibility: 'visible' });
   let last = 0;
@@ -602,7 +622,7 @@ var GROUPS = [
 };
 
 /* ═══ ٦ · مسار بيترسّم ومؤشر بيمشي عليه · LAVA بنيةً ═══
- * railEl/fillEl مساران متطابقان · curEl دائرة المؤشر · بيرجع دالة بتربطها بتايملاين */const pathProgress = (railEl, fillEl, curEl) => {
+ * railEl/fillEl مساران متطابقان · curEl دائرة المؤشر · بيرجع دالة بتربطها بتايملاين */const pathProgress = (railEl, fillEl, curEl) => {
   const len = railEl.getTotalLength();
   fillEl.style.strokeDasharray = len;
   fillEl.style.strokeDashoffset = len;
@@ -616,7 +636,7 @@ var GROUPS = [
 };
 
 /* ═══ ٧ · رقاقة صورة لاحقة بالمؤشر · dongwon hover ═══
- * chip حاوية fixed فيها صور data-i · rows حاوية الصفوف .row[data-im] */const hoverChip = (chipSel, rowsSel, { rot = -3 } = {}) => {
+ * chip حاوية fixed فيها صور data-i · rows حاوية الصفوف .row[data-im] */const hoverChip = (chipSel, rowsSel, { rot = -3 } = {}) => {
   if (!matchMedia('(hover:hover)').matches || reduced()) return;
   const chip = document.querySelector(chipSel);
   const imgs = gsap.utils.toArray(chipSel + ' img');
@@ -635,7 +655,7 @@ var GROUPS = [
 };
 
 /* ═══ ٨ · معرض أفقي مثبّت · otsuka · جاهز للـRTL ═══
- * بالـRTL المسار بيفيض عاليسار فبينسحب لليمين (x موجب) · عكسه بالـLTR */const horizontalGallery = (trigger, track, wrap, { rtl = true, scrub = .6 } = {}) => {
+ * بالـRTL المسار بيفيض عاليسار فبينسحب لليمين (x موجب) · عكسه بالـLTR */const horizontalGallery = (trigger, track, wrap, { rtl = true, scrub = .6 } = {}) => {
   const t = document.querySelector(track);
   const w = document.querySelector(wrap);
   /* v0.1.3: على اللمس التثبيت الأفقي مزعج — سحب أصابع طبيعي أصدق وأخف */
@@ -650,7 +670,7 @@ var GROUPS = [
       pin: true, scrub, anticipatePin: 1, invalidateOnRefresh: true } });
 };
 
-/* ═══ ٩ · إطار بصور بتتبدّل · Pegasus ═══ */const crossfadeFrame = (frameSel, { hold = 3.4, fade = .8 } = {}) => {
+/* ═══ ٩ · إطار بصور بتتبدّل · Pegasus ═══ */const crossfadeFrame = (frameSel, { hold = 3.4, fade = .8 } = {}) => {
   if (reduced()) return;
   const imgs = gsap.utils.toArray(frameSel + ' img');
   const tl = gsap.timeline({ repeat: -1 });
@@ -662,7 +682,7 @@ var GROUPS = [
   return tl;
 };
 
-/* ═══ ١٠ · الناف بيختفي نازلاً وبيرجع طالعاً ═══ */const navAutoHide = (navEl, threshold = 280) => {
+/* ═══ ١٠ · الناف بيختفي نازلاً وبيرجع طالعاً ═══ */const navAutoHide = (navEl, threshold = 280) => {
   let lastY = 0;
   ScrollTrigger.create({ onUpdate(self) {
     const y = self.scroll();
@@ -671,7 +691,7 @@ var GROUPS = [
   } });
 };
 
-/* ═══ ١١ · الجو الانزلاقي · Lenis-feel بـScrollSmoother · مكتب فقط ═══ */const smoothScroll = ({ smooth = 1.15 } = {}) => {
+/* ═══ ١١ · الجو الانزلاقي · Lenis-feel بـScrollSmoother · مكتب فقط ═══ */const smoothScroll = ({ smooth = 1.15 } = {}) => {
   /* v0.1.3: البوابة صارت نوع المؤشر لا العرض — نافذة مكتب مصغّرة ماوس برضه،
      وإطفاء النعومة فيها خلّى التجربة نيّئة (لاحظها ريّان بالفيديو). اللمس بس بينستثنى. */
   if (reduced() || matchMedia('(pointer: coarse)').matches) return null;
@@ -680,7 +700,7 @@ var GROUPS = [
 };
 
 /* ═══ ١٢ · مشهد متوازٍ بالتمرير · طبقات بعمق data-depth ═══
- * أقوى من تأثير data-speed التجميلي: العمق بيتحرّك بنسبة من ارتفاعه مع خروج المقطع */const sceneParallax = (trigger, sel = '[data-depth]') => {
+ * أقوى من تأثير data-speed التجميلي: العمق بيتحرّك بنسبة من ارتفاعه مع خروج المقطع */const sceneParallax = (trigger, sel = '[data-depth]') => {
   if (reduced()) return;
   gsap.utils.toArray(sel).forEach((el) => {
     gsap.fromTo(el, { yPercent: 0 }, { yPercent: -100 * +el.dataset.depth, ease: 'none',
@@ -688,12 +708,12 @@ var GROUPS = [
   });
 };
 
-/* ═══ ١٣ · انجراف محيطي · ضباب وغبار وسحب، حركة دايمة حتى بلا تمرير ═══ */const drift = (el, { x = 46, y = 8, dur = 13, delay = 0 } = {}) => {
+/* ═══ ١٣ · انجراف محيطي · ضباب وغبار وسحب، حركة دايمة حتى بلا تمرير ═══ */const drift = (el, { x = 46, y = 8, dur = 13, delay = 0 } = {}) => {
   if (reduced()) return;
   return gsap.to(el, { x, y, duration: dur, delay, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 };
 
-/* ═══ ١٤ · ورقة بتوقع · حلقة سقوط بدوران وتلاشٍ ═══ */const fall = (el, { y = 380, x = -90, rot = 130, dur = 8, delay = 0, pause = 3 } = {}) => {
+/* ═══ ١٤ · ورقة بتوقع · حلقة سقوط بدوران وتلاشٍ ═══ */const fall = (el, { y = 380, x = -90, rot = 130, dur = 8, delay = 0, pause = 3 } = {}) => {
   if (reduced()) return;
   const tl = gsap.timeline({ repeat: -1, delay, repeatDelay: pause });
   tl.set(el, { y: 0, x: 0, rotation: 0, opacity: 0 })
@@ -706,7 +726,7 @@ var GROUPS = [
 
 /* ═══ ١٥ · أكورديون أسئلة · v0.1.4 ═══
  * بنية متوقعة: حاوية فيها button و .a (الجواب) · الحالة صنف open على الحاوية.
- * انضاف بعد ما النمط انكتب بالإيد بثلاث صفحات ونُسي بالرابعة — المكتبة أضمن من الذاكرة. */const accordion = (sel = '.qa', { dur = .55 } = {}) => {
+ * انضاف بعد ما النمط انكتب بالإيد بثلاث صفحات ونُسي بالرابعة — المكتبة أضمن من الذاكرة. */const accordion = (sel = '.qa', { dur = .55 } = {}) => {
   document.querySelectorAll(sel).forEach((qa) => {
     const a = qa.querySelector('.a');
     qa.querySelector('button').addEventListener('click', () => {
