@@ -370,6 +370,55 @@ const sResult = () => H(`
    السكشن كان **نصّاً خالصاً** · والصورة بتثبت الادعاء بدل ما تقوله.
    والنِسَب بتنسحب من الكتالوج الرسمي · ولا رقم مكتوب هون. */
 const VITC = P.L101;
+
+/* 🔴 صورة العبوة **مقصوصة ومنعّمة** لا صورة ووكومرس المربّعة.
+   القياس (sharp على `صور-المنتجات/_للويب/luvit-vitamin-c-serum-1-bottle.webp`):
+     الملف 2000×2000 · **90.86٪ منه بكسل شفاف**
+     صندوق الحبر عند العتبة ١٢ = **386×1192** عند (807, 534)
+     ومركزه الأفقي 49.98٪ والعمودي 56.47٪
+   ⤷ يعني `max-inline-size: 320px` القديمة كانت بتعطي عبوة مرئية
+     **62×191 بكسل** بصندوق 320×320 · وهاد بالضبط «العلبة شكلها
+     مش حلو بالمرة» مترجَماً لأرقام.
+
+   والتوأم المقصوص مولَّد من قبل بأدوات المشروع نفسها، وموجود بالريبو:
+     node "$(ls _<tools>/trim-bottle.mjs)"   luvit-vitamin-c-serum-1-bottle
+     node "$(ls _<tools>/soften-cutout.mjs)" luvit-vitamin-c-serum-1-bottle-trim
+     (<tools> = *  ·  النجمة مكتوبة هيك لأن النجمة مع / بتقفل التعليق)
+   → library/img/luvit-vitamin-c-serum-1-bottle-soft.webp · 386×1192
+
+   وليش `-soft` لا `-trim`: حافّة الألفا الحادّة بتقرا ملصقاً مقصوصاً
+   لا غرضاً واقفاً · نفس علّة ٣٠ آب اللي انبنت `soften-cutout.mjs` إلها.
+
+   وفك التشفير: 0.46 مليون بكسل بدل 4.0 مليون · بنفس وزن الملف. */
+const SHOT = {
+  local: 'luvit-vitamin-c-serum-1-bottle-soft.webp',
+  /* ⚠️ الرابط من مكتبة الميديا **بعد الرفع** · مجلد الشهر بيتغيّر
+     حسب تاريخ الرفع، فتأكد منه من اللوحة ولا تحزره. */
+  src: 'https://plasmajo.com/wp-content/uploads/2026/09/luvit-vitamin-c-serum-1-bottle-soft.webp',
+  w: 386,
+  h: 1192,
+};
+
+/* 🔴 بوابة · اسم التوأم لازم يكون مشتقّاً من صورة ووكومرس الأولى،
+   والملف المحلي لازم يكون موجوداً. فلو صاحب الموقع رتّب صور المنتج
+   باللوحة وصارت `2-box-front.webp` أول وحدة، **البناء بيوقف** بدل ما
+   ينشر عبوة غلط · وهاد اللي `check()` ما بتقدر تشوفه (بتفحص كلاسات
+   وتوازن وسوم، ولا بكسل). */
+{
+  const base = String(VITC.img || '').split('/').pop().replace(/\.webp$/i, '');
+  if (base + '-soft.webp' !== SHOT.local) {
+    console.error('🔴 صورة ووكومرس الأولى تغيّرت: ' + base);
+    console.error('   ولّد التوأم ثم حدّث SHOT:');
+    console.error('   node "$(ls _*/trim-bottle.mjs)" ' + base);
+    console.error('   node "$(ls _*/soften-cutout.mjs)" ' + base + '-trim');
+    process.exit(1);
+  }
+  if (!fs.existsSync(path.join(LIB, 'img', SHOT.local))) {
+    console.error('🔴 ما لقيت library/img/' + SHOT.local);
+    process.exit(1);
+  }
+}
+
 const sIng = () => H(`
 <section class="luvit-section luvit-section--dark luvit-deep luvit-cut-top" data-nav-bg="dark"
          data-luvit-bubbles="14" id="ingredients">
@@ -384,8 +433,11 @@ const sIng = () => H(`
 
     <div class="luvit-ing-split" data-luvit="reveal">
       <figure class="luvit-ing-split__shot">
-        <img src="${VITC.img}" alt="${VITC.ar}" width="600" height="750"
-             loading="lazy" decoding="async">
+        <img class="luvit-shot-img" src="${SHOT.src}" alt="عبوة ${VITC.ar}"
+             width="${SHOT.w}" height="${SHOT.h}" loading="lazy" decoding="async">
+        <img class="luvit-shot-mirror" src="${SHOT.src}" alt=""
+             width="${SHOT.w}" height="${SHOT.h}" loading="lazy" decoding="async">
+        <figcaption class="luvit-shot-cap">${VITC.ar}</figcaption>
       </figure>
 
       <div class="luvit-ing luvit-ing--on-dark" data-luvit="stagger">

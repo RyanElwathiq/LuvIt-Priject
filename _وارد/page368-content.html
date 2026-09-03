@@ -1,24 +1,121 @@
 <!-- wp:html -->
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
-         data-nav-bg="light" id="page-head">
+<!-- ═══════════ رأس الروتين · «الضحضاح» ═══════════
+     الأب هو رأس المركز الغامق (نفس الملف حوالي سطر ٣٩٦ · luvit-deep + rt-head
+     + rt-flow + فقاعات). وهاد **مش نسخة منه**: نفس التشريح بقيمة مقلوبة،
+     ونفس مكوّن الأب (rt-flow) معاد استعماله بأسماء خطوات هالروتين هو
+     لا بأربعة عامّين. المركز عمق، والصفحة سطح.
+
+     🔴 وممنوع تضيف كلاس rt-head هون · هو بيفرض عنواناً أبيض
+        (tokens.css سطر ١٢٦١٨) وهاد رأس فاتح، فالعنوان بيختفي بالكامل.
+     🔴 وممنوع تحطّ صور المنتجات المفردة بالرأس · مقيسة: الكانفس
+        2000x2000 شفاف بس محتواه ١٩٫٤٪ لـ٣١٫٨٪ من العرض فقط، يعني
+        بخانة موبايل عرضها ٦٨px العبوة بتطلع ١٣px. الخيط بيقول الرقم
+        بلا هالمشكلة.
+     · data-nav-bg بتضل light · الرأس فاتح، فولا خطوة يدوية بالإلمنتور.
+     · الموجة بعده فيلها FFFFFF لأن #who تحته band-light · وبلا
+       background inline لأن اللي فوقها فاتح، وقاعدة .luvit-wave بتشيلها
+       بـ!important أصلاً (tokens.css سطر ٢٧٥٤).
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-section luvit-page-top rt-shallow"
+         data-goal="eventone" data-nav-bg="light" id="page-head">
+
+  <span class="rt-shallow__wash" aria-hidden="true"></span>
+
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
+    <div class="rt-shallow__grid">
 
-      <nav aria-label="مسار التنقّل">
-        <a href="/">الرئيسية</a>
-        <span aria-hidden="true">›</span>
-        <a href="/routines">الروتينات</a>
-        <span aria-hidden="true">›</span>
-        <span aria-current="page">روتين توحيد اللون</span>
-      </nav>
+      <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
 
-      <p class="luvit-section__eyebrow">Even Tone</p>
-      <h1 class="luvit-section__title">روتين توحيد اللون</h1>
-      <p class="luvit-section__sub">للبقع وآثار الحبوب وتفاوت لون البشرة · وفيه الحماية جوّاه لأنها شرط مش إضافة.</p>
+        <nav aria-label="مسار التنقّل">
+          <a href="/">الرئيسية</a>
+          <span aria-hidden="true">›</span>
+          <a href="/routines">الروتينات</a>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">روتين توحيد اللون</span>
+        </nav>
+
+        <p class="luvit-section__eyebrow">Even Tone</p>
+        <h1 class="luvit-section__title">روتين توحيد اللون</h1>
+        <p class="luvit-section__sub">للبقع وآثار الحبوب وتفاوت لون البشرة · وفيه الحماية جوّاه لأنها شرط مش إضافة.</p>
+
+        <!-- 🔴 تلات أسئلة بتنسأل قبل ما تنزل الزبونة سطر · وكانت موزّعة
+             على تلات سكاشن تحت (#who · #steps · #pack).
+             وكلها **مشتقّة**: r.tag (وهو الحقل الوحيد بالبيانات اللي ما
+             بينستعمل بهالصفحة غيره) · منطوق(r.steps.length) · total.
+             🔴 ولا زر شراء هون بقصد: زر ajax_add_to_cart تاني لنفس المنتج
+                بنفس الصفحة خطر مسجَّل، والسعر بيضل مع سببه لا مجرَّداً. -->
+        <ul class="rt-shallow__facts" data-luvit="stagger">
+
+          <li class="rt-shallow__fact">
+            <span class="rt-shallow__label">لمين</span>
+            <span class="rt-shallow__value">للبقع وتفاوت لون البشرة</span>
+          </li>
+
+          <li class="rt-shallow__fact">
+            <span class="rt-shallow__label">الخطوات</span>
+            <span class="rt-shallow__value">خمس خطوات</span>
+          </li>
+
+          <li class="rt-shallow__fact">
+            <span class="rt-shallow__label">السعر</span>
+            <span class="rt-shallow__value"><span dir="ltr">81.95</span> د.أ</span>
+            <span class="rt-shallow__note">مجموع قطعه بالضبط</span>
+          </li>
+
+        </ul>
+
+        <!-- 🔴 هاد **نفس مكوّن الأب** (rt-flow) لا شبيه إله · بس محتواه
+             أسماء خطوات هالروتين هو، والعدد بيجي من steps.length فبيصير
+             أربع نقاط لتلاتة وخمسة لتوحيد اللون. الشبكة بتعدّ أبناءها
+             بحالها بـ:has() زي ما هي معرَّفة بـtokens.css سطر ١٢٥٦٦،
+             وأضفنا لها فرع الخمسة. -->
+        <ol class="rt-flow" data-luvit="stagger">
+          <li class="rt-flow__item">
+            <span class="rt-flow__dot">١</span>
+            <span class="rt-flow__label">تنظيف متوازن</span>
+          </li>
+          <li class="rt-flow__item">
+            <span class="rt-flow__dot">٢</span>
+            <span class="rt-flow__label">تنقية المسام</span>
+          </li>
+          <li class="rt-flow__item">
+            <span class="rt-flow__dot">٣</span>
+            <span class="rt-flow__label">العمل على اللون</span>
+          </li>
+          <li class="rt-flow__item">
+            <span class="rt-flow__dot">٤</span>
+            <span class="rt-flow__label">ترطيب وترميم</span>
+          </li>
+          <li class="rt-flow__item">
+            <span class="rt-flow__dot">٥</span>
+            <span class="rt-flow__label">حماية يومية</span>
+          </li>
+        </ol>
+
+        <div class="luvit-section__foot">
+          <a class="luvit-btn luvit-btn--arrow" href="#steps">شوفي الخطوات</a>
+          <a class="luvit-btn luvit-btn--ghost" href="#pack">شو جوّا البكج</a>
+        </div>
+
+      </div>
+
+      <!-- صورة البكج · نفس الصورة اللي ضغطت عليها الزبونة ببطاقة المركز،
+           فبتأكّدلها إنها وصلت المكان الصح.
+           🔴 وهي **معتمة** بخلفية مخبوزة (مقيسة: hasAlpha false · ركنها
+              rgb(243,250,250) بتلاتة و rgb(242,250,254) بتوحيد اللون)،
+              فالإطار أرضيته بنفس اللون بالضبط وإلا بيبيّن حدّ حواليها.
+              نفس حيلة .luvit-steps--compact__media المقيسة بصفحة المتجر.
+           · بأول شاشة فبلا loading="lazy" بقصد. -->
+      <figure class="rt-shallow__media" data-luvit="reveal">
+        <img src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-eventone.webp" alt="بكج روتين توحيد اللون"
+             width="1000" height="1000" decoding="async">
+      </figure>
 
     </div>
   </div>
 </section>
+
+<div class="luvit-wave" style="--wave-fill:#FFFFFF" aria-hidden="true"></div>
 
 
 <section class="luvit-section luvit-section--tight band-light" data-nav-bg="light" id="who">

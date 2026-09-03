@@ -3379,8 +3379,13 @@ body.luvit-locked { overflow: hidden; }
   to   { transform: translate3d( 6%, 0, 0) rotate(0.001deg); }
 }
 
-/* Content must sit above the water layers. */
-.luvit-deep > * { position: relative; z-index: 1; }
+/* Content must sit above the water layers.
+   🔴 `:not()` لازمة مش تجميل: `.luvit-deep__rays` و`.luvit-deep > *` بنفس
+   الخصوصية (0,1,0)، وهاي معرّفة **بعدها** فكانت تدهس
+   `position: absolute` وتخلّي الأشعة `relative` بحجم صفر ← طبقة
+   الأشعة كانت **مطفية بالموقع كله** (انكشفت ٣ أيلول).
+   والمضاعفة ما بتنفع هون لأن المطلوب **استثناء** مش ترجيح. */
+.luvit-deep > *:not(.luvit-deep__rays) { position: relative; z-index: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   .luvit-deep::before,
@@ -11113,6 +11118,16 @@ body.admin-bar #hero-seq .hero-story__cue {
 .luvit-option[data-goal="glow"] .luvit-option__icon,
 .luvit-option[data-goal="glow"] .luvit-option__icon svg { color: var(--tint-combo-fg); }
 
+/* 🔴 و`eventone` انضاف ٢ أيلول وضلّ **بلا لون** ل٣ أيلول · بوابة بيضا
+   بصف بوابات ملوّنة بتقرا ناقصة مش محايدة. وتوكن `sensitive`
+   الوحيد اللي ضلّ مش مستعمل، وورديّه الهادي بيناسب توحيد اللون. */
+.luvit-option[data-goal="eventone"] {
+  background: var(--tint-sensitive-bg);
+  border-color: color-mix(in srgb, var(--tint-sensitive-fg) 28%, transparent);
+}
+.luvit-option[data-goal="eventone"] .luvit-option__icon,
+.luvit-option[data-goal="eventone"] .luvit-option__icon svg { color: var(--tint-sensitive-fg); }
+
 /* ==========================================================================
    5.51 · رفّ الروتينات · كسر «ثلاث بطاقات متطابقة بصف»  (30 Aug)
    --------------------------------------------------------------------------
@@ -11174,10 +11189,12 @@ body.admin-bar #hero-seq .hero-story__cue {
 #packages .luvit-card[data-goal="hydration"] .luvit-card__media { background: var(--tint-dry-bg); }
 #packages .luvit-card[data-goal="clarify"]   .luvit-card__media { background: var(--tint-oily-bg); }
 #packages .luvit-card[data-goal="glow"]      .luvit-card__media { background: var(--tint-combo-bg); }
+#packages .luvit-card[data-goal="eventone"]  .luvit-card__media { background: var(--tint-sensitive-bg); }
 
 #packages .luvit-card[data-goal="hydration"] .luvit-card__steps li::before { color: var(--tint-dry-fg); }
 #packages .luvit-card[data-goal="clarify"]   .luvit-card__steps li::before { color: var(--tint-oily-fg); }
 #packages .luvit-card[data-goal="glow"]      .luvit-card__steps li::before { color: var(--tint-combo-fg); }
+#packages .luvit-card[data-goal="eventone"]  .luvit-card__steps li::before { color: var(--tint-sensitive-fg); }
 
 /* ---- الإزاحة العمودية · تكسر استقامة الصف ------------------------ */
 @media (min-width: 1000px) {
@@ -13319,6 +13336,165 @@ html body {
 }
 /* ABOUT-SHOT:END */
 
+**تنحط ككتلة كاملة بعد سطر ١٣٣٢٠ مباشرة** (`/* ABOUT-SHOT:END */`) وقبل `DARK-COMPONENTS:START` (سطر ١٣٣٢٣).
+
+🔴 **وما في مُعدِّل على `.luvit-about-split` بهالكتلة بقصد.** فخّ ترتيب الملف حقيقي: `@media (max-width:860px){ .luvit-about-split{ 1fr } }` مكتوب بسطر ١٣٣١٧، وأي مُعدِّل زي `.luvit-about-split--x` بينضاف بآخر الملف بيكون **بنفس الخصوصية** (كلاس واحد) و**بيفوز** لأنه متأخر · فبيخلي العمودين عمودين على التلفون. التكوين هون بيتصرّف بالعمود الموجود (٤fr من ١١ ≈ ٣٥٦px بحاوية ١٠٢٠px · والقرص ٣٤٠px بيدخل فيه) فما في داعي نلمس الشبكة أصلاً.
+
+```css
+/* ═══════════════════════════════════════════════════════════════════════
+   ABOUT-RIPPLE:START · قرص المي بسكشن «ليش بلّشنا» · على شريط أبيض
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 كان مكانه **صورة سيروم**، والنصّ اللي جنبه بيقول حرفياً «منسألك عن
+      بشرتك قبل ما نحكي عن منتج». يعني الصورة بتناقض الجملة بنفس السطر.
+      ⤷ ريّان ٣ أيلول: «السيروم اللي جاي وكأنه هو أقوى إشي عننا».
+
+   البديل: قطرة وحدة على مي ساكنة · القرص **صورة** (انكسار وحبيبات ضوء ·
+   وهاد اللي ما بينرسم بالـCSS)، والحلقات حواليه **مرسومة** بنفس المركز.
+
+   🔴 والحلقات **ساكنة · ولا `@keyframes` ولا حركة دائمة**، وهاد مقيس مش
+      ذوق: كل حركة محيطية بهالملف ماشية ٢٨–٤٤ ثانية
+      (luvit-caustic-a ٣٤s سطر ٣٣٣٥ · luvit-caustic-b ٤٤s سطر ٣٣٤٨ ·
+       luvit-rays ٤٠s سطر ٣٣٧٤ · luvit-wave-slide ٢٨s سطر ٣٣٩٦).
+      أي موجة بتتوسّع كل ٧ ثوانٍ على شريط أبيض بتقرا **لودر** مش مي ساكنة.
+      والقاعدة: «اللي ما بيتغيّر ما بيتحرّك». الحركة الوحيدة هون هي دخول
+      السكشن مرة وحدة عبر `data-luvit="stagger"` على الأب.
+      ⤷ وبهيك ما في بلوك `prefers-reduced-motion` أصلاً · ما في شي ينطفي.
+
+   ⚠️ وما استعملت `.luvit-about-shot` · مبني لعبوة مستطيلة بـ`drop-shadow`
+      وهاد قرص بحافة زجاج. نفس الدرس المتكرّر: كلاس بيحمل افتراضات سياقه.
+      ⤷ و`.luvit-about-shot` **بيضل بمكانه فوق ولا تحذفه** · لساه مستعملاً
+        بـ_وارد/audit/about-preview.html و_وارد/audit/push2/228.*.html
+        و_وارد/_pre/a1-about.html (متفحوص بـgrep).
+
+   🔴 قاعدة الصندوق: **ولا بكسل بيطلع برّا `__stage`.** أكبر حلقة عرضها
+      ١٠٠٪ بالضبط والوهج `inset: 0`. ولا `transform: scale` بأي مكان هون
+      عن قصد · أي قيمة فوق ١ بتعمل سكرول أفقي على الموبايل لأن هامش
+      الصفحة `--container-gutter` = ٢٠px وبس.
+
+   🔴 و`overflow: hidden` **على `__disc` وبس** (لازم لقص الصورة بالدائرة).
+      ممنوع على `__stage` ولا على `.luvit-ripple` ولا على أي جدّ · نفس فئة
+      الفخّ اللي بتقتل `position: sticky` بهالموقع.
+
+   ⚠️ و`box-sizing: border-box` مكتوبة **صراحة** على الحلقة والقرص · ما في
+      `*{box-sizing}` عام بهالملف (متفحوص · بينحط لكل مكوّن على حدة، شوف
+      التعليق سطر ٣٦٥٣)، وحدّ الحلقة ١px كان بيزيد ٢px على القطر.
+      ⤷ فخّ ٩ آب رقم ٦.
+
+   ⚠️ ولا كلاس هون اسمه `luvit-drop` · `.luvit-drops` موجود فعلاً
+      (tokens.css:11633 · woo.php:149 · برنامج القطرات). الفضاء
+      `luvit-ripple__*` كله فاضي (grep رجّع صفر).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.luvit-ripple { margin: 0; }
+
+/* ── المشهد ─────────────────────────────────────────────────────────────
+   مربّع بيتكدّس فيه القرص والحلقات فوق بعض بخانة شبكة وحدة.
+   الشبكة أنضف من `position: absolute` لأن الكل بيضل محسوباً بالتخطيط،
+   فالـfigure بتاخد ارتفاعها الصح وما بتنهار على الكابشن. */
+.luvit-ripple__stage {
+  position: relative;
+  display: grid;
+  grid-template-areas: "stack";
+  place-items: center;
+  inline-size: min(100%, 340px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+.luvit-ripple__stage > * { grid-area: stack; }
+
+/* الوهج · بيكسر حدّة الأبيض حوالين القرص عشان ما يقرا كقصاصة مقصوصة.
+   `inset: 0` بقصد · التدرّج بيخفت لصفر عند ٧٠٪ فما بيحتاج يطلع برّا. */
+.luvit-ripple__stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%,
+              rgba(76, 197, 218, .20) 0%,    /* #4CC5DA تركوازي اللوجو */
+              rgba(76, 197, 218, .07) 46%,
+              rgba(76, 197, 218, 0)   70%);
+}
+
+/* ── الحلقات · موجات متجمّدة بلحظة انتشارها ───────────────────────────
+   تلاتة بأقطار وشفافيات متدرّجة · كل ما بعدت خفّت. القطر بينتعيّن
+   بـinline-size مباشرة **مش بـtransform** عشان الاحتواء يضل مضموناً
+   حسابياً (أكبر وحدة = ١٠٠٪ من المشهد بالضبط). */
+.luvit-ripple__ring {
+  box-sizing: border-box;
+  z-index: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(41, 169, 192, .45); /* #29A9C0 الأساسي */
+  pointer-events: none;
+}
+.luvit-ripple__ring:nth-child(1) { inline-size:  84%; block-size:  84%; opacity: .30; }
+.luvit-ripple__ring:nth-child(2) { inline-size:  92%; block-size:  92%; opacity: .20; }
+.luvit-ripple__ring:nth-child(3) { inline-size: 100%; block-size: 100%; opacity: .12; }
+
+/* ── القرص ────────────────────────────────────────────────────────────
+   والخلفية تحت الصورة **احتياطي مقصود**: لو الصورة ما انترفعت أو انكسر
+   مسارها بيضل قرص مي متدرّج · مش فراغ ولا رمز صورة مكسورة. */
+.luvit-ripple__disc {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  inline-size: 76%;
+  block-size: 76%;
+  border-radius: 50%;
+  overflow: hidden; /* 🔴 هون بس · ولا على أي جدّ */
+  background: radial-gradient(circle at 34% 26%,
+              var(--aqua-50)  0%,    /* #EAFAFD */
+              var(--aqua-200) 52%,   /* #A6E7F1 */
+              var(--aqua-400) 100%); /* #4CC5DA */
+  box-shadow:
+    inset 0 0 0 1px var(--glass-border),  /* rgba(255,255,255,.65) */
+    0 14px 34px rgba(12, 51, 60, .14);
+}
+.luvit-ripple__disc img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* لمعة الزجاج · تدرّجان ثابتان وبس.
+   🔴 ولا `backdrop-filter` هون بقصد · ميزانية الأداء، والقرص فوق شريط
+      أبيض سادة أصلاً فما في شي يستاهل يتضبّب تحته. */
+.luvit-ripple__disc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(58% 42% at 30% 20%, rgba(255, 255, 255, .34), rgba(255, 255, 255, 0) 62%),
+    radial-gradient(70% 60% at 74% 88%, rgba(6, 52, 54, .12),     rgba(6, 52, 54, 0)     68%);
+}
+
+/* ── الكابشن ──────────────────────────────────────────────────────────
+   ⚠️ `--text-body-sm` معرَّف فعلاً (tokens.css:108 = .875rem).
+      ولا تبدّله بـ`var(--fs-sm)` · **هاد مش معرَّف بالملف أصلاً**
+      ومستعمل تلات مرات وكلهن باحتياطي بيخبّي الغياب. */
+.luvit-ripple__cap {
+  margin-block-start: var(--space-4);
+  margin-inline: auto;
+  max-inline-size: 30ch;
+  text-align: center;
+  font-size: var(--text-body-sm);
+  line-height: 1.85;
+  letter-spacing: 0;   /* عربي · صفر تباعد */
+  color: var(--color-ink-soft); /* #47555B */
+}
+
+@media (max-width: 860px) {
+  /* بعمود واحد المشهد بينزل تحت النصّ · بيصغر وبياخد فاصلاً عن الفقرة */
+  .luvit-ripple { margin-block-start: var(--space-6); }
+  .luvit-ripple__stage { inline-size: min(100%, 280px); }
+}
+/* ABOUT-RIPPLE:END */
+```
+
 /* ═══════════════════════════════════════════════════════════════════════
    DARK-COMPONENTS:START · مكوّنات على شريط غامق
    ═══════════════════════════════════════════════════════════════════════
@@ -13696,3 +13872,610 @@ body.single-product section.related > h2 {
   body.single-product div.product .summary p.price { font-size: 1.5rem; }
 }
 /* PRODUCT-PAGE:END */
+
+/* ══════════════════════════════════════════════════════════════════════
+   WL-HEAD:START · رأس صفحة المفضّلة · ٣ أيلول
+   ══════════════════════════════════════════════════════════════════════
+   🔴 الصق هالكتلة **بآخر** سنيبت tokens.css بـWPCode (بعد السطر 13698).
+
+   ليش رأس غامق أصلاً: رأسا «من نحن» (a1-about.html:94) و«الروتينات»
+   (r0-hub.html:9) صاروا luvit-deep + rt-head + شريط مرقّم + موجة،
+   والمفضّلة ضلّت band-mist فبتقرا كأنها من موقع تاني.
+
+   والهيكل مستعار **كامل** · ما في هون ولا قاعدة بتعيد بناء رأس. الجديد
+   تلاتة بس:
+     ١ · شارة «محفوظة على جهازك»
+     ٢ · صفّ أزرار مخفي بالافتراضي
+     ٣ · تبديل الحالة بـ:has()
+
+   والبادئة `wl-` على وزن `rt-` تبع الروتينات · بادئة صفحة، مش مكوّن عام.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── ١ · شارة «محفوظة على جهازك · بلا حساب» ──────────────────────────
+   هي الفرق الحقيقي للصفحة، ومسحوبة من wishlist.js لا مكتوبة من الراس:
+   التخزين بالمتصفح (KEY = 'luvit_wish_v1') وما بده حساب ولا مصادقة. */
+.wl-head__note {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill, 999px);
+  border: 1px solid rgba(255, 255, 255, .20);
+  /* 🔴 زجاج **بلا** backdrop-filter · نفس وصفة .luvit-cta__panel
+     (tokens.css:3266) بالضبط، وتعليقها بيقول «no blur» لنفس السبب.
+     الرأس فوقه ثلاث طبقات متحركة من .luvit-deep (caustic A و B + الأشعة)
+     وفوقهن الفقاعات · وأي blur فوق خلفية بتعيد الرسم كل فريم بياكل
+     الميزانية اللي CLAUDE.md بيقول عنها «صارمة». */
+  background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.03));
+  box-shadow: inset 2px 2px 0 -2px rgba(255, 255, 255, .45);
+  color: rgba(255, 255, 255, .92);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  letter-spacing: 0;      /* 🔴 صفر · النصّ عربي · قاعدة العلامة */
+}
+.wl-head__note svg {
+  flex: none;
+  inline-size: 16px;
+  block-size: 16px;
+  fill: none;
+  /* 🔴 اللون ما بيورث لجوّا svg بشكل يعتمد عليه · فخّ مسجّل عندنا.
+     الحدّ بينكتب صراحةً هون مش بـcurrentColor. */
+  stroke: var(--aqua-200, #A6E7F1);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── ٢ · صفّ الأزرار · مخفي بالافتراضي ──────────────────────────────
+   🔴 مضاعفة الكلاس مقصودة مش زيادة. `.luvit-section__foot` (tokens.css:9663)
+      عليها `display: flex` بخصوصية (0,1,0) · وقاعدة بنفس الخصوصية بتغلب
+      بترتيب الملف بس، وترتيب الملف بيتغيّر. المضاعفة بتعملها (0,2,0)
+      فبتحسمها حسماً · قاعدة المشروع بالتصادم (٩ آب · مضاعفة لا !important).
+
+   وليش مخفية أصلاً: بالحالة الفاضية، .luvit-empty__foot (tokens.css:11573)
+   تحتها بنفس الشاشة فيها «شوفي المنتجات» و«اختبار البشرة». */
+.wl-head__foot.wl-head__foot { display: none; }
+
+
+/* ── ٣ · حالتان · بلا ولا سطر JS جديد ────────────────────────────────
+   🔴 wishlist.js ما بيلمس الرأس وما بينضاف عليه إشي. الرأس بيقرا حالة
+      السكشن اللي تحته بـ:has() على body:
+        · فيه بطاقات مرسومة → #luvit-wish-list جوّاه [data-wish-card]
+        · أو عم بتجيب       → #luvit-wish-status مش hidden
+
+   🔴 والسطر التاني هو اللي بيمنع الرمشة: renderList() بـwishlist.js بيفتح
+      سطر الحالة **قبل** الـfetch (بنفس لحظة boot لو في معرّفات مخزّنة)،
+      فالرأس بينضغط مع **بداية** الجلب لا بعد ما ترجع الشبكة.
+
+   🔴 والافتراضي هو الحالة **الفاضية** عن قصد مش صدفة: أغلب الزيارات
+      الأولى بلا منتجات، فالأغلبية بتشوف الرأس الكامل من أول رسمة بلا أي
+      قفزة ولا انتظار جافاسكربت. واللي عندها منتجات بس بتشوف التبديل،
+      وبنفس اللحظة اللي بتنعبّى فيها الشبكة تحتها أصلاً.
+
+   ⚠️ :has() مش مدعومة بسفاري أقدم من 15.4 · وقتها الرأس بيضل بحالته
+      الفاضية دايماً: الشريط ظاهر والأزرار مخفية. **نصّ صحيح ورأس أطول
+      شوي · ما في كسر ولا نصّ ناقص ولا ادّعاء غلط.**
+
+   ⚠️ وخصوصية :has() بتساوي أخصّ وسيط جوّاها، والوسيط فيه id (1,1,0) ·
+      فهاي القواعد بتغلب المضاعفة فوق (0,2,0) وبتغلب .luvit-section (0,1,0)
+      بلا ما تعتمد على ترتيب الملف. */
+
+/* الشريط التعليمي بينطوي · المنتجات صارت هي البطل مش الشرح */
+body:has(#luvit-wish-list [data-wish-card]) .wl-head .rt-flow,
+body:has(#luvit-wish-status:not([hidden]))  .wl-head .rt-flow {
+  display: none;
+}
+
+/* والأزرار بتبان مكانه · هون البلوك الفاضي تحت مخفي فما في تكرار.
+   display:flex عشان ترجع لسلوك .luvit-section__foot الأصلي · والهامش
+   والمحاذاة بيجوا معه من 9663 و11054 (head--start بيخلّيها flex-start). */
+body:has(#luvit-wish-list [data-wish-card]) .wl-head .wl-head__foot,
+body:has(#luvit-wish-status:not([hidden]))  .wl-head .wl-head__foot {
+  display: flex;
+}
+
+/* والرأس بينضغط من تحت · .luvit-section عليها padding: var(--space-9)
+   (96px) · space-7 = 48px. الخصوصية (1,1,0) فبتغلبها، وpadding-block-start
+   بيضل لـ.luvit-page-top لأننا بنكتب longhand الآخر بس. */
+body:has(#luvit-wish-list [data-wish-card]) .wl-head,
+body:has(#luvit-wish-status:not([hidden]))  .wl-head {
+  padding-block-end: var(--space-7);
+}
+/* ══ WL-HEAD:END ═════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ROUTINE-HEAD:START · رؤوس صفحات الروتينات الأربعة · «الضحضاح»
+   --------------------------------------------------------------------------
+   ريّان ٣ أيلول بلقطتين: «وبصفحة كل وحدة من الروتينات مافيه تصميم مخصص
+   للراس ولا وحدة منهم». وكان محقاً · شريط band-mist فيه فتات خبز وعنوان
+   وسطر، أربع صفحات متطابقة حرفياً ما عدا النص، ولا صورة ولا لون.
+   وفتات الخبز نفسها **ما كان عليها ولا سطر ستايل بالوضع الفاتح**:
+   .luvit-section--dark nav a موجودة (سطر ٣٢٤٥) و.rt-head nav a موجودة
+   (سطر ١٢٦٢٢) وما في مقابل فاتح، فالروابط كانت بأزرق المتصفح الافتراضي.
+
+   الفكرة: رأس المركز /routines هو **الماء العميق**، وصفحة الروتين هي
+   **الضحضاح**. نفس التشريح بقيمة مقلوبة، ونفس مكوّن الأب (rt-flow) معاد
+   استعماله بمحتوى هالروتين هو. والشخصية بمتغيّرين اثنين لا بأربع تصاميم.
+
+   🔴 وكل لون هون مقروء من tokens.css · ولا واحد مخترع.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── ١ · خريطة الهدف · **نفس خريطة #packages الحيّة** (سطر ١١١٧٤) ──────────
+   hydration→dry · clarify→oily · glow→combo · وهاي مش اختياري، هي اللي
+   بتخلّي بطاقة المتجر وصفحة الروتين يقولوا نفس اللون.
+   وeventone أخذ --tint-sensitive-* وهو **التينت الرابع المعرَّف** بسطر ٧٦
+   واللي ما كان مستعملاً بأي مكان · فما في لون جديد بالمشروع.
+   ⚠️ ولازم ينضاف سطراه بـ#packages كمان (مكتوبة بالـanchors) وإلا بطاقة
+      المتجر بتضل رمادية والرأس ملوّن.
+
+   🔴 و--goal-ink مش رفاهية · التينت الخام على تينته **بيسقط بالتباين**:
+      dry 3.01 · sensitive 3.29 · combo 3.73 · oily 5.19 (مقيسة).
+      والمزيج ٥٥٪ تينت + ٤٥٪ حبر بيرفعها لـ5.89 / 6.29 / 6.77 / 8.08
+      على التينت، ولـ6.45 / 6.90 / 7.28 / 8.90 على لوح الحقائق.
+   ⤷ فاللون **الخام** للزخرفة وبس (خيط · حدّ · فاصل)، وكل نص ملوّن
+     بياخد --goal-ink. */
+.rt-shallow {
+  --goal-bg:  var(--aqua-100, #D0F3F9);
+  --goal-fg:  var(--aqua-700, #196B7D);
+  --goal-ink: color-mix(in srgb, var(--goal-fg) 55%, var(--color-ink, #1A2529));
+}
+.rt-shallow[data-goal="hydration"] { --goal-bg: var(--tint-dry-bg, #F6EDE3);       --goal-fg: var(--tint-dry-fg, #A9825A); }
+.rt-shallow[data-goal="glow"]      { --goal-bg: var(--tint-combo-bg, #EEF3E7);     --goal-fg: var(--tint-combo-fg, #6E8256); }
+.rt-shallow[data-goal="clarify"]   { --goal-bg: var(--tint-oily-bg, #D0F3F9);      --goal-fg: var(--tint-oily-fg, #196B7D); }
+.rt-shallow[data-goal="eventone"]  { --goal-bg: var(--tint-sensitive-bg, #F7ECEC); --goal-fg: var(--tint-sensitive-fg, #B17272); }
+
+/* ── ٢ · البند نفسه ──────────────────────────────────────────────────────
+   🔴 ممنوع `padding` مختصرة هون · `.luvit-page-top` (سطر ٩٧١٩) بتكتب
+      padding-block-start لحالها وأي مختصرة بتدهسها (فخّ ترتيب الملف).
+   🔴 ومضاعفة الكلاس بالسطر تحت **مقصودة لا غلطة**: `.luvit-section`
+      (سطر ٣٢٠٧) بتكتب `padding` مختصرة · المضاعفة بتوصل (0,2,0) فالقاعدة
+      بتمشي مهما كان ترتيب الورقة، بلا !important. نفس منطق
+      `.luvit-cut-top.luvit-cut-top` المكتوب بسطر ٢٨٢٠. */
+.rt-shallow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--goal-bg);
+}
+/* الموجة بعده بتنسحب فوق البند وبتاكل ٧٠px من أسفله
+   (.luvit-wave:not(.seq-blend) عندها margin-top سالب · سطر ٢٧٥٣)
+   فبينرجعوا بالضبط. بلاها بيلزق المحتوى بالمنحنى. */
+.rt-shallow.rt-shallow {
+  padding-block-end: calc(var(--space-7, 3rem) + var(--wave-h, 70px));
+}
+/* المحتوى فوق الماء · وبلا z-index سالب عشان ما نتعارك مع أي `> *` */
+.rt-shallow > .luvit-section__inner { position: relative; z-index: 1; }
+
+/* ── ٣ · الماء · نفس تشريح .luvit-deep::before بقيمة مقلوبة ──────────────
+   بلومان قوسيان بيتنفّسوا بـ**نفس keyframes الأب** (luvit-caustic-a ·
+   معرَّفة سطر ٣٣٥٢) · ولا وحدة جديدة، والحركة transform وبس.
+   البلوم الأول أبيض (ضوء بيرتدّ عن قاع ضحل) والثاني بلون الهدف.
+   ⚠️ وعنصر صريح لا ::before · لأن مضيف السكشن بيحط clearfix ::before
+      على حاويات، وبكونتينر flex/grid بتصير خلية حقيقية بتسرق مكاناً
+      (الفخّ المقيس مع ul.products). نفس السبب اللي خلّى
+      `.luvit-deep__rays` عنصراً لا زائفاً. */
+.rt-shallow__wash {
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 46% at 24% 28%,
+      color-mix(in srgb, var(--color-paper, #FFFFFF) 72%, transparent),
+      transparent 70%),
+    radial-gradient(32% 40% at 78% 66%,
+      color-mix(in srgb, var(--goal-fg) 15%, transparent),
+      transparent 72%);
+  animation: luvit-caustic-a 34s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-shallow__wash { animation: none; }
+}
+
+/* ── ٤ · التخطيط · موبايل عمود واحد، وديسكتوب نصّان ──────────────────────
+   ⚠️ الشبكة بتقرا اتجاه الكتابة لحالها · بـRTL الخانة الأولى (النص) بتروح
+      لليمين والصورة لليسار. ولا سطر بيسأل عن الاتجاه، ولا مرة من سمة dir.
+   · والنص أول بالـDOM فبالموبايل الجواب بيسبق الصورة. */
+.rt-shallow__grid {
+  display: grid;
+  gap: var(--space-6, 2rem);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .rt-shallow__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: var(--space-7, 3rem);
+  }
+}
+/* الرأس جوّا شبكة، فهامشه السفلي بيصير فراغاً يتيماً */
+.rt-shallow .luvit-section__head { margin-bottom: 0; }
+/* 🔴 `.luvit-section__head--start` عليها max-width: 46ch (سطر ١١٠٤٦) وهي
+   صح **للنصّ** بس بتخنق الخيط واللوح. نفس تحرير `.rt-head` بسطر ١٢٦١٧.
+   (max-inline-size وmax-width نفس الخاصية بكتابة أفقية · الأخير بيغلب.) */
+.rt-shallow .luvit-section__head--start { max-inline-size: none; }
+.rt-shallow .luvit-section__title { max-inline-size: 20ch; }
+.rt-shallow .luvit-section__sub   { max-inline-size: 46ch; }
+
+/* ── ٥ · النصّ ───────────────────────────────────────────────────────────
+   ⚠️ ولا سطر اتجاه على الـeyebrow · بقصد. tokens.css سطر ١٢٦٧٦ بيوثّق إنه
+      `direction: ltr` كسرت الشكل قبل، وإن الفخّ المسجَّل بيخصّ اللاتيني
+      اللي بآخره `!` أو `.` بس. والأربعة (Hydration & Support · Brighten &
+      Glow · Clarify & Balance · Even Tone) كلهم بينتهوا بحرف. */
+.rt-shallow .luvit-section__eyebrow { color: var(--goal-ink); }
+
+/* فتات الخبز · **أول ستايل إلها بالوضع الفاتح** بالمشروع كله.
+   ⚠️ ولا --color-ink-faint هون · مقيس عليه ٢٫٦٩ لـ٢٫٨٠ على التينتات
+      (وtokens.css سطر ١٢٧٦٠ بتقول ٢٫٩٧ على band-mist · راسب أصلاً).
+      --color-ink-soft بيعطي ٦٫٥٧ لـ٦٫٨٥. */
+.rt-shallow nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  margin-block-end: var(--space-4, 1rem);
+  font-size: var(--text-body-sm, 0.875rem);
+  letter-spacing: 0;                       /* عربي · صفر دايماً */
+  color: var(--color-ink-soft, #47555B);
+}
+.rt-shallow nav a { color: var(--color-ink-soft, #47555B); text-decoration: none; }
+.rt-shallow nav a:hover { color: var(--goal-ink); text-decoration: underline; }
+.rt-shallow nav [aria-current] { color: var(--goal-ink); font-weight: 600; }
+/* الفاصل زخرفة معلَّنة (aria-hidden) · نفس مستوى
+   `.luvit-section--dark nav [aria-hidden]` المشحون بسطر ٣٢٤٧. */
+.rt-shallow nav [aria-hidden] { color: color-mix(in srgb, var(--goal-fg) 62%, transparent); }
+
+/* ── ٦ · لوح الحقائق ─────────────────────────────────────────────────────
+   🔴 ليش لوح ومش شارات عايمة: تلات أجوبة بتقعد سوا بتقرا كجدول قرار،
+      وتلات شارات بتقرا كوسوم. وهاد اللي الصفحة كانت ناقصاه فعلاً ·
+      «لمين» بـ#who و«كم خطوة» بـ#steps و«قدّيش» بـ#pack، تلات سكاشن تحت.
+   ⤷ ونفس وصفة `.luvit-cta__panel` بالضبط (سطر ٣٢٦٦): تعبئة شفافة + حافة
+     زجاجية، **بلا backdrop-filter** · فما في كلفة رسم ولا مخالفة للميزانية.
+   · التباين مقيس على اللوح (٦٢٪ ورق فوق التينت): --goal-ink 6.45 لـ8.90 ·
+     --color-ink 14.69 لـ14.94 · --color-ink-soft 7.24 لـ7.37 · كلهن فوق ٤٫٥. */
+.rt-shallow__facts {
+  display: grid;
+  gap: var(--space-3, 0.75rem);
+  margin: var(--space-5, 1.5rem) 0 0;
+  padding: var(--space-4, 1rem) var(--space-5, 1.5rem);
+  list-style: none;
+  border-radius: var(--radius-lg, 24px);
+  background: color-mix(in srgb, var(--color-paper, #FFFFFF) 62%, transparent);
+  border: 1px solid color-mix(in srgb, var(--goal-fg) 22%, transparent);
+  box-shadow:
+    inset 2px 2px 0 -2px var(--color-paper, #FFFFFF),
+    0 14px 34px -24px rgba(12, 51, 60, .35);
+}
+@media (min-width: 560px) {
+  .rt-shallow__facts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5, 1.5rem);
+  }
+}
+/* تلات صفوف عشان اللِيبلات تتحاذى فوق والملاحظة تقعد تحت مهما طالت القيمة
+   (الأولى جملة والتانيتان رقم). */
+.rt-shallow__fact {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 4px;
+}
+/* الفاصل · شعرة أفقية بالموبايل وعمودية بالديسكتوب.
+   ⚠️ خصائص منطقية لا يمين/يسار · الصفحة عربية والاتجاه بينقلب. */
+.rt-shallow__fact + .rt-shallow__fact {
+  border-block-start: 1px solid color-mix(in srgb, var(--goal-fg) 18%, transparent);
+  padding-block-start: var(--space-3, 0.75rem);
+}
+@media (min-width: 560px) {
+  .rt-shallow__fact + .rt-shallow__fact {
+    border-block-start: 0;
+    padding-block-start: 0;
+    border-inline-start: 1px solid color-mix(in srgb, var(--goal-fg) 18%, transparent);
+    padding-inline-start: var(--space-5, 1.5rem);
+  }
+}
+/* 🔴 اللِيبل عربي · **صفر letter-spacing وولا uppercase**، وهاد ليش ما
+   استعملت `.luvit-section__eyebrow` (عليها --tracking-caption و
+   text-transform: uppercase بسطر ٣٢١٥ وهي للاتيني وحده · وهي اللي
+   شايلة ${r.en} فوق). والتصريح مكتوب صراحةً لا مُفترَضاً، لأن قواعدنا
+   هي اللي بتغلبنا عادةً لا ووردبريس. */
+.rt-shallow__label {
+  font-family: var(--font-body);
+  font-size: var(--text-caption, 0.75rem);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--goal-ink);
+}
+.rt-shallow__value {
+  align-self: start;
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 1.4vw, 1.1875rem);
+  line-height: 1.45;
+  letter-spacing: 0;
+  color: var(--color-ink, #1A2529);
+  text-wrap: balance;
+}
+.rt-shallow__note {
+  align-self: end;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.55;
+  letter-spacing: 0;
+  color: var(--color-ink-soft, #47555B);
+}
+
+/* ── ٧ · خيط الأب مقلوباً · rt-flow بقيمة الضحضاح ────────────────────────
+   🔴 هون بتنعمل العائلة: هاد **نفس مكوّن رأس المركز** (سطر ١٢٥٤٩) لا
+      شبيه إله. اللي بيتغيّر قيمه بس: الخيط من أبيض لبلون الهدف، والنقطة
+      من فاتحة-على-غامق لبيضا-على-تينت، والاسم من أبيض لحبر.
+
+   وفرع الخمسة بينضاف **للمكوّن نفسه** لا لنسخة منه · نفس فكرة
+   `.rt-flow:has(> :nth-child(3):last-child)` المكتوبة بسطر ١٢٥٦٦،
+   فأي رأس جاي بعدد محطات مختلف بياخد أعمدته لحاله.
+   ⤷ ١٠٪ = نص عمود من خمسة (زي ١٢٫٥٪ لأربعة و١٦٫٦٦٧٪ لتلاتة). */
+.rt-flow:has(> :nth-child(5):last-child) {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.rt-flow:has(> :nth-child(5):last-child)::before {
+  inset-inline: 10%;
+}
+
+.rt-shallow .rt-flow { margin-block-start: var(--space-5, 1.5rem); }
+.rt-shallow .rt-flow::before {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--goal-fg) 10%, transparent),
+    color-mix(in srgb, var(--goal-fg) 48%, transparent) 50%,
+    color-mix(in srgb, var(--goal-fg) 10%, transparent));
+}
+/* 🔴 الخط `--font-body` لا `--font-latin` · الأرقام «١ ٢ ٣ ٤ ٥» هندية
+   وIBM Plex Sans Arabic فيها، وJost لأ · فالنقطة بالهَب اليوم بتبدّل
+   لخط نظام **بصمت**. تباين --goal-ink على الأبيض مقيس 6.82 لـ9.49. */
+.rt-shallow .rt-flow__dot {
+  font-family: var(--font-body);
+  color: var(--goal-ink);
+  background: var(--color-paper, #FFFFFF);
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--color-paper, #FFFFFF) 55%, transparent),
+    0 2px 6px rgba(12, 51, 60, .10);
+}
+.rt-shallow .rt-flow__label { color: var(--color-ink, #1A2529); }
+
+/* ── ٨ · صورة البكج ──────────────────────────────────────────────────────
+   🔴 الأرضية #F3FAFA **مقيسة لا مذوّقة**: ركن صور البكجات الأربعة
+      rgb(243,250,250) بتلاتة و rgb(242,250,254) بتوحيد اللون، والأربعة
+      **معتمة** (hasAlpha: false · مقيسة بـsharp على الملفات الحيّة).
+      نفس حيلة `.luvit-steps--compact .luvit-step__media` (سطر ١٢٤٦٧)
+      اللي مكتوب فوقها إنها انحطّت لنفس السبب بصفحة المتجر.
+   🔴 و`contain` مش `cover` · محتوى الصورة بيملا ٩٢٪ عرضاً و٦٤٪ ارتفاعاً
+      بتلاتة و١٠٠٪ × ٧٦٪ بتوحيد اللون (مقيسة)، فـ`cover` بنسبة 3/2 بتقصّ
+      ١٦٫٧٪ من كل حافة وبتاكل من عبوات توحيد اللون. `contain` ما بتقصّ
+      ولا مرة، والفراغ بيختفي لأن الأرضية بنفس لون خلفية الصورة. */
+.rt-shallow__media {
+  margin: 0;
+  border-radius: var(--radius-lg, 24px);
+  overflow: clip;
+  background: #F3FAFA;
+  border: 1px solid color-mix(in srgb, var(--goal-fg) 20%, transparent);
+  box-shadow: 0 22px 48px -28px rgba(12, 51, 60, .45);
+}
+/* 🔴 مربّع لا شريط · وهاد تصحيح مقيس من الموقع الحي (٣ أيلول):
+   صور البكجات **مربّعة** (1400×1400)، فصندوق 3/2 أو 4/3 مع `contain`
+   بيخلّي عمودين من لون الإطار على جنبي الصورة (٢٥٪ من العرض).
+   ولون الإطار **ما بيقدر يطابق**، لأن خلفية الصورة مخبوزة **متدرّجة**:
+   مقيس على /routines/eventone بكانفس: الركن الأعلى rgb(242,250,254)
+   والركن الأسفل rgb(220,239,246) · والإطار كان rgb(243,250,250).
+   فطلع **خطّ باين** بين الاثنين · ولا لون واحد بيطابق تدرّجاً.
+   ⸺ والحل مش لون أصح · الحل إن الصورة **تملا الإطار**: صندوق مربّع
+     + صورة مربّعة = صفر فراغ وصفر قصّ · والإطار بيضل أرضية لحظة التحميل.
+   ⚠️ و`contain` بتضل مكتوبة: لو صاحب الموقع رفع صورة مش مربّعة بكرا ،
+      بترجع تظهر حواف إطار (عيب بسيط) بدل ما تنقصّ العبوة (عيب كبير).
+   ⚠️ والمربّع ما بيدفع الجواب تحت بالموبايل: النصّ **قبلها بالـDOM**. */
+.rt-shallow__media img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+/* ══ ROUTINE-HEAD:END ═══════════════════════════════════════════════════ */
+
+🔴 **تنضاف بآخر `library/tokens.css`** (بعد سطر ١٣٦٩٨ · بعد آخر كتلة `:END`).
+لازم تكون **بعد** `.luvit-ing` (سطر ٣٤١٩) و`.luvit-ing-split` (سطر ١٢٨٢٠) سوا.
+
+```css
+/* ═══════════════════════════════════════════════════════════════════════
+   ING-SHOT:START · عبوة سكشن المكوّنات · ضوء وقاعدة مي وانعكاس
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 ريّان بلقطة ٣ أيلول: «والعلبة هون شكلها مش حلو بالمرة».
+      والسبب مقيس لا مذوَّق: صورة ووكومرس مربّعة 2000×2000 و**90.86٪ منها
+      بكسل شفاف** · فـ`max-inline-size: 320px` كانت بتعطي عبوة مرئية
+      **62×191 بكسل** بصندوق 320×320، وعلى التلفون **41×126**.
+
+   ⤷ والقصّ **مش شغل CSS** · معمول بالملف من قبل بـ`trim-bottle.mjs`
+     ثم `soften-cutout.mjs`، والناتج 386×1192 موجود بالريبو. فالماركب
+     بيشير عليه مباشرة، والقواعد تحت **ولا وحدة فيها رقم قصّ**.
+
+   وتلات حركات بترد الاعتبار، كلها ضوء وبلا ولا صورة جديدة:
+     ١ · **هالة** بلوني كوستِك السكشن حرفياً · فالعبوة بتاخد ضوء
+         السكشن نفسه بدل ما تضل لقطة استوديو ملصوقة.
+     ٢ · **بركة ضوء وحلقتا تموّج** مركزها بالضبط عند قاعدة العبوة ·
+         هي اللي بتقول «واقفة على سطح مي».
+     ٣ · **انعكاس مقلوب** من نفس الملف بيتلاشى بماسك.
+
+   🔴 والظل الأسود القديم `rgba(2, 26, 30, .38)` **انشال**. ظل شبه أسود
+      على مي غامقة ما بيعمل عمقاً، بيعمل حافة · وبدلّه ظل بلون اللاجون
+      **بنفس صيغة `.luvit-dive`** (سطر 11419)، وهي العبوة الوحيدة
+      بالمشروع المقصود إنها عايمة بمي.
+
+   ⚠️ ولا `backdrop-filter` هون · ميزانية الزجاج مصروفة على بطاقات النِسَب.
+   ⚠️ ولا `@keyframes` جديدة · السكشن أصلاً فيه ١٤ فقاعة وأشعة وكوستِكان
+      بيتحركوا. الحياة جايّة من حركة السكشن ورا عبوة ساكنة.
+   ⚠️ وكل قيمة لون تحت هي هي قيم موجودة بهالملف:
+      aqua-400 (76,197,218) · aqua-200 (166,231,241) · --lagoon-rgb.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* توازن العمودين · عمود العبوة ضاق شوي، والهالة بتملا اللي كان بينقرا
+   «عمود فاضي» بضوء بدل ما تملاه بكتلة.
+   🔴 والكلاس **مضاعف** لأن `.luvit-ing-split` معرَّف قبل هيك (سطر 12820)
+      · مضاعفة الكلاس لا `!important` · قاعدة المشروع. */
+.luvit-ing-split.luvit-ing-split {
+  grid-template-columns: minmax(0, 3.6fr) minmax(0, 6.4fr);
+}
+
+.luvit-ing-split__shot {
+  /* 🔴 الرقم الوحيد اللي بينضبط · ارتفاع العبوة المرسوم.
+     مسقوف بـ280 بقصد: أطول من هيك وعمود الصورة بيصير أطول من كومة
+     البطاقات بفرق بيقرا خللاً، لأن `align-items: center` بيوزّع الفرق
+     فراغاً فوق وتحت. */
+  --shot-h: clamp(215px, 23vw, 280px);
+  /* طول الانعكاس كنسبة من ارتفاع العبوة */
+  --shot-mirror: .24;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+/* هالة · z-index 0 · ورا كل إشي.
+   🔴 توسيط آمن بالاتجاهين: `inset-inline: 0` مع `margin-inline: auto`
+      بيوسّط حتى لو العنصر أوسع من حاويته · وبلا `translateX` اللي
+      إشارته بتنقلب بـRTL. */
+.luvit-ing-split__shot::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  inset-inline: 0;
+  margin-inline: auto;
+  /* 🔴 1.35 مقيسة لتضل **جوّا العمود**: عند 1200px عرض المسار 415px
+     والهالة 373px · وعند 861px (أضيق نقطة بالشكل العمودين) المسار
+     298px والهالة 290px. لو كبّرتها بتلمس البطاقات وبترفع أرضيتها
+     وبتنقّص تباين النصّ الأبيض · وهاد ممنوع. */
+  inline-size: calc(var(--shot-h) * 1.35);
+  block-size: calc(var(--shot-h) * 1.18);
+  inset-block-start: calc(var(--shot-h) * -.09);
+  background:
+    radial-gradient(closest-side at 50% 46%,
+      rgba(76, 197, 218, .22), rgba(76, 197, 218, .07) 55%, rgba(76, 197, 218, 0) 74%),
+    radial-gradient(closest-side at 50% 26%,
+      rgba(166, 231, 241, .15), rgba(166, 231, 241, 0) 66%);
+}
+
+/* بركة الضوء وحلقتا التموّج · z-index 2 · فوق العبوة والانعكاس سوا،
+   عشان الضوء يلمّ خط التقائهم بدل ما يبيّن حدّ.
+   ومركزها عند `--shot-h` بالضبط · يعني عند **قاعدة العبوة**، لأن
+   الصورة أول عنصر بالفلكس وبتبدا من صفر. */
+.luvit-ing-split__shot::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: calc(var(--shot-h) * .62);
+  block-size: calc(var(--shot-h) * .18);
+  inset-block-start: var(--shot-h);
+  transform: translateY(-50%);
+  background:
+    /* بركة */
+    radial-gradient(closest-side at 50% 50%,
+      rgba(166, 231, 241, .26), rgba(166, 231, 241, .08) 58%, rgba(166, 231, 241, 0) 76%),
+    /* حلقة تموّج داخلية */
+    radial-gradient(closest-side at 50% 50%,
+      rgba(76, 197, 218, 0) 56%, rgba(76, 197, 218, .24) 63%, rgba(76, 197, 218, 0) 70%),
+    /* حلقة تموّج خارجية · أخفت */
+    radial-gradient(closest-side at 50% 50%,
+      rgba(166, 231, 241, 0) 80%, rgba(166, 231, 241, .13) 86%, rgba(166, 231, 241, 0) 93%);
+}
+
+/* ── الصورتان ────────────────────────────────────────────────────────
+   🔴 وهون **إلغاء صريح** لقاعدة `.luvit-ing-split__shot img` القديمة
+      (سطر 12827: `inline-size: 100%` و`max-inline-size: 320px`
+      و`margin-inline: auto` والظل الأسود) ولقاعدة الموبايل تبعها
+      (سطر 12837: `max-inline-size: 210px`).
+      الخصوصية: القديمة (0,1,1) والجديدة (0,2,0) · فبتربح بالخصوصية
+      لا بالترتيب، والميديا كويري ما بتزيد خصوصية.
+      وقاعدة المشروع: **قواعدنا هي العدو** · فتّشها قبل ما تتّهم غيرها.
+
+   🔴 و`max-inline-size: none` حمّالة لا زخرفة: قالب ووردبريس بيحطّ
+      `img { max-width: 100% }` · **والمعاينة المحلية ما فيها ريسِت
+      القالب فما بتكشف غيابها**. */
+.luvit-ing-split__shot .luvit-shot-img,
+.luvit-ing-split__shot .luvit-shot-mirror {
+  display: block;
+  position: relative;
+  inline-size: auto;
+  max-inline-size: none;
+  margin-inline: 0;
+}
+
+.luvit-ing-split__shot .luvit-shot-img {
+  z-index: 1;
+  block-size: var(--shot-h);
+  /* ظلّ التلامس بلون الماء · نفس صيغة `.luvit-dive` بإزاحة أصغر لأن
+     العبوة أصغر · ثم توهّج العلامة ملزوق بالحدود بلا إزاحة.
+     🔴 الترتيب مقصود: التوهّج **آخر** عشان يلفّ العبوة وظلّها سوا
+      بدل ما الظل يضبّب التوهّج. */
+  filter:
+    drop-shadow(0 14px 22px rgba(var(--lagoon-rgb), .42))
+    drop-shadow(0 0 14px rgba(76, 197, 218, .38));
+}
+
+/* الانعكاس · نفس الملف، مقصوصاً على قاعدة العبوة بـobject-fit لا بحساب.
+   🔴 بلا ماسك بيصير عبوة مقلوبة بحافة قاطعة · **أوحش من الحالة الحالية**
+      · فبينعرض **بس** لو الماسك مدعوم. */
+.luvit-ing-split__shot .luvit-shot-mirror {
+  z-index: 0;
+  display: none;                 /* بيرجع بـ@supports تحت */
+  /* عرض العبوة الحقيقي · 386/1192 من الارتفاع */
+  inline-size: calc(var(--shot-h) * 386 / 1192);
+  block-size: calc(var(--shot-h) * var(--shot-mirror));
+  /* `cover` مع `50% 100%` بتعرض **أسفل** الصورة بالضبط · يعني قاعدة
+     العبوة · بلا ولا رقم إزاحة. */
+  object-fit: cover;
+  object-position: 50% 100%;
+  transform: scaleY(-1);
+  opacity: .28;
+  filter: blur(1.5px);           /* ضبابة ساكنة · رسمة وحدة لا حركة */
+}
+
+@supports ((-webkit-mask-image: linear-gradient(#000, #000)) or (mask-image: linear-gradient(#000, #000))) {
+  .luvit-ing-split__shot .luvit-shot-mirror {
+    display: block;
+    /* 🔴 الماسك بينرسم **قبل** ما ينطبّق `scaleY(-1)` · فـ`to top`
+       (أقوى عند أسفل العنصر محلياً) بتطلع بعد القلب أقوى شي عند سطح
+       المي وبتتلاشى وهي نازلة · وهاد المطلوب. عكسها بيعطي عبوة تانية
+       معلّقة. */
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,0));
+            mask-image: linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,0));
+  }
+}
+
+/* اسم العبوة تحتها · نفس نمط `.luvit-about-shot figcaption` (سطر 13310)
+   والعتامة .82 هي هي المستعملة بـ`.luvit-section--dark .luvit-section__sub`
+   (سطر 3237) · عشان الصفحة تضل بصوت واحد. */
+.luvit-shot-cap {
+  margin-block-start: var(--space-4);
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: var(--text-body-sm);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .82);
+}
+
+@media (max-width: 860px) {
+  /* 🔴 لازم تنعاد **مضاعفة** هون · المضاعفة اللي فوق خصوصيتها (0,2,0)
+     وبتغلب قاعدة الموبايل القديمة (0,1,0) بسطر 12836، فلو هالسطر
+     انشال بيصير السكشن **عمودين على التلفون** والعبوة تصير شريحة. */
+  .luvit-ing-split.luvit-ing-split { grid-template-columns: minmax(0, 1fr); }
+  /* العمود كامل على التلفون فالعبوة بتكبر: 200px بدل 126px */
+  .luvit-ing-split__shot { --shot-h: clamp(200px, 44vw, 260px); }
+}
+/* ING-SHOT:END */
+```
+
+**الكلاسات الجديدة تلاتة، وكلها معرَّفة فوق:** `luvit-shot-img` · `luvit-shot-mirror` · `luvit-shot-cap` · فبوابة `check()` (`TOKENS.includes('.' + c)`) بتعدّي.

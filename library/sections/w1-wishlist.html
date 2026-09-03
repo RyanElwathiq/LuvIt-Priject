@@ -8,19 +8,53 @@
        ٢ · المفضّلة بتختلف من زبونة لزبونة، فأي ماركب مطبوع بيكون غلط
            لأغلب الناس.
 
-  🔴 رأس الصفحة سكشن لحاله بـluvit-page-top · بلاه العنوان بيقعد تحت
-     النافبار الثابت. واللي كان باين تحت النافبار فعلاً (٢ أيلول · لقطة
-     ريّان) هو **عنوان القالب** (.entry-title) لأن قالب الصفحة كان
-     default · صار elementor_header_footer زي باقي الصفحات.
+  🔴 رأس الصفحة **ماء عميق** (luvit-deep + rt-head + wl-head) من ٣ أيلول ·
+     ريّان: «وهون مافيه تصميم للراس». نفس هيكل رأسَي «من نحن» والروتينات
+     حرفياً، وزيادته الوحيدة شارة «محفوظة على جهازك» وهي حقيقة من
+     wishlist.js لا كلام. وقبله كان band-mist باهتاً.
+     ⚠️ وقالب الصفحة لازم يضل elementor_header_footer · لأنه default كان
+        بيطبع عنوان القالب (.entry-title) تحت النافبار (لقطة ريّان ٢ أيلول).
 
   ⚠️ ولازم الصفحة تحمّل wishlist.js · هو سنيبت WPCode (Footer).
      بلاه بتطلع الصفحة فاضية دايماً وبتشبه باغاً.
 
   البلوك الوحيد اللي بينلصق: هالملف كله بويدجت HTML بصفحة /wishlist.
 -->
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">
+<!-- ══════════════════════════════════════════════════════════════════════
+     LUV IT · رأس صفحة المفضّلة · /wishlist
+     ══════════════════════════════════════════════════════════════════════
+     بيستبدل سكشن #page-head القديم (band-mist · luvit-section--tight) كامل.
+     🔴 والسكشن اللي بعده (#wishlist · band-light) بيضل زي ما هو حرف بحرف ·
+        الشبكة وسطر الحالة وبلوك .luvit-empty ما بينلمسوا.
+
+     الهيكل **مطابق** لرأس «من نحن» (a1-about.html:94) ورأس الروتينات
+     (r0-hub.html:9): section > inner > head--start > nav · eyebrow · h1 ·
+     sub · [شارة] · ol.rt-flow · div.foot.
+     الزيادة الوحيدة هي الشارة، وهي الحقيقة الوحيدة اللي بتخص هالصفحة.
+
+     ══ كيف بينركّب بإلمنتور ══
+       ١ · ويدجت HTML جوّا كونتينر لحاله · الصق نص السكشن
+       ٢ · اختار **الكونتينر** (مش الويدجت) ← Advanced ← Attributes:
+              data-nav-bg|dark
+              data-luvit-bubbles|12
+           ⚠ الفاصل خط عامودي | مش يساوي =
+       ٣ · CSS ID للكونتينر = page-head
+       ٤ · الموجة بويدجت HTML تانية بكونتينر تاني **بعده مباشرة**
+           (موجة بالمكان الغلط بتصير شريطاً قائماً بذاته · قاعدة ٩ آب)
+       ٥ · Update ثم LiteSpeed ← Purge All ثم افحص بنافذة تصفّح خفي
+
+     🔴 ولا حرف بهالرأس بينعبّى بالـJS · كله ثابت. وهاد مقصود: أول زيارة
+        غالباً بلا منتجات، فالرأس لازم يوصل كامل من أول رسمة بلا ما ينتظر
+        wishlist.js ولا Store API ولا الشبكة.
+
+     ⚠ ولساها الصفحة بدها wishlist.js (سنيبت WPCode · Footer) · هو اللي
+       بيعبّي الشبكة تحت. بلاه الرأس بيشتغل تمام والشبكة بتضل فاضية.
+     ══════════════════════════════════════════════════════════════════════ -->
+<section class="luvit-section luvit-deep luvit-page-top rt-head wl-head"
+         data-nav-bg="dark" data-luvit-bubbles="12" id="page-head">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
 
       <nav aria-label="مسار التنقّل">
         <a href="/">الرئيسية</a>
@@ -29,12 +63,72 @@
       </nav>
 
       <p class="luvit-section__eyebrow">Wishlist</p>
-      <h1 class="luvit-section__title">المفضّلة</h1>
-      <p class="luvit-section__sub">اللي حبّيتيه ومحتفظة فيه لبعدين · بتقدري تضيفيه للسلة من هون على طول.</p>
+
+      <!-- العنوان بياخد الوعد · والسطر بياخد الفعل · والشارة بتاخد الآلية.
+           تلات أشغال مختلفة، مش تلات صياغات لنفس الجملة. -->
+      <h1 class="luvit-section__title">اللي حبّيتيه · محفوظ لما ترجعي</h1>
+      <p class="luvit-section__sub">
+        جمّعي اللي عجبك من المتجر بضغطة قلب، وضيفيه للسلة من هون لما تجهزي.
+      </p>
+
+      <!-- 🔴 الشارة · الفرق الحقيقي لهالصفحة، ومسحوب من الكود لا من الراس:
+           wishlist.js بيخزّن بـlocalStorage تحت المفتاح luvit_wish_v1 وما
+           بده مصادقة ولا حساب (شوف تعليق رأس الملف). ولا رقم ولا وعد بمدة. -->
+      <p class="wl-head__note">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <rect x="4.5" y="2.8" width="15" height="18.4" rx="3.2"/>
+          <path d="M10 18.4h4"/>
+        </svg>
+        محفوظة على جهازك · بلا حساب
+      </p>
+
+      <!-- الآلية بثلاث محطات · نفس مكوّن رأس «من نحن» بالضبط.
+           ثلاث عناصر يعني قاعدة :has() المعرّفة بـtokens.css:12566 بتعطيه
+           ثلاثة أعمدة وبتقصّر الخيط الواصل لحاله · بلا ولا سطر CSS جديد.
+
+           🔴 ولا محطة دفع ولا توصيل هون · تعليق a1-about.html:92 بيقول
+              صراحةً إنه شريط الوعد انشال من الرأس الغامق وحقائقه بصفحة
+              المتجر وبالأسئلة. هالشريط بيشرح **المفضّلة**، مش الطلب.
+
+           ⚠ وبينطوي لما تكون في منتجات · شوف القسم ٣ بالـCSS. -->
+      <ol class="rt-flow" data-luvit="stagger">
+        <li class="rt-flow__item">
+          <span class="rt-flow__dot">١</span>
+          <span class="rt-flow__label">اضغطي القلب</span>
+          <span class="rt-flow__note">على بطاقة أي منتج بصفحة المنتجات</span>
+        </li>
+        <li class="rt-flow__item">
+          <span class="rt-flow__dot">٢</span>
+          <span class="rt-flow__label">بينحفظ لحاله</span>
+          <span class="rt-flow__note">على متصفحك مباشرة · بنفس اللحظة</span>
+        </li>
+        <li class="rt-flow__item">
+          <span class="rt-flow__dot">٣</span>
+          <span class="rt-flow__label">ارجعيله وقت ما بدك</span>
+          <span class="rt-flow__note">وضيفيه للسلة من هون على طول</span>
+        </li>
+      </ol>
+
+      <!-- 🔴 الأزرار **مخفية بالافتراضي** وبتبان بس لما تكون في منتجات.
+           السبب: بالحالة الفاضية، .luvit-empty__foot تحت بنفس الشاشة فيها
+           «شوفي المنتجات» و«اختبار البشرة» · وأربع أزرار بشاشة وحدة
+           بتضعّف بعضها. وبالحالة الممتلئة البلوك التحتاني مخفي أصلاً،
+           فهاي الأزرار بتصير الوحيدة وما بتتصادم مع إشي.
+           ⚠ ولا تشيل الحالة الافتراضية عشان «تبسّط» · بتصير أربع أزرار. -->
+      <div class="luvit-section__foot wl-head__foot">
+        <a class="luvit-btn luvit-btn--arrow" href="/cart">روحي عالسلة</a>
+        <a class="luvit-btn luvit-btn--ghost luvit-btn--on-dark" href="/products">كمّلي التسوّق</a>
+      </div>
 
     </div>
   </div>
 </section>
+
+<!-- 🔴 background لازم يطابق **آخر لون بتدرّج .luvit-deep بالضبط** · #0B9198
+     (tokens.css:3321) · و--wave-fill = لون السكشن اللي تحت · #wishlist
+     عليه band-light = --color-paper = #FFFFFF (tokens.css:19).
+     أي اختلاف بسيط بيطلع شريطاً أبيض عايماً · فخّ مسجّل ٩ آب. -->
+<div class="luvit-wave" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
 
 <section class="luvit-section band-light" data-nav-bg="light" id="wishlist">
   <div class="luvit-section__inner">

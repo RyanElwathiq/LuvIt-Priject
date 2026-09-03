@@ -150,7 +150,7 @@
      ═══════════════════════════════════════════════ -->
 <section class="luvit-section band-light" data-nav-bg="light" id="why-we-started">
   <div class="luvit-section__inner" style="max-inline-size:1020px">
-    <div class="luvit-about-split" data-luvit="reveal">
+    <div class="luvit-about-split" data-luvit="stagger">
      <div class="luvit-section__head luvit-section__head--start">
 
       <h2 class="luvit-section__title">ليش بلّشنا</h2>
@@ -169,11 +169,37 @@
 
      </div>
 
-      <figure class="luvit-about-shot">
-        <img src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-1-bottle.webp"
-             alt="عبوة سيروم فيتامين سي من Luv it"
-             width="600" height="750" loading="lazy" decoding="async">
-        <figcaption>سيروم فيتامين سي · بيساعد بشرتك على الإشراق والنضارة · خطوة من روتين، مش منتج لحاله</figcaption>
+      <!-- 🔴 كان هون <figure class="luvit-about-shot"> فيها صورة سيروم فيتامين سي.
+           ريّان ٣ أيلول: «السيروم اللي جاي وكأنه هو أقوى إشي عننا بشكل غبي».
+           والعلّة **معنى مش ذوق**: الفقرة اللي جنبها بتقول «منسألك عن بشرتك
+           قبل ما نحكي عن منتج» · فالصورة كانت بتناقض النصّ بنفس السطر،
+           والمنتج بيصير البطل بصفحة موضوعها إنه مش البطل.
+
+           ⤷ البديل: قطرة وحدة على مي ساكنة. القرص **صورة** (انكسار حقيقي
+             وحبيبات ضوء · وهاد اللي ما بينرسم بالـCSS)، والحلقات حواليه
+             **مرسومة** بنفس المركز فالاثنين بيقرأوا كقطعة وحدة.
+
+           🔴 و`.luvit-about-shot` بيضل بمكانه بـtokens.css · لا تحذفه.
+              لساه مرجوعاً من _وارد/audit/about-preview.html و_وارد/audit/push2/*
+              و_وارد/_pre/a1-about.html (متفحوص بـgrep).
+
+           🔴 ترتيب الولاد جوّا __stage إلزامي: تلات حلقات وبعدين القرص.
+              الأقطار متعيّنة بـnth-child(1..3)، فأي عنصر بينحط قبلهن
+              بيزيح الأقطار كلها وبتصير الحلقات فوق بعض. -->
+      <figure class="luvit-ripple">
+        <div class="luvit-ripple__stage">
+          <span class="luvit-ripple__ring" aria-hidden="true"></span>
+          <span class="luvit-ripple__ring" aria-hidden="true"></span>
+          <span class="luvit-ripple__ring" aria-hidden="true"></span>
+          <span class="luvit-ripple__disc">
+            <img src="https://plasmajo.com/wp-content/uploads/2026/09/luvit-about-ripple.webp"
+                 alt="قطرة مي وحدة وقعت على سطح ساكن وموجاتها بتتوسّع"
+                 width="1000" height="1000" loading="lazy" decoding="async">
+          </span>
+        </div>
+        <figcaption class="luvit-ripple__cap">
+          منبلّش من سؤال · وكل خطوة بعده بتنبني على جوابك
+        </figcaption>
       </figure>
 
     </div>
