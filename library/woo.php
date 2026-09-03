@@ -720,3 +720,122 @@ add_action( 'wp_body_open', function () {
 		. 'var t=this;setTimeout(function(){t.classList.remove("is-copied")},1600);});'
 		. '}catch(e){}})();</script>';
 }, 5 );
+
+/* ==========================================================================
+   LUVIT_SCHEMA · سكيما مكمّلة لرانك ماث · ٣ أيلول
+   ==========================================================================
+   رانك ماث PRO بتطلّع Organization وWebSite وProduct (بسعر وتوفّر وصورة
+   حقيقيين · مفحوص). وهاد اللي **ما بتطلّعه** وانقاس مفقوداً:
+
+     ١ · BreadcrumbList  · مفقودة من **كل صفحة** · وهي اللي بتخلّي جوجل
+         تعرض مسار «الرئيسية › الأسئلة» بدل الرابط الخام بنتيجة البحث.
+         🔴 وعندنا مسار **مرئي** بكل صفحة، وهاد شرط جوجل: السكيما لازم
+            تطابق اللي بتشوفه العين. فالمستويان هون هما نفس المستويين
+            المرسومين بالرأس، لا أكثر.
+
+     ٢ · FAQPage · لصفحة الأسئلة.
+         ⚠️ **وبلا مبالغة**: جوجل حصرت نتائج الـFAQ الغنية من آب ٢٠٢٣
+            بالمواقع الحكومية والصحية · فما بنتوقّع صندوقاً موسّعاً بالبحث.
+            القيمة الحقيقية إنّ محرّكات الإجابة (AI Overviews · ChatGPT ·
+            Perplexity) بتقرا الأسئلة والأجوبة منها مباشرة، وجوجل بتفهم
+            الصفحة أحسن. الشغل رخيص والفايدة حقيقية، بس مش اللي كنت قلته.
+
+   🔴 **ولا سؤال ولا جواب مكتوب هون.** المحلّل بيقرا محتوى الصفحة نفسها
+      من قاعدة البيانات · فأي سؤال بينضاف أو بينشال بيتحدّث بالسكيما
+      **بنفس اللحظة**. نسخة تانية من الأسئلة بالكود = انحراف مضمون،
+      وهاد فخّ مسجَّل كلّفنا قبل.
+
+   ⚠️ وما في تعارض مع رانك ماث: كتلة JSON-LD منفصلة **مسموحة ومعتادة**،
+      وجوجل بتجمع الكتل كلها. وما منلمس الـ@graph تبعها عشان أي تحديث
+      للإضافة ما يدهس شغلنا.
+   ========================================================================== */
+add_action( 'wp_footer', function () {  // LUVIT_SCHEMA
+	if ( is_admin() || is_front_page() ) {
+		return;
+	}
+
+	$home  = home_url( '/' );
+	$nodes = array();
+
+	/* ── ١ · مسار التنقّل · مستويان زي المرسوم بالرأس ── */
+	if ( is_singular( array( 'page', 'product' ) ) ) {
+		$title = get_the_title();
+		if ( $title !== '' ) {
+			$nodes[] = array(
+				'@context'        => 'https://schema.org',
+				'@type'           => 'BreadcrumbList',
+				'itemListElement' => array(
+					array(
+						'@type'    => 'ListItem',
+						'position' => 1,
+						'name'     => 'الرئيسية',
+						'item'     => $home,
+					),
+					array(
+						'@type'    => 'ListItem',
+						'position' => 2,
+						'name'     => $title,
+						'item'     => get_permalink(),
+					),
+				),
+			);
+		}
+	}
+
+	/* ── ٢ · الأسئلة · منقروءة من محتوى الصفحة لا مكتوبة هون ── */
+	if ( is_page( 220 ) ) {
+		$content = (string) get_post_field( 'post_content', 220 );
+		$qa      = array();
+
+		/* كل <details class="luvit-acc__item"> فيه <summary> و<div class="luvit-acc__a"> */
+		if ( preg_match_all( '#<details[^>]*luvit-acc__item[^>]*>(.*?)</details>#si', $content, $items ) ) {
+			foreach ( $items[1] as $item ) {
+				if ( ! preg_match( '#<summary[^>]*>(.*?)</summary>#si', $item, $q ) ) {
+					continue;
+				}
+				if ( ! preg_match( '#<div[^>]*luvit-acc__a[^>]*>(.*?)</div>\s*$#si', $item, $a )
+					&& ! preg_match( '#<div[^>]*luvit-acc__a[^>]*>(.*?)</div>#si', $item, $a ) ) {
+					continue;
+				}
+
+				/* السؤال: نصّ الـsummary بلا علامة الفتح */
+				$question = trim( wp_strip_all_tags( preg_replace( '#<span[^>]*luvit-acc__sign.*?</span>#si', '', $q[1] ) ) );
+				$answer   = trim( wp_strip_all_tags( $a[1] ) );
+				$question = preg_replace( '#\s+#u', ' ', $question );
+				$answer   = preg_replace( '#\s+#u', ' ', $answer );
+
+				if ( $question === '' || $answer === '' ) {
+					continue;
+				}
+				$qa[] = array(
+					'@type'          => 'Question',
+					'name'           => $question,
+					'acceptedAnswer' => array(
+						'@type' => 'Answer',
+						'text'  => $answer,
+					),
+				);
+			}
+		}
+
+		/* 🔴 بيفشل مقفولاً · لو الماركب تغيّر والمحلّل ما لقي إشي، ما بينطبع
+		   FAQPage فاضية. سكيما فاضية أسوأ من ولا سكيما. */
+		if ( count( $qa ) > 0 ) {
+			$nodes[] = array(
+				'@context'   => 'https://schema.org',
+				'@type'      => 'FAQPage',
+				'mainEntity' => $qa,
+			);
+		}
+	}
+
+	if ( empty( $nodes ) ) {
+		return;
+	}
+
+	foreach ( $nodes as $n ) {
+		echo '<script type="application/ld+json">'
+			. wp_json_encode( $n, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
+			. '</script>' . "\n";
+	}
+}, 99 );
