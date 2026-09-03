@@ -86,10 +86,40 @@
         شيل الرابط من جواب «لوين بتوصلوا؟» ولا تخلّيه معلّقاً.
      ══════════════════════════════════════════════════════════════════════ -->
 
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
-         data-nav-bg="light" id="page-head">
+<!-- ═══════════════ ١ · ترويسة الصفحة · «الماء الساكن» ═══════════════
+     🔴 ريّان ٣ أيلول: «راس التصميم مش حلو · انت حاطط اشي افتراضي بدي اشي
+        مخصص لكل وحده». الشريط الباهت (band-mist + luvit-section--tight)
+        انشال، وصار الرأس ماءً ساكناً: أرضية قطرية من **نفس** محطات تدرّج
+        .luvit-deep، وعلامة وحدة · حلقات **راجعة للمركز** (الصدى وصل).
+
+     · الأزرار الأربعة ما انشالت · نفس النصوص ونفس الروابط، بس صارت أربع
+       محطات وكل وحدة بتقول كم سؤال جوّا القسم اللي بتودّي عليه.
+     🔴 الأرقام مسحوبة من **نفس الملف** · انعدّت من عناصر details:
+          faq-order    ٥  (٢ طلب ودفع + ٣ توصيل)
+          faq-product  ٦  (٣ منتجات ومكوّنات + ٣ بشرة واستعمال)
+          faq-account  ٣  (٢ حساب وتتبّع + ١ إرجاع)
+        المجموع ١٤ · مطابق لسطر رأس هالملف «١٤ سؤال · ست مجموعات».
+        🔴 **زدتِ سؤالاً؟ عدّلي الرقم هون بنفس اللحظة** · بيانات منسوخة
+           بتنحرف حتماً، وهي هون بنفس الملف عشان التعديل يصير بحركة وحدة.
+     · ولا فقاعات ولا أشعة بهالرأس **عن قصد** · الصفحة ساكنة، وطبقة
+       الحركة الوحيدة هي الحلقة (٢٨ ثانية).
+
+     ══ كيف بينركّب بإلمنتور ══
+       ١ · ويدجت HTML جوّا كونتينر لحاله · الصق نص السكشن
+       ٢ · اختار **الكونتينر** (مش الويدجت) ← Advanced ← Attributes:
+              data-nav-bg|dark
+           ⚠ الفاصل خط عامودي | مش يساوي
+           🔴 كانت light · **لازم تصير dark** وإلا القائمة بتطلع غامقة
+              على ماء غامق
+       ٣ · CSS ID للكونتينر = page-head
+       ٤ · الموجة بويدجت HTML تانية بكونتينر **بعده مباشرة** (موجة بالمكان
+           الغلط بتصير شريطاً قائماً بذاته · قاعدة ٩ آب)
+       ٥ · Update ثم LiteSpeed ← Purge All ثم افحص بنافذة تصفّح خفي
+     ═══════════════════════════════════════════════ -->
+<section class="luvit-section luvit-page-top rt-head qa-head"
+         data-nav-bg="dark" id="page-head">
   <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
 
       <nav aria-label="مسار التنقّل">
         <a href="/">الرئيسية</a>
@@ -104,11 +134,66 @@
         مكتوب هون إنه لسا ما تأكّدنا منه.
       </p>
 
-      <div class="luvit-section__foot">
-        <a class="luvit-btn luvit-btn--ghost" href="#faq-order">الطلب والدفع</a>
-        <a class="luvit-btn luvit-btn--ghost" href="#faq-product">المنتجات والمكوّنات</a>
-        <a class="luvit-btn luvit-btn--ghost" href="#faq-account">الحساب والتتبّع</a>
-        <a class="luvit-btn luvit-btn--ghost" href="#faq-more">ما لقيتِ جوابك؟</a>
+      <!-- 🔴 الحلقة عنصر صريح لا عنصر زائف · مضيف السكشن بيحط clearfix
+           ::before على الحاويات، وبشبكة بيصير خلية حقيقية بتسرق مكاناً
+           (نفس سبب .luvit-deep__rays و.rt-shallow__wash).
+           🔴 وهي **بنت .qa-hub لا بنت اللِست** · لأن data-luvit=stagger
+              بيشتغل على أولاد اللِست، فلو كانت جوّاها بتنعدّ محطة خامسة
+              وبتنفتح بحركة مش إلها. -->
+      <div class="qa-hub">
+        <span class="qa-ripple qa-ripple--in" aria-hidden="true"></span>
+
+        <ul class="qa-hub__list" data-luvit="stagger">
+
+          <li>
+            <a class="qa-station" href="#faq-order">
+              <span class="qa-station__mark" aria-hidden="true">٥</span>
+              <span class="qa-station__text">
+                <span class="qa-station__label">الطلب والدفع</span>
+                <span class="qa-station__meta">خمس أسئلة</span>
+              </span>
+            </a>
+          </li>
+
+          <li>
+            <a class="qa-station" href="#faq-product">
+              <span class="qa-station__mark" aria-hidden="true">٦</span>
+              <span class="qa-station__text">
+                <span class="qa-station__label">المنتجات والمكوّنات</span>
+                <span class="qa-station__meta">ست أسئلة</span>
+              </span>
+            </a>
+          </li>
+
+          <li>
+            <a class="qa-station" href="#faq-account">
+              <span class="qa-station__mark" aria-hidden="true">٣</span>
+              <span class="qa-station__text">
+                <span class="qa-station__label">الحساب والتتبّع</span>
+                <span class="qa-station__meta">ثلاث أسئلة</span>
+              </span>
+            </a>
+          </li>
+
+          <!-- 🔴 هاي المحطة بلا رقم عن قصد · ما إلها أسئلة، هي القطرة اللي
+               لساها ما عملت حلقة. فعلامتها هي الحلقة نفسها مرسومة. -->
+          <li>
+            <a class="qa-station qa-station--open" href="#faq-more">
+              <span class="qa-station__mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18"
+                     aria-hidden="true" focusable="false">
+                  <circle cx="12" cy="12" r="3.6"></circle>
+                  <circle cx="12" cy="12" r="8.6"></circle>
+                </svg>
+              </span>
+              <span class="qa-station__text">
+                <span class="qa-station__label">ما لقيتِ جوابك؟</span>
+                <span class="qa-station__meta">لو ضل سؤال</span>
+              </span>
+            </a>
+          </li>
+
+        </ul>
       </div>
 
     </div>

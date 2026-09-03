@@ -16838,7 +16838,9 @@ body.page-id-481 .luvit-affiliate p {
 
 /* العنوان بيطلع مرتبة · h1 حقيقي مش h2 · --text-h1 موجود بالتوكنز
    ومستعمل بمكان واحد بس (`.luvit-cta__title`). ٣٠px→٤٤px. */
-.sh-head .luvit-section__title { font-size: var(--text-h1); }
+/* 🔴 **انتقلت لقاعدة عيلة** · شوف كتلة PAGE-TOP-H1 بآخر الملف.
+   كانت مكتوبة هون لصفحة الشحن وحدها، وثلاث مواصفات مستقلة طلبت نفس
+   الترقية لصفحاتهن · وترقية صفحة صفحة معناها ستّ صفحات بستّ أحجام. */
 
 /* الـeyebrow صار لِيبل ملف · وشعرة بتمشي منه لآخر العمود.
    🔴 والشعرة **لون واحد مسطّح لا تدرّج** بقصد: التدرّج إله جهة، والجهة
@@ -17442,3 +17444,984 @@ body.page-id-481 .luvit-affiliate {
   padding-block-start: var(--space-6, 2rem);
 }
 /* PT-HEAD:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PAGE-TOP-H1:START · حجم عنوان رأس الصفحة · قرار عيلة لا قرار صفحة
+   ═══════════════════════════════════════════════════════════════════════
+   المقيس: `.luvit-section__title` بترسم بـ`--text-h2` بكل مكان، يعني
+   **عنوان الصفحة `h1` بنفس حجم الـ`h2`ات اللي تحته بالضبط**. الهرم
+   البصري مسطّح، والفرق الوحيد بينهم دلالي مش مرئي.
+
+   وتلات مواصفات مستقلة (الشحن · الاستبدال · الخصوصية والشروط) وصلت
+   لنفس النتيجة كل وحدة لحالها وطلبت الترقية لصفحتها. ولو انطبّقت صفحة
+   صفحة بتصير **ست صفحات بستّ أحجام**، وهاد أسوأ من المشكلة الأصلية ·
+   فالقاعدة عيلة: كل رأس صفحة بياخد `--text-h1`.
+
+   ⚠️ والفرق أصغر مما بيبان بالاسم:
+        --text-h1  clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem)  → 30px … 44px
+        --text-h2  clamp(1.5rem,   1.3rem + 1vw,   2.125rem) → 24px … 34px
+      يعني على ٣٦٠px بيصير 30px بدل 24.4px. أطول عنوان بالموقع
+      «منبنيلك روتين · مش منبيعك منتجات» (٣٢ محرفاً) · ولازم لقطة
+      حقيقية على تلفون قبل أي «خلص»، هاد اللي ما بقدر أشوفه من هون.
+   ⚠️ ومحصورة بـ`.luvit-page-top` · عناوين السكاشن الداخلية ما بتتحرّك.
+   ═══════════════════════════════════════════════════════════════════════ */
+.luvit-page-top .luvit-section__title {
+  font-size: var(--text-h1);
+}
+/* PAGE-TOP-H1:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   X1-RETURNS-HEAD:START · رأس /returns · «خط الماء» · لوح الحالتين
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان نقلاً عن صاحب الموقع: «راس التصميم مش حلو انت حاطط اشي افتراضي
+   بدي اشي مخصص لكل وحده». والافتراضي **مسمّى بالكود**: ست صفحات بتاخد
+   `.band-mist.luvit-page-top` (سطر ١٦٣٨٠) يعني شريط باهت + بلوم بيتنفّس،
+   ونفس الشي حرفياً على /shipping و/returns.
+
+   والفكرة هون **مسحوبة من نصّ الصفحة لا مركّبة عليه**: السطر الموجود
+   أصلاً بيوعد «وهون مكتوبة بوضوح بدل ما تكتشفيها وقت المشكلة»، وترويسة
+   الملف بتقول الأطروحة بسطر: «المفتوح ما بيرجع · والمعيب بيرجع دايماً».
+   قاعدة بوجهين ← فالرأس بيصير **لوحاً بوجهين مقسوماً بخط واحد**:
+   فوق الخط السؤال، وتحت الخط الجوابان جنب بعض.
+
+   🔴 وليش خط لا بطاقة: `--color-paper` مقابل أي تينت فاتح تباينه ١٫٠٧
+      لـ١٫١٨ · يعني **لوح أبيض على أرضية فاتحة ما بيبان** (نفس القياس
+      المسجَّل بسطر ١١٠٩٢ عن band-light مقابل band-mist = 1.03).
+      الخط بيبان، والتعبئة لأ. فالبنية كلها بتنبني على خطوط.
+
+   🔴 وربح مقيس زيادة: الموجة البيضا فوق أرضية الرأس المشتركة (#F3FCFE)
+      تباينها **1.04:1** يعني شبه مختفية. حوض الماء الجديد بيخلص على
+      `--aqua-100` فالدرزة بتصير **1.18:1** · نفس موجة ريّان اللي حكى
+      إنها حلوة صارت تبان فعلاً على هالصفحة.
+
+   ⚠️ والحركة **وحدة وبس** بالرأس كله (خط الماء)، وبنفس الوقت الصفحة
+      بتخسر بلوم `band-mist` · فصافي الطبقات المتحركة **بينزل واحد**.
+   ⚠️ ولا `backdrop-filter` ولا WebGL ولا مكتبة جديدة.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ---- ١ · البند · بلا band-mist وبلا tight ---------------------------- */
+.x1-head {
+  background-color: var(--color-paper, #FFFFFF);
+}
+/* 🔴 المضاعفة مقصودة لا زيادة: `.luvit-section` (سطر ٣٢٠٧) بتكتب `padding`
+   مختصرة، والمضاعفة بتوصل (0,2,0) فالقاعدة بتمشي مهما كان ترتيب الورقة
+   بلا !important · نفس منطق `.rt-shallow.rt-shallow` و`.luvit-cut-top`.
+   🔴 وولا `padding` ولا `padding-block` مختصرة هون بأي حال · `.luvit-page-top`
+      (سطر ٩٧٧٨) بتكتب `padding-block-start` لحالها وأي مختصرة بتدهسها
+      فبيروح فراغ النافبار كله ويقعد العنوان تحت الشريط. */
+.x1-head.x1-head {
+  padding-inline: 0;
+  padding-block-end: 0;
+}
+/* المزراب بينتنقل من البند للحاوية · وهاد هو اللي بيخلّي خط الماء يمشي من
+   حافة الشاشة لحافتها والنصّ يضل بعرض القراءة.
+   ⚠️ `max-inline-size` هي `max-width` نفسها، والخصوصية (0,2,0) بتغلب
+      `.luvit-section__inner` (0,1,0) مهما كان الترتيب.
+   ⚠️ وزيادة عرض الحد بمزرابين بتخلّي عرض المحتوى **مطابقاً** للسكاشن
+      التانية بالضبط (1200px) بدل ما يضيق ٤٠px. */
+.x1-head .luvit-section__inner {
+  max-inline-size: calc(var(--container-max, 1200px) + (var(--container-gutter, 20px) * 2));
+  padding-inline: var(--container-gutter, 20px);
+}
+
+/* ---- ٢ · فوق الخط · هوا ---------------------------------------------- */
+.x1-head__air {
+  background-color: var(--color-paper, #FFFFFF);
+  padding-block-end: var(--space-7, 3rem);
+}
+/* الرأس جوّا حوض إله padding تبعه، فهامشه السفلي بيصير فراغاً يتيماً ·
+   نفس تحرير `.rt-shallow .luvit-section__head` (سطر ١٤١٥٤). */
+.x1-head .luvit-section__head { margin-bottom: 0; }
+/* 🔴 `.luvit-section__head--start` عليها max-width: 46ch (سطر ١١١٠٦) وهي صح
+   للنصّ · بس هون العنوان والسطر عندهن حدودهن، فالحدّ العام بينحرّر.
+   🔴 والعنوان بيرتفع لـ--text-h1 · وهو **h1 الصفحة الوحيد** وبيرندر اليوم
+      بنفس حجم الخمس h2 اللي تحته بالضبط (--text-h2)، وهاد نصّ سبب إحساس
+      «الرأس زي أي بند». التوكن موجود ومش مخترَع. */
+.x1-head .luvit-section__head--start { max-inline-size: none; }
+.x1-head .luvit-section__title {
+  font-size: var(--text-h1, clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem));
+  max-inline-size: 20ch;
+}
+.x1-head .luvit-section__sub { max-inline-size: 52ch; }
+
+/* ---- ٣ · الخط · الحركة الوحيدة بالرأس -------------------------------- */
+/* 🔴 اللون `--aqua-600` لا `--aqua-500` · مقيس: aqua-500 تباينه على الورق
+   **2.79** وعلى الماء 2.60 يعني راسب لعنصر واجهة (٣:١)، وaqua-600 بيعطي
+   4.25 و3.96. والخط هو الحركة الحاملة للرأس فما بينفع يكون تحت الحد.
+   ⚠️ والتلاشي على الطرفين (١٣٪ و٨٧٪) عشان يقرا **خطاً مرسوماً** لا حدّ
+      حاوية مقصوصاً · عند 1920px القسم الصلب ١٤٢٠px يعني أوسع من الحاوية
+      (1240px) بـ٩٠px من كل جهة، فبيبان إنه متعدّي بقصد.
+   ⚠️ والتدرّج **متناظر** فما إله علاقة بالاتجاه · و90deg فيزيائية أصلاً
+      وما بتنقلب مع RTL.
+   · وخط أبيض ١px تحته = سطح المي (meniscus) · بلا كلفة رسم. */
+.x1-head__waterline {
+  position: relative;
+  overflow: hidden;
+  block-size: 3px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--aqua-600, #1E869C) 6%, transparent) 0%,
+    var(--aqua-600, #1E869C) 13%,
+    var(--aqua-600, #1E869C) 87%,
+    color-mix(in srgb, var(--aqua-600, #1E869C) 6%, transparent) 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .92);
+}
+/* المدّ · بيمشي وبيرجع، وهاد معنى «الاستبدال» بحركة لا بكلمة.
+   🔴 والهندسة **بلا اتجاه أصلاً**: `inset-inline: 27%` متساوية الطرفين
+      فالعنصر عرضه ٤٦٪ ومركزه بالنص بالحالتين، والإزاحة ±٥٨٪ من عرضه هو.
+      يعني المشهد **متطابق** بـRTL وLTR · ولا سطر بيسأل عن الاتجاه ولا
+      عن سمة `dir` (القاعدة المسجّلة ٩ آب).
+   ⚠️ وهدفياً **مش شريط تقدّم**: توهّج عريض ناعم بشفافية ٠٫٧٢ على ٢٦ ثانية
+      ذهاباً وإياباً، لا قطعة صلبة بتملا من صفر لمية. */
+.x1-head__tide {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 27%;
+  pointer-events: none;
+  opacity: .72;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, .95) 50%,
+    rgba(255, 255, 255, 0) 100%);
+  animation: x1-tide 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes x1-tide {
+  from { transform: translate3d(-58%, 0, 0); }
+  to   { transform: translate3d( 58%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .x1-head__tide { animation: none; }
+}
+
+/* ---- ٤ · تحت الخط · ماء ضحل ------------------------------------------ */
+/* تدرّج بوقفتين وكلهن توكنز · العمق بيزيد لتحت (منطق مي) وهاد بنفس الوقت
+   اللي بيخلّي الموجة البيضا تبان عند القصّ (1.18:1 بدل 1.04:1).
+   🔴 و`padding-block-end` بيرجّع الـ٧٠px اللي بتاكلهم الموجة بهامشها
+      السالب (سطر ٢٧٥٥) · بلاه بيلزق المحتوى بالمنحنى · نفس معادلة
+      `.rt-shallow.rt-shallow` بسطر ١٤١٠٥ بالحرف. */
+.x1-head__water {
+  background-image: linear-gradient(180deg,
+    var(--aqua-50, #EAFAFD) 0%,
+    var(--aqua-100, #D0F3F9) 100%);
+  padding-block-start: var(--space-6, 2rem);
+  padding-block-end: calc(var(--space-7, 3rem) + var(--wave-h, 70px));
+}
+
+/* ---- ٥ · اللوح · جوابان جنب بعض ------------------------------------- */
+/* ⚠️ الشبكة بتقرا اتجاه الكتابة لحالها · بـRTL أول ولد بالـDOM («بيرجع»)
+   بيروح لليمين. ولا سطر بيسأل عن الاتجاه.
+   ⚠️ و`text-align: start` مصرّحة لأن الحوض برّا `.luvit-section__head`
+      فما بيورث محاذاته · والصفحة `direction: rtl` فstart = يمين. */
+.x1-ledger {
+  display: grid;
+  gap: var(--space-5, 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: start;
+}
+@media (min-width: 860px) {
+  .x1-ledger {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: var(--space-7, 3rem);
+  }
+}
+.x1-verdict { min-inline-size: 0; }
+/* الفاصل · شعرة أفقية بالموبايل وعمودية بالديسكتوب · خصائص منطقية لا
+   يمين/يسار، نفس وصفة `.rt-shallow__fact + .rt-shallow__fact` (سطر ١٤٢٢٦). */
+.x1-verdict + .x1-verdict {
+  border-block-start: 1px solid color-mix(in srgb, var(--aqua-700, #196B7D) 24%, transparent);
+  padding-block-start: var(--space-5, 1.5rem);
+}
+@media (min-width: 860px) {
+  .x1-verdict + .x1-verdict {
+    border-block-start: 0;
+    padding-block-start: 0;
+    border-inline-start: 1px solid color-mix(in srgb, var(--aqua-700, #196B7D) 24%, transparent);
+    padding-inline-start: var(--space-7, 3rem);
+  }
+}
+
+/* ---- ٦ · محتوى الجواب ------------------------------------------------ */
+/* 🔴 الأيقونة **عارية بلا قرص** بقصد: أي قرص أبيض على أرضية aqua-50 تباينه
+   1.07 يعني مش موجود بالعين، وحلّه بيصير حدّاً وظلاً وحلقة = تلات زخارف
+   لشي المفروض يكون هادياً. أيقونة تركوازية ٢٦px بتقول اللي بدها تقوله.
+   🔴 و`stroke: currentColor` و`fill: none` **مصرّحات** · اللون ما بيورث
+      لجوّا svg (فخّ مسجَّل)، ونفس اللي معمول بـ`.luvit-promise__item svg`. */
+.x1-verdict__mark {
+  display: block;
+  margin: 0 0 var(--space-3, .75rem);
+  color: var(--aqua-700, #196B7D);
+}
+.x1-verdict__mark svg {
+  display: block;
+  inline-size: 26px;
+  block-size: 26px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* 🔴 وما استعملت `.luvit-section__eyebrow` مع إنها موجودة · عليها
+   `--tracking-caption` و`text-transform: uppercase` و`--font-latin`،
+   وتلاتتهن للاتيني: Jost ما فيها عربي فبترتد لخط نظام **بصمت**،
+   وuppercase ما بتعني إشي بالعربي. نفس التصريح المكتوب على
+   `.rt-shallow__label` (سطر ١٤٢٤٣). */
+.x1-verdict__label {
+  margin: 0 0 4px;
+  font-family: var(--font-body);
+  font-size: var(--text-caption, .75rem);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--aqua-700, #196B7D);
+}
+.x1-verdict__title {
+  margin: 0 0 var(--space-4, 1rem);
+  font-family: var(--font-heading);
+  font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+  color: var(--color-ink, #1A2529);
+  text-wrap: balance;
+}
+.x1-verdict__note {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  line-height: 1.6;
+  letter-spacing: 0;
+  color: var(--color-ink-soft, #47555B);
+}
+/* 🔴 الرابط `--aqua-700` لا `--aqua-500` ولا `--aqua-600` · مقيس على أسوأ
+   نقطة بالحوض (#D0F3F9): aqua-500 = 2.37 · aqua-600 = 3.61 · **كلاهما
+   راسب** لنصّ ١٤px · aqua-700 = 5.19 وهاوره 8.00. */
+.x1-verdict__more {
+  display: inline-block;
+  margin-block-start: var(--space-3, .75rem);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--aqua-700, #196B7D);
+  text-decoration-line: underline;
+  text-underline-offset: 3px;
+  transition: color 200ms var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .x1-verdict__more:hover { color: var(--aqua-800, #124D5A); }
+}
+.x1-verdict__more:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---- ٧ · شريط الوعد بيصير صفوف لوح -------------------------------- */
+/* 🔴 نفس الكلاسات ونفس البنود ونفس الأيقونات · اللي تغيّر الستايل وبس.
+   الخصوصية (0,2,0) بتغلب `.luvit-promise` (0,1,0) بسطر ١٠٩٣٣ مهما كان
+   الترتيب، و`.band-mist.luvit-page-top .luvit-promise` (سطر ١٦٤٢٦) ما
+   بتنطبق أصلاً لأن `band-mist` انشالت من الوسم.
+   ⚠️ و`display: grid` بتخلّي `flex-wrap` تبع الأصل خامدة، والعناصر
+      (inline-flex) بتنبلّك جوّا الشبكة وبتضل صفوفاً بأيقونة ونصّ. */
+.x1-verdict .luvit-promise {
+  display: grid;
+  gap: var(--space-3, .75rem);
+  margin: 0 0 var(--space-4, 1rem);
+  padding: 0;
+  background: transparent;
+  border-block-end: 0;
+  justify-content: start;
+  justify-items: start;
+}
+.x1-verdict .luvit-promise__item {
+  align-items: flex-start;
+  gap: var(--space-3, .75rem);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: 0;
+  text-align: start;
+  color: var(--aqua-800, #124D5A);
+}
+/* الأيقونة بتتحاذى مع أول سطر لا مع وسط الصف الملتف */
+.x1-verdict .luvit-promise__item svg { margin-block-start: 3px; }
+
+/* ---- ٨ · موبايل ---------------------------------------------------- */
+@media (max-width: 767px) {
+  .x1-head__air { padding-block-end: var(--space-6, 2rem); }
+  .x1-head__waterline { block-size: 2px; }
+  .x1-head__water {
+    padding-block-start: var(--space-5, 1.5rem);
+    padding-block-end: calc(var(--space-6, 2rem) + var(--wave-h, 70px));
+  }
+  .x1-head .luvit-section__title { max-inline-size: 24ch; }
+}
+/* X1-RETURNS-HEAD:END ══════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   QA-HEAD:START · رأس «سؤال وجواب» · /faq و /contact · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان بالحرف: «وراس التصميم مش حلو انت حاطط اشي افتراضي بدي اشي مخصص
+   لكل وحده». وست صفحات كانت لابسة نفس الشريط الباهت (band-mist +
+   luvit-section--tight)، فالكلام صح مقيساً لا انطباعاً.
+
+   الفكرة: هالصفحتان مش صفحات بيع · وحدة بتسأل وواحدة بتجاوب. فمياههن
+   **ساكنة**: ولا أشعة ولا فقاعات ولا كوستِك بيلف. العلامة الوحيدة حلقة.
+
+   والحلقة بتشتغل بالاتجاهين، وهاد كل الفرق بين الصفحتين:
+     /contact   حلقات **طالعة** من نقطة اللمس · والرقم هو نقطة اللمس
+     /faq       حلقات **راجعة** للمركز · الصدى وصل، والأجوبة مرتّبة تحته
+
+   ولا لون مخترع بهالبلوك كله. الأرضية هي **نفس** محطات تدرّج .luvit-deep
+   الثلاث (#124D5A · #0C333C · #08262E) مرتّبة **قطرياً** بدل عمودياً،
+   والحلقات بتركوازي اللوجو #4CC5DA، والباقي توكنز.
+
+   🔴 التباين محسوب لا مقدَّر · وأسوأ حالة هي «نصّ فوق حلقة فوق أفتح نقطة
+      بالأرضية» = #1B606E:
+        عنوان أبيض            7.11:1   (كبير · بده 3)
+        سطر أبيض .82          5.39:1
+        فتات الخبز أبيض .72   4.56:1
+        eyebrow aqua-200      5.18:1
+      و**aqua-400 ما بينفع eyebrow هون** مع إنه اللون المعتمد على الغامق
+      (سطر ٢٨٩٢ بيقول 6.64 على الماء العميق): بيعطي 4.61 على الأرضية
+      لحالها، بس بينزل **3.49** أول ما تمرق حلقة تحته. وaqua-300 بينزل
+      4.24. فالرأس هاد بياخد aqua-200 وحده.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── ١ · الأرضية · ماء ساكن ────────────────────────────────────────────
+   🔴 ولا `padding` مختصرة هون · `.luvit-page-top` بتكتب padding-block-start
+      لحالها وأي مختصرة بتدهسها (نفس تحذير .rt-shallow سطر ١٤٠٩٠).
+   🔴 و`background-color` صلبة **قبل** التدرّج مقصودة: لو طاح التدرّج لأي
+      سبب بيضل النص أبيض على #08262E (15.82:1) بدل ما يقع على ورق أبيض. */
+.qa-head {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #08262E;
+  background-image:
+    radial-gradient(120% 86% at 50% 0%,
+      #124D5A 0%,
+      #0C333C 46%,
+      #08262E 88%);
+}
+
+/* الموجة تحت بتنسحب فوق البند وبتاكل ٧٠px من أسفله
+   (.luvit-wave:not(.seq-blend) عندها margin-top سالب · سطر ٢٧٥٣)
+   فبينرجعوا بالضبط · نفس سطر .rt-shallow.rt-shallow حرفياً.
+   والمضاعفة مقصودة لا غلطة: `.luvit-section` بتكتب `padding` مختصرة
+   بخصوصية (0,1,0)، والمضاعفة بتوصل (0,2,0) فبتمشي مهما كان ترتيب
+   الورقة · بلا !important. */
+.qa-head.qa-head {
+  padding-block-end: calc(var(--space-7, 3rem) + var(--wave-h, 70px));
+}
+
+/* 🔴 الحافة السفلى **مسطّحة تماماً**: شكل التدرّج القطري بينتهي عند ٨٦٪
+   من الارتفاع، فكل اللي تحته #08262E صافي بعرض العنصر كامل.
+   ⤷ ولهاد الموجة اللي بعده بتاخد `background:#08262E` بالضبط · واختلاف
+     درجة وحدة بيطلع شريطاً عايماً (فخّ مسجَّل ٩ آب). */
+
+/* ── ٢ · العلامة · حلقة ───────────────────────────────────────────────
+   عنصر واحد بيحمل أربع حلقات بتدرّج واحد · طبقة مركّبة وحدة بس.
+   الحلقات بنسب مئوية من نصف قطر العنصر (circle closest-side) فبتمشي مع
+   أي `--qa-size` بلا ما تنعاد كتابتها.
+   المسافات بتضيق للبرّا (52 · 46 · 38 بكسل عند الحجم الافتراضي)
+   والشفافية بتخف (.16 · .13 · .10 · .07) · موجة بتهدى وهي رايحة.
+
+   🔴 و.16 هو **السقف** لا ذوق: عند .22 بينزل «فتات خبز أبيض .72» فوق
+      الحلقة لـ3.81 وبيسقط. عند .16 بيعطي 4.56 وبيعدّي. */
+.qa-ripple {
+  --qa-size: 480px;
+  position: absolute;
+  /* 🔴 z-index سالب مع `isolation: isolate` على الرأس · نفس تشريح
+     .luvit-deep. وهاد بيخلّي الحلقات ترسم فوق أرضية الرأس وتحت **كل**
+     محتواه (العنوان والحبّة والمحطات)، وهو المطلوب بالضبط.
+     ⚠️ وما في تعارض مع أي قاعدة `> *` هون لأن العنصر مش ولداً مباشراً
+        للسكشن · هو جوّا .qa-hub أو جوّا .qa-drop. */
+  z-index: -1;
+  inline-size: var(--qa-size);
+  block-size: var(--qa-size);
+  inset-block-start: calc(50% - (var(--qa-size) / 2));
+  inset-inline-start: calc(50% - (var(--qa-size) / 2));
+  pointer-events: none;
+  background-image: radial-gradient(circle closest-side at 50% 50%,
+    rgba(76, 197, 218, 0)    0%,    rgba(76, 197, 218, 0)    38.6%,
+    rgba(76, 197, 218, .16) 39.4%,  rgba(76, 197, 218, .16) 40.0%,
+    rgba(76, 197, 218, 0)   40.8%,  rgba(76, 197, 218, 0)   60.5%,
+    rgba(76, 197, 218, .13) 61.0%,  rgba(76, 197, 218, .13) 61.6%,
+    rgba(76, 197, 218, 0)   62.2%,  rgba(76, 197, 218, 0)   79.5%,
+    rgba(76, 197, 218, .10) 80.0%,  rgba(76, 197, 218, .10) 80.6%,
+    rgba(76, 197, 218, 0)   81.2%,  rgba(76, 197, 218, 0)   95.5%,
+    rgba(76, 197, 218, .07) 96.0%,  rgba(76, 197, 218, .07) 96.6%,
+    rgba(76, 197, 218, 0)   97.2%);
+  will-change: transform, opacity;
+}
+
+/* الحلقة الطالعة · /contact · القطرة لمست الماء والموجة رايحة */
+.qa-ripple--out { animation: qa-ripple-out 28s linear infinite; }
+/* الحلقة الراجعة · /faq · الصدى وصل */
+.qa-ripple--in  { animation: qa-ripple-in  28s linear infinite; }
+
+/* 🔴 البداية والنهاية عند opacity: 0 عن قصد · فالدورة بتقفل على حالها
+   وما في قفزة رجوع تنشاف. والحركة transform و opacity وبس. */
+@keyframes qa-ripple-out {
+  0%   { transform: scale(.42);  opacity: 0; }
+  14%  { transform: scale(.58);  opacity: 1; }
+  86%  { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(1.10); opacity: 0; }
+}
+@keyframes qa-ripple-in {
+  0%   { transform: scale(1.10); opacity: 0; }
+  14%  { transform: scale(1.02); opacity: 1; }
+  86%  { transform: scale(.58);  opacity: 1; }
+  100% { transform: scale(.42);  opacity: 0; }
+}
+
+@media (max-width: 767px) {
+  .qa-ripple { --qa-size: 330px; }
+}
+
+/* الحركة بتوقف · والعلامة بتضل مرسومة. حلقة واقفة أفضل من رأس فاضي. */
+@media (prefers-reduced-motion: reduce) {
+  .qa-ripple {
+    animation: none;
+    transform: scale(.86);
+    opacity: 1;
+  }
+}
+
+/* ── ٣ · النوع على الماء الساكن ───────────────────────────────────────
+   `rt-head` بتعطي العنوان الأبيض والسطر و22ch/54ch · مستعملة كما هي.
+   واللي تحت هو **الفرق المقيس** بس. */
+
+/* العنوان بيكبر مرتبة وحدة · الرأس فيه إشي واحد يقوله، فبيقوله بصوت أعلى.
+   ومضاعفة الكلاس لأن `.rt-head .luvit-section__title` بنفس الخصوصية
+   (0,2,0) وترتيب الورقة بيتغيّر · وهاي قاعدة المشروع بالتصادم. */
+.qa-head.qa-head .luvit-section__title {
+  font-size: var(--text-h1);
+}
+
+/* هامش الرأس · `.luvit-section__head` عليها `margin-bottom: space-7`،
+   والرأس نفسه عنده حشوة سفلية · فبينجمعوا ويصير فراغ مضاعف قبل الموجة.
+   المضاعفة بدل الترتيب: القاعدة الأصلية (0,1,0) وهاي (0,2,1). */
+.qa-head.qa-head .luvit-section__head {
+  margin-bottom: 0;
+}
+
+/* 🔴 aqua-200 لا aqua-400 ولا aqua-300 · السبب مقيس بأول البلوك.
+   ومضاعفة الكلاس بتغلب `.rt-head .luvit-section__eyebrow` حسماً. */
+.qa-head.qa-head .luvit-section__eyebrow {
+  color: var(--aqua-200, #A6E7F1);
+}
+
+/* فتات الخبز · 🔴 لازم يتكتب هون صراحةً:
+   `.luvit-page-top .luvit-section__head > nav a` (سطر ١٦٤٧٨) بتعطيه
+   `--color-ink-soft` (#47555B) وخصوصيتها (0,2,2)، والاستثناء الغامق
+   الموجود مربوط بـ`.luvit-deep` وهالرأس مش .luvit-deep. بلا هالسطور
+   المسار بيطلع رمادياً غامقاً على ماء غامق = 1.9:1 يعني أعمى.
+   والمنافِسة انقاست، والقاعدة تحت (0,3,2) فبتغلبها. */
+.qa-head.luvit-page-top .luvit-section__head > nav a {
+  color: rgba(255, 255, 255, .72);
+  text-decoration: none;
+}
+.qa-head.luvit-page-top .luvit-section__head > nav [aria-current] {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+/* الفاصل زخرفي و`aria-hidden` · محجوب عن قارئ الشاشة، ومع هيك 4.51:1
+   على الأرضية و3.68 فوق حلقة · فوق ٣:١ بكل الحالات. */
+.qa-head.luvit-page-top .luvit-section__head > nav [aria-hidden="true"] {
+  color: rgba(255, 255, 255, .60);
+}
+@media (hover: hover) and (pointer: fine) {
+  .qa-head.luvit-page-top .luvit-section__head > nav a:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+.qa-head.luvit-page-top .luvit-section__head > nav a:focus-visible {
+  outline: 2px solid var(--aqua-200, #A6E7F1);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── ٤ · المادة · زجاج **غامق** ───────────────────────────────────────
+   نفس وصفة .wl-head__note (سطر ١٣٩٥٧) بس **مقلوبة**: هناك زجاج أبيض
+   بيفتّح، وهون زجاج بياخد لون الماء وبيغمّق.
+   🔴 والسبب مقيس مش ذوق: زجاج أبيض .11 فوق حلقة فوق أفتح أرضية بيعطي
+      #598F9A، والنص الأبيض عليه **3.60:1** يعني ساقط. الزجاج الغامق
+      بيعطي #154C59 والنص الأبيض عليه **9.46:1**.
+   🔴 وبلا `backdrop-filter` · ميزانية العلامة صارمة (CLAUDE.md). */
+.qa-station,
+.qa-drop {
+  background-image: linear-gradient(180deg,
+    rgba(8, 38, 46, .34),
+    rgba(8, 38, 46, .66));
+  border: 1px solid rgba(166, 231, 241, .28);
+}
+
+/* ── ٥ · مركز الأجوبة · /faq ──────────────────────────────────────────
+   الأزرار الأربعة القديمة ما انشالت · نفس النصوص ونفس الروابط، بس صارت
+   محطات وكل وحدة بتقول كم سؤال ورا الرابط. */
+.qa-hub {
+  /* 🔴 `position: relative` بلا z-index · لو انحطّ z-index أو transform
+     أو filter أو opacity هون بيصير سياق تكديس وبتنحبس الحلقة جوّاه. */
+  position: relative;
+  margin-block-start: var(--space-6, 2rem);
+}
+.qa-hub__list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3, .75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 1023px) {
+  .qa-hub__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 559px) {
+  .qa-hub__list { grid-template-columns: minmax(0, 1fr); }
+}
+
+.qa-station {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, .75rem);
+  padding: var(--space-4, 1rem);
+  border-radius: var(--radius-md, 16px);
+  color: #FFFFFF;
+  text-decoration: none;
+  transition:
+    transform 260ms var(--ease-out-soft, ease),
+    border-color 260ms var(--ease-out-soft, ease),
+    background-color 260ms var(--ease-out-soft, ease);
+}
+/* الحلقة الصغيرة · نفس علامة الرأس بحجم ٣٨px */
+.qa-station__mark {
+  flex: none;
+  inline-size: 38px;
+  block-size: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(166, 231, 241, .45);
+  color: var(--aqua-100, #D0F3F9);
+  /* 🔴 خط النصّ لا الخط اللاتيني · الأرقام عربية-هندية (٥ ٦ ٣) و Jost
+     ما فيه محارف عربية فبيرتد لخط نظام وبيبيّن غريباً · نفس ملاحظة
+     .luvit-card__eyebrow المسجّلة بسطر ١٠٩٦٤.
+     (و.rt-flow__dot عليها font-latin · هاد فرق مقصود لا سهو.) */
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;              /* 🔴 صفر · نصّ عربي · قاعدة العلامة */
+}
+/* 🔴 اللون ما بيورث لجوّا svg بشكل يعتمد عليه · فخّ مسجَّل · فالحدّ
+   بينكتب صراحةً هون مش بـcurrentColor. */
+.qa-station__mark svg {
+  inline-size: 18px;
+  block-size: 18px;
+  fill: none;
+  stroke: var(--aqua-200, #A6E7F1);
+  stroke-width: 1.4;
+}
+.qa-station__text {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.qa-station__label {
+  font-family: var(--font-heading);
+  font-size: clamp(14px, 1.35vw, 16px);
+  line-height: 1.35;
+  color: #FFFFFF;
+  letter-spacing: 0;
+}
+.qa-station__meta {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .78);
+  letter-spacing: 0;
+}
+/* المحطة الرابعة · بلا رقم لأن ما إلها أسئلة · حدّها بلون الحلقة */
+.qa-station--open { border-color: rgba(76, 197, 218, .34); }
+
+@media (hover: hover) and (pointer: fine) {
+  .qa-station:hover {
+    transform: translateY(-2px);
+    border-color: rgba(76, 197, 218, .62);
+    /* تحت التدرّج الغامق · فبيضل النص أبيض على 8.76:1 */
+    background-color: rgba(76, 197, 218, .08);
+  }
+  .qa-station:hover .qa-station__mark { border-color: rgba(166, 231, 241, .80); }
+}
+.qa-station:active { transform: scale(.99); }
+.qa-station:focus-visible {
+  outline: 2px solid var(--aqua-200, #A6E7F1);
+  outline-offset: 3px;
+}
+
+/* ── ٦ · نقطة اللمس · /contact ────────────────────────────────────────
+   الرقم مش سطراً تحت العنوان · هو المكان اللي بتلمسي فيه الماء، فمنّه
+   بتطلع الحلقة. والهالة ٦px هي أول حلقة، واقفة وملتصقة. */
+.qa-reach {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3, .75rem);
+  margin: var(--space-6, 2rem) 0 0;
+}
+.qa-reach__lead {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: rgba(255, 255, 255, .82);
+  letter-spacing: 0;
+}
+.qa-drop {
+  /* 🔴 relative بلا z-index · ولا transform ولا filter ولا opacity على
+     هالعنصر أبداً: أي وحدة منهن بتعمل سياق تكديس، وساعتها الحلقة
+     بترسم **فوق** وجه الحبّة بدل ما تكون وراها. ولهاد الـhover تبعها
+     هالة بتوسّع لا حبّة بترفع. */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 46px;
+  padding: 8px 20px;
+  border-radius: var(--radius-pill, 999px);
+  color: #FFFFFF;
+  text-decoration: none;
+  /* 🔴 أربعة أشياء بتعزل الرقم اللاتيني، والرابع هو اللي بينتنسى:
+       ١ dir="ltr" بالماركب
+       ٢ unicode-bidi: isolate
+       ٣ خط لاتيني
+       ٤ **text-align صريحة** · لأن `text-align: start` تحت ltr بتعني
+         **يسار**، وهي القيمة الابتدائية، وهالباغ نشر مرتين قبل. */
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: center;
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: .04em;          /* لاتيني فقط · ولا مرة على عربي */
+  box-shadow:
+    inset 2px 2px 0 -2px rgba(255, 255, 255, .40),
+    0 0 0 6px rgba(76, 197, 218, .10);
+  transition:
+    box-shadow 300ms var(--ease-out-soft, ease),
+    border-color 300ms var(--ease-out-soft, ease);
+}
+.qa-drop__num {
+  /* فوق الحلقة · وبيضمن إن الرقم ما بينلمس بأي طبقة ماء */
+  position: relative;
+}
+@media (hover: hover) and (pointer: fine) {
+  .qa-drop:hover {
+    border-color: rgba(76, 197, 218, .62);
+    /* الهالة بتتوسّع · الماء بيرد على اللمسة */
+    box-shadow:
+      inset 2px 2px 0 -2px rgba(255, 255, 255, .40),
+      0 0 0 10px rgba(76, 197, 218, .12);
+  }
+}
+.qa-drop:focus-visible {
+  outline: 2px solid var(--aqua-200, #A6E7F1);
+  outline-offset: 4px;
+}
+/* QA-HEAD:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LEGAL-HEAD:START · رأس الصفحتين القانونيتين · /privacy و/terms
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان: «راس التصميم مش حلو · انت حاطط اشي افتراضي · بدي اشي مخصص
+   لكل وحده».
+
+   والسبب مقيس: ست صفحات بتلبس `luvit-section--tight band-mist
+   luvit-page-top`، وطابعها كله جاي من الأرضية · تدرّج ببلوم بيتنفّس ٣٤
+   ثانية. يعني **نفس الأرضية ست مرات**. وأرضية مختلفة شوي = نفس المشكلة
+   بلون تاني.
+
+   ⤷ فالقانونيتان بتطلعان من الماء كلياً. الأرضية بتصير **ورق ساكن**
+     (`--color-mist` بلا ولا حركة)، والاهتمام بينتقل للبنية والخط:
+       · مفردة وحدة · **خط شعرة ١px** بيتكرر تلات مرات ·
+         ترويسة مختومة · فاصل عمودي بين عمودين · شعرات بين السجلات
+       · تخطيط **غير متناظر** · عنوان كبير مقابل لوح أجوبة أضيق
+       · ولا بطاقة ولا انحناء ولا ظل · هاي الصفحتان الوحيدتان بالموقع
+         اللي بتعرض معلومة **بخطوط لا ببطاقات**
+
+   🔴 وليش لوح الأجوبة روابط لا شارات: صفحة قانونية بتنقرا بسؤال واحد
+      «وين الجواب». فالسطور التلاتة بتقفز فعلاً لـ#what و#who و#rights
+      (وبالشروط #order و#not-medical و#law) · الشاشة الأولى صارت فهرساً.
+      ⚠️ وكل قيمة فيها **مسحوبة من قسم بالصفحة نفسها** · لو تغيّر القسم،
+         السطر بيصير غلط. مكتوب بالماركب فوق اللوح صراحةً.
+
+   🔴 وصفحة الشروط **ما بتاخد شريط وعد** · الخصوصية إلها واحد لأنها
+      الصفحة اللي بتخوّف، والشروط صفحة التزام. الفرق مقصود، واللي
+      بيجمعهن هو الخيط والختم واللوح · وهدول متطابقان.
+
+   ⚠️ ثلاثة فخاخ من الملف نفسه، متجنَّبة بقصد:
+     ١ · **ولا `padding` مختصرة هون** · `.luvit-page-top` (سطر ٩٧٧٨)
+         بتكتب padding-block-start لحالها وأي مختصرة بتدهسها.
+     ٢ · **مضاعفة الكلاس لا !important** · `.lg-doc.lg-doc` بتوصل (0,2,0)
+         فبتغلب `padding` تبع `.luvit-section` مهما كان ترتيب الورقة.
+     ٣ · **صفر `direction: ltr` بهالكتلة كلها** · فالفخّ المسجَّل مرتين
+         («text-align: start مع ltr بتعني يسار») ما بيقدر يشتغل أصلاً.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── ١ · الورقة ─────────────────────────────────────────────────────────
+   `--color-mist` مش `band-mist` · أبرد وأرمد من غسلة الماء تبع باقي
+   الرؤوس، وهاد هو الإحساس «الرسمي».
+   والمقيس على الأبيض تحتها **1.08:1** (مقابل 1.03 للقديمة) · لساها
+   حافة خفيفة، فالحدّ الحقيقي بيضل **الموجة** · وهي بتضل مكانها.
+   ⚠️ ولا `overflow: hidden` ولا `isolation` هون · ما في ولا طبقة غطاء
+      بهالرأس، فما في شي يتخبّى ولا شي ينعزل. */
+.lg-doc {
+  position: relative;
+  background-color: var(--color-mist, #F2F7F9);
+
+  /* الشعرة · aqua-700 بـ٣٥٪ بتركّب على #A6C6CE ونسبتها **1.68:1**.
+     مقيسة لا مذوّقة: --color-line بتعطي 1.14 و--aqua-200 بتعطي 1.27،
+     والاثنتان بتختفيا · و٣٥٪ أول قيمة بتخلّي المفردة تُقرا. */
+  --lg-rule: color-mix(in srgb, var(--aqua-700, #196B7D) 35%, transparent);
+}
+
+/* الموجة بتسحب ٧٠px من أسفل البند بهامش سالب · بترجع بالضبط.
+   نفس معادلة `.rt-shallow.rt-shallow` (سطر ١٤١٠٦). */
+.lg-doc.lg-doc {
+  padding-block-end: calc(var(--space-7, 3rem) + var(--wave-h, 70px));
+}
+
+/* الرأس جوّا شبكة، فهامشه السفلي بيصير فراغاً يتيماً · ونفس تحرير
+   `.rt-head` (سطر ١٢٦٨٨) و`.rt-shallow` (سطر ١٤١٥٨): حدّ الـ46ch صح
+   للنصّ وبيخنق الشبكة. */
+.lg-doc .luvit-section__head { margin-bottom: 0; }
+.lg-doc .luvit-section__head--start { max-inline-size: none; }
+
+/* ── ٢ · شريط الوعد بيصير أول سطر بالوثيقة (الخصوصية وحدها) ────────────
+   كان شريطاً aqua-50 موسّطاً وعرضه الشاشة · صار **سطر الورقة الأول**:
+   بلا أرضية (أرضيتان فوق بعض = بلوكان لا وثيقة)، وبمحاذاة البداية
+   ومحدوداً بعرض الحاوية عشان يتحاذى مع العنوان تحته بالضبط، وبينتهي
+   بنفس الشعرة.
+   ⚠️ الحد الأقصى = عرض الحاوية + الحشوتان الجانبيتان · لأن الشريط
+      خارج `.luvit-section__inner` بالماركب فما بيرث حدّه. */
+.lg-doc .luvit-promise {
+  /* 🔴 **حشوة مزدوجة انصلّحت.** `.lg-doc` بترث
+     `padding: space-9 var(--container-gutter)` من `.luvit-section`،
+     والشريط ولد مباشر إلها · فحشوة جانبية تانية عليه بتزيحه ٢٠px
+     زيادة عن العنوان اللي تحته، والانزياح بيبان تحت ١٢٤٠px تقريباً.
+     فالحدّ صار عرض الحاوية نفسه بلا زيادة، والحشوة انشالت تحت. */
+  max-inline-size: var(--container-max, 1200px);
+  margin-inline: auto;
+  margin-block-end: var(--space-5, 1.5rem);
+  padding-block: var(--space-3, 0.75rem);
+  justify-content: flex-start;
+  gap: var(--space-3, 0.75rem) var(--space-6, 2rem);
+  background: transparent;
+  border-block-end: 1px solid var(--lg-rule);
+}
+/* aqua-800 على الورق مقيس **8.71:1** (كان 8.76 على الشريط الأزرق)
+   · يعني شيل الشريط كلّف 0.05 وبس. */
+.lg-doc .luvit-promise__item { color: var(--aqua-800, #124D5A); }
+
+/* ── ٣ · ترويسة الوثيقة · الختم والخط ──────────────────────────────────
+   الخط بينكسر بختم ١٤px عند بداية السطر · حلقة بلون اللوجو بالضبط
+   (#4CC5DA) ونواة aqua-700 جوّاها، لأن الحلقة لحالها **1.89:1** يعني
+   لطخة، والنواة **5.66:1** يعني علامة. */
+.lg-doc__rule {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  margin-block: var(--space-2, 0.5rem) var(--space-6, 2rem);
+}
+.lg-doc__seal {
+  position: relative;
+  flex: none;
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--aqua-400, #4CC5DA);
+}
+.lg-doc__seal::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--aqua-700, #196B7D);
+}
+.lg-doc__line {
+  flex: 1 1 auto;
+  block-size: 1px;
+  background: var(--lg-rule);
+
+  /* 🔴 `transform-origin` **ما إلها صيغة منطقية شغّالة بالمتصفحات** ·
+     فمكتوبة فيزيائية بقصد. الوثيقة كلها `html { direction: rtl }`
+     (tokens.css ~١٥٤)، وبـRTL **100% = اليمين = بداية السطر** وهي
+     نفس الجهة اللي قاعد فيها الختم · فالخط بينسحب من تحت الختم لبرّا.
+     ⚠️ لو انقلب اتجاه المستند يوماً، هاي بتصير `0% 50%` · وهي المكان
+        الوحيد بهالكتلة اللي فيه قيمة فيزيائية. */
+  transform-origin: 100% 50%;
+  animation: lg-rule-draw 900ms var(--ease-out-soft, cubic-bezier(0.16, 0.4, 0.3, 1)) 120ms both;
+  will-change: transform;
+}
+/* لقطة وحدة لا حلقة · ٩٠٠ms وبتخلص، على عنصر ارتفاعه ١px.
+   وهاي **كل** الحركة المضافة بالرأس · والرأس بالمقابل خسر حلقة الـ٣٤
+   ثانية اللي كانت جايّة من `band-mist` · فالحصيلة **ناقص طبقة**. */
+@keyframes lg-rule-draw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lg-doc__line { animation: none; }
+}
+
+/* ── ٤ · التخطيط · غير متناظر بقصد ─────────────────────────────────────
+   الشبكة بتقرا اتجاه الكتابة لحالها · بـRTL الخانة الأولى (العنوان)
+   بتروح يمين واللوح يسار · ولا سطر بيسأل عن الاتجاه ولا مرة من سمة dir. */
+.lg-doc__grid {
+  display: grid;
+  gap: var(--space-6, 2rem);
+}
+@media (min-width: 900px) {
+  .lg-doc__grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: var(--space-8, 4rem);
+    align-items: start;
+  }
+}
+
+/* ── ٥ · الخط · العنوان بيكبر لأنه ما في شي بينافسه ────────────────────
+   صفحة قانونية عنوانها هو اسم الوثيقة، وما حواليه ولا زر ولا صورة ·
+   فبيترقّى من --text-h2 لـ--text-h1. وهاد **بيهدّي** لا بيصرّخ: عنصر
+   واحد كبير مع فراغ أكثر بيقرا أهدى من تلاتة متوسّطين.
+   · ١٦ch بتكفّي «سياسة الخصوصية» و«الشروط والأحكام» بسطر واحد حتى على ٣٦٠px.
+   · letter-spacing صفر · عربي · دايماً. */
+.lg-doc__title .luvit-section__title {
+  font-size: var(--text-h1, clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem));
+  line-height: 1.2;
+  letter-spacing: 0;
+  max-inline-size: 16ch;
+  margin-block-end: var(--space-4, 1rem);
+  color: var(--color-ink, #1A2529);          /* 14.51:1 */
+}
+.lg-doc__title .luvit-section__sub {
+  margin-inline: 0;
+  font-size: var(--text-body-lg, 1.125rem);
+  max-inline-size: 42ch;
+  color: var(--color-ink-soft, #47555B);     /* 7.16:1 */
+}
+.lg-doc__title .luvit-section__eyebrow {
+  color: var(--aqua-700, #196B7D);           /* 5.66:1 */
+}
+
+/* ── ٦ · لوح الأجوبة ───────────────────────────────────────────────────
+   الفاصل عمودي على الديسكتوب وأفقي على الموبايل · **خصائص منطقية**،
+   فبـRTL حافة البداية هي اليمين وهي الحافة اللي بتواجه العنوان. */
+@media (min-width: 900px) {
+  .lg-doc__record {
+    border-inline-start: 1px solid var(--lg-rule);
+    padding-inline-start: var(--space-6, 2rem);
+  }
+}
+@media (max-width: 899px) {
+  .lg-doc__record {
+    border-block-start: 1px solid var(--lg-rule);
+    padding-block-start: var(--space-5, 1.5rem);
+  }
+}
+
+/* 🔴 ولا `--color-ink-faint` هون · مقيس **2.93:1** على هالأرضية، وهو
+   راسب · ونفس الرقم موثّق راسباً بسطر ١٢٨٣١. ink-soft بتعطي 7.16. */
+.lg-doc__record-cap {
+  margin: 0 0 var(--space-3, 0.75rem);
+  font-family: var(--font-body);
+  font-size: var(--text-caption, 0.75rem);
+  letter-spacing: 0;                    /* عربي · صفر دايماً */
+  text-transform: none;                 /* ولا uppercase على عربي */
+  color: var(--color-ink-soft, #47555B);
+}
+
+/* 🔴 `color: inherit` على الرابط مقصود · قالب الموقع بيسرّب
+   `a { color: #CC3366 }` (مقيس وموثّق بكتلة CRUMB) · والألوان
+   الحقيقية مكتوبة على الـspan جوّاه فما بيوصلها التسريب أصلاً. */
+.lg-doc__row {
+  display: block;
+  padding-block: var(--space-3, 0.75rem);
+  color: inherit;
+  text-decoration: none;
+}
+.lg-doc__row:first-of-type { padding-block-start: 0; }
+.lg-doc__row + .lg-doc__row { border-block-start: 1px solid var(--lg-rule); }
+
+.lg-doc__label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-2, 0.5rem);
+  margin-block-end: 2px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--aqua-700, #196B7D);      /* 5.66:1 */
+}
+/* السهم إشارة قفز لا زخرفة · بلاه الروابط بتقرا نصاً عادياً.
+   عمودي فما بينقلب مع الاتجاه. */
+.lg-doc__jump {
+  font-size: 11px;
+  line-height: 1;
+  opacity: 0.6;
+  transition:
+    transform 200ms var(--ease-out-soft, ease),
+    opacity   200ms var(--ease-out-soft, ease);
+}
+.lg-doc__value {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  line-height: 1.6;
+  letter-spacing: 0;
+  color: var(--color-ink-soft, #47555B);   /* 7.16:1 */
+  transition: color 200ms var(--ease-out-soft, ease);
+}
+
+/* ولا أرضية hover · أي أرضية بدها حشوة جانبية، والحشوة بتزحزح الشعرة
+   عن الفاصل العمودي وبتكسر المحاذاة اللي هي كل الفكرة. فالـhover
+   بيشتغل على الخط والحبر بس. */
+@media (hover: hover) and (pointer: fine) {
+  .lg-doc__row:hover .lg-doc__label {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .lg-doc__row:hover .lg-doc__jump { opacity: 1; transform: translateY(2px); }
+  .lg-doc__row:hover .lg-doc__value { color: var(--color-ink, #1A2529); }  /* 14.51:1 */
+}
+.lg-doc__row:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);   /* 3.94:1 · مؤشّر واجهة، الحدّ ٣ */
+  outline-offset: 4px;
+  border-radius: var(--radius-sm, 8px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lg-doc__jump,
+  .lg-doc__value { transition: none; }
+}
+
+/* ── ٧ · هدف القفزة ما بيقعد تحت النافبار ──────────────────────────────
+   روابط اللوح بتقفز لأقسام جوّا الصفحة، والنافبار ثابتة فوقها ·
+   فبلا هالسطر الهدف بيوصل **مخبّى تحتها**.
+   ⚠️ `scroll-margin` **ما إلها ولا أثر بصري** · بتنقرا وقت القفز وبس،
+      فالقاعدة عامة بأمان ولا بتلمس أي تخطيط بأي صفحة.
+   والمعادلة نفس معادلة `.luvit-page-top` بالضبط + هامش، عشان تتبع
+   النافبار لو تغيّر ارتفاعها بدل ما تخمّن رقماً. */
+.luvit-section[id] {
+  scroll-margin-block-start: calc(
+    var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-5, 1.5rem)
+  );
+}
+/* LEGAL-HEAD:END */

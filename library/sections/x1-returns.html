@@ -44,31 +44,106 @@
      🔴 ولا وحدة منهم انكتبت برقم أو بوعد · مكتوب مكانها إنها بتتثبّت.
      ══════════════════════════════════════════════════════════════════════ -->
 
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
+<!-- ══════════════════════════════════════════════════════════════════════
+     رأس /returns · «خط الماء» · بيستبدل سكشن #page-head القديم كامل
+     ══════════════════════════════════════════════════════════════════════
+     🔴 وما انشال ولا حرف: فتات الخبز · eyebrow · h1 · السطر · وشريط الوعد
+        بتلاثة بنوده حرف بحرف مع أيقوناتهن. اللي تغيّر **مكانهم ودورهم**:
+        الشريط صار صفوف عمود «بيرجع» بدل ما يكون شريطاً مزخرفاً بالحافة.
+
+     🔴 والزيادتان مسحوبتان من نفس الملف لا مخترعتان:
+        · عمود «وما بيرجع» · من بطاقة ٣ بسكشن #cases («فتحتيه واستعملتيه»)
+          ومن عنوان سكشن #why («ليش المفتوح ما بيرجع»).
+        · «وهاد حقّك مش تفضّل منّا» · حرفياً من جواب الأكورديون الثاني.
+        · «سبب صحي» · من ترويسة هالملف («معيار صناعة وسبب صحي»).
+        ⚠️ ولا رقم ولا مدة ولا أجرة برقم · الأقفال الثلاثة بتضل مقفولة.
+
+     🔴 وانشالت `band-mist` و`luvit-section--tight` بقصد · الأولى هي اللي
+        بتوصل الطابع المشترك (tokens.css:16380) وهو بالضبط اللي ريّان
+        سمّاه «افتراضي»، والثانية بتفرض padding مش إلنا.
+     🔴 و`luvit-page-top` **ممنوع تنشال** · هي فراغ النافبار (tokens.css:9778)
+        وهي كمان مفتاح ستايل فتات الخبز كله (tokens.css:16469)، وفتات الخبز
+        لازم يضل **ولداً مباشراً** لـ.luvit-section__head عشان القاعدة تمسكه.
+
+     ══ كيف بينركّب بإلمنتور ══
+       ١ · ويدجت HTML جوّا كونتينر لحاله · الصق نص السكشن
+       ٢ · اختار **الكونتينر** ← Advanced ← Attributes:  data-nav-bg|light
+           ⚠ الفاصل خط عامودي | مش يساوي =
+       ٣ · CSS ID للكونتينر = page-head
+       ٤ · الموجة بويدجت HTML تانية بكونتينر تاني **بعده مباشرة**
+       ٥ · Update ثم LiteSpeed ← Purge All ثم افحص بنافذة تصفّح خفي
+     ══════════════════════════════════════════════════════════════════════ -->
+<section class="luvit-section luvit-page-top x1-head"
          data-nav-bg="light" id="page-head">
 
-  <div class="luvit-promise">
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg> وصلك تالف؟ منستبدله</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h12l-3-3"/><path d="M20 15H8l3 3"/></svg> وصلك غير اللي طلبتِ؟ منبدّله</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg> والأجرة علينا مش عليكِ</span>
+  <!-- ═══ ١ · فوق الخط · السؤال ═══ -->
+  <div class="x1-head__air">
+    <div class="luvit-section__inner">
+      <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
+
+        <nav aria-label="مسار التنقّل">
+          <a href="/">الرئيسية</a>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">الاستبدال والإرجاع</span>
+        </nav>
+
+        <p class="luvit-section__eyebrow">Returns</p>
+        <h1 class="luvit-section__title">الاستبدال والإرجاع</h1>
+        <p class="luvit-section__sub">
+          منتجات العناية إلها قاعدة تختلف عن باقي المشتريات · وهون مكتوبة
+          بوضوح بدل ما تكتشفيها وقت المشكلة.
+        </p>
+
+      </div>
+    </div>
   </div>
 
-  <div class="luvit-section__inner">
-    <div class="luvit-section__head" data-luvit="reveal">
+  <!-- ═══ ٢ · الخط · وهو الحركة الوحيدة بالرأس ═══
+       اتساع المدّ ٤٦٪ ومركزه بالنص (inset-inline متساوية) والإزاحة ±٥٨٪ من
+       عرضه هو · فالحركة **متطابقة بالاتجاهين** وما بتسأل عن RTL ولا مرة. -->
+  <div class="x1-head__waterline" aria-hidden="true">
+    <span class="x1-head__tide"></span>
+  </div>
 
-      <nav aria-label="مسار التنقّل">
-        <a href="/">الرئيسية</a>
-        <span aria-hidden="true">›</span>
-        <span aria-current="page">الاستبدال والإرجاع</span>
-      </nav>
+  <!-- ═══ ٣ · تحت الخط · الجوابان ═══ -->
+  <div class="x1-head__water">
+    <div class="luvit-section__inner">
+      <ul class="x1-ledger" data-luvit="stagger">
 
-      <p class="luvit-section__eyebrow">Returns</p>
-      <h1 class="luvit-section__title">الاستبدال والإرجاع</h1>
-      <p class="luvit-section__sub">
-        منتجات العناية إلها قاعدة تختلف عن باقي المشتريات · وهون مكتوبة
-        بوضوح بدل ما تكتشفيها وقت المشكلة.
-      </p>
+        <!-- ── الجواب الأول · وهو حقّ لا تفضّل ── -->
+        <li class="x1-verdict">
+          <span class="x1-verdict__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M20.5 12a8.5 8.5 0 1 1-2.49-6.01"/><path d="M20.5 4v4.5H16"/></svg>
+          </span>
+          <p class="x1-verdict__label">بيرجع دايماً</p>
+          <p class="x1-verdict__title">التالف · والغلط منّا</p>
 
+          <!-- 🔴 شريط الوعد · نفس البنود ونفس الأيقونات حرف بحرف، ونفس
+               الكلاسات · بس ستايله بينتعاد بـ.x1-verdict .luvit-promise
+               (خصوصية 0,2,0) فبيصير صفوف جدول بدل شريط أفقي. -->
+          <div class="luvit-promise">
+            <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg> وصلك تالف؟ منستبدله</span>
+            <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h12l-3-3"/><path d="M20 15H8l3 3"/></svg> وصلك غير اللي طلبتِ؟ منبدّله</span>
+            <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg> والأجرة علينا مش عليكِ</span>
+          </div>
+
+          <p class="x1-verdict__note">وهاد حقّك مش تفضّل منّا.</p>
+        </li>
+
+        <!-- ── الجواب الثاني · وشكله حماية لا منع ── -->
+        <li class="x1-verdict">
+          <span class="x1-verdict__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M12 10.2c1.3 1.5 2 2.5 2 3.4a2 2 0 0 1-4 0c0-.9.7-1.9 2-3.4z"/></svg>
+          </span>
+          <p class="x1-verdict__label">وما بيرجع</p>
+          <p class="x1-verdict__title">المفتوح والمستعمل</p>
+          <p class="x1-verdict__note">
+            سبب صحي · وهو نفس السبب اللي بيحميكِ إنتِ كمان.
+          </p>
+          <a class="x1-verdict__more" href="#why">ليش المفتوح ما بيرجع</a>
+        </li>
+
+      </ul>
     </div>
   </div>
 </section>
