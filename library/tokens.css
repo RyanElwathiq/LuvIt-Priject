@@ -16748,3 +16748,384 @@ body.page-id-481 .luvit-affiliate p {
 /* PEER-TILES:END */
 
 /* STATS-ROW:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SHIP-HEAD:START · رأس عائلة الشحن والتتبّع · «بيان الشحن»
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 ريّان: «راس التصميم مش حلو انت حاطط اشي افتراضي بدي اشي مخصص لكل
+      وحده» · و«حركه الامواج حلوة بس الاقي كثير عادي».
+
+   واللي كان بيقرا «افتراضياً» **مش اللون** · هو إن ست صفحات بتشترك بشريط
+   شبه مسطّح، وإن رأس صفحة الشحن ما فيه ولا جواب من أجوبتها الأربعة
+   (لوين · كيف بدفع · قدّيش · قدّيش بتاخد) · الأربعة كانوا كلهم تحت.
+
+   فالرأس صار **بيان**: عمود نصّ ضيّق بحافة البداية، ولوح زجاجي عريض جنبه
+   فيه الحقائق، وبقاع اللوح **طريق** من طرفين وشعرة مقطوعة.
+   واللي بيربط الصفحتين إن الطريق هو **نفسه** بالاثنتين · اللي بيتغيّر
+   شو قاعد بنصّه:
+       /shipping ← «من يوم ليومين» (الحقيقة الوحيدة المثبتة عن المدة)
+       /track    ← خانة متقطّعة فاضية بتشاور تحت على الفورم
+
+   والفكرة الواحدة اللي بتمسك الرأس كله هي **الشعرة**: وحدة تحت الـeyebrow،
+   وشعرات بين حقول البيان، وشعرة مقطوعة على الطريق. ولهاد الرأس بيضل مقروءاً
+   بالأبيض والأسود · ما في إشي فيه معتمد على اللون.
+
+   🔴 وليش فاتح مش غامق: بالموقع أربع رؤوس `luvit-deep` أصلاً (من نحن ·
+      المفضّلة · المقالات · الاختبار) · الخامس بيصير هو الافتراضي.
+      وصفحة شغلها تجاوب أسئلة ما بدها إخراجاً سينمائياً.
+
+   ⚠️ ولا `padding` مختصرة بهالكتلة · `.luvit-page-top` بتكتب
+      `padding-block-start` لحالها و`.rt-shallow.rt-shallow` بتكتب
+      `padding-block-end`، وأي مختصرة بتدهس الاثنتين (فخّ ترتيب الملف).
+   ⚠️ ومكان الكتلة **آخر الملف شرط لا ترتيب**: لازم تكون بعد `.rt-shallow`
+      كاملاً (سطر ١٤٠٧٩) وبعد `.luvit-promise` (سطر ١٠٩٣٣) عشان مضاعفات
+      الكلاس تغلب بلا !important.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── ١ · تينت العائلة ─────────────────────────────────────────────────
+   `.sh-head` بتصير «هدفاً» جديداً بنفس نظام `.rt-shallow[data-goal]` ·
+   نفس المتغيّرات الثلاثة، فالأرضية والـwash والخيوط كلها بتتلوّن لحالها.
+
+   🔴 والتلاتة مكتوبين صراحةً · `--goal-ink` معرّفة بـ`.rt-shallow` بصيغة
+      بتقرا `--goal-fg`، وهي بتشتغل صح، بس كتابتها هون بتشيل الاعتماد على
+      ترتيب الورقة نهائياً. قواعدنا هي اللي بتغلبنا عادةً لا ووردبريس.
+   🔴 وممنوع تحط `data-goal` على السكشن · خصوصيتها (0,1,1) بتغلب
+      `.sh-head` (0,1,0) وبترجّع الرأس لتينت صفحة روتين. */
+.sh-head {
+  --goal-bg:  color-mix(in srgb, var(--aqua-300, #74D6E7) 46%, var(--color-paper, #FFFFFF)); /* = #BFECF4 · مقيس */
+  --goal-fg:  var(--aqua-700, #196B7D);
+  --goal-ink: color-mix(in srgb, var(--aqua-700, #196B7D) 55%, var(--color-ink, #1A2529));   /* = #194C57 · مقيس */
+  --sh-hair:  color-mix(in srgb, var(--aqua-700, #196B7D) 20%, transparent);
+  --sh-panel: color-mix(in srgb, var(--color-paper, #FFFFFF) 62%, transparent);
+}
+
+/* ── ٢ · الشبكة · عمود نصّ ضيّق + بيان عريض ───────────────────────────
+   الحركة البنيوية كلها هون: قياس قصير للقراءة (٢٠rem) جنب لوح بياخد
+   الباقي كله. التوتر بين الاثنين هو اللي بيقرا «مصمَّم».
+   ⚠️ الشبكة بتقرا اتجاه الكتابة لحالها · بـRTL العمود الأول بيروح لليمين.
+      ولا سطر بيسأل عن الاتجاه، ولا مرة من سمة dir. */
+.sh-head__grid {
+  display: grid;
+  gap: var(--space-6, 2rem);
+  align-items: start;
+}
+@media (min-width: 1000px) {
+  .sh-head__grid {
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    gap: var(--space-7, 3rem);
+  }
+}
+/* `.rt-shallow .luvit-section__head--start { max-inline-size: none }` بتحرّر
+   العمود كاملاً · وهون بيرجع له حدّ قراءة يشتغل تحت ١٠٠٠px كمان. وفوقها
+   عمود الشبكة (٢٠rem) أضيق فهو اللي بيحكم. */
+.sh-head .luvit-section__head--start { max-inline-size: 30rem; }
+
+/* العنوان بيطلع مرتبة · h1 حقيقي مش h2 · --text-h1 موجود بالتوكنز
+   ومستعمل بمكان واحد بس (`.luvit-cta__title`). ٣٠px→٤٤px. */
+.sh-head .luvit-section__title { font-size: var(--text-h1); }
+
+/* الـeyebrow صار لِيبل ملف · وشعرة بتمشي منه لآخر العمود.
+   🔴 والشعرة **لون واحد مسطّح لا تدرّج** بقصد: التدرّج إله جهة، والجهة
+      بدها سؤالاً عن الاتجاه. لون واحد بيشتغل بالاتجاهين بلا سؤال.
+   ⚠️ ولا `direction: ltr` هون · tokens.css:14167 بيوثّق إنها كسرت الشكل
+      قبل، والكلمتان (Shipping · Order tracking) بينتهوا بحرف لا بـ`!`
+      ولا `.` فما بينطبق عليهم فخّ انقلاب اللاتيني. */
+.sh-head .luvit-section__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+}
+.sh-head .luvit-section__eyebrow::after {
+  content: "";
+  flex: 1 1 auto;
+  block-size: 1px;
+  background: var(--sh-hair);
+}
+
+/* ── ٣ · اللوح · نفس وصفة .rt-shallow__facts بالضبط ───────────────────
+   تعبئة شفافة + حافة زجاجية، **بلا backdrop-filter** · فما في كلفة رسم
+   ولا مخالفة للميزانية (نفس منطق `.luvit-cta__panel`). */
+.sh-slip {
+  display: grid;
+  gap: var(--space-5, 1.5rem);
+  margin: 0;
+  padding: var(--space-5, 1.5rem);
+  border-radius: var(--radius-lg, 24px);
+  background: var(--sh-panel);
+  border: 1px solid color-mix(in srgb, var(--goal-fg) 22%, transparent);
+  box-shadow:
+    inset 2px 2px 0 -2px var(--color-paper, #FFFFFF),
+    0 14px 34px -24px rgba(12, 51, 60, .35);
+}
+
+/* ── ٤ · حقول البيان · نفس عنصر شريط الوعد ────────────────────────────
+   🔴 المضاعفة مقصودة لا غلطة: `.luvit-promise` (0,1,0) شايلة خلفية
+      `aqua-50` وflex متوسّط وحشوة بالـgutter وحدّاً سفلياً · و
+      `.sh-slip .luvit-promise` (0,2,0) بتغلبها بلا !important ومهما كان
+      ترتيب الورقة. نفس منطق `.luvit-cut-top.luvit-cut-top`.
+   🔴 و`grid-template-columns` مكتوبة بالحالة الأساسية عشان ما نعتمد على
+      تصفير `justify-content` · بشبكة بلا مسار صريح، `justify-content:
+      center` الموروثة بتوسّط عموداً مقاسه بالمحتوى وبتخنق الموبايل. */
+.sh-slip .luvit-promise {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3, 0.75rem);
+  padding: 0;
+  background: none;
+  border-block-end: 0;
+  justify-content: normal;
+}
+/* ⚠️ حارس · مضيف السكشن بيحط clearfix `::before` على حاويات، وبكونتينر
+   grid بتصير **خلية حقيقية بتسرق مكاناً** (الفخّ المقيس مع ul.products
+   وخانة المتجر الفاضية). ما في ولا قاعدة بالمشروع بتستعمل
+   `.luvit-promise::before` · مفحوص. */
+.sh-slip .luvit-promise::before { content: none; }
+
+/* العدّ بـ:has() زي `.rt-flow` · فأي بيان جاي بعدد حقول مختلف بياخد
+   أعمدته لحاله بلا كلاس جديد. (`/track` ما إله حقول أصلاً.) */
+@media (min-width: 560px) {
+  .sh-slip .luvit-promise:has(> .sh-slip__field:nth-child(3):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5, 1.5rem);
+  }
+  .sh-slip .luvit-promise:has(> .sh-slip__field:nth-child(2):last-child) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5, 1.5rem);
+  }
+}
+
+.sh-slip__field {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+/* الفاصل · شعرة أفقية بالموبايل وعمودية بالديسكتوب.
+   ⚠️ خصائص منطقية لا يمين/يسار · الصفحة عربية والاتجاه بينقلب. */
+.sh-slip__field + .sh-slip__field {
+  border-block-start: 1px solid var(--sh-hair);
+  padding-block-start: var(--space-3, 0.75rem);
+}
+@media (min-width: 560px) {
+  .sh-slip__field + .sh-slip__field {
+    border-block-start: 0;
+    padding-block-start: 0;
+    border-inline-start: 1px solid var(--sh-hair);
+    padding-inline-start: var(--space-5, 1.5rem);
+  }
+}
+
+/* 🔴 اللِيبل عربي · **صفر letter-spacing وولا uppercase**، ولهاد ما
+   استعملت `.luvit-section__eyebrow` (عليها --tracking-caption و
+   text-transform: uppercase وهي للاتيني وحده). التصريح مكتوب صراحةً
+   لا مُفترَضاً · نفس تصريح `.rt-shallow__label`. */
+.sh-slip__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  font-family: var(--font-body);
+  font-size: var(--text-caption, 0.75rem);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--goal-ink);
+}
+/* الأيقونة صارت جزءاً من اللِيبل · وستايلها مكتوب هون كاملاً لأنها طلعت
+   من جوّا `.luvit-promise__item` فما عادت تطابق `.luvit-promise__item svg`.
+   ⚠️ واللون ما بيورث لجوّا svg بلا `stroke: currentColor` · فخّ مسجَّل. */
+.sh-slip__label svg {
+  flex: none;
+  inline-size: 16px;
+  block-size: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 🔴 مضاعفة تانية · `.luvit-promise__item` (0,1,0) عليها inline-flex و
+   14px/600 ولون aqua-800 · وهاي (0,2,0) فبتغلبها. */
+.sh-slip .sh-slip__value {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 1.3vw, 1.1875rem);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0;
+  color: var(--color-ink, #1A2529);
+  text-wrap: balance;
+}
+/* 🔴 `.sh-slip__note` انشالت · كانت للسطر الصغير تحت الأجرة، والأجرة
+   نفسها انشالت من الرأس عشان ما ينكتب الرقم بموضع ثالث. قاعدة بلا
+   ماركب = دَين صامت، وهاد مسجَّل عندنا. */
+
+/* ── ٥ · الطريق · طرفان وشعرة مقطوعة ──────────────────────────────────
+   🔴 شعرة الفصل معلّقة على **وجود** صف الحقول لا على كلاس إلغاء ·
+      `/track` ما إله `.sh-slip__fields` فالشعرة ما بتنرسم أصلاً. */
+.sh-slip__fields + .sh-slip__route {
+  border-block-start: 1px solid var(--sh-hair);
+  padding-block-start: var(--space-5, 1.5rem);
+}
+.sh-route {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+}
+.sh-route__cap {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+/* العلامتان · مربّع ممتلئ (طرد) وحلقة مفتوحة (وجهة). أشكال CSS صافية،
+   ولا svg زيادة · وبالأبيض والأسود بتقرا «من هون لهون» بلا لون. */
+.sh-route__mark {
+  inline-size: 12px;
+  block-size: 12px;
+  border: 2px solid var(--goal-fg);
+}
+.sh-route__mark--from { border-radius: 3px;  background: var(--goal-fg); }
+.sh-route__mark--to   { border-radius: 50%;  background: none; }
+
+.sh-route__name {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: center;
+  color: var(--color-ink-soft, #47555B);
+}
+.sh-route__gap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+}
+.sh-route__span {
+  flex: 0 1 auto;
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0;
+  color: var(--color-ink, #1A2529);
+  text-wrap: balance;
+}
+
+/* الشعرة · الصندوق ١٠px عشان يستضيف الضوء، والخط نفسه ١px بالنص.
+   🔴 والتدرّج **متناظر** (١٢٪ ← ٤٦٪ ← ١٢٪) فما بده سؤالاً عن الاتجاه ·
+      نفس منطق `.rt-shallow .rt-flow::before` المشحون.
+   🔴 و`overflow: clip` مش `hidden` · `hidden` بتحوّل العنصر لحاوية تمرير
+      وبتكسر `sticky` بصمت · قاعدة مكتوبة بـtokens.css:9755. */
+.sh-route__rule {
+  position: relative;
+  flex: 1 1 auto;
+  min-inline-size: 18px;
+  block-size: 10px;
+  overflow: clip;
+}
+.sh-route__rule::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  block-size: 1px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--goal-fg) 12%, transparent),
+    color-mix(in srgb, var(--goal-fg) 46%, transparent) 50%,
+    color-mix(in srgb, var(--goal-fg) 12%, transparent));
+}
+
+/* الضوء اللي بيمرق على الطريق · transform وopacity وبس.
+   🔴 وبيبلّش **من نصّ المقطع** وبيروح ويرجع (alternate)، فإشارة الـX ما
+      بتهمّ · ولا `[dir]`، ولا `:dir()`، ولا قراءة اتجاه. ٨٢٪ من عرضه هو
+      = ٣١٪ من المقطع، فبيوصل الطرفين تماماً بالاتجاهين.
+   🔴 ومحبوس جوّا المقطع، فما بيمرق ولا مرة فوق نصّ · أرقام التباين ثابتة. */
+.sh-route__glow {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 38%;
+  inset-inline-start: 31%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--color-paper, #FFFFFF) 95%, transparent),
+    transparent);
+  opacity: .2;
+  animation: luvit-route-pass 26s ease-in-out infinite alternate;
+}
+@keyframes luvit-route-pass {
+  0%   { transform: translateX(-82%); opacity: .18; }
+  50%  {                              opacity: .70; }
+  100% { transform: translateX( 82%); opacity: .18; }
+}
+
+/* ── ٦ · الفرع التاني · الخانة الفاضية بصفحة التتبّع ──────────────────
+   🔴 هون بتنعمل العائلة: **نفس الطريق** لا شبيه إله · اللي بيتغيّر شو
+      قاعد بنصّه. صفحة الشحن بتحط جواباً، وصفحة التتبّع بتترك خانة فاضية
+      وبتشاور تحت · لأنها فعلاً ما بتعرف الجواب، الفورم تحت بيعرفه.
+   🔴 وحدّ الخانة `80%` · مقيس بإعادة حساب: ٧٥٪ بتعطي 3.42:1 و٨٠٪ بتعطي 3.81:1،
+      والاثنتان بتعدّيا عتبة الرسم 3:1 · الزيادة هامش. و٤٥٪ بتعطي 1.99:1 وبترسب
+      الرسم ٣:١، وعند ٧٥٪ بيطلع 3.46:1. والخانة هي بؤرة الصفحة فلازم تبان. */
+.sh-route--ask .sh-route__rule { min-inline-size: 12px; }
+.sh-route__slot {
+  flex: 1 1 auto;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  min-block-size: 74px;
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  border-radius: var(--radius-md, 16px);
+  border: 1px dashed color-mix(in srgb, var(--goal-fg) 80%, transparent);
+  background: color-mix(in srgb, var(--color-paper, #FFFFFF) 55%, transparent);
+}
+.sh-route__slot-label {
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--goal-ink);
+}
+.sh-route__slot-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--color-ink-soft, #47555B);
+}
+.sh-route__slot-hint svg {
+  flex: none;
+  inline-size: 14px;
+  block-size: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── ٧ · الموبايل · نفس البنية بأحجام أصغر ────────────────────────────
+   🔴 الطريق **ما بينقلب عمودياً** بقصد · الأفقي هو معنى الشي (طرد بيمشي)،
+      وقلبه بده اتجاه شعرة تاني وkeyframes تانية. المقاس بيكفي:
+      شاشة ٣٧٥px ← ٢٩٥px محتوى · طرفان ~٤٥ و~٤٠ · فالنصّ بياخد ~١٩٤px،
+      و«من يوم ليومين» بـ١٣px ≈ ٩٥px · فبيضل ~٤٠px لكل مقطع شعرة. */
+@media (max-width: 559px) {
+  .sh-slip { padding: var(--space-4, 1rem); }
+  .sh-route { gap: var(--space-2, 0.5rem); }
+  .sh-route__name { font-size: 11px; max-inline-size: 7ch; }
+  .sh-route__span { font-size: 13px; }
+  .sh-route__rule { min-inline-size: 12px; }
+  .sh-route--ask .sh-route__rule { min-inline-size: 8px; }
+  .sh-route__slot { min-block-size: 66px; padding: var(--space-3, 0.75rem); }
+}
+
+/* ── ٨ · الحركة المخفَّضة ─────────────────────────────────────────────
+   الضوء بيوقف والطريق بيضل مرسوماً · إطفاء بلا اختفاء.
+   (و`.rt-shallow__wash` إلها حارسها الجاهز بـtokens.css:14136.) */
+@media (prefers-reduced-motion: reduce) {
+  .sh-route__glow { animation: none; opacity: .28; }
+}
+/* ══ SHIP-HEAD:END ══════════════════════════════════════════════════════ */

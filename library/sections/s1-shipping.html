@@ -78,32 +78,119 @@
      · وكل كلاس بهالملف متفحوص إنه موجود بـtokens.css.
      ══════════════════════════════════════════════════════════════════════ -->
 
-<!-- ═══════════════ ١ · ترويسة الصفحة ═══════════════ -->
-<section class="luvit-section luvit-section--tight band-mist luvit-page-top"
+<!-- ═══════════════ ١ · ترويسة الصفحة · «بيان الشحن» ═══════════════
+     ريّان ٣ أيلول: «حركه الامواج حلوة بس الاقي كثير عادي» · و«راس التصميم
+     مش حلو انت حاطط اشي افتراضي بدي اشي مخصص لكل وحده».
+
+     والقالب المكرَّر كان `luvit-section--tight band-mist` على ست صفحات ·
+     أرضية مسطّحة وحدة وستاك بالنص. هون بينكسر بتلات حركات، فكرة وحدة:
+       ١ · تخطيط غير متناظر · عمود نصّ ضيّق بحافة البداية، وبيان زجاجي
+            عريض جنبه ياخذ العرض. العنوان بمقاس قصير والحقائق بتاخد المدى.
+       ٢ · كل فصل بالرأس **شعرة** · تحت الـeyebrow، وبين الحقول، ومقطوعة
+            على الطريق. فالرأس بيقرا ورقة شحن بلا ما يتنكّر بشكل مستند.
+       ٣ · الطريق · طرفان وشعرة مقطوعة، وبنصّها الحقيقة الوحيدة المثبتة
+            عن المدة. ونفس الجسم بيتكرّر بصفحة التتبّع بمنتصف **فاضي**
+            بيأشّر على الفورم · فهو عيلة لا نسخة.
+
+     🔴 **شريط الوعد ما انشال** · صار حقول البيان. نفس النصوص ونفس
+        الأيقونات ونفس كلاس `luvit-promise__item` · وفاحص المواضع
+        بيقراه، ففحصته: القيمة ضلّت نصاً مسطّحاً جوّاه.
+
+     🔴 **والأجرة ما انكتبت هون بقصد.** «دينارين ونص» مكتوبة أصلاً
+        بموضعين بنفس الملف، وثالث نسخة بتضمن الانحراف · وهاد فخّ
+        مسجَّل كلّفنا قبل. فالحقل بيحمل **الوعد** لا الرقم:
+        «بتبيّن قبل ما تأكّدي» · وهو نصّ الوعد الأصلي حرفياً.
+        والمدّة «من يوم ليومين» ضلّت لأنها عمود الفكرة، ومحروسة
+        بفاحص الحقائق المكرّرة اللي بيفشل لو النسخ اختلفت.
+
+     ⚠️ التباين محسوب ومعاد حسابه: الأرضية `color-mix(aqua-300 46%, paper)`
+        = **#BFECF4** · العنوان 12.32:1 · السطر 6.08:1 · الـeyebrow
+        (goal-ink = **#194C57**) 7.47:1 · لِيبل الحقل على البيان 8.12:1 ·
+        قيمته 13.40:1 · علامتا الطريق 5.22:1 · والحدّ المتقطّع بـ٨٠٪
+        3.81:1 (٧٥٪ بتعطي 3.42 وبتعدّي كمان، والزيادة هامش).
+        وفاصل المسار `aria-hidden` بـ2.49:1 · **زخرفي معلَن** ومستثنى
+        بنفس السابقة المكتوبة بكتلة `CRUMB` تبع اليوم.
+     ⚠️ والمسار الحالي بيرث `--color-ink` من قاعدة `CRUMB` (0,2,1) اللي
+        بتغلب `.rt-shallow nav` · فهو 12.32:1 لا لون الهدف.
+     ⚠️ ولا `data-goal` على السكشن · التينت من `.sh-head`، و
+        `.rt-shallow[data-goal]` بتغلبها وبترجّعها لتينت صفحة روتين.
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="luvit-section luvit-page-top rt-shallow sh-head"
          data-nav-bg="light" id="page-head">
 
-  <div class="luvit-promise">
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V6h11v10"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg> لكل محافظات الأردن</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg> الدفع عند الاستلام</span>
-    <span class="luvit-promise__item"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg> والأجرة بتبيّن قبل ما تأكّدي</span>
-  </div>
+  <!-- عنصر صريح لا ::before · نفس سبب `.luvit-deep__rays` المسجَّل -->
+  <span class="rt-shallow__wash" aria-hidden="true"></span>
 
   <div class="luvit-section__inner">
-    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
+    <div class="sh-head__grid">
 
-      <nav aria-label="مسار التنقّل">
-        <a href="/">الرئيسية</a>
-        <span aria-hidden="true">›</span>
-        <span aria-current="page">الشحن والتوصيل</span>
-      </nav>
+      <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
 
-      <p class="luvit-section__eyebrow">Shipping</p>
-      <h1 class="luvit-section__title">الشحن والتوصيل</h1>
-      <p class="luvit-section__sub">
-        منوصّل جوّا الأردن، والدفع عند الاستلام · وهون مكتوب اللي منعرفه
-        بالضبط، واللي لساتنا ما منعرفه كمان.
-      </p>
+        <nav aria-label="مسار التنقّل">
+          <a href="/">الرئيسية</a>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">الشحن والتوصيل</span>
+        </nav>
 
+        <p class="luvit-section__eyebrow">Shipping</p>
+        <h1 class="luvit-section__title">الشحن والتوصيل</h1>
+        <p class="luvit-section__sub">
+          منوصّل جوّا الأردن، والدفع عند الاستلام · وهون مكتوب اللي منعرفه
+          بالضبط، واللي لساتنا ما منعرفه كمان.
+        </p>
+
+      </div>
+
+      <div class="sh-slip" data-luvit="reveal" data-luvit-delay="0.1">
+
+        <div class="luvit-promise sh-slip__fields">
+
+          <div class="sh-slip__field">
+            <span class="sh-slip__label"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 16V6h11v10"/><path d="M14 9h4l3 3.5V16h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              الوجهة
+            </span>
+            <span class="luvit-promise__item sh-slip__value">لكل محافظات الأردن</span>
+          </div>
+
+          <div class="sh-slip__field">
+            <span class="sh-slip__label"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="14.5" r="2"/></svg>
+              الدفع
+            </span>
+            <span class="luvit-promise__item sh-slip__value">عند الاستلام</span>
+          </div>
+
+          <!-- 🔴 بلا رقم · اقرأ سبب الأجرة برأس الملف. -->
+          <div class="sh-slip__field">
+            <span class="sh-slip__label"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>
+              الأجرة
+            </span>
+            <span class="luvit-promise__item sh-slip__value">بتبيّن قبل ما تأكّدي</span>
+          </div>
+
+        </div>
+
+        <!-- الطريق · طرفان وشعرة مقطوعة، والمقطع هو الحقيقة الوحيدة
+             المثبتة عن المدة. العلامتان زخرفة معلَنة، والنصّ بيقرا
+             جملة كاملة على قارئ الشاشة: «من عندنا · من يوم ليومين · لعندك». -->
+        <p class="sh-slip__route sh-route">
+          <span class="sh-route__cap">
+            <span class="sh-route__mark sh-route__mark--from" aria-hidden="true"></span>
+            <span class="sh-route__name">من عندنا</span>
+          </span>
+
+          <span class="sh-route__gap">
+            <span class="sh-route__rule" aria-hidden="true"><span class="sh-route__glow"></span></span>
+            <span class="sh-route__span">من يوم ليومين</span>
+            <span class="sh-route__rule" aria-hidden="true"><span class="sh-route__glow"></span></span>
+          </span>
+
+          <span class="sh-route__cap">
+            <span class="sh-route__mark sh-route__mark--to" aria-hidden="true"></span>
+            <span class="sh-route__name">لعندك</span>
+          </span>
+        </p>
+
+      </div>
     </div>
   </div>
 </section>
