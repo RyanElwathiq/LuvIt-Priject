@@ -14543,3 +14543,59 @@ body:has(#luvit-wish-status:not([hidden]))  .wl-head {
   /* بلا خلفية وبلا حدّ · مساحة ضغط وبس */
 }
 /* CARD-LINK:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AFFILIATE:START · صفحتا الشركاء · /affiliates و /affiliate-registration
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان ٣ أيلول: «بدنا اياها تعرف عدد الطلبات اللي استعملها الكود وعدد
+   الزبونات وكم ربحت زي الشركات الكبيره · وعادي نطبقه من هسا».
+   والإضافة: Coupon Affiliates (woo-coupon-usage) v8.2.0 · مجانية.
+   وريّان حسمها كمان: «مافيه داعي نعرب الكوبونات نفسها ... مش مشكله نخليها
+   بالانجليزي لانه اصلا هذا المتعارف عليه» · فما منترجم لوحة الإضافة.
+
+   🔴 اللي بينعمل هون **خلوص النافبار وبس** · لا إعادة تصميم للوحة.
+      الصفحتان قالبهما `elementor_header_footer` (زي باقي الصفحات) عشان
+      القالب ما يطبع `.entry-title` تحت النافبار · وهاد فخّ مقيس ومسجَّل:
+      قبل التبديل كان العنوان عند top: 40 وأسفل النافبار 108، يعني **مخفي
+      تحتها بالكامل**. نفس اللي صار بصفحة المفضّلة ٢ أيلول.
+      ⤷ وبعد التبديل بيروح عنوان القالب، وبيروح معه الفراغ العلوي · فلازم
+        نعوّضه بنفس معادلة `.luvit-page-top` بالضبط (سطر ٩٧٣٨) عشان
+        الخلوص يتبع النافبار لو تغيّر ارتفاعه، لا يخمّنه برقم ثابت.
+
+   ⚠️ والاستهداف بـ`body.page-id-` مقصود: الصفحتان مولَّدتان من الإضافة
+      وما إلهن كلاس عنّا، وتعديل ماركبهن يعني تعديل شورتكود مش ملكنا.
+      لو انمسحت وحدة وانعملت من جديد بيتغيّر رقمها · فالرقم مكتوب هون
+      وبالسجل، وفحص واحد بيكشفه (العنوان بيرجع يلزق بالنافبار).
+        480 = Affiliate Dashboard      · /affiliates/
+        481 = Affiliate Registration   · /affiliate-registration/
+   ═══════════════════════════════════════════════════════════════════════ */
+body.page-id-480,
+body.page-id-481 {
+  padding-block-start: calc(
+    var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-6, 2rem)
+  );
+  padding-block-end: var(--space-8, 4rem);
+}
+@media (max-width: 767px) {
+  body.page-id-480,
+  body.page-id-481 {
+    padding-block-start: calc(
+      var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-5, 1.5rem)
+    );
+  }
+}
+
+/* والمحتوى بيقعد بعرض الموقع لا بعرض الشاشة كاملة · نفس حدّ باقي الصفحات */
+body.page-id-480 > .wcu-dash-coupon-area,
+body.page-id-481 > .wcu-dash-coupon-area,
+body.page-id-480 > .wcu-user-coupon-title,
+body.page-id-481 > .wcu-user-coupon-title,
+body.page-id-480 > .wcu-user-coupon-linebreak,
+body.page-id-481 > .wcu-user-coupon-linebreak,
+body.page-id-481 > .wcusage-registration-form {
+  box-sizing: border-box;
+  max-inline-size: var(--container-max, 1200px);
+  margin-inline: auto;
+  padding-inline: var(--container-gutter, 20px);
+}
+/* AFFILIATE:END */
