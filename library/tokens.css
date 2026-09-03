@@ -15957,13 +15957,50 @@ body.page-id-481 .luvit-affiliate button {
       والفوتر وشريط الشركاء كلهن بيضلّوا عربي وبمحلّهم.
    ⚠️ وعلامة العملة `د.أ` بتضل معزولة كما هي بجلد اللوحة · عربي جوّا
       رقم لاتيني، ومنعزل بـ`unicode-bidi` هناك لا هون. */
+/* 🔴 **تصحيح غلطة مني · ٣ أيلول (الدفعة التالتة)**
+   قلبت الحاوية كلها LTR عشان أصلّح النقطتين، فانعكس **ترتيب التخطيط** كمان:
+   البار والمربعات صاروا من اليسار لليمين. وريّان لاحظها فوراً:
+     «البار اللي فيه الستاتكس والاعدادات ليش عكست الترتيب الاول كان افضل»
+     «ترتيب العناصر الاول فيها كان احلى لما كانت من اليمين لليسار
+      المربع الكبير اللي فيه كم الربح لما كان عاليمين كان احلى»
+
+   ⤷ والصح إنّ **الاتجاه مسألتان مش وحدة**:
+       · اتجاه **التخطيط** (وين يقعد أول عنصر) → يضل **RTL** لأنه موقع عربي
+         وعين ريّان بتبلّش من اليمين · وهاد اللي كان أحلى وهو محقّ.
+       · اتجاه **النصّ** جوّا كل تسمية إنجليزية → **LTR** عشان النقطتين
+         والنقطة والسهم يقعدوا بآخر السطر.
+   فالحاوية رجعت RTL، والـLTR انحصر **بالعناصر الورقية اللي فيها نصّ
+   إنجليزي**، مع `unicode-bidi: isolate` عشان ما تسرّب لجيرانها. */
 .luvit-affiliate {
-  direction: ltr;
-}
-/* والعربي الوحيد جوّا اللوحة هو العملة · بترجع لاتجاهها لحالها */
-.luvit-affiliate [lang="ar"],
-.luvit-affiliate .luvit-rtl {
   direction: rtl;
+}
+.luvit-affiliate .wcu-tab-title,
+.luvit-affiliate .wcu-coupon-title,
+.luvit-affiliate .coupon-title,
+.luvit-affiliate .wcusage-info-box-title,
+.luvit-affiliate .wcusage-stats-title,
+.luvit-affiliate .wcusage-dash-username,
+.luvit-affiliate .wcusage-dash-logout,
+.luvit-affiliate .wcutablinks,
+.luvit-affiliate .wcu-settings-toggle__label,
+.luvit-affiliate .wcusage_settings_form label,
+.luvit-affiliate .wcu-settings-col label,
+.luvit-affiliate .wcu-urllink,
+.luvit-affiliate .wcusage_custom_ref_url,
+.luvit-affiliate .wcu-clicks-pagination,
+.luvit-affiliate .wcu-statistics-orders,
+.luvit-affiliate .wcu-loading-orders,
+.luvit-affiliate .wcu-order-filters,
+.luvit-affiliate button,
+.luvit-affiliate strong,
+.luvit-affiliate p {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+/* والعملة عربية جوّا رقم لاتيني · بتضل معزولة بحالها */
+.luvit-affiliate [lang="ar"] {
+  direction: rtl;
+  unicode-bidi: isolate;
 }
 /* AFFILIATE-LTR:END */
 
@@ -15988,3 +16025,210 @@ body.page-id-481 .luvit-affiliate button {
   }
 }
 /* AFFILIATE-STATS-GAP:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AFFILIATE-PASS3:START · الدفعة التالتة · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── أيكونات الصناديق · «شوف الايكونات طالعه فوق الاحرف» ──────────────
+   المقيس: `.wcusage-info-box::before` عنصر زائف **بموضع مطلق** وخطّه
+   `Font Awesome 5 Free` · يعني أيكونة علامة مائية ورا الرقم. وبعد ما
+   انضبط التخطيط صارت تقعد **فوق** النصّ.
+   🔴 ومنشيلها بدل ما نزيحها: كل صندوق عنده تسمية نصّية صريحة
+      (`.wcusage-info-box-title`)، فالأيكونة ما بتضيف معلومة وبتزاحم
+      الرقم · وهو أهم إشي بالصندوق. */
+.luvit-affiliate .wcusage-info-box::before,
+.luvit-affiliate .wcusage-info-box::after,
+.luvit-affiliate .wcusage-sales-stats::before {
+  content: none;
+}
+
+/* ── زرّ الإشعارات · «ضارب وطالع فوق الكلام ومش جوا اشي يوضح اذا مفعل» ─
+   الماركب مقروء من الصفحة الحيّة:
+     label.wcu-settings-toggle > input[type=checkbox] (مخفي 1×1 مطلق)
+                               + span.wcu-settings-toggle__track
+                               + span.wcu-settings-toggle__label
+   يعني المفتاح موجود بس ما كان متصمَّماً، والتسمية والمسار بنفس المكان.
+   ⤷ فالتسمية صارت صفّاً: مفتاح حقيقي + نصّ، وحالته **باينة بالعين**. */
+.luvit-affiliate .wcu-settings-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, .75rem);
+  cursor: pointer;
+  padding-block: var(--space-2, .5rem);
+}
+.luvit-affiliate .wcu-settings-toggle__track {
+  position: relative;
+  flex: none;
+  inline-size: 46px;
+  block-size: 26px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-line, #E1E9EC);
+  transition: background 200ms var(--ease-out-soft, ease);
+}
+.luvit-affiliate .wcu-settings-toggle__track::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-start: 3px;
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: var(--radius-pill, 999px);
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(2, 26, 30, .28);
+  transition: transform 200ms var(--ease-out-soft, ease);
+}
+/* 🔴 الحالة المفعّلة · لون العلامة لا أخضر النظام */
+.luvit-affiliate .wcu-settings-toggle input:checked ~ .wcu-settings-toggle__track {
+  background: var(--aqua-600, #1E869C);
+}
+.luvit-affiliate .wcu-settings-toggle input:checked ~ .wcu-settings-toggle__track::after {
+  /* منطقية · فبتزحّط لليسار بالعربي ولليمين باللاتيني لحالها */
+  transform: translateX(0);
+  inset-inline-start: 23px;
+}
+.luvit-affiliate .wcu-settings-toggle input:focus-visible ~ .wcu-settings-toggle__track {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+}
+.luvit-affiliate .wcu-settings-toggle__label {
+  font-family: var(--font-body);
+  font-size: var(--text-body, 1rem);
+  color: var(--color-ink, #1A2529);
+}
+
+/* ── الإيميل وزرّ الخروج · «الهوفر الزهري صار ييجي عالايميل» ──────────
+   الإيميل كان طالع زهري **دايماً** لا عالهوفر · فبينكتب لونه صراحةً
+   رمادياً هادياً، والزهري بيضل **حكراً على هوفر زرّ الخروج**. */
+.luvit-affiliate .wcusage-dash-top-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, .75rem);
+}
+.luvit-affiliate .wcusage-dash-username,
+.luvit-affiliate .wcusage-dash-username a,
+.luvit-affiliate .wcusage-dash-username a:visited {
+  color: var(--color-ink-soft, #47555B);
+  font-family: var(--font-latin);
+  font-size: var(--text-body-sm, .875rem);
+  text-decoration: none;
+}
+.luvit-affiliate .wcusage-dash-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 36px;
+  padding-inline: var(--space-4, 1rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-paper, #FFF);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ── بيانات الحساب · «محشور بالزاويه وطويل كثير» ──────────────────────
+   ريّان: «انت عندك مجال بالصفحه كلها فليش عامله زي هيك».
+   وكان محقّاً: العمود الأيسر كان 280px ثابتاً والحقول واحداً تحت التاني،
+   فطلع شريطاً طويلاً وحوله فراغ. ⤷ العمود الجانبي بياخد البروفايل وبس،
+   والحقول بتنفرش **صفّين** بعرض البطاقة كاملاً. */
+@media (min-width: 900px) {
+  .luvit-affiliate .wcu-settings-grid {
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: var(--space-5, 1.5rem);
+  }
+}
+@media (min-width: 720px) {
+  .luvit-affiliate .wcu-settings-col--account .wcusage_settings_form,
+  .luvit-affiliate .wcu-settings-col--main .wcusage_settings_form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-4, 1rem);
+    align-items: end;
+  }
+  /* وحقول بتاخد صفّاً كامل لأنها طويلة بطبعها */
+  .luvit-affiliate .wcusage_settings_form label:has(+ input[type="email"]),
+  .luvit-affiliate .wcusage_settings_form label:has(+ input[type="url"]) {
+    grid-column: 1 / -1;
+  }
+  .luvit-affiliate .wcusage_settings_form input[type="email"],
+  .luvit-affiliate .wcusage_settings_form input[type="url"] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Page URL · «هربت من مكانها 😂» ───────────────────────────────────
+   كانت بحاوية بلا عرض فقعدت بنصّ الصفحة معلّقة. صارت بلوحها زي الرابط. */
+.luvit-affiliate .wcu-campaigns-col1 {
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding: var(--space-4, 1rem);
+  border: 1px solid var(--color-line-soft, #EDF3F5);
+  border-radius: var(--radius-md, 16px);
+  background: var(--color-paper, #FFF);
+}
+
+/* ── فلاتر الطلبات و«Converted Only» · «مش عهويتنا» ───────────────────
+   الفلاتر كانت عناصر نظام خام (select و date و checkbox أزرق). */
+.luvit-affiliate .wcu-order-filters,
+.luvit-affiliate .wcu-filters-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2, .5rem);
+  margin-block-end: var(--space-4, 1rem);
+}
+.luvit-affiliate .wcu-order-filters select,
+.luvit-affiliate .wcu-order-filters input[type="date"],
+.luvit-affiliate .wcu-filters-inner select,
+.luvit-affiliate .wcu-filters-inner input[type="date"] {
+  box-sizing: border-box;
+  min-block-size: 40px;
+  padding-inline: var(--space-3, .75rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-paper, #FFF);
+  color: var(--color-ink, #1A2529);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+}
+/* 🔴 والمربع بينلبس بلون العلامة بـ`accent-color` · سطر واحد بدل ما
+   نخفي الأصلي ونرسم بديلاً (وهاد بيكسر قارئ الشاشة). */
+.luvit-affiliate input[type="checkbox"] {
+  accent-color: var(--aqua-600, #1E869C);
+}
+.luvit-affiliate .wcu-filters-col1,
+.luvit-affiliate .wcu-filters-col2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  color: var(--color-ink-soft, #47555B);
+}
+/* AFFILIATE-PASS3:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ACCOUNT-ADDRESS:START · صفحة العنوان · «فيها خلل وهاربين من بعض»
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان: «انا متاكد انه ماكان المفروض تكون هيك» · وكان محقّاً.
+   ماركب ووكومرس لبطاقتَي العنوان `.woocommerce-Addresses` مبني على
+   **أعمدة عائمة** (`.col-1` و`.col-2` بـ`float`)، والعائم بلا مسح
+   بيخلّي البطاقة التانية تنزل مزاحة قطرياً بدل ما تقعد جنب أختها.
+   ⤷ شبكة عمودين · والعوم بينلغى فبيروح الانزياح من أصله. */
+.woocommerce-account .woocommerce-Addresses {
+  display: grid;
+  gap: var(--space-5, 1.5rem);
+}
+@media (min-width: 780px) {
+  .woocommerce-account .woocommerce-Addresses {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.woocommerce-account .woocommerce-Addresses .woocommerce-Address {
+  float: none;
+  inline-size: 100%;
+  margin: 0;
+}
+/* ACCOUNT-ADDRESS:END */
