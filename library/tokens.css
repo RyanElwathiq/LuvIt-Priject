@@ -1127,6 +1127,19 @@ h1, h2, h3, h4, .luvit-heading {
 .luvit-card-grid--wide { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 700px)  { .luvit-card-grid--wide { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1000px) { .luvit-card-grid--wide { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* 🔴 أربع بطاقات بشبكة تلاتة = ٣ + ١ يتيمة بصف تاني · صار بصفحة الشروط
+   (أربع بطاقات تلخيص · مقيس: ارتفاع السكشن ٧٦٦ مقابل ٥٤٠ بالخصوصية اللي
+   عندها تلاتة). أربعة بتنقسم ٢×٢ بلا يتيمة.
+   ⚠️ **وبكجات المتجر مستثناة**: عندها إزاحة عمودية مقصودة لصف من تلاتة
+      (#packages · القاعدة تحت بسطر ١١١٥٠) · وتغييرها قرار ذوق لريّان. */
+@media (min-width: 1000px) {
+  .luvit-card-grid--wide:has(> :nth-child(4):last-child) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #packages .luvit-card-grid--wide:has(> :nth-child(4):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 
 /* Very small phones: one column so the title/price never crush. */
 @media (max-width: 359px) {
@@ -12524,6 +12537,17 @@ body.admin-bar #hero-seq .hero-story__cue {
   position: relative;
 }
 /* الخيط الواصل · بيمرّ **ورا** المحطات ويوقف عند أول وآخر وحدة */
+/* 🔴 المسار بثلاث محطات (رأس «من نحن») · الشبكة كانت مثبتة على أربعة
+   فالعمود الرابع بيضل فاضي والخيط بيطلع برّا آخر محطة · مقيس على رندر
+   محلي بنفس التوكنز ٣ أيلول. والعدّ بـ:has() زي STEPS-COUNT، فأي رأس
+   جديد بمحطات مختلفة ياخد أعمدته لحاله.
+   ⤷ 12.5% = نص عمود من أربعة · و16.667% = نص عمود من تلاتة. */
+.rt-flow:has(> :nth-child(3):last-child) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.rt-flow:has(> :nth-child(3):last-child)::before {
+  inset-inline: 16.667%;
+}
 .rt-flow::before {
   content: "";
   position: absolute;
@@ -13207,13 +13231,23 @@ html body {
    ⤷ الخصوصية ٠٫٢٫٠ مقابل ٠٫١٫٠ للقواعد الأصلية · فبتغلب بلا `!important`.
    ⚠️ وتحت ٥٦٠px الشبكة أصلاً عمودان وبتلفّ · واللفّ هناك مقصود.        */
 
+/* 🔴 اتفصلت ٣ أيلول · القاعدتان كانتا سوا على ٥٦١px، بس `.luvit-steps`
+   الكاملة أصلاً **عمود واحد** لحد ٨٦٠px و`.luvit-step` جوّاها صف أفقي
+   لحد نفس الحد · ففرضُ خمسة أعمدة من ٥٦١ كان بيهرس الخطوة على التابلت
+   (مقيس على ٧٦٨px). و`--compact` عمودية أصلاً فبتضل من ٥٦١. */
 @media (min-width: 561px) {
-  .luvit-steps:has(> :nth-child(5)),
   .luvit-steps--compact:has(> :nth-child(5)) {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
-  .luvit-steps:has(> :nth-child(6)),
   .luvit-steps--compact:has(> :nth-child(6)) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+@media (min-width: 860px) {
+  .luvit-steps:has(> :nth-child(5)) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .luvit-steps:has(> :nth-child(6)) {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }

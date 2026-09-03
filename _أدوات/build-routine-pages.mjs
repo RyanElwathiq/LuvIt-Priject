@@ -346,7 +346,8 @@ ${others.map((o) => `      <a class="luvit-btn luvit-btn--ghost luvit-btn--on-da
   </div>
 </section>
 
-<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
+<!-- 🔴 الموجة البيضا قبل الفوتر انشالت ٣ أيلول · الفوتر غامق وبيقصّ حافته
+     بحاله (luvit-cut-top) · فموجة فيلها أبيض بين غامقين بتطلع شريطاً عايماً. -->
 `;
 }
 
@@ -533,7 +534,8 @@ ${bottles(r)}
   </div>
 </section>
 
-<div class="luvit-wave luvit-wave--drift" style="--wave-fill:#FFFFFF;background:#0B9198" aria-hidden="true"></div>
+<!-- 🔴 الموجة البيضا قبل الفوتر انشالت ٣ أيلول · الفوتر غامق وبيقصّ حافته
+     بحاله (luvit-cut-top) · فموجة فيلها أبيض بين غامقين بتطلع شريطاً عايماً. -->
 `;
 }
 /* ══ فاحص واحد لكل الصفحات ═══════════════════════════════════════════
