@@ -14569,16 +14569,26 @@ body:has(#luvit-wish-status:not([hidden]))  .wl-head {
         480 = Affiliate Dashboard      · /affiliates/
         481 = Affiliate Registration   · /affiliate-registration/
    ═══════════════════════════════════════════════════════════════════════ */
+/* 🔴 الحشوة العلوية **جوّا الحاوية لا على body** · وهاد مقيس لا مذوّق:
+   مراقب النافبار (`luvitNavTheme` بـmotion.js) بيبني شريطاً بارتفاع
+   بكسل واحد عند **خطّ منتصف النافبار** (مقيس: 77px)، وبيطبّق اللون
+   لمّا يقطعه عنصر فيه `data-nav-bg`.
+   ⸺ ولمّا كانت الحشوة على `body`، الحاوية كانت تبلّش من 136px
+     يعني **تحت الخطّ** · فما بينطبق ولا لون لحد ما الزبونة تسكرول.
+     (مفحوص: قبل النقل أعلى الحاوية 136 · وبعده 32 · والـclass
+      بينزل من أول رسمة.)
+   ⚠️ فممنوع ترجّع الحشوة لـbody · بتكسر لون النافبار بصمت. */
 body.page-id-480,
 body.page-id-481 {
+  padding-block-end: var(--space-8, 4rem);
+}
+.luvit-affiliate {
   padding-block-start: calc(
     var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-6, 2rem)
   );
-  padding-block-end: var(--space-8, 4rem);
 }
 @media (max-width: 767px) {
-  body.page-id-480,
-  body.page-id-481 {
+  .luvit-affiliate {
     padding-block-start: calc(
       var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-5, 1.5rem)
     );
@@ -14586,13 +14596,12 @@ body.page-id-481 {
 }
 
 /* والمحتوى بيقعد بعرض الموقع لا بعرض الشاشة كاملة · نفس حدّ باقي الصفحات */
-body.page-id-480 > .wcu-dash-coupon-area,
-body.page-id-481 > .wcu-dash-coupon-area,
-body.page-id-480 > .wcu-user-coupon-title,
-body.page-id-481 > .wcu-user-coupon-title,
-body.page-id-480 > .wcu-user-coupon-linebreak,
-body.page-id-481 > .wcu-user-coupon-linebreak,
-body.page-id-481 > .wcusage-registration-form {
+/* 🔴 الحاوية صارت `.luvit-affiliate` (خطاف the_content بـwoo.php)
+   فالمحتوى ما عاد **ولداً مباشراً لـbody** · وأول نسخة من هالقاعدة
+   كانت `body > …` فانكسر حصر العرض وفاض المحتوى برّا الشاشة
+   (الكود والتبويبات اتقصّو من اليمين). فالحصر صار على الحاوية
+   نفسها · مرة وحدة ولكل ولادها. */
+.luvit-affiliate {
   box-sizing: border-box;
   max-inline-size: var(--container-max, 1200px);
   margin-inline: auto;
@@ -14632,3 +14641,1048 @@ body.page-id-481 > .wcusage-registration-form {
   white-space: nowrap;
 }
 /* CARD-SHIP:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AFFILIATE-SKIN:START · «لوح المدّ» · قشرة لوحة الشركاء · /affiliates/
+   ═══════════════════════════════════════════════════════════════════════
+   بتنضاف بعد بلوك AFFILIATE:END · وما بتلغي إشي منه. اللي قبل بيعمل خلوص
+   النافبار وحدّ العرض · وهاد بيعمل التصميم.
+
+   ريّان: «بدنا اياها تعرف عدد الطلبات اللي استعملها الكود وعدد الزبونات
+   وكم ربحت زي الشركات الكبيره» · وبعد ما شافها: «التصميم لساته م polished».
+   وحسم اللغة: اللوحة بتضل **إنجليزي** · ما منترجم ولا ليبل.
+
+   🔴 الفكرة بجملة: **اللوحة صارت لوح نتيجة، والبطل رقم واحد.**
+      الإضافة بتحط ست صناديق بنفس الحجم ونفس اللون، فما في إشي بيقود.
+      وهاي مش مسألة ذوق · الستة **مش نفس النوع**:
+        الصف الأول = **شروط الاتفاق** (Commission % · Discount · Total Usage)
+                     أرقام إعدادات · بتتغيّر لما صاحب العلامة يغيّر الاتفاق.
+        الصف الثاني = **نتيجة الشغل** (Total Sales · Total Discounts ·
+                     Total Commission) · بتتحرّك لما الشريكة تشتغل.
+      فالصف الأول انسحب لشريط شروط هادي، والصف الثاني صار لوح النتيجة.
+      والبطل فيه **Total Commission** لأنه هو «كم ربحت» بالحرف · وهو
+      الرقم الوحيد اللي دخل الشريكة معلّق فيه.
+
+   🔴 كل إشي تحت **مقيس من الصفحة الحية اليوم**، مش مفترَض. اللي انقاس:
+      · ماركب الإضافة كامل (شجرة DOM حقيقية)
+      · أقصى خصوصية بتستعملها الإضافة على كل عنصر
+      · آلية إخفاء لوحات الفترات (jQuery show/fadeOut · ستايل سطري)
+      · نقطة الكسر لوضع الموبايل (1000px · بتبدّل الأزرار بـselect)
+      · قيم unicode-bidi و direction المحسوبة على كل رقم
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── ٠ · توكنز محلية · نطاقها اللوحة وبس ────────────────────────────────
+   ليش محلية مش عالمية: هاي قياسات لوحة إضافة مش ملكنا · ما بترقّى لتوكن
+   عالمي لأنها ما بتوصف نظام العلامة، بتوصف حالة هالصفحة. (قاعدة «التوكن
+   حدّ مش قاموس».) */
+.wcu-dash-coupon-area {
+  /* مسافة داخلية موحّدة لكل البطاقات · رقم واحد بيتغيّر بمكان واحد */
+  --wcu-pad: var(--space-5, 1.5rem);
+  --wcu-gap: var(--space-4, 1rem);
+
+  /* 🔴 نص الحالة الفارغة · **هاد النص الوحيد اللي كتبته أنا بكل الملف**
+     ومحطوط بمتغيّر عشان يتغيّر من سطر واحد بلا ما تلاحق الـCSS.
+     مكتوب **وصف حالة** مش وعد ولا رقم · «مستنيين أول طلب» بس.
+     🔴 ولازم صاحب العلامة يقرّه قبل الإطلاق · نفس قاعدة باقي الكوبي. */
+  --wcu-empty-note: "Waiting for the first order.";
+
+  font-family: var(--font-body);
+  color: var(--color-ink);
+}
+
+/* ── ١ · صف الهوية · الكود هو اسم الشريكة هون ───────────────────────────
+   الماركب المقيس:
+     h2.coupon-title
+       i.fas.fa-tag · span.wcu-coupon-title-prefix (فاضي) ·
+       span.wcu-coupon-title (الكود) · a.wcusage-refresh-data ·
+       span.wcusage-dash-top-links > [تسجيل الخروج] + [الإيميل]
+
+   🔴 فخّ مقيس: **الإيميل عليه كلاس `wcusage-dash-logout` كمان.**
+      يعني `.wcusage-dash-logout` لحاله بيمسك الاثنين. الفصل بـ`:not()`
+      مش بمضاعفة الكلاس · المطلوب **استثناء** مش ترجيح. (قاعدة مسجّلة.) */
+.wcu-dash-coupon-area .coupon-title.coupon-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2, .5rem);
+  margin: 0 0 var(--space-6, 2rem);
+  padding: 0 0 var(--space-4, 1rem);
+  border-block-end: 1px solid var(--color-line, #E1E9EC);
+  font-family: var(--font-body);
+  font-size: var(--text-body, 1rem);
+  font-weight: 400;
+}
+
+/* أيقونة التذكرة · لمسة لون خفيفة، مش عنوان */
+.wcu-dash-coupon-area .coupon-title > .fa-tag {
+  color: var(--aqua-500, #29A9C0);
+  font-size: 1rem;
+}
+
+/* الكود نفسه · بيلبس شكل قسيمة حقيقية (حدّ متقطّع + أرضية ماء).
+   خط Jost لأنه لاتيني · و`letter-spacing` مسموح هون لأنه **مش عربي**. */
+.wcu-dash-coupon-area .coupon-title .wcu-coupon-title {
+  display: inline-block;
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: clamp(1.125rem, 1rem + .6vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1.2;
+  color: var(--aqua-700, #196B7D);
+  background: var(--aqua-50, #EAFAFD);
+  border: 1px dashed var(--aqua-200, #A6E7F1);
+  border-radius: var(--radius-md, 16px);
+  padding: var(--space-2, .5rem) var(--space-4, 1rem);
+  /* الاتجاه: الكود لاتيني · بيضل LTR ومعزول عشان أي `.` أو `-` بآخره
+     ما يقفز لأول السطر جوّا صفحة RTL. (فخّ مسجّل بالمشروع.)
+     و`text-align: left` صريحة لأن `start` تحت `ltr` بتعني يسار أصلاً ·
+     وهون بدنا الكود يبدا من يسار صندوقه هو، لا من يمينه. */
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
+
+/* السابقة فاضية بالصفحة الحية · بتاخد مسافة بلا فايدة فبتنطوي.
+   لو صاحب الموقع فعّل نصاً إلها لاحقاً، شيل هالقاعدة. */
+.wcu-dash-coupon-area .coupon-title .wcu-coupon-title-prefix:empty {
+  display: none;
+}
+
+/* زر التحديث · دائرة صغيرة هادية جنب الكود */
+.wcu-dash-coupon-area .wcusage-refresh-data.wcusage-refresh-data,
+.wcu-dash-coupon-area .wcusage-refresh-stats-btn.wcusage-refresh-stats-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: var(--radius-pill, 999px);
+  color: var(--aqua-700, #196B7D);
+  background: var(--color-mist, #F2F7F9);
+  border: 1px solid var(--color-line, #E1E9EC);
+  text-decoration: none;
+  transition: background var(--duration-instant, 180ms) var(--ease-out-soft, ease),
+              transform var(--duration-instant, 180ms) var(--ease-out-soft, ease);
+}
+.wcu-dash-coupon-area .wcusage-refresh-data:hover,
+.wcu-dash-coupon-area .wcusage-refresh-stats-btn:hover {
+  background: var(--aqua-100, #D0F3F9);
+}
+.wcu-dash-coupon-area .wcusage-refresh-data:active,
+.wcu-dash-coupon-area .wcusage-refresh-stats-btn:active {
+  transform: scale(.94);
+}
+
+/* الإيميل وتسجيل الخروج · بينزاحوا لآخر السطر (يسار بصفحة RTL) */
+.wcu-dash-coupon-area .wcusage-dash-top-links.wcusage-dash-top-links {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3, .75rem);
+  margin-inline-start: auto;
+}
+
+/* الإيميل · نص ثانوي · **إنجليزي فبيتعزل ويتحاذى صريح** */
+.wcu-dash-coupon-area .wcusage-dash-username.wcusage-dash-username {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, .25rem);
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-body-sm, .875rem);
+  /* --color-ink-soft على أبيض = 7.60:1 · مقيس.
+     🔴 وما استعملت «faint ink» (rgba(26,37,41,.48)) لأنها بتطلع
+        2.99:1 على أبيض · **بترسب بالتباين** · فبتضل للخطوط الشعرية بس. */
+  color: var(--color-ink-soft, #47555B);
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
+
+/* تسجيل الخروج · **بلا** الإيميل · هون الـ:not() اللازمة */
+.wcu-dash-coupon-area .wcusage-dash-logout:not(.wcusage-dash-username) a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, .25rem);
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-body-sm, .875rem);
+  color: var(--color-ink-soft, #47555B);
+  text-decoration: none;
+  border-radius: var(--radius-pill, 999px);
+  padding: var(--space-1, .25rem) var(--space-3, .75rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  transition: color var(--duration-instant, 180ms) var(--ease-out-soft, ease),
+              border-color var(--duration-instant, 180ms) var(--ease-out-soft, ease);
+}
+.wcu-dash-coupon-area .wcusage-dash-logout:not(.wcusage-dash-username) a:hover {
+  color: var(--aqua-700, #196B7D);
+  border-color: var(--aqua-200, #A6E7F1);
+}
+
+/* ── ٢ · التبويبات · ملاحة حقيقية ───────────────────────────────────────
+   🔴 أخطر فخّ بهالملف · والإضافة بتبدّل وضعين لحالها:
+        `.wcutab`       أزرار · `display:flex`  فوق 1000px
+        `.wcutabmobile` قائمة  · `display:block` تحت 1000px
+      ونقطة الكسر **1000px** مقروءة من ستايل الإضافة نفسه، مش مخمّنة.
+
+   🔴 فلو كتبت `display` على `.wcutab` برّا ميديا كويري، خصوصيتي بتغلب
+      `display:none` تبع الإضافة وبيطلع **الاثنين مع بعض** على التلفون.
+      فكل تخطيط الأزرار محبوس جوّا `min-width: 1001px` · وما بلمس
+      `display` تبع `.wcutabmobile` ولا مرة. */
+@media (min-width: 1001px) {
+  .wcu-dash-coupon-area .wcutab.wcutab {
+    display: flex;
+    gap: var(--space-1, .25rem);
+    align-items: stretch;
+    background: var(--color-mist, #F2F7F9);
+    border: 1px solid var(--color-line, #E1E9EC);
+    border-radius: var(--radius-pill, 999px);
+    padding: var(--space-1, .25rem);
+    margin: 0 0 var(--space-6, 2rem);
+    overflow: hidden;
+  }
+
+  /* أقصى خصوصية بتستعملها الإضافة على الزر = (0,1,1) عبر `.wcutab button`
+     · وهاي (0,4,0) فبتغلب بلا `!important`. */
+  .wcu-dash-coupon-area .wcutab .wcutablinks.wcutablinks {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2, .5rem);
+    inline-size: auto;
+    float: none;
+    margin: 0;
+    padding: var(--space-3, .75rem) var(--space-3, .75rem);
+    border: 0;
+    border-radius: var(--radius-pill, 999px);
+    background: transparent;
+    /* --color-ink-soft على أرضية mist = 7.2:1 · مقيس */
+    color: var(--color-ink-soft, #47555B);
+    font-family: var(--font-latin, 'Jost', sans-serif);
+    font-size: var(--text-body-sm, .875rem);
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    /* التبويبات إنجليزية · بتنعزل عشان الأيقونة والنص ما ينعكسوا */
+    direction: ltr;
+    unicode-bidi: isolate;
+    transition: background var(--duration-instant, 180ms) var(--ease-out-soft, ease),
+                color var(--duration-instant, 180ms) var(--ease-out-soft, ease);
+  }
+
+  .wcu-dash-coupon-area .wcutab .wcutablinks.wcutablinks:hover {
+    background: rgba(255, 255, 255, .7);
+    color: var(--aqua-700, #196B7D);
+  }
+
+  /* 🔴 الحالة النشطة · وهون حدّ ما بقدر أتخطاه بالـCSS لحاله:
+     الإضافة بتطبع بجسم الصفحة
+       `.wcu-dash-coupon-area .wcutab .wcutab-active {
+          background: #005D75 !important; color: #fff !important }`
+     و`!important` بتغلب أي خصوصية · والمشروع مانع `!important` ·
+     يعني **خلفية التبويب النشط ولونه مش لعبتي**.
+
+     فما حاولت أغالبها · صمّمت معها:
+       · اللي بقدر عليه (radius · padding · وزن الخط · الخط نفسه) بيخلّي
+         التبويب النشط **حبّاية pill غامقة** جوّا شريط فاتح · وهاد شكل
+         ملاحة سليم ومقروء، مش حل وسط.
+       · أبيض على #005D75 = **7.36:1** · مقيس · ناجح.
+     ✅ والنتيجة الحية بعد التركيب: النشط pill غامق 999px ووزن 600،
+        والخامل شفاف بلون ink-soft · يعني التمييز واضح.
+     💡 ولو ريّان بدّه اللون يطابق العلامة بالضبط: هاد **إعداد بالإضافة**
+        مش رقم مكتوب بالكود · بينغيّر من إعدادات Coupon Affiliates
+        (aqua-700 = #196B7D بيعطي نفس الإحساس وبيمرّ التباين كمان).
+        ما بغيّره أنا · إعداد على موقع حيّ = قرار ريّان. */
+  .wcu-dash-coupon-area .wcutab .wcutablinks.wcutab-active.wcutab-active {
+    font-weight: 600;
+    box-shadow: var(--shadow-sm, 0 1px 2px rgba(12, 51, 60, .04));
+  }
+
+  .wcu-dash-coupon-area .wcutab .wcutablinks .fas {
+    font-size: .8em;
+    opacity: .85;
+    margin: 0;
+  }
+}
+
+/* وضع الموبايل · تحت 1000px الإضافة بتعرض `select` أصلية.
+   🔴 وخلّيتها **أصلية** بقصد (`appearance` ما انلمست):
+      · السهم بينرسم من النظام وبمكانه الصح بـRTL بلا شغل مني
+      · المنتقي على التلفون بيطلع منتقي النظام · أسهل بإصبع من قائمة مزوّرة
+      · وبلا `data:` URI · وهاد بيتجنّب فخّ wptexturize المسجّل بالمشروع
+      يعني بلبّسها هوية بلا ما أكسر إشي بيشتغل. */
+.wcu-dash-coupon-area .wcutabmobile select {
+  inline-size: 100%;
+  box-sizing: border-box;
+  min-block-size: 48px;              /* هدف لمس مريح */
+  padding: var(--space-3, .75rem) var(--space-4, 1rem);
+  margin: 0 0 var(--space-5, 1.5rem);
+  border: 1px solid var(--aqua-200, #A6E7F1);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-paper, #FFFFFF);
+  color: var(--color-ink, #1A2529);
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-body, 1rem);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(12, 51, 60, .04));
+}
+
+/* ── ٣ · عناوين المقاطع ─────────────────────────────────────────────────
+   «Coupon Info» و«Latest Referrals» · صفّ عنوان + رابط بآخره */
+.wcu-dash-coupon-area .wcusage-stats-title.wcusage-stats-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, .75rem);
+  margin: 0 0 var(--space-3, .75rem);
+  padding: 0;
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  letter-spacing: .08em;             /* لاتيني · مسموح */
+  text-transform: uppercase;
+  color: var(--color-ink-soft, #47555B);
+  direction: ltr;
+  unicode-bidi: isolate;
+  /* صريحة: تحت `ltr` قيمة `start` بتعني **يسار** · والعنوان بدنا إياه
+     يبدا من حافة الكتلة اليمنى بصفحة RTL، فبنقلب الصف لا النص. */
+  text-align: left;
+  flex-direction: row-reverse;
+}
+
+/* رابط «View More» · بينزاح لآخر السطر */
+.wcu-dash-coupon-area .wcusage-orders-link.wcusage-orders-link {
+  margin-inline-end: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, .25rem);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--aqua-700, #196B7D);
+  text-decoration: none;
+}
+.wcu-dash-coupon-area .wcusage-orders-link:hover {
+  text-decoration: underline;
+}
+/* السهم بيشير لليمين بالماركب · وقياس الصفحة الحية أعطى `transform: none`
+   يعني الإضافة **ما بتقلبه** بنسخة الـRTL · فبنقلبه إحنا مرة وحدة.
+   «التالي» بصفحة عربية بتشير لليسار. */
+.wcu-dash-coupon-area .wcusage-orders-link .fa-arrow-right {
+  transform: scaleX(-1);
+}
+
+/* ── ٤ · الصف الأول · شريط الشروط ───────────────────────────────────────
+   Commission % · Discount · Total Usage
+   هدول **مش نتيجة شغل** · هدول الاتفاق. فبينزلوا بصرياً: أصغر، أهدأ،
+   بأرضية ماء فاتحة · بيقرّوا ولا بيتنافسوا مع لوح النتيجة.
+
+   الماركب: الصناديق أبناء **مباشرين** للمقطع، ومعهم عنوان و div فاضي.
+   `:has(> .wcusage-info-box)` بتمسك المقطع الصح لحاله بلا ما أعدّ مقاطع. */
+.wcu-dash-coupon-area .wcusage-tab-section:has(> .wcusage-info-box) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--wcu-gap);
+  margin-block-end: var(--space-7, 3rem);
+}
+/* العنوان وأي عنصر مش صندوق بياخد السطر كامل · وإلا بيصير خانة بالشبكة */
+.wcu-dash-coupon-area .wcusage-tab-section:has(> .wcusage-info-box) > *:not(.wcusage-info-box) {
+  grid-column: 1 / -1;
+}
+
+/* ── ٥ · الصندوق الأساسي · شكل بطاقة البيت ──────────────────────────────
+   بيتبع `.luvit-card`: أبيض · حدّ 1px بلون --color-line · radius-lg ·
+   ظل ناعم. الإضافة بتحط radius 5px وحدّ رمادي · بننسخه للعائلة. */
+.wcu-dash-coupon-area .wcusage-info-box.wcusage-info-box {
+  box-sizing: border-box;
+  float: none;                        /* بتلغي عوم الإضافة · شوف ملاحظة ٥.١ */
+  inline-size: auto;
+  margin: 0;
+  padding: var(--wcu-pad);
+  background: var(--color-paper, #FFFFFF);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(12, 51, 60, .04));
+}
+
+/* ٥.١ · ليش إلغاء العوم مش تجميل:
+   الصناديق بالإضافة `float: right` وحاوياتها **ما بتحويها**. القياس على
+   الصفحة الحية اليوم: `.wcusage-sales-stats` ارتفاعها **0px** و
+   `.wcusage-show-last-all` ارتفاعها **0px** وجوّاهن صناديق ارتفاعها 125px.
+   يعني الأب منهار وأي إشي بيجي بعده بيركب فوقهن. التحويل لشبكة بيصلّح
+   عطلاً حقيقياً بالتخطيط، مش بس بيرتّب المنظر. */
+
+/* الليبل · إنجليزي · صغير وهادي */
+.wcu-dash-coupon-area .wcusage-info-box .wcusage-info-box-title {
+  display: block;
+  margin: 0 0 var(--space-2, .5rem);
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-caption, .75rem);
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft, #47555B);
+  direction: ltr;
+  unicode-bidi: isolate;
+  /* الكتلة RTL فحافتها الابتدائية يمين · و`start` تحت `ltr` بتعني يسار،
+     فلازم `right` صريحة. (فخّ #٥ المسجّل بـCLAUDE.md.) */
+  text-align: right;
+}
+
+/* مضاعفة الكلاس هون كمان · نفس سبب فقرة الحالة الفارغة: قاعدة الإضافة
+   على `.wcu-dash-coupon-area .wcutabcontent p` بتحط margin و padding
+   بخصوصية (0,2,1) · فبنرفع لـ(0,3,1) عشان ما يصير تعادل. */
+.wcu-dash-coupon-area .wcusage-info-box.wcusage-info-box > p {
+  margin: 0;
+  padding: 0;
+}
+
+/* ٥.٢ · العلامة المائية · فخّ انكشف **باللقطة** لا بالأرقام ─────────────
+   الإضافة بتحط أيقونة Font Awesome على `.wcusage-info-box::before`:
+   `position:absolute · top:44px · right:30px · 40px · #BEBEBE`.
+   و`right` بصفحة RTL هي **حافة البداية** · يعني بالضبط تحت الرقم اللي
+   حاذيته يمين ← الأيقونة كانت **راكبة على الرقم**.
+   🔴 وكل الفحوصات الرقمية عدّت وهي راكبة · اللي كشفها لقطة شاشة.
+
+   الحل: نبعتها للحافة المقابلة (يسار بـRTL) وننزّلها تحت وتصغّر.
+   🔴 ولونها **مقفول**: بلوك `<style>` تبع الإضافة بجسم الصفحة فيه
+      `.wcusage-info-box::before { color:#BEBEBE !important }` ·
+      و`!important` بتغلب أي خصوصية، وإحنا ما منستعمل `!important`.
+      فبنخفّفها بـ`opacity` (مش مقفولة) بدل ما نغيّر لونها · وهيك
+      بتشتغل مهما كان اللون لو ريّان غيّره من إعدادات الإضافة.
+   ⚠️ والهيرو مستثنى بـ`:not()` لأن `::before` تبعه صار توهّج الماء. */
+.wcu-dash-coupon-area .wcusage-info-box.wcusage-info-box:not(.wcusage-info-box-dollar)::before {
+  inset-block-start: auto;
+  inset-block-end: var(--space-4, 1rem);
+  inset-inline-start: auto;
+  inset-inline-end: var(--space-5, 1.5rem);
+  font-size: 26px;
+  opacity: .42;
+  pointer-events: none;
+}
+
+/* ── ٦ · الأرقام والاتجاه · **أهم قاعدة بالملف** ────────────────────────
+   المقيس على الصفحة الحية: ستايل RTL تبع الإضافة بيحط
+   `unicode-bidi: plaintext` على كل `span` جوّا اللوحة.
+
+   و`plaintext` معناها: **اتجاه الفقرة بينحدد من أول حرف قوي بالمحتوى**.
+   يعني نفس الصندوق بيتغيّر اتجاهه حسب اللي جوّاه:
+     "0"          ما فيه حرف قوي  → بيرجع لاتجاه العنصر (rtl)
+     "0.00 د.أ"   أول حرف قوي عربي → rtl
+     "-5.00"      ما فيه حرف قوي  → rtl · والسالب بيقفز
+   فالأرقام بتتحاذى وبتترتّب **حسب قيمتها**، وهاد بالضبط «القفز» اللي
+   بينكسر فيه شكل العمود أول ما تيجي أول عملية شراء.
+
+   الحل: نشيل `plaintext` ونحط **عزل صريح** · فكل قيمة بتنرسم بنفس
+   الترتيب مهما كان محتواها: الرقم وبعده العملة.
+   الخصوصية: قاعدة الإضافة `.wcu-dash-coupon-area span` = (0,1,1) ·
+   وهاي (0,2,2) فبتغلب بلا `!important`. */
+.wcu-dash-coupon-area .wcusage-info-box > p > span:not(.wcusage-info-box-title) {
+  display: block;
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--color-ink, #1A2529);
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: right;                  /* صريحة · نفس سبب الليبل */
+  font-variant-numeric: tabular-nums; /* الأرقام ما بترجف وهي بتتغيّر */
+}
+
+/* رمز العملة «د.أ» عربي جوّا رقم لاتيني · بياخد عزله الخاص عشان ما
+   يسحب الرقم معه · وبيصغر شوي عشان الرقم يضل هو البطل. */
+.wcu-dash-coupon-area .wcusage-info-box .woocommerce-Price-currencySymbol {
+  unicode-bidi: isolate;
+  font-family: var(--font-body);
+  font-size: .5em;
+  font-weight: 500;
+  letter-spacing: 0;                  /* 🔴 عربي · صفر دايماً */
+  margin-inline-start: .3em;
+  color: var(--color-ink-soft, #47555B);
+}
+
+/* شارة الفرق (بتطلع بلوحات ٣٠ و٧ يوم) · بتصير شارة صغيرة تحت الرقم */
+.wcu-dash-coupon-area .wcusage-info-box .wcusage-num-neg {
+  display: inline-block;
+  margin-block-start: var(--space-2, .5rem);
+  font-size: var(--text-caption, .75rem);
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 2px var(--space-2, .5rem);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-mist, #F2F7F9);
+  color: var(--color-ink-soft, #47555B);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* صناديق شريط الشروط · أهدا وأصغر من لوح النتيجة */
+.wcu-dash-coupon-area .wcusage-info-box-usage.wcusage-info-box-usage,
+.wcu-dash-coupon-area .wcusage-info-box-discount.wcusage-info-box-discount,
+.wcu-dash-coupon-area .wcusage-info-box-percent.wcusage-info-box-percent {
+  background: var(--aqua-50, #EAFAFD);
+  border-color: var(--aqua-100, #D0F3F9);
+  box-shadow: none;
+  padding: var(--space-4, 1rem);
+}
+/* ink على aqua-50 = 14.57:1 · مقيس */
+.wcu-dash-coupon-area .wcusage-info-box-usage > p > span:not(.wcusage-info-box-title),
+.wcu-dash-coupon-area .wcusage-info-box-discount > p > span:not(.wcusage-info-box-title),
+.wcu-dash-coupon-area .wcusage-info-box-percent > p > span:not(.wcusage-info-box-title) {
+  font-size: clamp(1.125rem, 1rem + .5vw, 1.375rem);
+  color: var(--aqua-700, #196B7D);
+}
+
+/* ── ٧ · لوح النتيجة · وهون البطل ───────────────────────────────────────
+   ثلاث لوحات (all · 30 · 7) وكل وحدة جوّاها نفس التلات صناديق.
+   ترتيب الماركب: sales → discounts → dollar · يعني «Total Commission»
+   **آخر واحد**. بشبكة CSS بحطه أول بلا ما ألمس الماركب.
+
+   🔴 وليش الشبكة بتنجح رغم إن الإضافة بتحط `display` سطري:
+      الإضافة بتستعمل jQuery `.show()` و`.fadeOut()` (مقروءة من سكربتها).
+      `.fadeOut()` بتخلّي `display:none` سطري · و`.show()` **بتفضّي
+      الخاصية السطرية** بدل ما تكتب `block`، فبيرجع الحكم لورقة الستايل
+      وبتشتغل الشبكة. واللوحة المخفية بيضل `display:none` السطري غالب
+      على `grid` وهاد المطلوب بالضبط.
+      ✅ ومتحقَّق: اللوحة الظاهرة اليوم بلا سمة `style` أصلاً. */
+.wcu-dash-coupon-area .wcusage-show-last-all,
+.wcu-dash-coupon-area .wcusage-show-last-30,
+.wcu-dash-coupon-area .wcusage-show-last-7 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-auto-rows: minmax(0, auto);
+  gap: var(--wcu-gap);
+  align-items: stretch;
+}
+
+/* 🔴 البطل · Total Commission = «كم ربحت».
+   بياخد العمود الأول (وبصفحة RTL العمود الأول = **اليمين** · يعني أول
+   إشي بتشوفه العين العربية) وبيمتد على السطرين. */
+.wcu-dash-coupon-area .wcusage-info-box-dollar.wcusage-info-box-dollar {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2, .5rem);
+  min-block-size: 200px;
+  padding: var(--space-6, 2rem);
+  border: 0;
+  border-radius: var(--radius-lg, 24px);
+  /* 🔴 التدرّج **بيوقف عند #124D5A** · وما بيكمّل لـ#0B9198 زي
+     `.luvit-deep` الأصلية. السبب مقيس مش ذوق:
+       أبيض على #0B9198 = **3.81:1** · راسب.
+       أبيض على #124D5A = **9.39:1** · ناجح بمريح.
+     نفس عائلة الماء، بس محبوسة بالنص اللي بيمرّ التباين. */
+  background: linear-gradient(165deg, #08262E 0%, #0C333C 46%, #124D5A 100%);
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(12, 51, 60, .08));
+}
+
+/* توهّج الماء · نفس تشريح `.luvit-deep::before` وبنفس الـkeyframes
+   الموجودة أصلاً (`luvit-caustic-a`) · بلا إضافة حركة جديدة للمشروع.
+   transform و opacity بس · ولا `backdrop-filter`. */
+.wcu-dash-coupon-area .wcusage-info-box-dollar::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(40% 48% at 26% 28%, rgba(76, 197, 218, .30), rgba(76, 197, 218, 0) 70%),
+    radial-gradient(32% 40% at 76% 66%, rgba(120, 215, 235, .20), rgba(120, 215, 235, 0) 72%);
+  animation: luvit-caustic-a 34s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* ليبل البطل · aqua-200 على أغمق نقطة بالتدرّج = 11.5:1 وعلى أفتح
+   نقطة (#124D5A) = 6.85:1 · مقيس · ناجح بالحالتين. */
+.wcu-dash-coupon-area .wcusage-info-box-dollar .wcusage-info-box-title {
+  color: var(--aqua-200, #A6E7F1);
+  font-size: var(--text-body-sm, .875rem);
+  margin-block-end: var(--space-1, .25rem);
+}
+
+/* رقم البطل · أكبر رقم بالصفحة · وهو الوحيد اللي بهالحجم */
+.wcu-dash-coupon-area .wcusage-info-box-dollar > p > span:not(.wcusage-info-box-title) {
+  font-size: clamp(2.5rem, 1.7rem + 3vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  color: #FFFFFF;
+}
+.wcu-dash-coupon-area .wcusage-info-box-dollar .woocommerce-Price-currencySymbol {
+  color: var(--aqua-200, #A6E7F1);
+  font-size: .32em;
+}
+.wcu-dash-coupon-area .wcusage-info-box-dollar .wcusage-num-neg {
+  background: rgba(255, 255, 255, .14);
+  color: var(--aqua-100, #D0F3F9);
+}
+
+/* الصندوقان المساندان · بيتكوّموا بالعمود الثاني (شمال بـRTL) */
+.wcu-dash-coupon-area .wcusage-info-box-sales.wcusage-info-box-sales {
+  grid-column: 2;
+  grid-row: 1;
+}
+.wcu-dash-coupon-area .wcusage-info-box-discounts.wcusage-info-box-discounts {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+/* ── ٨ · صف الفترة · All-time · This Month · Last Month ─────────────────
+   🔴 الروابط التلاتة **بلا أي كلاس** بالماركب (مقيس · `class=""`)
+      وما في ولا كلاس بيقول مين المختارة. الإضافة بتخفي/بتظهر **اللوحة**
+      مش بتعلّم على الرابط.
+
+   فالحالة النشطة بتنقرا من اللوحة الظاهرة عبر `:has()`:
+   لوحة ظاهرة = ما عليها `display:none` سطري ← نلوّن رابطها.
+   ✅ متحقَّق على الصفحة الحية: المحدّد رجّع **عنصر واحد** بالضبط
+      (all) و**صفر** للمخفيّتين. */
+.wcu-dash-coupon-area .wcusage-sales-stats-toggles {
+  margin-block-end: var(--space-4, 1rem);
+}
+
+.wcu-dash-coupon-area .wcusage-last-days.wcusage-last-days {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2, .5rem);
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+}
+
+/* الفواصل «|» بين الروابط بتنطوي · صارت شرايح مش قائمة نص */
+.wcu-dash-coupon-area .wcusage-last-days > span {
+  display: none;
+}
+
+.wcu-dash-coupon-area .wcusage-last-days a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 36px;
+  padding: var(--space-1, .25rem) var(--space-4, 1rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-paper, #FFFFFF);
+  color: var(--color-ink-soft, #47555B);
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 500;
+  text-decoration: none;
+  direction: ltr;
+  unicode-bidi: isolate;
+  transition: background var(--duration-instant, 180ms) var(--ease-out-soft, ease),
+              border-color var(--duration-instant, 180ms) var(--ease-out-soft, ease),
+              color var(--duration-instant, 180ms) var(--ease-out-soft, ease);
+}
+.wcu-dash-coupon-area .wcusage-last-days a:hover {
+  border-color: var(--aqua-200, #A6E7F1);
+  color: var(--aqua-700, #196B7D);
+}
+
+/* الشريحة النشطة · aqua-700 على aqua-50 = 5.9:1 · مقيس */
+.wcu-dash-coupon-area .wcusage-tab-section:has(> .wcusage-sales-stats > .wcusage-show-last-all:not([style*="none"])) #wcusage-last-days-all,
+.wcu-dash-coupon-area .wcusage-tab-section:has(> .wcusage-sales-stats > .wcusage-show-last-30:not([style*="none"])) #wcusage-last-days30,
+.wcu-dash-coupon-area .wcusage-tab-section:has(> .wcusage-sales-stats > .wcusage-show-last-7:not([style*="none"])) #wcusage-last-days7 {
+  background: var(--aqua-50, #EAFAFD);
+  border-color: var(--aqua-400, #4CC5DA);
+  color: var(--aqua-700, #196B7D);
+  font-weight: 600;
+}
+/* 🔴 والشرائح الثلاث مقروءة **بدون** الحالة النشطة كمان · فلو تغيّرت
+   آلية الإخفاء بترقية للإضافة، بيروح التمييز وبيضل الصف شغّال ومقروء ·
+   ما بينكسر. الانحلال هون مقصود. */
+
+/* زر تحديث الأرقام بينزاح لآخر الصف */
+.wcu-dash-coupon-area .wcusage-last-days .wcusage-refresh-stats-btn {
+  margin-inline-start: auto;
+}
+
+/* ── ٩ · آخر الإحالات + **حالة يوم الإطلاق** ────────────────────────────
+   🔴 هون أهم شاشة بالمشروع كله.
+   يوم الأحد بيفتح كل شريك اللوحة وبيلاقي أصفاراً و«No orders found.»
+   فهاي مش حالة استثناء · **هاي الحالة الافتراضية لكل الشركاء بيوم واحد**،
+   وهي اللي بتقرّر إذا البرنامج بيبان حيّاً ولا ميتاً.
+
+   الماركب المقيس:
+     div.coupon-orders-list
+       div.wcusage-orders-table-wrap   ← مخفي لما ما في طلبات
+       p                               ← «No orders found.» (بلا كلاس)
+
+   🔴 فخّ انكشف بالفحص · وكان رح يوصل الموقع لو ما انفحص:
+      الجدول **مش** مخفي بستايل سطري · الإضافة بتطبع بلوك `<style>` جوّا
+      الصفحة فيه `#wcusage-orders-table-<رقم> { display: none }`
+      و**الرقم بينولد جديد كل تحميل** (شفته 551157737 وبعدها 3174612957).
+      يعني ما في معرّف ثابت أقدر أمسكه، و`[style*="none"]` بترجّع صفر.
+
+   فالإشارة المعتمدة **بنيوية**: الجدول وهو فاضي جوّاه `<thead>` بس ·
+   بلا `<tbody>` أبداً (مقيس: tbody count = 0 · thead tr = 1).
+      · الأساس: الفقرة بتتصمّم كخط بداية.
+      · والحارس: أول ما يظهر `tbody` بالجدول بترجع سطراً عادياً.
+   🔴 والحارس **ما انفحص بصفوف حقيقية** لأن المتجر عنده صفر طلبات اليوم ·
+      مكتوب بخطوات التحقق إنه بينفحص عند أول طلبية. ولو طلع إن الإضافة
+      بتطبع `tbody` فاضي كمان وهي فاضية، بينطفي التزيين لحاله وبتضل
+      الفقرة مقروءة · **الفشل باتجاه آمن**، ما بينكسر إشي. */
+.wcu-dash-coupon-area .wcu-statistics-orders {
+  margin-block-start: var(--space-3, .75rem);
+}
+
+/* مضاعفة `coupon-orders-list` مقصودة: في قاعدة للإضافة على
+   `.wcu-dash-coupon-area .wcutabcontent p` بخصوصية (0,2,1) · فلو وقفت
+   عند نفس الرقم بيربح الأخير بترتيب الملف، وبلوكات `<style>` تبع الإضافة
+   بتنطبع **بجسم الصفحة** يعني بعد ستايلنا. فبنرفع لـ(0,3,1). */
+/* 🔴 وفخّ تاني مقيس: الإضافة بتحط
+      `.wcu-dash-coupon-area .wcutabcontent p { padding: 0 !important }`
+   يعني **ممنوع أعطي الفقرة أي padding** · و`!important` بتغلب الخصوصية
+   وإحنا ما منستعملها. فالارتفاع بينعمل بـ`min-block-size` والتوسيط
+   بـflex بدل الحشوة · نفس النتيجة البصرية بلا ما أكسر قاعدة المشروع.
+   ✅ مقيس بعد الإصلاح: الفقرة صارت 240px بدل 58px. */
+.wcu-dash-coupon-area .coupon-orders-list.coupon-orders-list > p {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 240px;
+  gap: var(--space-2, .5rem);
+  text-align: center;
+  border: 1px dashed var(--aqua-200, #A6E7F1);
+  border-radius: var(--radius-lg, 24px);
+  background:
+    radial-gradient(120% 80% at 50% 120%, rgba(76, 197, 218, .16), rgba(76, 197, 218, 0) 70%),
+    var(--aqua-50, #EAFAFD);
+  /* ink على aqua-50 = 14.57:1 · مقيس */
+  color: var(--color-ink, #1A2529);
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-body-lg, 1.125rem);
+  font-weight: 600;
+  line-height: 1.5;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* فقاعة وحدة بتطلع · «خط البداية» لازم يحس إنه حيّ مش معطّل.
+   وحدة بس · وبطيئة · transform و opacity حصراً. */
+.wcu-dash-coupon-area .coupon-orders-list.coupon-orders-list > p::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 58%;
+  inset-inline-start: 50%;
+  inline-size: 10px;
+  block-size: 10px;
+  margin-inline-start: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .95), rgba(166, 231, 241, .55) 60%, rgba(76, 197, 218, .35) 100%);
+  box-shadow: 0 0 0 1px rgba(76, 197, 218, .25);
+  animation: wcu-rise 7.5s var(--ease-out-soft, ease) infinite;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* السطر الثاني · نبرة الانتظار.
+   🔴 وهاد **النص الوحيد المولَّد بالـCSS** بكل الملف · ومربوط بمتغيّر
+   `--wcu-empty-note` فوق عشان يتبدّل من مكان واحد أو ينشال بسطر.
+   ولو انشال المتغيّر بتفشل `content` بصمت وبتختفي السطر بلا كسر. */
+.wcu-dash-coupon-area .coupon-orders-list.coupon-orders-list > p::after {
+  content: var(--wcu-empty-note, "");
+  display: block;
+  margin-block-start: var(--space-2, .5rem);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 400;
+  /* --color-ink-soft على aqua-50 = 7.06:1 · مقيس */
+  color: var(--color-ink-soft, #47555B);
+}
+
+/* 🔴 الحارس · أول ما يجي صف حقيقي بالجدول (`tbody` بيظهر) بترجع الفقرة
+   سطر خدمة عادي · بلا إطار ولا فقاعة ولا سطر مضاف.
+   خصوصية: (0,3,1) + اللي جوّا `:has()` وهي (0,1,1) = (0,4,2) ·
+   فوق الأساس (0,3,1) · بلا `!important`.
+   ✅ ومتحقَّق اليوم: بترجّع **صفر** عناصر (ما في tbody) يعني مطفية،
+      والأساس هو الشغّال · وهاي بالضبط حالة يوم الإطلاق. */
+.wcu-dash-coupon-area .coupon-orders-list.coupon-orders-list:has(.wcuTable > tbody) > p {
+  display: block;
+  min-block-size: 0;
+  border: 0;
+  background: none;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 400;
+  text-align: start;
+  color: var(--color-ink-soft, #47555B);
+}
+.wcu-dash-coupon-area .coupon-orders-list.coupon-orders-list:has(.wcuTable > tbody) > p::before,
+.wcu-dash-coupon-area .coupon-orders-list.coupon-orders-list:has(.wcuTable > tbody) > p::after {
+  content: none;
+}
+
+@keyframes wcu-rise {
+  0%   { transform: translate3d(0, 14px, 0) scale(.85); opacity: 0; }
+  25%  { opacity: .9; }
+  100% { transform: translate3d(0, -30px, 0) scale(1.1); opacity: 0; }
+}
+
+/* جدول الطلبات لما يجي فيه صفوف · تنسيق أساسي بس.
+   🔴 ما انفحص بصفوف حقيقية · المتجر عنده صفر طلبات اليوم · فهاد
+      **بينفحص أول طلبية** ومكتوب بخطوات التحقق. */
+.wcu-dash-coupon-area .wcuTable.wcuTable {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-body-sm, .875rem);
+}
+.wcu-dash-coupon-area .wcuTable.wcuTable th,
+.wcu-dash-coupon-area .wcuTable.wcuTable td {
+  padding: var(--space-3, .75rem);
+  border-block-end: 1px solid var(--color-line-soft, #EDF2F4);
+  /* الجدول بيضل RTL زي باقي الصفحة · الإضافة شاحنة ورقة RTL خاصة فيها
+     وعاملة الأعمدة على أساسها، فما بقلبها. `start` هون = يمين وهو
+     المقصود · والأرقام جوّا الخلايا بتاخد عزلها من قاعدة القيم فوق. */
+  text-align: start;
+}
+.wcu-dash-coupon-area .wcuTable.wcuTable thead th {
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-caption, .75rem);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft, #47555B);
+  border-block-end: 1px solid var(--color-line, #E1E9EC);
+}
+
+/* ── ١٠ · حالات التحميل ─────────────────────────────────────────────────
+   🔴 ولا وحدة من هدول بتلمس `display` · لأن جافاسكربت الإضافة هي اللي
+      بتتحكّم فيه سطرياً · أي `display` مني بيصير سباق ما بينربح.
+      بلمس **المنظر** بس: أرضية · حدّ · نبض هادي. */
+.wcu-dash-coupon-area .wcu-loading-loader,
+.wcu-dash-coupon-area .wcu-loading-orders,
+.wcu-dash-coupon-area .wcu-loading-referral,
+.wcu-dash-coupon-area .wcu-loading-image {
+  box-sizing: border-box;
+  min-block-size: 96px;
+  padding: var(--space-6, 2rem) var(--space-4, 1rem);
+  border: 1px solid var(--color-line-soft, #EDF2F4);
+  border-radius: var(--radius-lg, 24px);
+  background: var(--aqua-50, #EAFAFD);
+  animation: wcu-breathe 2.6s ease-in-out infinite;
+  will-change: opacity;
+}
+
+.wcu-dash-coupon-area .wcu-loading-loader-text {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-latin, 'Jost', sans-serif);
+  font-size: var(--text-body-sm, .875rem);
+  color: var(--color-ink-soft, #47555B);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+@keyframes wcu-breathe {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .62; }
+}
+
+/* رسالة عطل جافاسكربت · مخفية اليوم · بس لو طلعت لازم تطلع مصمّمة
+   مش نص خام على صفحة بيضا. */
+.wcu-dash-coupon-area .wcusage-jquery-error {
+  padding: var(--space-4, 1rem);
+  border-radius: var(--radius-md, 16px);
+  background: var(--color-error-bg, #FBEDEA);
+  color: var(--color-error-fg, #B24B3C);
+  font-size: var(--text-body-sm, .875rem);
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: right;
+}
+
+/* ── ١١ · الموبايل ──────────────────────────────────────────────────────
+   تحت 760px كل الشبكات بتصير عموداً واحداً · والبطل بيضل أول إشي. */
+@media (max-width: 760px) {
+  .wcu-dash-coupon-area .wcusage-tab-section:has(> .wcusage-info-box) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2, .5rem);
+  }
+
+  .wcu-dash-coupon-area .wcusage-show-last-all,
+  .wcu-dash-coupon-area .wcusage-show-last-30,
+  .wcu-dash-coupon-area .wcusage-show-last-7 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* البطل بينحط أول السطر بدل ما يمتد على عمودين */
+  .wcu-dash-coupon-area .wcusage-info-box-dollar.wcusage-info-box-dollar {
+    grid-column: 1;
+    grid-row: 1;
+    min-block-size: 160px;
+    padding: var(--space-5, 1.5rem);
+  }
+  .wcu-dash-coupon-area .wcusage-info-box-sales.wcusage-info-box-sales {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .wcu-dash-coupon-area .wcusage-info-box-discounts.wcusage-info-box-discounts {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  /* صف الهوية بينكسر لسطرين · والإيميل بينزل تحت بلا ما يزنق الكود */
+  .wcu-dash-coupon-area .wcusage-dash-top-links.wcusage-dash-top-links {
+    inline-size: 100%;
+    margin-inline-start: 0;
+    justify-content: space-between;
+  }
+
+  .wcu-dash-coupon-area .coupon-orders-list.coupon-orders-list > p {
+    min-block-size: 190px;
+    font-size: var(--text-body, 1rem);
+  }
+}
+
+/* ── ١٢ · تقليل الحركة · إلزامي ─────────────────────────────────────────
+   الفقاعة والتوهّج والنبض كلهم بيوقفوا · وبيضلوا **مرئيين** بحالة ثابتة.
+   الفقاعة بتوقف ظاهرة بمنتصف مسارها لا مخفية، عشان ما تختفي عناصر. */
+@media (prefers-reduced-motion: reduce) {
+  .wcu-dash-coupon-area .wcusage-info-box-dollar::before,
+  .wcu-dash-coupon-area .wcu-loading-loader,
+  .wcu-dash-coupon-area .wcu-loading-orders,
+  .wcu-dash-coupon-area .wcu-loading-referral,
+  .wcu-dash-coupon-area .wcu-loading-image {
+    animation: none;
+  }
+  .wcu-dash-coupon-area .coupon-orders-list > p::before {
+    animation: none;
+    opacity: .75;
+    transform: none;
+  }
+  .wcu-dash-coupon-area .wcusage-refresh-data,
+  .wcu-dash-coupon-area .wcusage-refresh-stats-btn,
+  .wcu-dash-coupon-area .wcutab .wcutablinks,
+  .wcu-dash-coupon-area .wcusage-last-days a {
+    transition: none;
+  }
+}
+
+/* ── ١٣ · التركيز · مرئي على كل إشي بينضغط ──────────────────────────────
+   قاعدة الوصولية · وما بتنترك للمتصفح لأن الحلقة الافتراضية بتضيع على
+   الأرضيات الغامقة. */
+.wcu-dash-coupon-area a:focus-visible,
+.wcu-dash-coupon-area button:focus-visible,
+.wcu-dash-coupon-area select:focus-visible {
+  outline: 2px solid var(--aqua-500, #29A9C0);
+  outline-offset: 2px;
+  border-radius: var(--radius-pill, 999px);
+}
+.wcu-dash-coupon-area .wcusage-info-box-dollar a:focus-visible {
+  outline-color: var(--aqua-200, #A6E7F1);
+}
+/* AFFILIATE-SKIN:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FOOTER-PARTNER:START · باب الشركاء بالفوتر · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان: «ما تنسى تتضيف رابط التسجيل لل referral بالفوتر 😅 انه الزبونه
+   نفسها بتقدر تصير تسوقلنا ونعطيها زي ما موجود بالصفحه اللي صممتها هسا».
+
+   🔴 والوعد بالسطر **تلات حقائق مفحوصة، ولا وحدة منهن كلام**:
+      «كودك الخاص»  ← الإضافة بتولّد كوبوناً للشريكة وقت الموافقة
+      «ورابطك»      ← تبويب Referral URL موجود باللوحة ومفحوص
+      «وصفحة إلك»   ← /affiliates/ فتحتها وشفت الأرقام بعيني
+      ⚠️ و**ولا كلمة عن عمولة أو أرباح** · العمولة صفر لحد ما ريّان
+         وصاحب العلامة يحدّدوها، فأي رقم أو وعد بالكسب هون بيصير كذب.
+      ⚠️ وممنوع تنكتب «اربحي» ولا «دخل إضافي» قبل ما تنحدّد العمولة.
+
+   🔴 وشريط لحاله فوق شريط الحقوق لا سطر بقائمة «مساعدة» · لأنه دعوة
+      مش صفحة مساعدة، ولأن ريّان قال «تحت آخر اشي».
+   ═══════════════════════════════════════════════════════════════════════ */
+.luvit-footer__partner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4, 1rem);
+  margin-block-start: var(--space-6, 2rem);
+  padding: var(--space-4, 1rem) var(--space-5, 1.5rem);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--radius-lg, 24px);
+  /* زجاج بلا backdrop-filter · نفس وصفة .luvit-cta__panel وبنفس السبب */
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+  box-shadow: inset 2px 2px 0 -2px rgba(255, 255, 255, .40);
+  color: #fff;
+  text-decoration: none;
+  transition: border-color 220ms var(--ease-out-soft, ease),
+              background 220ms var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-footer__partner:hover {
+    border-color: rgba(255, 255, 255, .34);
+    background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
+  }
+}
+.luvit-footer__partner:focus-visible {
+  outline: 2px solid var(--aqua-200, #A6E7F1);
+  outline-offset: 3px;
+}
+.luvit-footer__partner-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-pill, 999px);
+  background: rgba(255, 255, 255, .12);
+  /* 🔴 اللون ما بيورث لجوّا svg بشكل يعتمد عليه · فخّ مسجّل */
+  color: var(--aqua-200, #A6E7F1);
+}
+.luvit-footer__partner-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.luvit-footer__partner-title {
+  font-family: var(--font-heading, inherit);
+  font-size: var(--text-body-lg, 1.125rem);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;          /* عربي · صفر تباعد */
+}
+.luvit-footer__partner-sub {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  line-height: 1.7;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, .78);
+}
+.luvit-footer__partner-go {
+  flex: none;
+  margin-inline-start: auto;
+  padding: 9px 18px;
+  border-radius: var(--radius-pill, 999px);
+  background: #fff;
+  color: var(--aqua-700, #196B7D);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .luvit-footer__partner {
+    flex-wrap: wrap;
+    gap: var(--space-3, .75rem);
+  }
+  .luvit-footer__partner-go { margin-inline-start: 0; inline-size: 100%; text-align: center; }
+}
+
+/* 🔴 وممنوع يبان للشريكة وهي جوّا لوحتها · ريّان: «ما تفشلنا وتخليها
+   تطلع بالفوتر لما الشريكه تكون بواجهتها». الفوتر قالب واحد بكل الموقع
+   فالإخفاء بالصفحة لا بالماركب.
+     480 = لوحة الشركاء · 481 = صفحة التسجيل (وهي نفسها الوجهة، فدعوة
+     للتسجيل جوّا صفحة التسجيل عبث). */
+body.page-id-480 .luvit-footer__partner,
+body.page-id-481 .luvit-footer__partner {
+  display: none;
+}
+/* FOOTER-PARTNER:END */
