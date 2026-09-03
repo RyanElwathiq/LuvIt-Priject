@@ -131,6 +131,40 @@ add_filter(
 					=> 'تغيير كلمة السر',
 				'Confirm new password'
 					=> 'تأكيد كلمة السر الجديدة',
+				/* تأكيد الإيميل وربط الطلبات القديمة (ووكومرس 11 · CustomerEmailVerification) ·
+				   ريّان ٣ أيلول: «خلّي إشعار تأكيد البريد واتأكد إنها شغّالة» · النصوص الأصلية فصحى
+				   ومذكّرة («مرحبًا تجريبي، بمجرد أن تقوم…») فصارت بنبرة الموقع · المطابقة حرفية على الإنجليزي */
+				'Confirm your email address to check for past orders and link them to your account.'
+					=> 'أكّدي إيميلك عشان نلاقي طلباتك القديمة ونربطها بحسابك.',
+				'Confirm your email address to check for past orders. A confirmation link was sent recently — please check your inbox.'
+					=> 'بعثنالك رابط التأكيد قبل شوي · شوفي صندوق الوارد عندك.',
+				'Confirm email address'
+					=> 'تأكيد الإيميل',
+				'A confirmation link has been sent to your email address. Please check your inbox.'
+					=> 'بعثنالك رابط التأكيد على إيميلك · شوفي صندوق الوارد.',
+				'A confirmation link was sent recently. Please check your inbox, or wait a moment before requesting a new one.'
+					=> 'الرابط انبعت قبل شوي · شوفي صندوق الوارد، أو استنّي لحظة قبل ما تطلبي واحداً جديداً.',
+				'Your email address has been confirmed.'
+					=> 'تأكّد إيميلك · وأي طلبات قديمة بنفس الإيميل صارت بحسابك.',
+				'This confirmation link is invalid or has expired. Please request a new one.'
+					=> 'هالرابط انتهى أو مش صحيح · اطلبي رابطاً جديداً من تبويب الطلبات.',
+				'Unable to confirm this email while you are logged in to a different account. Please log out and open the link again.'
+					=> 'إنتِ داخلة بحساب تاني · سجّلي خروجك وافتحي الرابط مرة تانية.',
+				'Invalid request. Please try again.'
+					=> 'صار خطأ · جرّبي مرة تانية.',
+				/* إيميل التأكيد نفسه */
+				'Confirm your email address for {site_title}'
+					=> 'أكّدي إيميلك على {site_title}',
+				'Confirm your email address'
+					=> 'أكّدي إيميلك',
+				'Hi %s,'
+					=> 'أهلاً %s،',
+				"Once you've confirmed that %s is your email address, we'll link any past orders to your account."
+					=> 'أول ما تأكّدي إن %s هو إيميلك، منربط أي طلبات قديمة بنفس الإيميل بحسابك.',
+				"If you didn't request this email, there's nothing to worry about, and you can safely ignore it."
+					=> 'إذا ما طلبتي هالإيميل ما في داعي تقلقي · تجاهليه وخلص.',
+				'Thanks for reading.'
+					=> 'شكراً إنك قرأتي.',
 				'Order #%1$s was placed on %2$s and is currently %3$s.'
 					=> 'طلبك رقم %1$s انعمل بتاريخ %2$s، وحالته هلأ: %3$s.',
 				'Contact information'
