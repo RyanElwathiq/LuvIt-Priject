@@ -4894,14 +4894,30 @@ body.woocommerce-account #customer_login h2 {
 .wc-block-cart .wc-block-components-totals-coupon.wc-block-components-totals-coupon {
   padding-block: var(--space-2);
 }
-/* 🔴 ريّان ٣ أيلول: «وملزقه كثير بالمربع تبع القسيمه».
-   وزرّ الإفصاح نفسه ما بينبعّد من عنده: ووكومرس قافل
-   `padding-right: 0 !important` (وهي inline-start بالعربي)، وقاعدة
-   المشروع بتمنع !important. ⤷ فمنبعّد **الحاوية** بدل الزرّ · نفس
-   النتيجة البصرية وبلا معركة خصوصية. */
-body.woocommerce-cart .wc-block-components-totals-coupon.wc-block-components-totals-coupon,
-body.woocommerce-checkout .wc-block-components-totals-coupon.wc-block-components-totals-coupon {
-  padding-inline: var(--space-1, 0.25rem);
+/* 🔴 ريّان ٣ أيلول، مرتين: «وملزقه كثير بالمربع تبع القسيمه» ·
+   وبعدها بلقطة تانية: «مربع اللي فيه كود الخصم ملزق كثير بالمربع
+   الخارجي · ونفس الاشي عند زي تطبيق».
+
+   المقيس قبل الإصلاح (سلة · 1536px): صندوق الملخّص حشوته 24px،
+   والصفّ بياخد عرض المحتوى كامل، فحافة حقل «كود الخصم» على **0.8px**
+   من حافة المحتوى وزرّ «تطبيق» على **0.0px**. يعني ملزوقين فعلاً.
+
+   ⚠️ وأول محاولة كتبت `padding-inline` على `.totals-coupon` المضاعفة
+      (0,3,1) و**ما نزلت**: في قاعدة عنّا بنفس الملف
+      `.wc-block-cart .wp-block-woocommerce-cart-order-summary-block
+        .wc-block-components-totals-coupon` بتصفّر الحشوة الأفقية،
+      وهي (0,3,0) بس **بخاصية فيزيائية** (`padding-right/left`) مقابل
+      خاصيتنا **المنطقية**، والمتصفّح حسمها لصالحها.
+      ⤷ فالحلّ رفع الخصوصية بإضافة الحاوية نفسها للمُحدِّد · (0,4,1).
+      **مقيس بالحقن على الصفحة الحيّة قبل ما ينكتب:** الحشوة صارت
+      `16px 10px` والخلوص **10.8px** للحقل وللزرّ سوا.
+
+   🔴 والزرّ نفسه ما بينبعّد من عنده: ووكومرس قافل
+      `padding-right: 0 !important` وقاعدة المشروع بتمنع !important ·
+      فمنبعّد **الحاوية** بدل الزرّ · نفس النتيجة وبلا معركة. */
+body.woocommerce-cart .wc-block-components-sidebar .wp-block-woocommerce-cart-order-summary-block .wc-block-components-totals-coupon.wc-block-components-totals-coupon,
+body.woocommerce-checkout .wc-block-components-sidebar .wp-block-woocommerce-checkout-order-summary-block .wc-block-components-totals-coupon.wc-block-components-totals-coupon {
+  padding-inline: 10px;
 }
 /* [DOC] the disclosure link */
 .wc-block-cart .wc-block-components-totals-coupon .wc-block-components-panel__button {
