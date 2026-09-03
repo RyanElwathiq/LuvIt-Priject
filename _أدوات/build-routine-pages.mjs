@@ -562,7 +562,10 @@ ${bottles(r)}
         </ol>
 
         <div class="luvit-card__footer">
-          <span class="luvit-card__price"><span dir="ltr">${total.toFixed(2)}</span> د.أ</span>
+          <span class="luvit-card__pricewrap">
+            <span class="luvit-card__price"><span dir="ltr">${total.toFixed(2)}</span> د.أ</span>
+            <span class="luvit-card__ship">والتوصيل مجاني</span>
+          </span>
           <a class="luvit-btn luvit-btn--arrow" href="/routines/${r.key}">شوفي الروتين</a>
         </div>
       </div>

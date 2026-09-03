@@ -14599,3 +14599,36 @@ body.page-id-481 > .wcusage-registration-form {
   padding-inline: var(--container-gutter, 20px);
 }
 /* AFFILIATE:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CARD-SHIP:START · «والتوصيل مجاني» على بطاقة البكج · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان: «التوصيل المجاني وضحه اعمله انه للبكجات وعند كرت البكجات او
+   الروتينات بالاصح وضح هذا الاشي».
+
+   🔴 والسطر **حقيقة مفحوصة لا وعد كوبي**: سنيبت
+      `library/snippets/free-shipping-packages.php` بيصفّر أجرة الشحن لما
+      يكون بالسلة بكج، ومفحوص حيّاً اليوم: سلة فيها روتين + مفرد رجّعت
+      «التوصيل · مجاني مع الروتين» و«مجانية» والمجموع بلا أجرة.
+
+   ⚠️ وما بينحط على بطاقة المنتج **المفرد** بقصد · التوصيل المجاني مع
+      الروتين وحده، وحطّه على المفرد بيصير كذب.
+
+   والسعر والسطر بينلمّوا بحاوية وحدة عشان `justify-content: space-between`
+   تبع الفوتر تضل تشتغل بولدين لا بتلاتة (وإلا بينفرشوا وبيبعد الزرّ). */
+.luvit-card__pricewrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.luvit-card__ship {
+  font-family: var(--font-body);
+  font-size: var(--text-caption, .8125rem);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;          /* عربي · صفر تباعد · قاعدة العلامة */
+  color: var(--aqua-700, #196B7D);
+  white-space: nowrap;
+}
+/* CARD-SHIP:END */
