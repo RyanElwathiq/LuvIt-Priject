@@ -3,7 +3,7 @@
  *
  * Ryan, 21 Aug: «غير نص الزر».
  *
- * The button read «تقديم طلب» — WooCommerce's literal Arabic for "Place Order".
+ * The button read «تقديم طلب» · WooCommerce's literal Arabic for "Place Order".
  * Correct, and empty: it names no commitment, and every other line on the page
  * addresses a woman while this one is neutral filler. It is also the last thing
  * she reads before paying, which is where "no card needed" belongs.
@@ -365,9 +365,57 @@ add_action( 'woocommerce_before_main_content', function () {
         480 = Affiliate Dashboard    · /affiliates/
         481 = Affiliate Registration · /affiliate-registration/
    ========================================================================== */
+/* ==========================================================================
+   LUVIT_AFFILIATE_HEAD · رأس صفحتَي الشركاء · ٣ أيلول
+   ==========================================================================
+   ريّان: «واتاكد انه في كل صفحه من الموقع فيه تصميم للراس تبعها زي تبعه
+   الشحن». وصفحتا الشركاء الوحيدتان اللي ما بينفع نضيف لهن الرأس بملف
+   سكشن، لأن محتواهن **كله** مطبوع من شورتكود الإضافة بـ`the_content`
+   وما في كونتينر إلمنتور نلصق فيه.
+
+   ⤷ فالرأس بينطبع من هون **بنفس ماركب الطبقة (ب) بالحرف**: نفس الكلاسات
+     ونفس الترتيب ونفس الموجة · فبيورث طابع الماء من
+     `.band-mist.luvit-page-top` تلقائياً بلا ولا سطر CSS جديد.
+
+   🔴 وفيل الموجة `#FFFFFF` **مقيس لا مفترض**: أرضية `.luvit-affiliate`
+      شفافة و`body` تبع الصفحة `rgb(255, 255, 255)` · وقاعدة الموجات
+      بتقول الفيل لازم يطابق اللي تحت بالضبط وإلا بيطلع شكل أبيض عايم.
+
+   ⚠️ والاسم: ريّان طلب «اسم جذاب واحلى بدل ال affiliate». اللي هون
+      **وصف مش علامة**: «لوحتك» و«صيري من شركاء نجاحنا» · والثانية
+      كلماته هو حرفياً من رابط الفوتر، فالزبونة اللي بتضغط الرابط بتنزل
+      على صفحة عنوانها نفس الجملة. وخانة الاسم التجاري لساها مفتوحة إله.
+   ========================================================================== */
 add_filter( 'the_content', function ( $content ) {
 	if ( ! is_page( array( 480, 481 ) ) || ! in_the_loop() || ! is_main_query() ) {
 		return $content;
 	}
-	return '<div class="luvit-affiliate" data-nav-bg="light">' . $content . '</div>';
+
+	$is_reg = is_page( 481 );
+
+	$eyebrow = $is_reg ? 'Partners' : 'Partner dashboard';
+	$crumb   = $is_reg ? 'شركاء نجاحنا' : 'لوحتك';
+	$title   = $is_reg ? 'صيري من شركاء نجاحنا' : 'لوحتك';
+	$sub     = $is_reg
+		? 'كودك الخاص ورابطك، وصفحة إلك بتوريك كل طلب أجا منك.'
+		: 'كل طلب إجا من كودك، وكم صار إلك · بالتفصيل.';
+
+	$head  = '<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">';
+	$head .= '<div class="luvit-section__inner">';
+	$head .= '<div class="luvit-section__head" data-luvit="reveal">';
+	$head .= '<nav aria-label="مسار التنقّل">';
+	$head .= '<a href="' . esc_url( home_url( '/' ) ) . '">الرئيسية</a>';
+	/* 🔴 فراغ صريح حوالين الفاصل · صفحات السكشن بتاخده مجاناً من
+	   المسافة البادئة بالماركب، والـPHP بتلزّق السلسلة فبيطلع «الرئيسية›لوحتك».
+	   مقيس على صفحة الشحن: الفاصل هناك محوّط بفراغ نصّي. */
+	$head .= ' <span aria-hidden="true">›</span> ';
+	$head .= '<span aria-current="page">' . esc_html( $crumb ) . '</span>';
+	$head .= '</nav>';
+	$head .= '<p class="luvit-section__eyebrow">' . esc_html( $eyebrow ) . '</p>';
+	$head .= '<h1 class="luvit-section__title">' . esc_html( $title ) . '</h1>';
+	$head .= '<p class="luvit-section__sub">' . esc_html( $sub ) . '</p>';
+	$head .= '</div></div></section>';
+	$head .= '<div class="luvit-wave" style="--wave-fill:#FFFFFF" aria-hidden="true"></div>';
+
+	return $head . '<div class="luvit-affiliate" data-nav-bg="light">' . $content . '</div>';
 }, 20 );

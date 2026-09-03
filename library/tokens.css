@@ -4289,6 +4289,46 @@ body.woocommerce-account .woocommerce-MyAccount-content a.button.woocommerce-but
   }
 }
 
+/* --------------------------------------------------------------------
+   COL2-CLEARFIX:START . the diagonal offset on /my-account/edit-address/
+   --------------------------------------------------------------------
+   Ryan (3 Sep, with a screenshot): the two address cards sit diagonally,
+   each escaping the other.
+
+   MEASURED on the live page, not guessed:
+     .woocommerce-Addresses  display:grid  cols "379.111px 379.111px"
+                                           rows "258.514px 258.514px"
+     card 1  top 444  left 308      card 2  top 726  left 711
+     direction: rtl  ->  column 1 is on the RIGHT
+
+   ROOT CAUSE . WooCommerce ships an old clearfix on this very wrapper:
+     .woocommerce .col2-set::before,
+     .woocommerce .col2-set::after { content: " "; display: table }
+   Harmless while the wrapper was a float pair. But we turned it into a
+   grid, and PSEUDO-ELEMENTS ARE GRID ITEMS. So four items compete for
+   four cells, in DOM order:
+     ::before -> row1 col1 (right)
+     card 1   -> row1 col2 (left)   = 308 / 444  matches
+     card 2   -> row2 col1 (right)  = 711 / 726  matches
+     ::after  -> row2 col2
+   That is the diagonal, exactly. Nothing is "escaping"; two invisible
+   table boxes are holding the seats.
+
+   This is a trap we have already paid for once (the empty cell in the
+   shop grid, same cause). And that first fix LOST on specificity, so
+   this one is measured: WooCommerce's rule is (0,2,1); the selector
+   below doubles the class to reach (0,3,1) and wins by weight, not by
+   !important . project rule.
+
+   Scoped to the account pages we actually made into grids, so any other
+   col2-set that is still a float pair keeps its clearfix and its layout.
+   -------------------------------------------------------------------- */
+body.woocommerce-account .col2-set.col2-set::before,
+body.woocommerce-account .col2-set.col2-set::after {
+  display: none;
+}
+/* COL2-CLEARFIX:END */
+
 /* ---- addresses (edit-address): Woo's u-columns is a float pair ---- */
 body.woocommerce-account .woocommerce-Addresses.u-columns {
   display: grid;
@@ -16315,6 +16355,13 @@ body.page-id-481 .luvit-affiliate button {
    ⚠️ و`isolation: isolate` لازمة عشان `z-index: -1` تبع الغطاء ما تنزل
       ورا خلفية الصفحة وتختفي · نفس اللي معمول بـ`.luvit-deep`.
    ⚠️ ومفردة الحركة `transform` وبس · ولا `backdrop-filter` هون.
+   NOTE (3 Sep) . keyed off `.band-mist.luvit-page-top`, not `#page-head`.
+   Measured across the 49 section files: `band-mist` alone also appears on
+   INNER sections (routine, compare, how, faq, result, p3, p5, p7), so it
+   alone is too broad. `luvit-page-top` appears only on page tops. The
+   PAIR is exactly the set we want, and it costs nothing: the tracking
+   page carries both classes but no `id="page-head"`, so the old selector
+   skipped it and it read undesigned. Any future page top inherits this.
    ═══════════════════════════════════════════════════════════════════════ */
 /* 🔴 وأرضية الرأس بتنعمّق شوي · وهاد أصل المشكلة مقيساً:
      أرضية الرأس   `--color-canvas` = #FAFCFD
@@ -16325,13 +16372,13 @@ body.page-id-481 .luvit-affiliate button {
    الحدّ بينه وبين الأبيض صار مقروءاً · ومعه الموجة بتصير إلها معنى.
    ⚠️ ولولاه كانت الموجة **شبه مختفية** · ولهاد انشالت من
       هالصفحات قبل، فإرجاعها بلا هالسطر بيكون تكرار لغلطة. */
-#page-head.band-mist {
+.band-mist.luvit-page-top {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   background-color: color-mix(in srgb, var(--aqua-50, #EAFAFD) 55%, var(--color-paper, #FFFFFF));
 }
-#page-head.band-mist::before {
+.band-mist.luvit-page-top::before {
   content: "";
   position: absolute;
   inset: -30% -12%;
@@ -16350,14 +16397,14 @@ body.page-id-481 .luvit-affiliate button {
   will-change: transform;
 }
 @media (prefers-reduced-motion: reduce) {
-  #page-head.band-mist::before { animation: none; }
+  .band-mist.luvit-page-top::before { animation: none; }
 }
 /* المحتوى فوق الماء · واستثناء بـ:not() لا مضاعفة عشان الغطاء ما ينقلب
    عنصراً عادياً (نفس درس طبقة الأشعة المسجَّل). */
 /* ⚠️ وما في حاجة لاستثناء الغطاء هون (زي ما لزمت مع طبقة الأشعة):
    العنصر الزائف **مش ولداً** فما بيطابق `> *` أصلاً · و`:not(::before)`
    **غير صالحة** وبترمي القاعدة كلها بصمت · لقيتها قبل النشر. */
-#page-head.band-mist > * {
+.band-mist.luvit-page-top > * {
   position: relative;
   z-index: 1;
 }
@@ -16365,7 +16412,7 @@ body.page-id-481 .luvit-affiliate button {
 /* ── شريط الوعد جوّا الرأس · كان لاصقاً بالحافة العليا ───────────────
    الطبقة (أ) بتبلّش بفراغ النافبار، والطبقة (ب) شريط الوعد فيها أول
    ولد فبيقعد بالحافة. بينعطى أرضية زجاجية خفيفة فيقرا شريطاً مقصوداً. */
-#page-head.band-mist .luvit-promise {
+.band-mist.luvit-page-top .luvit-promise {
   margin-block-end: var(--space-5, 1.5rem);
   padding-block: var(--space-3, .75rem);
   border-block-end: 1px solid var(--color-line-soft, #EDF3F5);
@@ -16382,3 +16429,200 @@ body.page-id-481 .luvit-affiliate button {
    ⚠️ وما في `background` inline لأن اللي فوقها فاتح أصلاً، وقاعدة
       `.luvit-wave` بتصفّر الخلفية بـ!important تبعها (سطر ٢٧٥٣). */
 /* HEAD-FAMILY:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CRUMB:START · مسار التنقّل جوّا رؤوس الصفحات · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   انكشف وأنا بفحص رأس صفحة تتبّع الطلب، وطلع **مش خاصاً بها**: مسار
+   التنقّل ما إله ولا قاعدة وحدة بالملف كله، فكل الصفحات اللي فيها مسار
+   كانت شغّالة على افتراضيات القالب.
+
+   المقيس على الموقع الحيّ:
+     الرابط  color `rgb(204, 51, 102)` = #CC3366  ← **ولا من ألواننا**
+             (الفوشيا عندنا #D02D86 والتركوازي #196B7D · هاد لون
+              افتراضي تبع القالب سرّب من `a { color }`)
+     الحجم   16px = **نفس حجم النصّ العادي** · فالمسار كان بينافس العنوان
+     الفاصل  `›` بلون الحبر الكامل #1A2529 · أثقل من الرابط اللي جنبه
+     المسافة `margin-block-end: 0` · ملزوق بالـeyebrow اللي تحته
+
+   ⤷ فالمسار بينزل مرتبة وحدة بالهرم: أصغر، أهدى، وبلون العلامة ·
+     والصفحة الحالية هي الأغمق فيه لأنها هي المعلومة.
+
+   والتباين **مقيس لا مقدَّر** (على أرضية الضباب #F3FCFE):
+     ink-soft #47555B → **7.42:1** · AAA للنصّ العادي
+     hover aqua-700   → 5.86:1 · AA
+     الصفحة الحالية   → 15.04:1
+     الفاصل ink-faint → 3.03:1 · ومقبول لأنه `aria-hidden="true"`
+                        يعني علامة زخرفية مش نصّاً، ومحجوبة عن قارئ الشاشة.
+
+   ⚠️ و`display` تبع الـnav **ما انلمس بقصد**: الفراغات بين العناصر
+      جايّة من المسافة البادئة بالماركب، ولو حوّلته `flex` بينلغي
+      اعتماد المحاذاة على `text-align` الموروث · ورؤوس الصفحات مش كلها
+      متوسّطة. أقل تغيير = أقل مفاجأة.
+   ⚠️ والرؤوس الغامقة (`luvit-deep`) إلها نسختها تحت · نفس اللون على
+      أرضية غامقة بيصير غير مقروء.
+   ═══════════════════════════════════════════════════════════════════════ */
+.luvit-page-top .luvit-section__head > nav {
+  margin-block-end: var(--space-3, .75rem);
+  font-size: var(--text-body-sm, .875rem);
+}
+.luvit-page-top .luvit-section__head > nav a {
+  color: var(--color-ink-soft, #47555B);
+  text-decoration: none;
+  transition: color 200ms var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-page-top .luvit-section__head > nav a:hover {
+    color: var(--aqua-700, #196B7D);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+.luvit-page-top .luvit-section__head > nav a:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.luvit-page-top .luvit-section__head > nav [aria-hidden="true"] {
+  color: var(--color-ink-faint, #869399);
+}
+.luvit-page-top .luvit-section__head > nav [aria-current] {
+  color: var(--color-ink, #1A2529);
+  font-weight: 600;
+}
+
+/* ── والرؤوس الغامقة ─────────────────────────────────────────────────── */
+.luvit-deep.luvit-page-top .luvit-section__head > nav a {
+  color: rgba(255, 255, 255, .72);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-deep.luvit-page-top .luvit-section__head > nav a:hover {
+    color: #FFFFFF;
+  }
+}
+.luvit-deep.luvit-page-top .luvit-section__head > nav [aria-hidden="true"] {
+  color: rgba(255, 255, 255, .38);
+}
+.luvit-deep.luvit-page-top .luvit-section__head > nav [aria-current] {
+  color: #FFFFFF;
+}
+/* CRUMB:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LTR-ALIGN:START · الواجب اللي فوّتته مع `direction: ltr` · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   القاعدة عندي مكتوبة من قبل: **أي عنصر بينعطى `direction: ltr` بده
+   محاذاة صريحة**، لأن `text-align: start` مع LTR بتعني **يسار**. وأنا
+   عطّيت LTR لأوراق النصّ الإنجليزي بجلد اللوحة وما عطّيت المحاذاة، فطلع
+   الخلل بمكانين · وريّان أشار للاثنين:
+
+     «مكان كلمه الكوبون انفو ضرب»
+     «هذا تصميم بالله عليك» (صفحة التسجيل)
+
+   المقيس على الموقع الحيّ:
+     .wcusage-stats-title   display:flex · dir:ltr · **العرض 1160px**
+                            (بعرض السكشن كامل) و `justify-content: normal`
+                            فالعنوان قعد على **اليسار** بصفحة عربية.
+                            و«Latest Referrals» جوّاها رابط View More
+                            بـ`margin-right: auto` محلول لـ**922.1px**،
+                            فالاتنين انحشروا يسار مع فراغ ٩٢٢ على يمينهم.
+     صفحة التسجيل           `<p dir=ltr ta=start>` عرضها 1160 وجوّاها
+                            `<a><button></a>` · فالزرّ والنصّ كلهم
+                            التزقوا بالحافة اليسرى · `left: 180` وهي
+                            بداية صندوق المحتوى **من اليسار**.
+
+   ⤷ والحلّ **اتنين مختلفين لأن السببين مختلفين**:
+     · عنوان السكشن · تخطيطه كان معمولاً أصلاً بـ`row-reverse` من دفعة
+       سابقة، واللي كان بيكسره هامش تلقائي فيزيائي من الإضافة · فصفّرناه
+       وبس. (التفصيل والقياس بالتصحيح تحت.)
+     · وصفحة التسجيل **بدها تضل LTR** لأن «Register New Affiliate
+       Account:» فيها **نقطتان بالآخر**، ولو رجعت RTL النقطتان بتقفز
+       لبداية السطر · فبتاخد `text-align: right` صريحة، وهي المحاذاة
+       اللي بينضبط عليها الزرّ كمان لأنه جوّا الـ`<p>`.
+
+   ⚠️ وخصوصية `.luvit-affiliate .wcusage-stats-title` (0,2,0) أعلى من
+      `.luvit-affiliate p` (0,1,1) اللي بتعطي الـLTR · فما في داعي
+      نلمس القائمة الأصلية ولا نضاعف كلاساً. */
+/* 🔴 **تصحيح استنتاجي · نفس اليوم** · أول مسودة حطّت هون `direction: rtl`
+   على العنوان و`margin-inline-start: auto` على الرابط، **وولا وحدة منهم
+   اشتغلت**: القياس بعد النشر رجّع `direction: ltr` لسا،
+   و`margin-inline-start: 5px` (قيمة الإضافة) لسا.
+
+   واللي طلع فعلاً بالقياس إنّ الشغل معمول من قبل بقاعدة أقدم عندي:
+     .wcu-dash-coupon-area .wcusage-stats-title.wcusage-stats-title
+       { display: flex; flex-direction: row-reverse; ... }
+   يعني **صفّ معكوس**، فبداية المحور صارت اليمين والعنوان المفروض يقعد
+   يمين. اللي كان بيكسرها شي واحد: الإضافة بتحطّ `margin-right: auto`
+   على رابط `View More`، وبصفّ معكوس هاد الهامش على **جهة بداية المحور**،
+   فبيمتصّ الفراغ ويسحب الصفّ كله لليسار · المقيس كان **922.1px**.
+
+   ⤷ فالإصلاح الحقيقي سطر واحد: صفّر الهامش الفيزيائي. وبعده النصّ
+     صار ملتزقاً بالحافة اليمنى · مقيس `textRight = boxRight = 1340`.
+   ⚠️ والسطرين اللي ما اشتغلوا **انشالوا** بدل ما ينضلّوا زينة · تعليق
+      بيوصف إشي ما بيصير أسوأ من ولا تعليق. */
+.luvit-affiliate .wcusage-stats-title > .wcusage-orders-link {
+  margin-right: 0;
+}
+body.page-id-481 .luvit-affiliate > strong,
+body.page-id-481 .luvit-affiliate strong:first-of-type,
+body.page-id-481 .luvit-affiliate p {
+  text-align: right;
+}
+/* LTR-ALIGN:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ACCT-HEAD-CHARACTER:START · طابع الماء لرأس صفحات الحساب · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان: «اتاكد انه في كل صفحه من الموقع فيه تصميم للراس تبعها **زي تبعه
+   الشحن**». وجردت الـ٢٨ صفحة بتحليل DOM حقيقي (مش بحث نصّي · شوف
+   التحذير تحت) وطلع إنّ رأس الحساب **مصمَّم فعلاً** وله كلاسه الخاص
+   `.luvit-acct-head` بتدرّج دائري وحواف مدوّرة · بس **بلا الطابع
+   المتنفّس** اللي صار عند كل الرؤوس التانية.
+
+   المقيس على `/my-account/`: الارتفاع 166px · `background-color` شفاف
+   (لأن الشورت‌هاند `background: radial-gradient(...)` بيصفّره) و`::before`
+   محتواه `none` · يعني ولا غطاء ماء.
+
+   ⤷ فبياخد **نفس وصفة `::before`** تبع عيلة الرؤوس حرفياً، وبيضل كرتاً
+     بحدوده وتدرّجه · مش بينضمّ للكلاس `.band-mist.luvit-page-top` لأن
+     ذاك **شريط بعرض الصفحة** وهاد **خلية جوّا شبكة الحساب**، ولو ورّثته
+     قواعد الشريط بينكسر التخطيط.
+   ⚠️ و`overflow: hidden` إلزامية هون تحديداً: الغطاء `inset: -30% -12%`
+      بيطلع برّا الصندوق، وبلا القص بيتجاوز الحواف المدوّرة.
+
+   🔴 وملاحظة على الفحص نفسها تستاهل تنكتب: أول جردة عملتها بـ
+      `html.includes('luvit-page-top')` ورجّعت **٢٨/٢٨ نجاح** · وكانت
+      كاذبة، لأن اسم الكلاس مكتوب جوّا نصّ الـCSS المضمَّن بكل صفحة،
+      فالبحث كان بيمسك **قواعدي أنا** لا الماركب. كشفها اختبار تحكّم على
+      صفحة 404: «عدّت» وهي بلا رأس. الجردة الصحيحة بـ`DOMParser` +
+      `querySelector` رجّعت **٢١/٢٨** والباقي مفسَّر واحدة واحدة.
+   ═══════════════════════════════════════════════════════════════════════ */
+.luvit-acct-head {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.luvit-acct-head::before {
+  content: "";
+  position: absolute;
+  inset: -30% -12%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 46% at 22% 18%,
+      color-mix(in srgb, var(--color-paper, #FFFFFF) 88%, transparent),
+      transparent 72%),
+    radial-gradient(34% 42% at 82% 74%,
+      color-mix(in srgb, var(--aqua-400, #4CC5DA) 13%, transparent),
+      transparent 74%);
+  animation: luvit-caustic-a 34s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .luvit-acct-head::before { animation: none; }
+}
+.luvit-acct-head > * {
+  position: relative;
+  z-index: 1;
+}
+/* ACCT-HEAD-CHARACTER:END */
