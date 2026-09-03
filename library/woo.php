@@ -419,3 +419,68 @@ add_filter( 'the_content', function ( $content ) {
 
 	return $head . '<div class="luvit-affiliate" data-nav-bg="light">' . $content . '</div>';
 }, 20 );
+
+/* ==========================================================================
+   LUVIT_404 · صفحة «ما لقيناها» · ٣ أيلول
+   ==========================================================================
+   المقيس قبل الشغل: `/this-slug-does-not-exist/` بترجّع `h1` نصّه
+   `The page can't be found.` · **إنجليزي من قالب Hello Elementor**،
+   بلا رأس وبلا تصميم وبلا ولا رابط يرجّع الزائرة لمكان مفيد. وهي صفحة
+   بيوصلها زوار فعليون: رابط قديم، حرف ناقص، لينك منسوخ ناقص.
+
+   ⤷ فبناخذ العرض كله من `template_redirect` ومنطبع سكشناً واحداً
+     بمفردات الموقع نفسها: الماء العميق + أشعة + فقاعات، وتحته الروابط
+     اللي بتلزم فعلاً. وبعده `get_footer()` فالفوتر بيقصّ جوّا السكشن
+     الغامق **بنفس آلية سكشن الـCTA** (الاثنان `luvit-deep`)، فما في
+     خطّ فاصل ولا شكل عايم.
+
+   🔴 و`status_header( 404 )` بتضل · الصفحة تصميمها تغيّر لا حالتها.
+      محرّكات البحث لازم تضل تشوف 404 حقيقية.
+
+   ⚠️ والأولوية **99 بقصد**: إضافات إعادة التوجيه (رانك ماث فيها موديول
+      Redirections) بتشتغل على نفس الخطاف، ولو سبقناها بترجع الروابط
+      القديمة تطلع 404 بدل ما تتحوّل لوجهتها. منخلّيهم يشتغلوا أول.
+
+   ⚠️ ولو انعمل يوماً قالب 404 بـElementor Theme Builder، هالمعالج بيغلبه ·
+      وقتها احذف هالكتلة بدل ما تتصارع الاتنين.
+   ========================================================================== */
+add_action( 'template_redirect', function () {
+	if ( ! is_404() ) {
+		return;
+	}
+
+	status_header( 404 );
+	nocache_headers();
+
+	get_header();
+
+	$links = array(
+		array( '/',          'الرئيسية',      true ),
+		array( '/shop/',     'المتجر',        false ),
+		array( '/routines/', 'الروتينات',     false ),
+		array( '/track/',    'تتبّعي طلبك',   false ),
+		array( '/contact/',  'تواصلي معنا',   false ),
+	);
+
+	$foot = '';
+	foreach ( $links as $l ) {
+		$cls   = $l[2] ? 'luvit-btn luvit-btn--arrow' : 'luvit-btn luvit-btn--ghost luvit-btn--on-dark';
+		$foot .= '<a class="' . $cls . '" href="' . esc_url( home_url( $l[0] ) ) . '">' . esc_html( $l[1] ) . '</a>';
+	}
+
+	echo '<section class="luvit-section luvit-section--dark luvit-deep luvit-page-top"'
+		. ' data-nav-bg="dark" data-luvit-bubbles="10" id="page-head">'
+		. '<span class="luvit-deep__rays" aria-hidden="true"></span>'
+		. '<div class="luvit-section__inner">'
+		. '<div class="luvit-section__head" data-luvit="reveal">'
+		. '<p class="luvit-section__eyebrow">404</p>'
+		. '<h1 class="luvit-section__title">ما لقينا هالصفحة</h1>'
+		. '<p class="luvit-section__sub">'
+		. 'يمكن الرابط قديم، أو ناقصه حرف · وهاي الطرق اللي بتوصّلك بسرعة.'
+		. '</p>'
+		. '<div class="luvit-section__foot">' . $foot . '</div>'
+		. '</div></div></section>';
+
+	get_footer();
+	exit;
+}, 99 );
