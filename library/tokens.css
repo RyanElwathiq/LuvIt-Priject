@@ -9798,6 +9798,13 @@ a.luvit-option:focus-visible {
 }
 @media (min-width: 900px) {
   .luvit-optiongrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  /* 🔴 سؤال الاختبار الأول صار **ستة** خيارات (البهتان ٢٩ آب والبقع ٢ أيلول)
+     فطلع صف من أربعة وصف من اتنين متزحزح · ٣+٣ متوازنة.
+     ⚠️ مقصورة على الاختبار · صف أنواع البشرة بصفحة المتجر بيستعمل نفس
+        الشبكة وعنده أربعة وبيضل أربعة. */
+  .luvit-quiz__step .luvit-optiongrid:has(> :nth-child(5)) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 @media (min-width: 480px) and (max-width: 899px) {
   .luvit-optiongrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -10351,12 +10358,16 @@ body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-d
 }
 .luvit-quiz__result:focus { outline: none; }
 
+/* 🔴 محتواه **عربي** بيتكتب من motion.js («على حسب إجاباتك · بشرتك الجافة»)
+   وكان ماخذ ستايل الـeyebrow اللاتيني: Jost + uppercase + تباعد حروف ·
+   فالحروف العربية كانت بتنزل على خط النظام، وuppercase بلا أثر، والتباعد
+   بيفكّ الوصل. قاعدة المشروع: صفر letter-spacing للعربي. */
 .luvit-quiz__resultlabel {
   margin: 0 0 var(--space-2);
-  font-family: var(--font-latin);
+  font-family: var(--font-body);
   font-size: var(--text-caption);
-  letter-spacing: var(--tracking-caption);
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--aqua-200);
 }
 .luvit-quiz__resulttitle {
@@ -10383,7 +10394,11 @@ body .woocommerce:has(form.woocommerce-form-track-order) .woocommerce-customer-d
   margin: var(--space-6) 0 0;
   font-size: 0.8125rem;
   line-height: 1.75;
-  color: rgba(255, 255, 255, 0.62);
+  /* 🔴 كانت .62 · وتباينها على أرضية الكرت (تدرّج luvit-deep + طبقة 9٪
+     = rgb(38,108,119)) طلع **٣٫٣٨:١** بحجم 13px · تحت حدّ AA (4.5).
+     و.84 بتعطي **٤٫٧٩:١** بنفس الموضع. وهاد السطر بالذات هو اللي بيخلي
+     النتيجة اقتراحاً مش تشخيصاً، فما بيصير يكون أضعف سطر بالبطاقة. */
+  color: rgba(255, 255, 255, 0.84);
 }
 .luvit-quiz__resultnote a { color: var(--aqua-200); }
 
@@ -11031,6 +11046,12 @@ body.admin-bar #hero-seq .hero-story__cue {
   margin-inline-end: auto;
   max-width: 46ch;
 }
+/* 🔴 المُعدِّل بيقول «start» بس الأبناء كانوا بيرجعوا للنص لحالهم:
+   `.luvit-section__sub{margin:0 auto}` و`.luvit-section__foot{justify-content:center}`
+   · فالرأس الواحد كان بتلات محاذيات (عنوان من اليمين · سطر بالنص · أزرار
+   بالنص) · مقيس على رأس «من نحن» بعرض 1536. */
+.luvit-section__head--start .luvit-section__sub { margin-inline: 0; }
+.luvit-section__head--start .luvit-section__foot { justify-content: flex-start; }
 
 /* ---- روابط جوّا سلّم المكوّنات على الماء الغامق --------------------
    🔴 مقيس: `.luvit-ing__name a` كانت بتاخد **أزرق المتصفح الافتراضي**
