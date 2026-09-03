@@ -7151,41 +7151,6 @@ body.woocommerce-cart .wc-block-cart__sidebar.is-sticky {
 }
 
 /* ==========================================================================
-   🔧 TEMP · VERSION STAMP  (21 Aug — remove once the phone issue is settled)
-   --------------------------------------------------------------------------
-   Three fixes measured correct here and reported unchanged on Ryan's phone.
-   Every static check on this end is clean: sidebar static, no fixed ancestor,
-   no transform/filter/contain, touch-action auto, and the checkout is served
-   no-cache. The remaining unknown is simply WHICH stylesheet his device is
-   rendering — Chrome restores whole pages from the back-forward cache, and
-   nothing we can measure from here sees through that.
-
-   So the page states its own version. He reads the badge, we both stop
-   guessing. DELETE THIS BLOCK once confirmed.
-   ========================================================================== */
-body.woocommerce-checkout::marker,
-body.woocommerce-cart::marker { content: ""; }
-
-body.woocommerce-checkout .wc-block-checkout::after,
-body.woocommerce-cart .wc-block-cart::after {
-  content: "CSS v43";
-  position: fixed;
-  inset-block-end: 84px;
-  inset-inline-start: 10px;
-  z-index: 99999;
-  padding: 6px 12px;
-  border-radius: var(--radius-pill);
-  background: #D02D86;
-  color: #fff;
-  font-family: var(--font-latin);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .04em;
-  pointer-events: none;
-  box-shadow: 0 4px 14px rgba(0,0,0,.28);
-}
-
-/* ==========================================================================
    5.16 · NO BACKDROP-FILTER WHILE SCROLLING A PURCHASE PAGE  (21 Aug)
    --------------------------------------------------------------------------
    THE ACTUAL CAUSE, found on the third screen recording.
@@ -13545,9 +13510,12 @@ html body {
    🔴 كان `<p class="luvit-footer__brand">Luv it!</p>` نصّاً بخط العناوين،
       والهيدر فيه **اللوجو الحقيقي كصورة** · فالعلامة بشكلين بنفس الصفحة.
       شافها ريّان.
-   ⚠️ واللوجو **أبيض على غامق** أصلاً؟ لأ · هو ملوّن على خلفية بيضا،
-      فبينحط عليه فلتر بسيط عشان يقعد على ماء الفوتر الغامق.
-      (وما بنعمل نسخة بيضا منفصلة · أي تحديث للوجو وقتها بيلزمه ملفين.)
+   🔴 ومن ٣ أيلول صار **أبيض مباشرة على المي** · ريّان بالحرف:
+      «وشفت اللوجو الابيض الموجود بالنافبار حطه تحت بالفوتر بدل الموجود».
+      والبطاقة البيضا اللي كانت تحته انشالت: مستطيل أبيض بنصّ مي
+      غامقة بيقرا لصقة مركّبة لا علامة.
+   ⚠️ وما بنعمل نسخة بيضا منفصلة من الملف · نفس فلتر النافبار على الغامق
+      (سطر 10751) · فأي تحديث للوجو بيمشي بملف واحد للمكانين.
    ⚠️ وقواعد الاتجاه اللي كانت على النصّ **بتضل** · العنصر لساه `<p>`
       وجوّاه صورة، فلو رجع النصّ يوم ما بينكسر.                        */
 
@@ -13562,10 +13530,12 @@ html body {
   display: inline-block;
   inline-size: auto;
   block-size: clamp(38px, 3.4vw, 52px);
-  /* اللوجو ملوّن على أبيض · على ماء غامق بده خلفية فاتحة صغيرة تحته */
-  background: #fff;
-  padding: 6px 10px;
-  border-radius: 10px;
+  /* 🔴 نفس فلتر النافبار على الغامق حرفياً (سطر 10751):
+     `brightness(0)` بترجّع كل بكسل معتم لأسود، و`invert(1)` بتقلبه أبيض ·
+     فبيطلع ظلّ أبيض نضيف من نفس ملف اللوجو الملوّن · بلا ملف ثاني.
+     ⚠️ والفلتر بيشتغل لأن الـPNG خلفيته **شفّافة** · لو انبدل يوم بملف
+        خلفيته بيضا سادة بيطلع مربّع أبيض كامل · نفس فخّ الإيميل المسجّل. */
+  filter: brightness(0) invert(1);
 }
 @media (max-width: 860px) {
   .luvit-footer__brand { text-align: center; }
