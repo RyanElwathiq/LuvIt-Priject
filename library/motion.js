@@ -834,6 +834,27 @@ function luvitNavTheme() {
     });
 
     Array.prototype.forEach.call(sections, function (s) { io.observe(s); });
+
+    /* 🔴 AND THEN DECIDE ONCE, BY HAND. 3 Sep.
+       IntersectionObserver only calls back when an intersection CHANGES. On the
+       home page the hero is 500vh and something always crosses soon after load,
+       so the bar got its colour and nobody noticed the gap. On every INNER page
+       the head is already sitting under the bar at scroll 0, so there is no
+       change to report and the callback never ran: the bar kept its default
+       (dark glass) over a light head until the shopper scrolled.
+       MEASURED on /shipping/: navbar centre line 77px, head top 32px, so it
+       does cross, and `crossesLine` is true, and yet the class list was empty.
+       Ryan asked twice for the bar to follow the background; this was why.
+       So after wiring the observer, read the current state directly and apply
+       it. Cheap (one getBoundingClientRect per marked section, and inner pages
+       have 2 to 10) and it runs once per build. */
+    var hit = null;
+    Array.prototype.forEach.call(sections, function (s) {
+      if (hit) return;
+      var b = s.getBoundingClientRect();
+      if (b.top <= line && b.bottom >= line) hit = s;
+    });
+    if (hit) apply(hit.getAttribute('data-nav-bg'));
   }
 
   build();
