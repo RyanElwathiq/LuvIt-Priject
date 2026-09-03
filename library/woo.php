@@ -298,3 +298,41 @@ add_filter( 'gettext', function ( $translated, $text, $domain ) {
 	}
 	return $translated;
 }, 20, 3 );
+
+/* ═════════════════════════════════════════════════
+   ١٣ · صفحة المنتج المفرد · مرساة الأرضية وشريط الوعد · ٣ أيلول
+   ═════════════════════════════════════════════════
+   تقرير الفحص: الصفحة كانت **بلا طبقة تصميم** (معرض وتبويبات وسعر
+   افتراضيّو ووكومرس · وصفر قاعدة إلها بـtokens.css) · وريّان وافق على
+   بنائها. الستايل كله بقسم 5.55 بـtokens.css · وهون شغلتان بالماركب
+   ما بينعملوا بالـCSS:
+
+   ١ · **مرساة أرضية المي** · الأرضية معرّفة مرة وحدة بقسم 5.16 على
+       `body:has(.luvit-shop-root)` · فبدل ما نعيد كتابة ٦٠ سطر تدرّجات
+       لصفحة المنتج، منحقن نفس المرساة. سبان فاضي بلا أثر بصري.
+   ٢ · **شريط الوعد** · موجود بالمتجر والشحن والاستبدال والخصوصية،
+       وصفحة المنتج كانت الوحيدة بلاه رغم إنها أقرب صفحة للشراء.
+       الأرقام: التوصيل من ووكومرس (flat_rate 2.50) والصياغة كلمة ريّان
+       ٣ أيلول: «من يوم ليومين بدينارين ونص ومجاني مع الروتين».
+   ⚠️ الخطافان من ووكومرس نفسه (`woocommerce_before_single_product` و
+      `woocommerce_before_main_content`) · وبيشتغلوا بالقالب الحالي
+      Hello Elementor. ولو انتغيّر القالب بينختفي الشريط بهدوء ولا بيوقع شي. */
+add_action( 'woocommerce_before_single_product', function () {
+	echo '<span class="luvit-shop-root" aria-hidden="true"></span>';
+} );
+
+add_action( 'woocommerce_before_main_content', function () {
+	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
+		return;
+	}
+	$items = array(
+		array( '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19"/><circle cx="17.5" cy="14.5" r="1.2"/></svg>', 'الدفع عند الاستلام' ),
+		array( '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6.5h11v9h-11z"/><path d="M13.5 9.5h4l3 3v3h-7z"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>', 'التوصيل من يوم ليومين' ),
+		array( '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="2"/><path d="M3 13h18M12 9v11"/><path d="M12 9S9.5 4.5 7.5 5.5 9 9 12 9zM12 9s2.5-4.5 4.5-3.5S15 9 12 9z"/></svg>', 'مجاني مع أي روتين' ),
+	);
+	echo '<div class="luvit-promise luvit-promise--product">';
+	foreach ( $items as $it ) {
+		echo '<span class="luvit-promise__item">' . $it[0] . ' ' . esc_html( $it[1] ) . '</span>';
+	}
+	echo '</div>';
+}, 5 );
