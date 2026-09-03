@@ -16492,20 +16492,36 @@ body.page-id-481 .luvit-affiliate button {
 }
 
 /* ── والرؤوس الغامقة ─────────────────────────────────────────────────── */
-.luvit-deep.luvit-page-top .luvit-section__head > nav a {
+.luvit-deep.luvit-page-top .luvit-section__head > nav a,
+.luvit-section--dark.luvit-page-top .luvit-section__head > nav a {
   color: rgba(255, 255, 255, .72);
 }
 @media (hover: hover) and (pointer: fine) {
-  .luvit-deep.luvit-page-top .luvit-section__head > nav a:hover {
+  .luvit-deep.luvit-page-top .luvit-section__head > nav a:hover,
+  .luvit-section--dark.luvit-page-top .luvit-section__head > nav a:hover {
     color: #FFFFFF;
   }
 }
-.luvit-deep.luvit-page-top .luvit-section__head > nav [aria-hidden="true"] {
-  color: rgba(255, 255, 255, .38);
+.luvit-deep.luvit-page-top .luvit-section__head > nav [aria-hidden="true"],
+.luvit-section--dark.luvit-page-top .luvit-section__head > nav [aria-hidden="true"] {
+  color: rgba(255, 255, 255, .5);
 }
-.luvit-deep.luvit-page-top .luvit-section__head > nav [aria-current] {
+.luvit-deep.luvit-page-top .luvit-section__head > nav [aria-current],
+.luvit-section--dark.luvit-page-top .luvit-section__head > nav [aria-current] {
   color: #FFFFFF;
 }
+
+/* 🔴 **تعميم · ٣ أيلول، بعد ساعات من كتابة الكتلة فوق.**
+   الفرع الغامق كان مربوطاً بـ`.luvit-deep` وحدها، وكل رأس غامق شاحن
+   وقتها كان يحملها (a1 · j1 · q1 · r0 · w1) فما بان الخلل. وأول رأس
+   غامق **بلا** `.luvit-deep` (رأس الشركاء · بيبني على تدرّج خاص فيه
+   ومقصود إنه بلا أشعة ولا فقاعات) كشفها:
+     `.luvit-page-top … nav a` (0,3,0) بتغلب `.luvit-section--dark nav a` (0,1,0)
+   فالروابط بترجع لونها الفاتح **على أرضية غامقة** · مقيس 1.10:1.
+   ⤷ فالفرع صار على `.luvit-section--dark.luvit-page-top` كمان، وهاي
+     السمة اللي بتوصف الحالة فعلاً · أي رأس غامق جاي بياخدها مجاناً.
+   والفاصل ارتفع من ٣٨٪ لـ٥٠٪: 2.46 → **3.18:1** فبيعدّي عتبة الرسم
+   بدل ما نتّكل على إعفاء `aria-hidden` وحده. */
 /* CRUMB:END */
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -17129,3 +17145,300 @@ body.page-id-481 .luvit-affiliate p {
   .sh-route__glow { animation: none; opacity: .28; }
 }
 /* ══ SHIP-HEAD:END ══════════════════════════════════════════════════════ */
+
+
+/* ⚠️ **ملاحظة على المراجعة نفسها.** الحَكَم طلب إعادة حساب جدول
+   التباين وقال إنّ `L(#1A5C6A)` = 0.0992 لا 0.0891. أعدت الحساب
+   مستقلاً بصيغة WCAG: **0.08915** · يعني رقم المصمّم هو الصح وحكم
+   الحَكَم غلط، والأرقام المنشورة تحت سليمة كما هي:
+     العنوان أبيض 7.55:1 · السطر أبيض ٨٨٪ 6.25:1 · الـeyebrow
+     aqua-200 5.51:1 · ورابط المسار أبيض ٧٢٪ 4.78:1.
+   (والغلط بحسابي اليدوي الأول كان نسيان القسمة على 1.055 · وهاد
+    بالضبط ليش الأرقام بتنحسب بسكربت لا بالراس.) */
+/* ══════════════════════════════════════════════════════════════════════════
+   PT-HEAD:START · رأس صفحتَي الشركاء · «الدايرة»
+   480 = /affiliates/            · لوحة الشريكة
+   481 = /affiliate-registration/ · صفحة الانضمام
+   بينطبعوا من فلتر the_content بـ library/woo.php · ما فيهن كونتينر إلمنتور.
+   ──────────────────────────────────────────────────────────────────────────
+   الفكرة بجملة: مي ساكنة انشافت **من فوق**، وقطرة وحدة وقعت فيها.
+   وكل رؤوس الموقع التانية مي انشافت من **جوّاها** (تدرّج عميق · أشعة نازلة
+   من السطح · فقاعات طالعة). فالفرق مش لون تاني، الفرق إن **الضوء مش من فوق**:
+   ما في `.luvit-deep__rays` بهالراسين بقصد (وهي span اختيارية لا زائفة،
+   فحذفها من الماركب بيكفي)، والضوء الوحيد هو نقطة الشريكة نفسها.
+
+   🔴 وليش ما استعملنا `.luvit-deep` أصلاً · **مقيس لا مذوّق**:
+      تدرّجه بينتهي بـ`#0B9198` (إضاءة نسبية 0.2260)، والسطر الفرعي اللي
+      بتعطيه `.luvit-section--dark` أبيض بـ82% · تباينه فوق هالنقطة
+      **3.06:1** يعني راسب لنصّ الجسم. أرضيتنا بتضل غامقة من فوق لتحت
+      فأسوأ حالة وراء النصّ 0.0891 وكل الأرقام بتعدّي مرتاحة.
+   ⚠️ والموجة تحت **ما بتتأثر**: `.luvit-wave:not(.seq-blend)` (tokens 2754)
+      بتفرض `background: transparent !important` وبتسحب حالها ٧٠px لفوق،
+      يعني بتقصّ جوّا الرأس ما بتقعد عليه · فلون آخر الرأس ما بينشاف
+      حدا. سطر الـPHP بيضل حرفياً: style="--wave-fill:#FFFFFF"
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── ١ · الأرض · مي ساكنة، غامقة من طرف لطرف ───────────────────────────── */
+.pt-head {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;              /* بيقصّ الدواير اللي بتفيض عن حدّ السكشن */
+  background-image:
+    linear-gradient(168deg, #0A3140 0%, #08262E 54%, #0C3E4B 100%);
+  background-color: #08262E;     /* احتياطي لو التدرّج ما رسم */
+}
+
+/* 🔴 المضاعفة مقصودة لا غلطة · `.luvit-section` (tokens 3207) بتكتب
+   `padding` **مختصرة** بخصوصية (0,1,0)، وقاعدة بنفس الخصوصية بتغلب
+   بترتيب الملف بس · وترتيب الملف بيتغيّر. المضاعفة بتوصل (0,2,0)
+   فبتحسمها بلا !important (قاعدة المشروع ٩ آب).
+   والرقم نفسه مقيس: الموجة بتنسحب ٧٠px لفوق، و`luvit-section--tight`
+   (٤٨px) **ما بتكفيها** · فالمنحنى الأبيض كان بياكل السطر الفرعي.
+   عشان هيك `luvit-section--tight` انشالت من ماركب الرأسين. */
+.pt-head.pt-head {
+  padding-block-end: calc(var(--space-7, 3rem) + var(--wave-h, 70px));
+}
+
+/* المحتوى فوق طبقة الماء · نفس ترتيب `.rt-shallow` (tokens 14109) */
+.pt-head > .luvit-section__inner { position: relative; z-index: 1; }
+
+/* ── ٢ · بلوم واحد بيتنفّس · بـ**نفس** keyframes الأب ─────────────────────
+   ولا وحدة جديدة · `luvit-caustic-b` معرَّفة tokens.css:3356 و٤٤ ثانية.
+   🔴 وموضع البلومين `at 50%` **متناظر بقصد**: الـradial-gradient فيزيائي
+      (بيقيس من اليسار مهما كان الاتجاه)، فأي قيمة غير ٥٠٪ بتنقلب لو
+      انقلب اتجاه الصفحة يوماً. الضوء الجانبي كله جوّا `.pt-mark`
+      وهو بيتموضع بالشبكة فبيتبع الاتجاه لحاله. */
+.pt-head__caustic {
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(46% 52% at 50% 18%,
+      rgba(76, 197, 218, .22), rgba(76, 197, 218, 0) 72%),
+    radial-gradient(38% 44% at 50% 92%,
+      rgba(30, 134, 156, .20), rgba(30, 134, 156, 0) 74%);
+  animation: luvit-caustic-b 44s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* ── ٣ · النصّ ─────────────────────────────────────────────────────────────
+   🔴 `.luvit-section__head--start` عليها max-width: 46ch (tokens 11103) وهي
+      صح للنصّ بس بتخنق الخيط والدايرة · نفس تحرير `.rt-head` (12688)
+      و`.rt-shallow` (14158). */
+.pt-head .luvit-section__head { margin-bottom: 0; }
+.pt-head .luvit-section__head--start { max-inline-size: none; }
+.pt-head .luvit-section__title { max-inline-size: 20ch; }
+.pt-head .luvit-section__sub {
+  max-inline-size: 46ch;
+  /* 🔴 مرفوع من .82 لـ.88 · **مقيس**: فوق أفتح نقطة وراء النصّ
+     (#1A5C6A · أفتح توقّف بالتدرّج + ذروة البلوم) الـ.82 بتعطي 5.17:1
+     والـ.88 بتعطي 6.26:1 · وهامش الأمان هاد هو اللي بيخلّي الرقم يصمد
+     لو ريّان زاد ارتفاع الرأس يوماً. */
+  color: rgba(255, 255, 255, .88);
+}
+
+/* ── ٤ · الشبكة · نصّ + دايرة ─────────────────────────────────────────────
+   بالRTL أول عمود = اليمين، والنصّ أول بالـDOM فبيقعد يمين لحاله.
+   ولا left/right ولا row-reverse. */
+.pt-grid {
+  display: grid;
+  gap: var(--space-6, 2rem);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .pt-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.68fr);
+    gap: var(--space-8, 4rem);
+  }
+}
+
+/* ── ٥ · الدايرة · مربّع فيه ضوء ثابت ودواير بتنبض ───────────────────────
+   🔴 الضوء **ما بيتنفّس** بقصد · هو ضوء الشريكة، وضوء بيتنفّس بيقول
+      «قاعد يحمّل» مش «هاي هي». */
+.pt-mark {
+  position: relative;
+  inline-size: 100%;
+  max-inline-size: var(--pt-mark-max, 380px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image:
+    radial-gradient(ellipse 62% 62% at 50% 50%,
+      rgba(76, 197, 218, .30)  0%,
+      rgba(30, 134, 156, .16) 46%,
+      rgba(76, 197, 218, 0)   78%);
+}
+.pt-head--join { --pt-mark-max: 400px; }   /* الانضمام · المدى أوسع */
+.pt-head--desk { --pt-mark-max: 320px; }   /* اللوحة · أهدى، فوق تبويبات الإضافة */
+@media (max-width: 899px) {
+  .pt-mark { --pt-mark-max: 300px; }
+}
+
+/* الدواير · أطول من صندوقها فبتفيض وبتنقصّ عند حدّ السكشن.
+   🔴 الأبعاد صريحة لا `inset: -24%` لحاله · الـ<svg> عنصر مستبدَل
+      (replaced)، ومع insets الأربعة وأبعاد auto بيرجع لحجمه الذاتي
+      بدل ما يتمدّد. و148% مع بداية -24% = فيض متناظر ٢٤٪ من الطرفين
+      فبيضل بالنص بأي اتجاه. */
+.pt-rings {
+  position: absolute;
+  inset-block-start: -24%;
+  inset-inline-start: -24%;
+  inline-size: 148%;
+  block-size: 148%;
+  pointer-events: none;
+  overflow: visible;
+}
+.pt-rings circle {
+  fill: none;
+  stroke: #FFFFFF;
+  stroke-width: 1;
+  /* شعرة وحدة بأي حجم · بلاها بتصير 0.75px بالموبايل و1.4px بالديسكتوب */
+  vector-effect: non-scaling-stroke;
+  opacity: .10;
+  animation: pt-ring-pulse 24s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 1.05s);
+}
+
+/* نبضة ضوء وحدة بتسافر بين الدواير · opacity وبس، ولا بكسل تخطيط.
+   بتطلع بـ1.68 ثانية، بتنزل بـ3.6، والمي بتضل ساكنة ١٨ ثانية من الـ٢٤.
+   يعني: قطرة بتوقع كل ٢٤ ثانية. */
+@keyframes pt-ring-pulse {
+  0%, 22%, 100% { opacity: .10; }
+  7%            { opacity: .42; }
+}
+
+/* 🔴 وهون الفرق الكامل بين الصفحتين · سطر واحد.
+   الانضمام: النبضة بتطلع من الجوّا لبرّا (بتوصل). لوحتك: بتيجي من
+   برّا للجوّا (كل طلب بيرجعلك). نفس الرسمة، تيّار معكوس. */
+.pt-head--desk .pt-rings circle {
+  animation-delay: calc((4 - var(--i, 0)) * 1.05s);
+}
+
+/* ── ٦ · الشريحة · نقطة السقوط ────────────────────────────────────────────
+   🔴 زجاج **بلا** backdrop-filter · نفس وصفة `.wl-head__note`
+      (tokens 13957) ولنفس السبب المكتوب هناك: تحتها طبقات بتعيد الرسم،
+      وأي blur فوقها بياكل الميزانية اللي CLAUDE.md بيقول عنها «صارمة».
+   ⚠️ وخصائص طويلة لا `background` مختصرة · اللون مش قيمة صالحة كطبقة
+      صورة بالمختصرة، فالكتابة المختصرة كانت بتسقط القاعدة كلها بصمت. */
+.pt-chip {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2, .5rem);
+  padding: var(--space-4, 1rem) var(--space-5, 1.5rem);
+  border-radius: var(--radius-lg, 24px);
+  border: 1px solid rgba(255, 255, 255, .22);
+  background-color: rgba(6, 52, 54, .62);   /* Lagoon · زجاج الهيرو نفسه */
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, .13), rgba(255, 255, 255, .04));
+  box-shadow:
+    inset 2px 2px 0 -2px rgba(255, 255, 255, .48),
+    0 18px 40px -22px rgba(0, 0, 0, .65);
+  text-align: center;
+  letter-spacing: 0;              /* 🔴 صفر · النصّ عربي · قاعدة العلامة */
+}
+
+.pt-chip__label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, .86);   /* 6.01:1 · محسوب */
+}
+
+.pt-chip__note {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, .78);   /* 5.27:1 · محسوب */
+  max-inline-size: 26ch;
+}
+
+/* ٤٨١ · الخانة الفاضية · ست خلايا مقطّعة مكان الكود.
+   حاويتها aria-hidden والاسم المقروء بيجي من `.pt-chip__label` فوقها. */
+.pt-chip__slot {
+  display: flex;
+  gap: 7px;
+  margin-block: 2px;
+}
+.pt-chip__slot i {
+  inline-size: 22px;
+  block-size: 30px;
+  border-radius: 6px;
+  /* .55 لا .42 · على .42 بتطلع 2.3:1 وبتقرا «صورة مكسورة» مش «خانة فاضية» */
+  border: 1px dashed rgba(255, 255, 255, .55);
+  background-color: rgba(255, 255, 255, .05);
+}
+
+/* ٤٨٠ · كود الشريكة · لاتيني جوّا صفحة RTL.
+   🔴 `text-align` **إلزامية** مع `direction: ltr` · القيمة الابتدائية
+      `start` تحت ltr بتعني **يسار**، وهالباغ نزل على هالموقع مرتين.
+   🔴 و`unicode-bidi: isolate` عشان أي رقم أو نقطة بآخر الكود ما تنقلب
+      (فخّ اسم العلامة المسجَّل عنّا).
+   ⚠️ والتباعد الحرفي هون **لاتيني** · قاعدة صفر التباعد للعربي
+      محفوظة فوق على `.pt-chip` وعلى الليبل والنوت. */
+.pt-chip__code {
+  direction: ltr;
+  text-align: center;
+  unicode-bidi: isolate;
+  font-family: var(--font-latin);
+  font-size: clamp(20px, 3.4vw, 28px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: .06em;
+  color: #FFFFFF;                    /* 7.44:1 على أفتح نقطة بالشريحة */
+  word-break: break-all;             /* كود طويل ما بيفجّر الشريحة */
+}
+
+/* ── ٧ · الحركة المخفَّضة · الطبقتان بيوقفوا والرسمة بتضل ────────────────── */
+
+/* 🔴 `box-sizing` صريحة · ما في reset عام بهالملف (أول ظهور لها سطر
+   ٢٤٥٥ ومحصور بمكوّن). وبلاها أي حشوة أو حدّ بيزيد على العرض المكتوب
+   وبتنكسر حسابات التخطيط بصمت · فخّ مسجَّل كلّفنا ٦٦px قبل. */
+.pt-grid,
+.pt-mark,
+.pt-rings,
+.pt-chip,
+.pt-chip__slot i {
+  box-sizing: border-box;
+}
+
+/* 🔴 أرقام المحطات عربية، و`.rt-flow__dot` معرَّف عليها `--font-latin`
+   (Jost) اللي **ما فيه محارف عربية-هندية** · فـ«١ ٢ ٣» بتقع على خط
+   نظام بصمت بنصّ المكوّن. هون بترجع لخط النصّ. */
+.pt-head .rt-flow__dot {
+  font-family: var(--font-body);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pt-head__caustic { animation: none; }
+  .pt-rings circle  { animation: none; opacity: .18; }
+}
+
+/* ── ٨ · إصلاح الفراغ الميت تحت الموجة ────────────────────────────────────
+   🔴 باغ **موجود اليوم على الموقع الحيّ**، مش إشي بيجيبه هالتصميم:
+      `.luvit-affiliate` (tokens 14638) عليها
+        padding-block-start: calc(--nav-inset + --nav-h + --space-6)
+      وهي نفس معادلة `.luvit-page-top` بالحرف · والرأس اللي فوقها حامل
+      `.luvit-page-top` أصلاً. يعني الإزاحة **بتنحسب مرتين**، وبينزل
+      ~١٢٢px مي ميتة بين الموجة وأول عنصر من الإضافة.
+   ⤷ والحشوة الأصلية كانت لغرض واحد: تنزّل الحاوية تحت النافبار لما تكون
+     **أول إشي بالصفحة**. ما عادت أول إشي · الرأس صار قبلها، وهو حامل
+     `data-nav-bg="dark"` فبيعطي النافبار إشارته من أول رسمة، والحاوية
+     بـ`light` بتتسلّم لما تسكرول. فالحشوة صار دورها صفر.
+   ⚠️ والاستهداف بمعرّف الصفحة لأن `.luvit-affiliate` بتنستعمل بالصفحتين
+      بس، وخصوصية (0,2,1) بتغلب القاعدتين الأصليتين (0,1,0) مهما كان
+      ترتيب الورقة · وبتغلب فرع الموبايل تبعهن كمان.
+   🔴 وقيسها قبل ما تعتمدها: افتح /affiliate-registration/ وشوف
+      `getBoundingClientRect().top` لأول عنصر جوّا `.luvit-affiliate`
+      قبل وبعد · لازم ينقص ~١٢٢px بالضبط. */
+body.page-id-480 .luvit-affiliate,
+body.page-id-481 .luvit-affiliate {
+  padding-block-start: var(--space-6, 2rem);
+}
+/* PT-HEAD:END */

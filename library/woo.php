@@ -393,31 +393,106 @@ add_filter( 'the_content', function ( $content ) {
 
 	$is_reg = is_page( 481 );
 
-	$eyebrow = $is_reg ? 'Partners' : 'Partner dashboard';
 	$crumb   = $is_reg ? 'شركاء نجاحنا' : 'لوحتك';
+	$eyebrow = $is_reg ? 'Partners' : 'Partner dashboard';
 	$title   = $is_reg ? 'صيري من شركاء نجاحنا' : 'لوحتك';
 	$sub     = $is_reg
 		? 'كودك الخاص ورابطك، وصفحة إلك بتوريك كل طلب أجا منك.'
 		: 'كل طلب إجا من كودك، وكم صار إلك · بالتفصيل.';
 
-	$head  = '<section class="luvit-section luvit-section--tight band-mist luvit-page-top" data-nav-bg="light" id="page-head">';
-	$head .= '<div class="luvit-section__inner">';
-	$head .= '<div class="luvit-section__head" data-luvit="reveal">';
+	/* ── الخيط · ثلاث محطات · صفحة الانضمام وحدها ── */
+	$flow = '';
+	if ( $is_reg ) {
+		$steps = array(
+			array( '١', 'كودك',  'كود باسمك بتعطيه لدايرتك' ),
+			array( '٢', 'رابطك', 'رابط بيعرّف إن الطلب أجا منك' ),
+			array( '٣', 'لوحتك', 'صفحة بتوريك طلباتك وزبوناتك' ),
+		);
+		/* 🔴 role="list" إلزامي · `.rt-flow` عليها `list-style: none`،
+		   وسفاري مع VoiceOver بتشيل دلالة القائمة معها. */
+		$flow = '<ol class="rt-flow" role="list" data-luvit="stagger">';
+		foreach ( $steps as $s ) {
+			$flow .= '<li class="rt-flow__item">'
+				. '<span class="rt-flow__dot">' . esc_html( $s[0] ) . '</span>'
+				. '<span class="rt-flow__label">' . esc_html( $s[1] ) . '</span>'
+				. '<span class="rt-flow__note">' . esc_html( $s[2] ) . '</span>'
+				. '</li>';
+		}
+		$flow .= '</ol>';
+		$flow .= '<div class="luvit-section__foot">'
+			. '<a class="luvit-btn luvit-btn--arrow" href="#partner-form">سجّلي طلبك</a>'
+			. '</div>';
+	}
+
+	/* ── الشريحة · فاضية بتنتظر على صفحة الانضمام، وباسمها باللوحة ──
+	   🔴 والكود **ما بينطبع هون بقصد**: الإضافة بتطبعه أصلاً على بعد
+	      ~100px تحت بـ`.wcu-coupon-title`، ونسخة تانية بتضمن الانحراف
+	      لو غيّرته من لوحة الكوبونات. فالشريحة بتحمل اسمها · حقيقي،
+	      شخصي، وما بينكتب بأي مكان تاني بالصفحة. */
+	$chip = '';
+	if ( $is_reg ) {
+		$chip = '<div class="pt-chip">'
+			. '<span class="pt-chip__label">كودك الخاص</span>'
+			. '<span class="pt-chip__slot" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
+			. '<span class="pt-chip__note">بينولد أول ما تسجّلي</span>'
+			. '</div>';
+	} else {
+		$u    = wp_get_current_user();
+		$name = '';
+		if ( $u && $u->ID ) {
+			$name = trim( $u->first_name ) !== '' ? $u->first_name : $u->display_name;
+		}
+		$chip = '<div class="pt-chip">'
+			. '<span class="pt-chip__label">أهلاً فيكِ</span>';
+		if ( $name !== '' ) {
+			$chip .= '<span class="pt-chip__code">' . esc_html( $name ) . '</span>';
+		}
+		$chip .= '<span class="pt-chip__note">كودك ورابطك تحت · وكل طلب فيهم بينعدّ إلك</span>'
+			. '</div>';
+	}
+
+	/* ── الدوائر · قطرة وحدة بماء ساكن مشوفة من فوق ── */
+	$rings = '<svg class="pt-rings" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">';
+	foreach ( array( 34, 66, 104, 148, 197 ) as $i => $r ) {
+		$rings .= '<circle cx="200" cy="200" r="' . (int) $r . '" style="--i:' . (int) $i . '"></circle>';
+	}
+	$rings .= '</svg>';
+
+	$mod = $is_reg ? 'pt-head--join' : 'pt-head--desk';
+
+	$head  = '<section class="luvit-section luvit-section--dark luvit-page-top pt-head ' . $mod . '"';
+	$head .= ' data-nav-bg="dark" id="page-head">';
+	$head .= '<span class="pt-head__caustic" aria-hidden="true"></span>';
+	$head .= '<div class="luvit-section__inner"><div class="pt-grid">';
+	$head .= '<div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">';
 	$head .= '<nav aria-label="مسار التنقّل">';
 	$head .= '<a href="' . esc_url( home_url( '/' ) ) . '">الرئيسية</a>';
-	/* 🔴 فراغ صريح حوالين الفاصل · صفحات السكشن بتاخده مجاناً من
-	   المسافة البادئة بالماركب، والـPHP بتلزّق السلسلة فبيطلع «الرئيسية›لوحتك».
-	   مقيس على صفحة الشحن: الفاصل هناك محوّط بفراغ نصّي. */
 	$head .= ' <span aria-hidden="true">›</span> ';
 	$head .= '<span aria-current="page">' . esc_html( $crumb ) . '</span>';
 	$head .= '</nav>';
 	$head .= '<p class="luvit-section__eyebrow">' . esc_html( $eyebrow ) . '</p>';
 	$head .= '<h1 class="luvit-section__title">' . esc_html( $title ) . '</h1>';
 	$head .= '<p class="luvit-section__sub">' . esc_html( $sub ) . '</p>';
+	$head .= $flow;
+	$head .= '</div>';
+	$head .= '<div class="pt-mark">' . $rings . $chip . '</div>';
 	$head .= '</div></div></section>';
+
+	/* 🔴 الموجة غامق-لفاتح · بدها **الفيل وحده**: أبيض لأن اللي
+	   تحتها `.luvit-affiliate` على ورق أبيض، و`background` inline بلون
+	   قاع التدرّج ظنّاً إنه بيسدّ خطاً قاطعاً · والقياس بعد النشر رجّع
+	   `backgroundColor: rgba(0, 0, 0, 0)` لأن `.luvit-wave:not(.seq-blend)`
+	   بتكتب `background: transparent !important` **بقصد** (موثّق سطر ٢٧٥٥)
+	   عشان تدهس الخلفيات الـinline المكتوبة بموجات قديمة. والآلية أصلاً
+	   ما بدها خلفية: الموجة بتسحب حالها `-70px` فوق السكشن الغامق،
+	   و`--wave-fill` هو **لون اللي تحت** وهو طالع فوق. فالسمة انشالت ·
+	   كود ميت بيوهم إنه شغّال أسوأ من ولا كود.
+	   */
 	$head .= '<div class="luvit-wave" style="--wave-fill:#FFFFFF" aria-hidden="true"></div>';
 
-	return $head . '<div class="luvit-affiliate" data-nav-bg="light">' . $content . '</div>';
+	/* `id` على الحاوية عشان زرّ «سجّلي طلبك» يلاقي وجهته · الفورم نفسه
+	   من الإضافة وما بنقدر نحقن فيه سمة. */
+	return $head . '<div class="luvit-affiliate" id="partner-form" data-nav-bg="light">' . $content . '</div>';
 }, 20 );
 
 /* ==========================================================================
