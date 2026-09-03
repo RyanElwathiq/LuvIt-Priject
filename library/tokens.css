@@ -14578,9 +14578,19 @@ body:has(#luvit-wish-status:not([hidden]))  .wl-head {
      (مفحوص: قبل النقل أعلى الحاوية 136 · وبعده 32 · والـclass
       بينزل من أول رسمة.)
    ⚠️ فممنوع ترجّع الحشوة لـbody · بتكسر لون النافبار بصمت. */
+/* 🔴 والحشوة السفلية **جوّا الحاوية كمان** لا على body · نفس سبب العلوية
+   بس أخطر: الفوتر عليه `.luvit-cut-top` وبيسحب حاله **٧٠px لفوق**
+   (`margin-top: calc(var(--cut-h) * -1)`)، وحشوة `body` بتقعد **تحت
+   الفوتر** فما بتمنع ولا بكسل من السحب.
+   ⤷ المقيس على /affiliate-registration (صفحة قصيرة): أسفل المحتوى 260
+     وأعلى الفوتر 204 = **تراكب 56px** · الموجة كانت بتاكل الكلام.
+   فالحشوة صارت على الحاوية وبتعوّض ارتفاع الموجة + مساحة تنفّس. */
 body.page-id-480,
 body.page-id-481 {
-  padding-block-end: var(--space-8, 4rem);
+  padding-block-end: 0;
+}
+.luvit-affiliate {
+  padding-block-end: calc(var(--wave-h, 70px) + var(--space-7, 3rem));
 }
 .luvit-affiliate {
   padding-block-start: calc(
@@ -15686,3 +15696,295 @@ body.page-id-481 .luvit-footer__partner {
   display: none;
 }
 /* FOOTER-PARTNER:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AFFILIATE-POLISH:START · تشطيب لوحة الشركاء · ٣ أيلول (الدفعة التانية)
+   ═══════════════════════════════════════════════════════════════════════
+   قائمة ريّان بالحرف، بند بند، وكل بند مقيس قبل الإصلاح:
+
+   ١ · «شوف شو بصير عالهوفر اللون بيختفي خليه بالزهري تبع البراند»
+   ٢ · «لما ضغطت عسجلي شوف شو طلعلي هذا تصميم بالله عليك 😂»
+   ٣ · «شوف الفوتر كيف طالع لفوق كثير» · و«اخر اشي تحت الفوتر طالع فوق التصميم»
+   ٤ · «عند Referral Statistics المربعات كثير ملزقه ببعضها»
+   ٥ · «وال Previous وال next معكوسين ومش زابطين كمنطق تبعهم»
+   ٦ · «تصميم اللي عند account details مش كامل بتحسه بس الواير فريم»
+   ٧ · «خلي لما اعمل هوفر على logout يصير اللون زهري»
+   ٨ · «وتصميم واجهه ال referral link وال page urls مش كامل كمان»
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── ٤ · صناديق Referral Statistics · كانت ملزوقة فعلاً ────────────────
+   المقيس: تلات صناديق ظاهرة، والفراغ بينهن **1px و‎-1px** · يعني
+   ملامسة ومتراكبة. وهاي الصناديق بتاخد عمود واحد بهالتبويب، فبتنعمل
+   شبكة صفّاً واحداً بفراغ حقيقي بدل ما تنكدّس. */
+.luvit-affiliate .wcusage-tab-section:has(> .wcusage-info-box) {
+  display: grid;
+  gap: var(--space-3, .75rem);
+}
+@media (min-width: 720px) {
+  .luvit-affiliate .wcusage-tab-section:has(> .wcusage-info-box + .wcusage-info-box) {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+.luvit-affiliate .wcusage-info-box + .wcusage-info-box {
+  margin-block-start: 0;   /* الفراغ صار من الشبكة · وإلا بينجمع مرتين */
+}
+
+/* ── ٥ · Previous / Next · كانوا معكوسين منطقياً ──────────────────────
+   المقيس: «Previous» عند left 1244 و«Next» عند left 1231 · يعني Next
+   **يسار** Previous، ومع سهم الإضافة الثابت بيطلع «→ Previous» و
+   «Next ←» · قراءة متناقضة.
+   🔴 والسبب إنّ الإضافة كاتبة الأسهم لـLTR والصفحة RTL، فالترتيب انقلب
+      والسهم لأ. ولوحة الإضافة **إنجليزية بقرار ريّان**، فالحلّ إنّ صفّ
+      التصفيح يرجع LTR كله فيقرا زي أي واجهة إنجليزية · لا نعكس أسهماً
+      بالـCSS ونتمنّى. */
+.luvit-affiliate .wcu-clicks-pagination {
+  direction: ltr;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2, .5rem);
+  margin-block-start: var(--space-4, 1rem);
+}
+.luvit-affiliate .wcusage-clicks-prev-page,
+.luvit-affiliate .wcusage-clicks-next-page {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 36px;
+  padding-inline: var(--space-4, 1rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-paper, #FFF);
+  color: var(--aqua-700, #196B7D);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-affiliate .wcusage-clicks-prev-page:hover,
+  .luvit-affiliate .wcusage-clicks-next-page:hover {
+    border-color: var(--aqua-200, #A6E7F1);
+    background: var(--aqua-50, #EAFAFD);
+  }
+}
+
+/* ── ٦ · Account details · كان واير فريم فعلاً ────────────────────────
+   حقول بحدود رمادية رفيعة على أبيض بلا حشوة ولا نصف قطر ولا تسمية
+   واضحة. صارت تاخد نفس شكل حقول الشيك أوت تبعنا · نفس الارتفاع ونفس
+   الحدّ ونفس التركيز، عشان الشريكة تحسّها نفس الموقع لا لوحة إضافة. */
+.luvit-affiliate .wcu-settings-modern,
+.luvit-affiliate .wcu-settings-grid {
+  display: grid;
+  gap: var(--space-5, 1.5rem);
+}
+@media (min-width: 900px) {
+  .luvit-affiliate .wcu-settings-grid {
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.luvit-affiliate .wcu-settings-col {
+  box-sizing: border-box;
+  padding: var(--space-5, 1.5rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-lg, 24px);
+  background: var(--color-paper, #FFF);
+  box-shadow: 0 10px 28px -22px rgba(2, 26, 30, .35);
+}
+.luvit-affiliate .wcusage_settings_form label {
+  display: block;
+  margin-block-end: 6px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--color-ink-soft, #47555B);
+}
+.luvit-affiliate .wcusage_settings_form input[type="text"],
+.luvit-affiliate .wcusage_settings_form input[type="email"],
+.luvit-affiliate .wcusage_settings_form input[type="url"],
+.luvit-affiliate .wcusage_settings_form input[type="tel"],
+.luvit-affiliate .wcu-settings-col input[type="text"],
+.luvit-affiliate .wcu-settings-col input[type="email"],
+.luvit-affiliate .wcu-settings-col input[type="url"],
+.luvit-affiliate .wcu-settings-col input[type="tel"] {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 48px;
+  margin-block-end: var(--space-4, 1rem);
+  padding-inline: var(--space-4, 1rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-md, 16px);
+  background: var(--color-paper, #FFF);
+  color: var(--color-ink, #1A2529);
+  font-family: var(--font-body);
+  font-size: var(--text-body, 1rem);
+  direction: ltr;            /* بريد ورابط وتلفون · كلهن لاتيني */
+  text-align: start;
+}
+.luvit-affiliate .wcu-settings-col input:focus-visible {
+  outline: 2px solid var(--aqua-600, #1E869C);
+  outline-offset: 2px;
+  border-color: var(--aqua-200, #A6E7F1);
+}
+
+/* ── ٨ · Referral Link و Page URL · صاروا لوحاً بيقرا ─────────────────
+   الرابط لاتيني وطويل، فبينعزل LTR وبينقصّ بأناقة بدل ما يفشّ التخطيط،
+   وزرّ Copy بيقعد جنبه لا فوقه. */
+.luvit-affiliate .wcu-urllink,
+.luvit-affiliate .wcusage_custom_ref_url {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 48px;
+  padding: 12px var(--space-4, 1rem);
+  border: 1px solid var(--color-line, #E1E9EC);
+  border-radius: var(--radius-md, 16px);
+  background: var(--color-mist, #F6FBFC);
+  color: var(--color-ink, #1A2529);
+  font-family: var(--font-latin);
+  font-size: var(--text-body-sm, .875rem);
+  direction: ltr;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+/* ── ٧ · Logout · هوفر زهري بلون العلامة ──────────────────────────────
+   🔴 والزهري **نصّاً وحدّاً فقط، ولا مرة خلفية** · قاعدة العلامة. */
+.luvit-affiliate .wcusage-dash-logout,
+.luvit-affiliate .wcusage-dash-logout:visited {
+  color: var(--aqua-700, #196B7D);
+  transition: color 200ms var(--ease-out-soft, ease),
+              border-color 200ms var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-affiliate .wcusage-dash-logout:hover {
+    color: var(--fuchsia-500, #D02D86);
+    border-color: var(--fuchsia-500, #D02D86);
+  }
+}
+
+/* ── ٢ · صفحة التسجيل · كانت نصّاً عارياً ─────────────────────────────
+   المقيس: `<strong>Register New Affiliate Account:</strong>` و`<p>`
+   و`<button>` · بلا بطاقة ولا رأس ولا حشوة. صارت بطاقة واحدة مرتّبة.
+   ⚠️ والنصّ إنجليزي بقرار ريّان فما بينترجم · بس بينلبس. */
+body.page-id-481 .luvit-affiliate > strong,
+body.page-id-481 .luvit-affiliate strong:first-of-type {
+  display: block;
+  margin-block-end: var(--space-3, .75rem);
+  font-family: var(--font-latin);
+  font-size: var(--text-h3, 1.5rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-ink, #1A2529);
+}
+body.page-id-481 .luvit-affiliate p {
+  margin-block: 0 var(--space-5, 1.5rem);
+  font-family: var(--font-body);
+  font-size: var(--text-body, 1rem);
+  line-height: 1.8;
+  color: var(--color-ink-soft, #47555B);
+}
+body.page-id-481 .luvit-affiliate .wcu-save-settings-button,
+body.page-id-481 .luvit-affiliate button {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 48px;
+  padding-inline: var(--space-5, 1.5rem);
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--aqua-600, #1E869C);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) {
+  body.page-id-481 .luvit-affiliate button:hover { background: var(--aqua-700, #196B7D); }
+}
+/* AFFILIATE-POLISH:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FOOTER-PARTNER-HOVER:START · ١ · اللون كان بيختفي · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 السبب **`:visited`** لا الهوفر: أول ما ريّان ضغط الرابط صار زائراً،
+      ولون الزيارة الافتراضي (بنفسجي باهت) ورث للعنوان جوّاه · فطلع النصّ
+      شبه مختفي بلقطته. ولا قاعدة hover بالفوتر بتلمس اللون (فحصت: قاعدتان
+      بس، وحدة للقائمة وحدة للسوشال).
+   ⤷ فاللون بينكتب صراحةً لكل الحالات، والهوفر بياخد **زهري العلامة**
+     زي ما طلب ريّان · نصّاً فقط ولا مرة خلفية. */
+.luvit-footer__partner,
+.luvit-footer__partner:visited,
+.luvit-footer__partner:link {
+  color: #fff;
+}
+.luvit-footer__partner-title {
+  transition: color 220ms var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-footer__partner:hover .luvit-footer__partner-title {
+    color: var(--fuchsia-400, #E75FA8);
+  }
+  .luvit-footer__partner:hover .luvit-footer__partner-mark {
+    color: var(--fuchsia-400, #E75FA8);
+  }
+}
+/* FOOTER-PARTNER-HOVER:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AFFILIATE-LTR:START · اللوحة إنجليزية فبتقرا LTR · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 ريّان: «وال Previous وال next معكوسين ومش زابطين كمنطق تبعهم انا
+      متاكد انه اصل التصميم كان احلى من هيك وانه هذا خلل ومش مقصود».
+      وكان محقّاً · الخلل واحد وأصله الاتجاه لا الأسهم.
+
+   المقيس: كل عناوين اللوحة كانت `direction: rtl` وهي **نصوص إنجليزية**:
+     .coupon-title · .wcu-tab-title («Referral URL:») · `<strong>`
+     («Page URL:» و«Referral Link:») · و«Referral Statistics:».
+   ⤷ والنتيجة إنّ النقطتين والنقطة والسهم بينقلبوا لبداية السطر:
+     «:Referral URL» و«.You are already registered» و«< View dashboard».
+     وهاد **مش تنسيق ناقص، هاد نصّ مكسور**.
+
+   🔴 وريّان حسم اللغة: «مافيه داعي نعرب الكوبونات نفسها Coupon Affiliates
+      مش مشكله نخليها بالانجليزي لانه اصلا هذا المتعارف عليه».
+      ⤷ فلو اللغة إنجليزية، **الاتجاه لازم يكون إنجليزياً كمان**. نصف
+        انعكاس (نصّ إنجليزي باتجاه عربي) أسوأ من الاتنين.
+
+   ⚠️ والصفحة نفسها بتضل RTL · الانعكاس محصور بحاوية اللوحة، فالنافبار
+      والفوتر وشريط الشركاء كلهن بيضلّوا عربي وبمحلّهم.
+   ⚠️ وعلامة العملة `د.أ` بتضل معزولة كما هي بجلد اللوحة · عربي جوّا
+      رقم لاتيني، ومنعزل بـ`unicode-bidi` هناك لا هون. */
+.luvit-affiliate {
+  direction: ltr;
+}
+/* والعربي الوحيد جوّا اللوحة هو العملة · بترجع لاتجاهها لحالها */
+.luvit-affiliate [lang="ar"],
+.luvit-affiliate .luvit-rtl {
+  direction: rtl;
+}
+/* AFFILIATE-LTR:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AFFILIATE-STATS-GAP:START · صناديق Referral Statistics · ٣ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   🔴 ريّان: «عند Referral Statistics المربعات كثير ملزقه ببعضها».
+      المقيس قبل: تلات صناديق والفراغ بينهن **0px و0px** · ملامسة تماماً.
+
+   ⚠️ وأول محاولة استهدفت `.wcusage-tab-section:has(> .wcusage-info-box)`
+      و**ما نزلت**: الأب الحقيقي مقيس وهو `<div>` **بلا أي كلاس** جوّا
+      `.show_referrals` · يعني ولا مرساة اسمية عندي.
+      ⤷ فالاستهداف بالبنية: أي ولد مباشر لـ`.show_referrals` بيحمل جوّاه
+        صناديق · وهاي أضيق حاجة ممكنة بلا ما نلمس ماركب الإضافة. */
+.luvit-affiliate .show_referrals > div:has(> .wcusage-info-box) {
+  display: grid;
+  gap: var(--space-3, .75rem);
+}
+@media (min-width: 720px) {
+  .luvit-affiliate .show_referrals > div:has(> .wcusage-info-box + .wcusage-info-box) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+/* AFFILIATE-STATS-GAP:END */
