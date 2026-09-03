@@ -79,6 +79,7 @@ for (const rec of cat.منتجات) {
     img: (w.images[0] || {}).src || null,
     pct: hero ? hero.pct : null,
     active: hero ? hero.name : null,
+    why: hero ? hero.role : null,   /* فايدة المادة من الكتالوج · النسبة ما بتنعرض بلاها */
   };
 }
 
@@ -229,8 +230,8 @@ ${featureCards(r.who, '◇')}
   <div class="luvit-section__inner">
 
     <div class="luvit-section__head" data-luvit="reveal">
-      <p class="luvit-section__eyebrow">Five steps</p>
-      <h2 class="luvit-section__title">الخطوات الخمس</h2>
+      <p class="luvit-section__eyebrow">${({ 4: 'Four', 5: 'Five' })[r.steps.length] || r.steps.length} steps</p>
+      <h2 class="luvit-section__title">الخطوات ال${منطوق(r.steps.length)}</h2>
       <p class="luvit-section__sub">
         نفس الترتيب صباحاً ومساءً · زي ما مكتوب على ظهر كل عبوة.
       </p>
@@ -250,7 +251,7 @@ ${r.steps.map(([k, title, role], i) => {
           <p class="luvit-step__text">
             <a href="/product/${p.slug}/">${p.ar}</a> · ${role}.
           </p>
-          <p class="luvit-card__spec">${p.pct ? '<b>' + p.pct + ' ' + p.active + '</b>' : ''}<span class="luvit-card__vol">${p.ml}</span></p>
+          <p class="luvit-card__spec">${p.pct && p.why ? '<b>' + p.pct + ' ' + p.active + '</b> · ' + p.why : ''}<span class="luvit-card__vol">${p.ml}</span></p>
           <p class="luvit-step__buy">
             <span class="luvit-card__price"><span dir="ltr">${p.price}</span> د.أ</span>
             <a href="/?add-to-cart=${p.id}" rel="nofollow"
@@ -272,7 +273,7 @@ ${r.steps.map(([k, title, role], i) => {
 
     <div class="luvit-section__head" data-luvit="reveal">
       <h2 class="luvit-section__title">شو جوّا البكج</h2>
-      <p class="luvit-section__sub">خمس عبوات كاملة · مش عيّنات. والرقم بالدينار.</p>
+      <p class="luvit-section__sub">${منطوق(r.steps.length)} عبوات كاملة · مش عيّنات. والرقم بالدينار.</p>
     </div>
 
     <div class="luvit-ing" data-luvit="stagger">

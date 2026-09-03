@@ -378,8 +378,7 @@ const sIng = () => H(`
     <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
       <h2 class="luvit-section__title">كل مادة إلها شغلة</h2>
       <p class="luvit-section__sub">
-        هون شو بتعمل كل مادة بـ${VITC.ar} · والنسبة جنبها عشان تعرفي
-        وزنها بالتركيبة، مش عشان الرقم بحد ذاته.
+        خدي ${VITC.ar} مثالاً: هون كل مادة فيه، وشو بتعمل لبشرتك.
       </p>
     </div>
 
@@ -403,7 +402,7 @@ ${VITC.actives.map((a) => `
 
     <div class="luvit-section__foot">
       <a href="/product/${VITC.slug}" class="luvit-btn luvit-btn--arrow">شوفي السيروم</a>
-      <a href="/products#ingredients" class="luvit-btn luvit-btn--ghost luvit-btn--on-dark">كل المكوّنات</a>
+      <a href="/products#ingredients" class="luvit-btn luvit-btn--ghost luvit-btn--on-dark">وشو بيعمل البانثينول بباقي المنتجات</a>
     </div>
   </div>
 </section>
