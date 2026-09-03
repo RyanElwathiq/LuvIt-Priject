@@ -1,68 +1,11 @@
 [
  {
-  "id": 211,
-  "file": "_وارد/page211-content.html",
-  "headLen": 16576,
-  "newLen": 16618
+  "id": 220
  },
  {
-  "id": 212,
-  "file": "_وارد/page212-content.html",
-  "headLen": 12291,
-  "newLen": 12333
+  "id": 219
  },
  {
-  "id": 213,
-  "file": "_وارد/page213-content.html",
-  "headLen": 12215,
-  "newLen": 12257
- },
- {
-  "id": 214,
-  "file": "_وارد/page214-content.html",
-  "headLen": 12220,
-  "newLen": 12262
- },
- {
-  "id": 368,
-  "file": "_وارد/page368-content.html",
-  "headLen": 13792,
-  "newLen": 13834
- },
- {
-  "id": 216,
-  "file": "library/sections/q1-quiz.html",
-  "headLen": 11681,
-  "newLen": 11723
- },
- {
-  "id": 228,
-  "file": "library/sections/a1-about.html",
-  "headLen": 16560,
-  "newLen": 16602
- },
- {
-  "id": 220,
-  "file": "library/sections/f1-faq.html",
-  "headLen": 15444,
-  "newLen": 15486
- },
- {
-  "id": 229,
-  "file": "library/sections/c1-contact.html",
-  "headLen": 12206,
-  "newLen": 12248
- },
- {
-  "id": 219,
-  "file": "library/sections/s1-shipping.html",
-  "headLen": 15250,
-  "newLen": 15292
- },
- {
-  "id": 230,
-  "file": "library/sections/x1-returns.html",
-  "headLen": 13328,
-  "newLen": 13370
+  "id": 228
  }
 ]
