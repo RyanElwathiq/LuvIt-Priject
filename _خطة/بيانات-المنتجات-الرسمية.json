@@ -1,153 +1,482 @@
 {
-  "_مصدر": "luvit, pharmacy profile.pdf · بروفايل الصيدليات الرسمي · ١٠ صفحات",
-  "_انقرأ": "٢٩ آب ٢٠٢٦ · صفحة صفحة بالعين (الملف صور بلا طبقة نص)",
-  "_تحذير": "الأسعار هون هي public price تبع الصيدليات. واستراتيجية العلامة بتقول صراحةً: ممنوع خصومات أونلاين بتضعف موقف الصيدليات أو بتخلق تضارب أسعار. يعني سعر الموقع = سعر الصيدلية.",
-  "_ناقص": "L103 كريم سنتيلا و L119 ألفا أربوتين مش بالكتالوج — متطابق مع «٩ منتجات بالأردن حالياً و٣ متوقعة».",
-
-  "شهادات": {
-    "dermatologically-tested": "مفحوص من ناحية جلدية",
-    "vegan": "نباتي ١٠٠٪",
-    "alcohol-free": "خالٍ من الكحول",
-    "fragrance-free": "خالٍ من العطور",
-    "paraben-free": "خالٍ من البارابين",
-    "dye-free": "خالٍ من الملوّنات",
-    "sls-sles-free": "خالٍ من SLS وSLES",
-    "non-comedogenic": "لا يسدّ المسام"
-  },
-
-  "منتجات": [
+ "_مصدر": "luvit, pharmacy profile.pdf · بروفايل الصيدليات الرسمي · ١٠ صفحات",
+ "_انقرأ": "٢٩ آب ٢٠٢٦ · صفحة صفحة بالعين (الملف صور بلا طبقة نص)",
+ "_تحذير": "الأسعار هون هي public price تبع الصيدليات. واستراتيجية العلامة بتقول صراحةً: ممنوع خصومات أونلاين بتضعف موقف الصيدليات أو بتخلق تضارب أسعار. يعني سعر الموقع = سعر الصيدلية.",
+ "_ناقص": "L103 كريم سنتيلا و L119 ألفا أربوتين مش بالكتالوج — متطابق مع «٩ منتجات بالأردن حالياً و٣ متوقعة».",
+ "شهادات": {
+  "dermatologically-tested": "مفحوص من ناحية جلدية",
+  "vegan": "نباتي ١٠٠٪",
+  "alcohol-free": "خالٍ من الكحول",
+  "fragrance-free": "خالٍ من العطور",
+  "paraben-free": "خالٍ من البارابين",
+  "dye-free": "خالٍ من الملوّنات",
+  "sls-sles-free": "خالٍ من SLS وSLES",
+  "non-comedogenic": "لا يسدّ المسام"
+ },
+ "منتجات": [
+  {
+   "sku": "L111",
+   "woo": 201,
+   "line": "HYDRA CLEANSE",
+   "cat": "CLEANSERS",
+   "en": "Hydrating Gel Cleanser",
+   "ar_رسمي": "غسول البشرة الجافة والحساسة",
+   "ar_بالموقع": "منظف هيدرا اللطيف",
+   "ml": "200ml",
+   "price": 14,
+   "ph": "5.5",
+   "skin": "كل أنواع البشرة",
+   "actives": [
     {
-      "sku": "L111", "woo": 201, "line": "HYDRA CLEANSE", "cat": "CLEANSERS",
-      "en": "Hydrating Gel Cleanser",
-      "ar_رسمي": "غسول البشرة الجافة والحساسة",
-      "ar_بالموقع": "منظف هيدرا اللطيف",
-      "ml": "200ml", "price": 14, "ph": "5.5", "skin": "كل أنواع البشرة",
-      "actives": [
-        {"pct": "0.5%", "name": "حمض هيالورونيك", "en": "Hyaluronic acid", "role": "احتفاظ عميق بالرطوبة"},
-        {"pct": "0.5%", "name": "سكوالان", "en": "Squalane", "role": "تغذية وحماية البشرة"},
-        {"pct": "0.5%", "name": "بانثينول", "en": "Panthenol", "role": "تغذية وحماية البشرة"},
-        {"pct": "0.5%", "name": "بيتا جلوكان", "en": "Beta-glucan", "role": "تهدئة البشرة وتقوية حاجزها"},
-        {"pct": "0.8%", "name": "نياسيناميد", "en": "Niacinamide", "role": "إشراق وتوحيد اللون وترطيب"}
-      ],
-      "certs": ["dermatologically-tested","sls-sles-free","vegan","alcohol-free","fragrance-free","paraben-free","dye-free"]
+     "pct": "0.5%",
+     "name": "حمض هيالورونيك",
+     "en": "Hyaluronic acid",
+     "role": "احتفاظ عميق بالرطوبة"
     },
     {
-      "sku": "L110", "woo": 280, "line": "OIL CONTROL", "cat": "CLEANSERS",
-      "en": "Sebum Balancing Gel Cleanser",
-      "ar_رسمي": "غسول البشرة الدهنية",
-      "ar_بالموقع": "منظف جل موازن للدهون",
-      "ml": "200ml", "price": 14, "skin": "البشرة المختلطة والدهنية",
-      "actives": [
-        {"pct": "0.5%", "name": "حمض الساليسيليك", "en": "Salicylic Acid", "role": "إزالة الدهون الزائدة"},
-        {"pct": "1%",   "name": "خلاصة الشاي الأخضر", "en": "Green Tea Extract", "role": "موازنة دهون البشرة"},
-        {"pct": "0.5%", "name": "نياسيناميد", "en": "Niacinamide", "role": "تقليل لمعان البشرة"},
-        {"pct": "0.5%", "name": "حمض اللاكتيك", "en": "Lactic Acid", "role": "تنظيف المسامات"}
-      ],
-      "certs": ["dermatologically-tested","sls-sles-free","vegan","alcohol-free","fragrance-free","paraben-free","dye-free"]
+     "pct": "0.5%",
+     "name": "سكوالان",
+     "en": "Squalane",
+     "role": "تغذية وحماية البشرة"
     },
     {
-      "sku": "L105", "woo": 278, "line": "CLARIFYING", "cat": "TONERS",
-      "en": "Clarifying & Pore Tightening Toner",
-      "ar_رسمي": "تونر تضييق المسامات",
-      "ar_بالموقع": "تونر التنقية وتضييق المسام",
-      "ml": "200ml", "price": 13,
-      "actives": [
-        {"pct": "5% + 0.5%", "name": "AHA + BHA", "en": "AHA + BHA", "role": "تنظيف عميق لمسامات البشرة"},
-        {"pct": "5%", "name": "خلاصة أوراق شجرة الشاي", "en": "Tea Tree Leaf Extract", "role": "تهدئة حاجز البشرة الحساسة"},
-        {"pct": "1%", "name": "بانثينول", "en": "Panthenol", "role": "ترطيب طبقات البشرة"},
-        {"pct": "5%", "name": "جلسرين", "en": "Glycerin", "role": "ترطيب طبقات البشرة"}
-      ],
-      "certs": ["dermatologically-tested","vegan","fragrance-free","paraben-free","dye-free"]
+     "pct": "0.5%",
+     "name": "بانثينول",
+     "en": "Panthenol",
+     "role": "تغذية وحماية البشرة"
     },
     {
-      "sku": "L114", "woo": 202, "line": "8D HYDRATING", "cat": "TONERS",
-      "en": "8D Hyaluronic Acid Toner",
-      "ar_رسمي": "تونر البشرة الجافة والحساسة",
-      "ar_بالموقع": "تونر الترطيب العميق",
-      "ml": "200ml", "price": 13,
-      "actives": [
-        {"pct": "2%",   "name": "حمض الهيالورونيك 8D", "en": "8D Hyaluronic Acid", "role": "ترطيب متعدد الطبقات"},
-        {"pct": "1%",   "name": "حمض الأسبارتيك", "en": "Aspartic acid", "role": "تغذية وحماية البشرة"},
-        {"pct": "1.5%", "name": "يوريا", "en": "Urea", "role": "تحسين مرونة البشرة"}
-      ],
-      "certs": ["dermatologically-tested","vegan","alcohol-free","fragrance-free","paraben-free","dye-free"]
+     "pct": "0.5%",
+     "name": "بيتا جلوكان",
+     "en": "Beta-glucan",
+     "role": "تهدئة البشرة وتقوية حاجزها"
     },
     {
-      "sku": "L101", "woo": 191, "line": "BRIGHTENING", "cat": "SERUMS",
-      "en": "Vitamin C Serum", "tag": "4-in-1 Serum",
-      "ar_رسمي": null,
-      "ar_بالموقع": "سيروم فيتامين سي",
-      "ml": "30ml", "price": 19,
-      "actives": [
-        {"pct": "10%", "name": "فيتامين سي", "en": "Vitamin C", "role": "إشراق ونضارة"},
-        {"pct": "2%",  "name": "نياسيناميد", "en": "Niacinamide", "role": "تضييق المسام"},
-        {"pct": "2%",  "name": "حمض هيالورونيك", "en": "Hyaluronic Acid", "role": "ترطيب عميق"},
-        {"pct": "2%",  "name": "بانثينول", "en": "Panthenol", "role": "ترطيب حاجز البشرة"}
-      ],
-      "certs": ["dermatologically-tested","alcohol-free","dye-free","fragrance-free","paraben-free"]
-    },
-    {
-      "sku": "L102", "woo": 275, "line": "HYDRATING", "cat": "SERUMS",
-      "en": "Intensive Hydrating Serum",
-      "ar_رسمي": null,
-      "ar_بالموقع": "سيروم الترطيب المكثّف",
-      "ml": "30ml", "price": 18,
-      "actives": [
-        {"pct": "2%", "name": "حمض هيالورونيك", "en": "Hyaluronic Acid", "role": null},
-        {"pct": "2%", "name": "كولاجين ذائب", "en": "Soluble Collagen", "role": null},
-        {"pct": "5%", "name": "بانثينول", "en": "Panthenol", "role": null},
-        {"pct": "2%", "name": "نياسيناميد", "en": "Niacinamide", "role": null}
-      ],
-      "certs": ["dermatologically-tested","alcohol-free","dye-free","fragrance-free","paraben-free"]
-    },
-    {
-      "sku": "L104", "woo": 277, "line": "PORE TIGHTENING", "cat": "SERUMS",
-      "en": "Pore Tightening & Brightening Serum",
-      "ar_رسمي": "سيروم تضييق المسامات",
-      "ar_بالموقع": "سيروم تضييق المسام والإشراق",
-      "ml": "30ml", "price": 16,
-      "actives": [
-        {"pct": "10%", "name": "نياسيناميد", "en": "Niacinamide", "role": "تضييق مسامات البشرة"},
-        {"pct": "1%",  "name": "زنك", "en": "Zinc", "role": "تقليل إفرازات الدهون"},
-        {"pct": "1%",  "name": "ويتش هازل", "en": "Witch Hazel", "role": "تنظيف المسام ومنع تراكم البكتيريا"},
-        {"pct": "1%",  "name": "حمض هيالورونيك", "en": "Hyaluronic acid", "role": "ترطيب طبقات البشرة"},
-        {"pct": "1%",  "name": "بانثينول", "en": "Panthenol", "role": "ترطيب طبقات البشرة"},
-        {"pct": "5%",  "name": "جلسرين", "en": "Glycerin", "role": "ترطيب طبقات البشرة"}
-      ],
-      "certs": ["dermatologically-tested","alcohol-free","dye-free","fragrance-free","paraben-free"]
-    },
-    {
-      "sku": "L106", "woo": 279, "line": "EXFOLIATING", "cat": "TOPICAL TREATMENT",
-      "en": "AHA + BHA Peeling Serum",
-      "ar_رسمي": "سيروم التقشير",
-      "ar_بالموقع": "سيروم التقشير AHA + BHA",
-      "ml": "30ml", "price": 16,
-      "actives": [
-        {"pct": "10% + 2%", "name": "AHA + BHA", "en": "AHA + BHA", "role": "تنظيف عميق لمسامات البشرة"},
-        {"pct": "2%", "name": "بانثينول", "en": "Panthenol", "role": "ترطيب طبقات البشرة"},
-        {"pct": "1%", "name": "جلسرين", "en": "Glycerin", "role": "ترطيب طبقات البشرة"}
-      ],
-      "certs": ["dermatologically-tested","vegan","fragrance-free","paraben-free"],
-      "🔴تحذير": "استراتيجية العلامة: «المقشرات مثل AHA/BHA تحتاج تنبيهات استخدام واضحة، وتجنب تشجيع الاستخدام اليومي العشوائي»"
-    },
-    {
-      "sku": "L116", "woo": 281, "line": "MOISTURIZING", "cat": "CREAMS",
-      "en": "Moisturizing & Repairing Cream",
-      "ar_رسمي": "كريم الترطيب والترميم",
-      "ar_بالموقع": "كريم الترطيب والإصلاح",
-      "ml": "75ml", "price": 15,
-      "actives": [
-        {"pct": "10%", "name": "بانثينول", "en": "Panthenol", "role": "ترطيب البشرة وعلاجها بشكل مكثّف"},
-        {"pct": "2%",  "name": "حمض هيالورونيك", "en": "Hyaluronic Acid", "role": "ترطيب عميق للبشرة"},
-        {"pct": "1%",  "name": "سيراميد", "en": "Ceramide", "role": "يعزز الحاجز الطبيعي للبشرة"},
-        {"pct": "1%",  "name": "مركّب ببتيدات", "en": "Peptide Complex", "role": "يعزز مرونة الجلد"}
-      ],
-      "certs": ["dermatologically-tested","vegan","alcohol-free","dye-free","fragrance-free","paraben-free","non-comedogenic"]
+     "pct": "0.8%",
+     "name": "نياسيناميد",
+     "en": "Niacinamide",
+     "role": "إشراق وتوحيد اللون وترطيب"
     }
-  ],
-
-  "بلا_كتالوج": [
-    {"sku": "L103", "woo": 276, "en": "Centella Blemish Cream", "ar_بالموقع": "كريم سنتيلا للبقع", "price": null},
-    {"sku": "L119", "woo": 282, "en": "Alpha Arbutin Complex Serum", "ar_بالموقع": "سيروم ألفا أربوتين المركّب", "price": null}
-  ]
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "sls-sles-free",
+    "vegan",
+    "alcohol-free",
+    "fragrance-free",
+    "paraben-free",
+    "dye-free"
+   ]
+  },
+  {
+   "sku": "L110",
+   "woo": 280,
+   "line": "OIL CONTROL",
+   "cat": "CLEANSERS",
+   "en": "Sebum Balancing Gel Cleanser",
+   "ar_رسمي": "غسول البشرة الدهنية",
+   "ar_بالموقع": "منظف جل موازن للدهون",
+   "ml": "200ml",
+   "price": 14,
+   "skin": "البشرة المختلطة والدهنية",
+   "actives": [
+    {
+     "pct": "0.5%",
+     "name": "حمض الساليسيليك",
+     "en": "Salicylic Acid",
+     "role": "إزالة الدهون الزائدة"
+    },
+    {
+     "pct": "1%",
+     "name": "خلاصة الشاي الأخضر",
+     "en": "Green Tea Extract",
+     "role": "موازنة دهون البشرة"
+    },
+    {
+     "pct": "0.5%",
+     "name": "نياسيناميد",
+     "en": "Niacinamide",
+     "role": "تقليل لمعان البشرة"
+    },
+    {
+     "pct": "0.5%",
+     "name": "حمض اللاكتيك",
+     "en": "Lactic Acid",
+     "role": "تنظيف المسامات"
+    }
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "sls-sles-free",
+    "vegan",
+    "alcohol-free",
+    "fragrance-free",
+    "paraben-free",
+    "dye-free"
+   ]
+  },
+  {
+   "sku": "L105",
+   "woo": 278,
+   "line": "CLARIFYING",
+   "cat": "TONERS",
+   "en": "Clarifying & Pore Tightening Toner",
+   "ar_رسمي": "تونر تضييق المسامات",
+   "ar_بالموقع": "تونر التنقية وتضييق المسام",
+   "ml": "200ml",
+   "price": 13,
+   "actives": [
+    {
+     "pct": "5% + 0.5%",
+     "name": "AHA + BHA",
+     "en": "AHA + BHA",
+     "role": "تنظيف عميق لمسامات البشرة"
+    },
+    {
+     "pct": "5%",
+     "name": "خلاصة أوراق شجرة الشاي",
+     "en": "Tea Tree Leaf Extract",
+     "role": "تهدئة حاجز البشرة الحساسة"
+    },
+    {
+     "pct": "1%",
+     "name": "بانثينول",
+     "en": "Panthenol",
+     "role": "ترطيب طبقات البشرة"
+    },
+    {
+     "pct": "5%",
+     "name": "جلسرين",
+     "en": "Glycerin",
+     "role": "ترطيب طبقات البشرة"
+    }
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "vegan",
+    "fragrance-free",
+    "paraben-free",
+    "dye-free"
+   ]
+  },
+  {
+   "sku": "L114",
+   "woo": 202,
+   "line": "8D HYDRATING",
+   "cat": "TONERS",
+   "en": "8D Hyaluronic Acid Toner",
+   "ar_رسمي": "تونر البشرة الجافة والحساسة",
+   "ar_بالموقع": "تونر الترطيب العميق",
+   "ml": "200ml",
+   "price": 13,
+   "actives": [
+    {
+     "pct": "2%",
+     "name": "حمض الهيالورونيك 8D",
+     "en": "8D Hyaluronic Acid",
+     "role": "ترطيب متعدد الطبقات"
+    },
+    {
+     "pct": "1%",
+     "name": "حمض الأسبارتيك",
+     "en": "Aspartic acid",
+     "role": "تغذية وحماية البشرة"
+    },
+    {
+     "pct": "1.5%",
+     "name": "يوريا",
+     "en": "Urea",
+     "role": "تحسين مرونة البشرة"
+    }
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "vegan",
+    "alcohol-free",
+    "fragrance-free",
+    "paraben-free",
+    "dye-free"
+   ]
+  },
+  {
+   "sku": "L101",
+   "woo": 191,
+   "line": "BRIGHTENING",
+   "cat": "SERUMS",
+   "en": "Vitamin C Serum",
+   "tag": "4-in-1 Serum",
+   "ar_رسمي": null,
+   "ar_بالموقع": "سيروم فيتامين سي",
+   "ml": "30ml",
+   "price": 19,
+   "actives": [
+    {
+     "pct": "10%",
+     "name": "فيتامين سي",
+     "en": "Vitamin C",
+     "role": "إشراق ونضارة"
+    },
+    {
+     "pct": "2%",
+     "name": "نياسيناميد",
+     "en": "Niacinamide",
+     "role": "تضييق المسام"
+    },
+    {
+     "pct": "2%",
+     "name": "حمض هيالورونيك",
+     "en": "Hyaluronic Acid",
+     "role": "ترطيب عميق"
+    },
+    {
+     "pct": "2%",
+     "name": "بانثينول",
+     "en": "Panthenol",
+     "role": "ترطيب حاجز البشرة"
+    }
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "alcohol-free",
+    "dye-free",
+    "fragrance-free",
+    "paraben-free"
+   ]
+  },
+  {
+   "sku": "L102",
+   "woo": 275,
+   "line": "HYDRATING",
+   "cat": "SERUMS",
+   "en": "Intensive Hydrating Serum",
+   "ar_رسمي": null,
+   "ar_بالموقع": "سيروم الترطيب المكثّف",
+   "ml": "30ml",
+   "price": 18,
+   "actives": [
+    {
+     "pct": "2%",
+     "name": "حمض هيالورونيك",
+     "en": "Hyaluronic Acid",
+     "role": null
+    },
+    {
+     "pct": "2%",
+     "name": "كولاجين ذائب",
+     "en": "Soluble Collagen",
+     "role": null
+    },
+    {
+     "pct": "5%",
+     "name": "بانثينول",
+     "en": "Panthenol",
+     "role": null
+    },
+    {
+     "pct": "2%",
+     "name": "نياسيناميد",
+     "en": "Niacinamide",
+     "role": null
+    }
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "alcohol-free",
+    "dye-free",
+    "fragrance-free",
+    "paraben-free"
+   ]
+  },
+  {
+   "sku": "L104",
+   "woo": 277,
+   "line": "PORE TIGHTENING",
+   "cat": "SERUMS",
+   "en": "Pore Tightening & Brightening Serum",
+   "ar_رسمي": "سيروم تضييق المسامات",
+   "ar_بالموقع": "سيروم تضييق المسام والإشراق",
+   "ml": "30ml",
+   "price": 16,
+   "actives": [
+    {
+     "pct": "10%",
+     "name": "نياسيناميد",
+     "en": "Niacinamide",
+     "role": "تضييق مسامات البشرة"
+    },
+    {
+     "pct": "1%",
+     "name": "زنك",
+     "en": "Zinc",
+     "role": "تقليل إفرازات الدهون"
+    },
+    {
+     "pct": "1%",
+     "name": "ويتش هازل",
+     "en": "Witch Hazel",
+     "role": "تنظيف المسام ومنع تراكم البكتيريا"
+    },
+    {
+     "pct": "1%",
+     "name": "حمض هيالورونيك",
+     "en": "Hyaluronic acid",
+     "role": "ترطيب طبقات البشرة"
+    },
+    {
+     "pct": "1%",
+     "name": "بانثينول",
+     "en": "Panthenol",
+     "role": "ترطيب طبقات البشرة"
+    },
+    {
+     "pct": "5%",
+     "name": "جلسرين",
+     "en": "Glycerin",
+     "role": "ترطيب طبقات البشرة"
+    }
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "alcohol-free",
+    "dye-free",
+    "fragrance-free",
+    "paraben-free"
+   ]
+  },
+  {
+   "sku": "L106",
+   "woo": 279,
+   "line": "EXFOLIATING",
+   "cat": "TOPICAL TREATMENT",
+   "en": "AHA + BHA Peeling Serum",
+   "ar_رسمي": "سيروم التقشير",
+   "ar_بالموقع": "سيروم التقشير AHA + BHA",
+   "ml": "30ml",
+   "price": 16,
+   "actives": [
+    {
+     "pct": "10% + 2%",
+     "name": "AHA + BHA",
+     "en": "AHA + BHA",
+     "role": "تنظيف عميق لمسامات البشرة"
+    },
+    {
+     "pct": "2%",
+     "name": "بانثينول",
+     "en": "Panthenol",
+     "role": "ترطيب طبقات البشرة"
+    },
+    {
+     "pct": "1%",
+     "name": "جلسرين",
+     "en": "Glycerin",
+     "role": "ترطيب طبقات البشرة"
+    }
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "vegan",
+    "fragrance-free",
+    "paraben-free"
+   ],
+   "🔴تحذير": "استراتيجية العلامة: «المقشرات مثل AHA/BHA تحتاج تنبيهات استخدام واضحة، وتجنب تشجيع الاستخدام اليومي العشوائي»"
+  },
+  {
+   "sku": "L116",
+   "woo": 281,
+   "line": "MOISTURIZING",
+   "cat": "CREAMS",
+   "en": "Moisturizing & Repairing Cream",
+   "ar_رسمي": "كريم الترطيب والترميم",
+   "ar_بالموقع": "كريم الترطيب والإصلاح",
+   "ml": "75ml",
+   "price": 15,
+   "actives": [
+    {
+     "pct": "10%",
+     "name": "بانثينول",
+     "en": "Panthenol",
+     "role": "ترطيب البشرة وعلاجها بشكل مكثّف"
+    },
+    {
+     "pct": "2%",
+     "name": "حمض هيالورونيك",
+     "en": "Hyaluronic Acid",
+     "role": "ترطيب عميق للبشرة"
+    },
+    {
+     "pct": "1%",
+     "name": "سيراميد",
+     "en": "Ceramide",
+     "role": "يعزز الحاجز الطبيعي للبشرة"
+    },
+    {
+     "pct": "1%",
+     "name": "مركّب ببتيدات",
+     "en": "Peptide Complex",
+     "role": "يعزز مرونة الجلد"
+    }
+   ],
+   "certs": [
+    "dermatologically-tested",
+    "vegan",
+    "alcohol-free",
+    "dye-free",
+    "fragrance-free",
+    "paraben-free",
+    "non-comedogenic"
+   ]
+  },
+  {
+   "sku": "L119",
+   "woo": 282,
+   "line": "EQUALIZING",
+   "cat": "SERUMS",
+   "en": "Alpha Arbutin Complex Serum",
+   "tag": "4-in-1 Serum",
+   "ar_رسمي": null,
+   "ar_بالموقع": "سيروم ألفا أربوتين المركّب",
+   "ml": "30ml",
+   "price": 23.75,
+   "_مصدر_النِسَب": "علبة المنتج نفسها · مقروءة من صورة البكج عندنا (library/img/luvit-bundle-eventone.webp) وفيها النصّ المطبوع: 2% Alpha-Arbutin · 3% Tranexamic Acid · 2% Glutathione · 5% Niacinamide. ومطابقة بمصدرين مستقلّين: صفحة المنتج على موقع الوكالة luvit.com.tr، ووصف المنتج بووكومرس عندنا. **مش من بروفايل الصيدلية** لأن المنتج مش فيه.",
+   "actives": [
+    {
+     "pct": "2%",
+     "name": "ألفا أربوتين",
+     "en": "Alpha Arbutin",
+     "role": "بيشتغل على مظهر البقع"
+    },
+    {
+     "pct": "3%",
+     "name": "حمض الترانِكْساميك",
+     "en": "Tranexamic Acid",
+     "role": "بيدعم توحيد المظهر"
+    },
+    {
+     "pct": "2%",
+     "name": "جلوتاثيون",
+     "en": "Glutathione",
+     "role": "دعم مضادّ للأكسدة"
+    },
+    {
+     "pct": "5%",
+     "name": "نياسيناميد",
+     "en": "Niacinamide",
+     "role": "توازن وتقليل مظهر المسام"
+    }
+   ],
+   "certs": [
+    "dermatologically-tested"
+   ]
+  }
+ ],
+ "بلا_كتالوج": [
+  {
+   "sku": "L103",
+   "woo": 276,
+   "en": "Centella Blemish Cream",
+   "ar_بالموقع": "كريم سنتيلا للبقع",
+   "price": null
+  }
+ ]
 }

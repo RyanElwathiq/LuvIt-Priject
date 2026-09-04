@@ -459,29 +459,53 @@ const SHOT = {
   }
 }
 
-const sIng = () => H(`
-<section class="luvit-section luvit-section--dark luvit-deep luvit-cut-top" data-nav-bg="dark"
-         data-luvit-bubbles="14" id="ingredients">
-  <span class="luvit-deep__rays" aria-hidden="true"></span>
-  <div class="luvit-section__inner">
-    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
-      <h2 class="luvit-section__title">كل مادة إلها شغلة</h2>
-      <p class="luvit-section__sub">
-        خدي ${VITC.ar} مثالاً: هون كل مادة فيه، وشو بتعمل لبشرتك.
-      </p>
-    </div>
+/* 🔴 البطل الثاني · ٤ أيلول
+   ريّان: «ضيف منتج سيروم ألفا أربوتين المركّب برضه عالهوم بيج **جنب**
+   صورة السيروم فيتامين سي»، وسمّى الاتنين hero products.
 
-    <div class="luvit-ing-split" data-luvit="reveal">
+   ⚠️ وصورته **علبة لا عبوة** · ما في لقطة عبوة بالأصول أصلاً، والعلبة
+      هي السطح اللي مطبوعة عليه النِسَب، فهي الأصدق لسكشن اسمه «كل مادة
+      إلها شغلة». مقصوصة ومنعّمة بنفس أداتي فيتامين سي.
+
+   🔴 ونِسَبه **مش من بروفايل الصيدلية** · المنتج مش فيه. مقروءة من العلبة
+      نفسها ومطابَقة بموقع الوكالة وبوصف ووكومرس · والمصدر مكتوب صراحة
+      بحقل `_مصدر_النِسَب` بالكتالوج. */
+const ARBUTIN = P.L119;
+const SHOT2 = {
+  local: 'luvit-alpha-arbutin-complex-serum-2-box-front-soft.webp',
+  src: 'https://plasmajo.com/wp-content/uploads/2026/09/luvit-alpha-arbutin-complex-serum-2-box-front-soft.webp',
+  w: 518,
+  h: 1507,
+};
+
+/* نفس بوابة فيتامين سي حرفياً · لو صاحب الموقع رتّب صور المنتج باللوحة
+   وتغيّرت الصورة الأولى، البناء بيوقف بدل ما ينشر عبوة غلط. */
+{
+  if (!ARBUTIN) { console.error("🔴 L119 مش موجود بالكتالوج"); process.exit(1); }
+  const base = String(ARBUTIN.img || '').split('/').pop().replace(/\.webp$/i, '');
+  if (base + '-soft.webp' !== SHOT2.local) {
+    console.error('🔴 صورة ألفا أربوتين الأولى تغيّرت: ' + base);
+    process.exit(1);
+  }
+  if (!fs.existsSync(path.join(LIB, 'img', SHOT2.local))) {
+    console.error('🔴 ما لقيت library/img/' + SHOT2.local);
+    process.exit(1);
+  }
+}
+
+/** لوح سيروم · صورة وقائمة مكوّنات · بينستعمل مرتين بالسكشن */
+const لوح = (prod, shot, flip) => `
+    <div class="luvit-ing-split${flip ? ' luvit-ing-split--flip' : ''}" data-luvit="reveal">
       <figure class="luvit-ing-split__shot">
-        <img class="luvit-shot-img" src="${SHOT.src}" alt="عبوة ${VITC.ar}"
-             width="${SHOT.w}" height="${SHOT.h}" loading="lazy" decoding="async">
-        <img class="luvit-shot-mirror" src="${SHOT.src}" alt=""
-             width="${SHOT.w}" height="${SHOT.h}" loading="lazy" decoding="async">
-        <figcaption class="luvit-shot-cap">${VITC.ar}</figcaption>
+        <img class="luvit-shot-img" src="${shot.src}" alt="عبوة ${prod.ar}"
+             width="${shot.w}" height="${shot.h}" loading="lazy" decoding="async">
+        <img class="luvit-shot-mirror" src="${shot.src}" alt=""
+             width="${shot.w}" height="${shot.h}" loading="lazy" decoding="async">
+        <figcaption class="luvit-shot-cap">${prod.ar}</figcaption>
       </figure>
 
       <div class="luvit-ing luvit-ing--on-dark" data-luvit="stagger">
-${VITC.actives.map((a) => `
+${prod.actives.map((a) => `
         <div class="luvit-ing__row">
           <span class="luvit-ing__pct">${a.pct}</span>
           <div class="luvit-ing__body">
@@ -490,10 +514,27 @@ ${VITC.actives.map((a) => `
           </div>
         </div>`).join('')}
       </div>
+    </div>`;
+
+const sIng = () => H(`
+<section class="luvit-section luvit-section--dark luvit-deep luvit-cut-top" data-nav-bg="dark"
+         data-luvit-bubbles="14" id="ingredients">
+  <span class="luvit-deep__rays" aria-hidden="true"></span>
+  <div class="luvit-section__inner">
+    <div class="luvit-section__head luvit-section__head--start" data-luvit="reveal">
+      <h2 class="luvit-section__title">كل مادة إلها شغلة</h2>
+      <p class="luvit-section__sub">
+        كل سيروم فيهم بيجمع ${منطوق(VITC.actives.length)} مواد فعّالة بقنينة وحدة ·
+        هون شو جوّاه، وشو بتعمل كل مادة لبشرتك.
+      </p>
     </div>
 
+${لوح(VITC, SHOT, false)}
+${لوح(ARBUTIN, SHOT2, true)}
+
     <div class="luvit-section__foot">
-      <a href="/product/${VITC.slug}" class="luvit-btn luvit-btn--arrow">شوفي السيروم</a>
+      <a href="/product/${VITC.slug}" class="luvit-btn luvit-btn--arrow">شوفي سيروم فيتامين سي</a>
+      <a href="/product/${ARBUTIN.slug}" class="luvit-btn luvit-btn--arrow">وشوفي ألفا أربوتين</a>
       <a href="/products#ingredients" class="luvit-btn luvit-btn--ghost luvit-btn--on-dark">وشو بيعمل البانثينول بباقي المنتجات</a>
     </div>
   </div>

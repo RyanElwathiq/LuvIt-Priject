@@ -97,7 +97,11 @@ const CERT_AR = cat.شهادات;
 /* 🔴 كلمة ريّان ٢ أيلول: «كل المنتجات مفحوصة جلدياً» · التلاتة اللي مش
    بالكتالوج الرسمي (سنتيلا 276 · ألفا أربوتين 282 · واقي الشمس 318) ما
    عندهم صفحة كتالوج، فشهادتهم الوحيدة المثبتة هي هاي · والباقي ما بينكتب. */
-const EXTRA_CERTS = { 276: ['dermatologically-tested'], 282: ['dermatologically-tested'], 318: ['dermatologically-tested'] };
+/* ⚠️ 282 (ألفا أربوتين) انشال من هون ٤ أيلول · انتقل للكتالوج نفسه بنِسَبه
+   المقروءة من العبوة، فـ`certs()` بتاخدها من السجل. والبوابة تحت بتعدّ
+   `منتجات.length + EXTRA_CERTS` ولازم تساوي عدد المفردات (١٢)، فترك
+   المعرّف بالمكانين كان بيخلّي العدّ ١٣ ويوقف البناء. */
+const EXTRA_CERTS = { 276: ['dermatologically-tested'], 318: ['dermatologically-tested'] };
 function certs(rec, id) {
   const list = rec && rec.certs ? rec.certs : (EXTRA_CERTS[id] || null);
   if (!list) return null;

@@ -13217,6 +13217,20 @@ body.admin-bar #hero-seq .hero-story__cue {
   margin-inline: auto;
   filter: drop-shadow(0 18px 34px rgba(2, 26, 30, .38));
 }
+/* اللوح المعكوس · ٤ أيلول
+   انضاف سيروم تاني لنفس السكشن (ريّان: «ضيف ألفا أربوتين جنب فيتامين سي»).
+   ولوحان بنفس الترتيب بالضبط بيقرا **تكراراً**، وهاي نفس الملاحظة اللي
+   بناها ريّان على الرئيسية أصلاً: «شكل الصفحة فيها تكرار كثير».
+   ⤷ فالتاني بينعكس · الصورة على الجهة التانية والقائمة تقابلها.
+   ⚠️ والعكس بـ`direction` على الشبكة لا بإعادة ترتيب العناصر · ما منلمس
+      ترتيب الـDOM فالقراءة الصوتية والتنقّل بالكيبورد بيضلّوا بترتيبهم
+      المنطقي (صورة ثم مكوّنات)، والأولاد بيرجعوا لاتجاههم الأصلي. */
+.luvit-ing-split--flip { direction: ltr; }
+.luvit-ing-split--flip > * { direction: rtl; }
+@media (max-width: 860px) {
+  .luvit-ing-split--flip { direction: rtl; }
+}
+
 @media (max-width: 860px) {
   .luvit-ing-split { grid-template-columns: minmax(0, 1fr); }
   .luvit-ing-split__shot img { max-inline-size: 210px; }
