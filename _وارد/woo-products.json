@@ -451,7 +451,7 @@
    "id": 367,
    "sku": "EVEN_TONE_ROUTINE",
    "slug": "even-tone-routine",
-   "name": "روتين توحيد اللون",
+   "name": "روتين توحيد اللون · للبشرة الدهنية والمختلطة",
    "price": "70.70",
    "regular": "83.70",
    "permalink": "https://plasmajo.com/product/even-tone-routine/",
@@ -464,6 +464,26 @@
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-eventone.webp",
      "alt": ""
+    }
+   ]
+  },
+  {
+   "id": 527,
+   "sku": "EVEN_TONE_ROUTINE_DRY",
+   "slug": "even-tone-routine-dry",
+   "name": "روتين توحيد اللون · للبشرة الجافة والحسّاسة",
+   "price": "70.70",
+   "regular": "83.70",
+   "permalink": "https://plasmajo.com/product/even-tone-routine-dry/",
+   "stock": "instock",
+   "cats": [
+    "بكجات"
+   ],
+   "short": "غسول البشرة الجافة والحساسة + تونر البشرة الجافة والحساسة + سيروم ألفا أربوتين المركّب + كريم الترطيب والترميم + واقي الشمس اليومي · SPF50+‎",
+   "images": [
+    {
+     "src": "https://plasmajo.com/wp-content/uploads/2026/09/luvit-bundle-eventone-dry.webp",
+     "alt": "خمس عبوات روتين توحيد اللون للبشرة الجافة والحساسة"
     }
    ]
   }
