@@ -799,6 +799,97 @@ h1, h2, h3, h4, .luvit-heading {
   stroke-linejoin: round;
   transition: fill var(--duration-instant) var(--ease-out-soft);
 }
+/* ---- RT-SWAP · ٤ أيلول · مبدّل نوع البشرة بروتين توحيد اللون --------
+   ريّان: «الروتين ينقسم لنوعين ولازم نفصل بينهم ونحطهم بين خيارات ·
+   وهاي لعبتك بالـUX». وبعدها: «استلهم من 21st.dev».
+
+   ⤷ النمط المستلهَم هو **Segmented Control**: مسار واحد وإبهام بينزلق
+     تحت المختار، بدل زرّين منفصلين. **الفكرة لا الكود** · قاعدة المشروع
+     إنّ 21st.dev إلهام وممنوع النسخ، وكودهم React/shadcn وموقعنا HTML
+     عادي، فهاد مبنيّ من الصفر بتوكناتنا.
+
+   🔴 **والحركة على `inset-inline-start` لا `transform` · بقصد.**
+      قاعدة المشروع «transform وopacity بس» موجودة عشان الحركة المحيطية
+      اللي بتشتغل مع السكرول. وهون الحركة **بضغطة**، على عنصر واحد صغير،
+      مرة كل عدة ثوانٍ. و`translateX` **فيزيائية**: بتروح يمين بالـLTR
+      وبالـRTL بدها إشارة معكوسة، فبتحتاج كشف اتجاه · وهاد بالضبط الفخّ
+      اللي مسجّل عندنا («ولا مرة تكشف الاتجاه من خاصية dir»).
+      `inset-inline-start` **منطقية** فبتنقلب لحالها ولا بتحتاج كشفاً.
+
+   ── الإخفاء ────────────────────────────────────────────────────────
+   الحالة على `body` لأن الأقسام المتأثّرة **إخوة** بالصفحة ولا في غلاف
+   واحد بيلمّهم. وبلا جافاسكربت ما في كلاس، فبتظهر النسخة الأولى وبتنخفي
+   التانية · **الصفحة بتضل كاملة وقابلة للشراء**.
+   ---------------------------------------------------------------------- */
+body:not(.rt-dry) [data-rt-variant="dry"]  { display: none; }
+body.rt-dry      [data-rt-variant="oily"] { display: none; }
+
+.rt-swap {
+  position: relative;
+  display: flex;
+  inline-size: max-content;
+  max-inline-size: 100%;
+  margin: 0 auto var(--space-6);
+  padding: 4px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--aqua-50, #EAFAFD);
+  border: 1px solid var(--aqua-100, #D0F3F9);
+  isolation: isolate;
+}
+.rt-swap__thumb {
+  position: absolute;
+  z-index: 0;
+  inset-block: 4px;
+  inset-inline-start: 4px;
+  inline-size: calc(50% - 4px);
+  border-radius: var(--radius-pill, 999px);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-sm);
+  transition: inset-inline-start .34s var(--ease-out-soft, ease);
+}
+.rt-swap[data-rt-pick="dry"] .rt-swap__thumb { inset-inline-start: 50%; }
+.rt-swap__opt {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 10px 22px;
+  border-radius: var(--radius-pill, 999px);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--aqua-700, #196B7D);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .24s var(--ease-out-soft, ease);
+}
+.rt-swap__opt[aria-checked="true"] { color: var(--aqua-900, #0C333C); }
+/* 🔴 القالب بيلوّن كل زر عند الهوفر بـ#CC3366 · وردي مش من ألواننا أصلاً.
+   القاعدة: [type="button"]:hover, button:hover { background: ... }
+   وخصوصيّتها (0,2,0) **زي** .rt-swap__opt:hover بالضبط، فالترتيب هو اللي
+   بيحسم وستايل القالب بينزل بعدنا. مضاعفة الكلاس بتوصّلنا (0,3,0) وبتحسمها
+   بلا !important · قاعدة المشروع.
+   ⚠️ وانكشفت بالمصادفة: ضغطة آلية تركت المؤشّر فوق الزر، فعلق الهوفر
+      وبان الوردي بلقطة. لولاها كانت بتظهر لأول زبونة بتمرّ عليه. */
+.rt-swap__opt.rt-swap__opt:hover,
+.rt-swap__opt.rt-swap__opt:focus,
+.rt-swap__opt.rt-swap__opt:active {
+  background: none;
+  color: var(--aqua-900, #0C333C);
+  box-shadow: none;
+}
+.rt-swap__opt:focus-visible { outline: 2px solid var(--aqua-600, #29A9C0); outline-offset: 2px; }
+@media (max-width: 420px) {
+  .rt-swap__opt { padding: 10px 14px; font-size: var(--text-caption, .8125rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-swap__thumb, .rt-swap__opt { transition: none; }
+}
+
 /* ---- WISH-SUM · ٤ أيلول · شريط مجموع المفضّلة ------------------------
    بينزل تحت الشبكة · ما بيزاحم البطاقات، وبيصير عموداً على الموبايل
    عشان الزر يضل بعرض كامل وسهل اللمس.

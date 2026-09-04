@@ -70,11 +70,19 @@
              بحالها بـ:has() زي ما هي معرَّفة بـtokens.css سطر ١٢٥٦٦،
              وأضفنا لها فرع الخمسة. -->
         <ol class="rt-flow" data-luvit="stagger">
-          <li class="rt-flow__item">
+          <li class="rt-flow__item" data-rt-variant="oily">
             <span class="rt-flow__dot">١</span>
             <span class="rt-flow__label">تنظيف متوازن</span>
           </li>
-          <li class="rt-flow__item">
+          <li class="rt-flow__item" data-rt-variant="dry">
+            <span class="rt-flow__dot">١</span>
+            <span class="rt-flow__label">غسول البشرة</span>
+          </li>
+          <li class="rt-flow__item" data-rt-variant="oily">
+            <span class="rt-flow__dot">٢</span>
+            <span class="rt-flow__label">تحضير البشرة</span>
+          </li>
+          <li class="rt-flow__item" data-rt-variant="dry">
             <span class="rt-flow__dot">٢</span>
             <span class="rt-flow__label">تحضير البشرة</span>
           </li>
@@ -107,8 +115,10 @@
               نفس حيلة .luvit-steps--compact__media المقيسة بصفحة المتجر.
            · بأول شاشة فبلا loading="lazy" بقصد. -->
       <figure class="rt-shallow__media" data-luvit="reveal">
-        <img src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-eventone.webp" alt="بكج روتين توحيد اللون"
-             width="1000" height="1000" decoding="async">
+        <img src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-bundle-eventone.webp" alt="بكج روتين توحيد اللون · دهنية أو مختلطة"
+             width="1000" height="1000" decoding="async" data-rt-variant="oily">
+        <img src="https://plasmajo.com/wp-content/uploads/2026/09/luvit-bundle-eventone-dry.webp" alt="بكج روتين توحيد اللون · جافة أو حسّاسة"
+             width="1000" height="1000" decoding="async" data-rt-variant="dry">
       </figure>
 
     </div>
@@ -159,12 +169,18 @@
       <p class="luvit-section__eyebrow">Five steps</p>
       <h2 class="luvit-section__title">الخطوات الخمس</h2>
       <p class="luvit-section__sub">
-        نفس الترتيب صباحاً ومساءً · زي ما مكتوب على ظهر كل عبوة.
+        نفس الترتيب صباحاً ومساءً · زي ما مكتوب على ظهر كل عبوة.<br>واللي بيتغيّر بين النوعين خطوتان بس · الغسول والتونر.
       </p>
     </div>
 
+    <div class="rt-swap" role="radiogroup" aria-label="نوع بشرتك" data-rt-pick="oily">
+      <span class="rt-swap__thumb" aria-hidden="true"></span>
+      <button type="button" class="rt-swap__opt" role="radio" aria-checked="true" data-rt-set="oily">دهنية أو مختلطة</button>
+      <button type="button" class="rt-swap__opt" role="radio" aria-checked="false" data-rt-set="dry">جافة أو حسّاسة</button>
+    </div>
+
     <div class="luvit-steps" data-luvit="stagger">
-      <div class="luvit-step">
+      <div class="luvit-step" data-rt-variant="oily">
         <div class="luvit-step__media">
           <img decoding="async" width="800" height="1000"
                src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-1-bottle.webp" alt="غسول البشرة الدهنية">
@@ -186,7 +202,29 @@
         </div>
       </div>
 
-      <div class="luvit-step">
+      <div class="luvit-step" data-rt-variant="dry">
+        <div class="luvit-step__media">
+          <img decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-hydrating-gel-cleanser-1-bottle.webp" alt="غسول البشرة الجافة والحساسة">
+        </div>
+        <span class="luvit-step__num">١</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">غسول البشرة</h3>
+          <p class="luvit-step__text">
+            <a href="/product/hydrating-gel-cleanser/">غسول البشرة الجافة والحساسة</a> · ينظّف بلطف بلا ما يشدّ البشرة.
+          </p>
+          <p class="luvit-card__spec"><b>0.5% حمض هيالورونيك</b> · احتفاظ عميق بالرطوبة<span class="luvit-card__vol">200ml</span></p>
+          <p class="luvit-step__buy">
+            <span class="luvit-card__price"><span dir="ltr">14.00</span> د.أ</span>
+            <a href="/?add-to-cart=201" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="201" data-quantity="1"
+               aria-label="أضيفي غسول البشرة الجافة والحساسة إلى السلة">أضيفي إلى السلة</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="luvit-step" data-rt-variant="oily">
         <div class="luvit-step__media">
           <img decoding="async" width="800" height="1000"
                src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-1-bottle.webp" alt="تونر تضييق المسامات">
@@ -204,6 +242,28 @@
                class="luvit-btn add_to_cart_button ajax_add_to_cart"
                data-product_id="278" data-quantity="1"
                aria-label="أضيفي تونر تضييق المسامات إلى السلة">أضيفي إلى السلة</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="luvit-step" data-rt-variant="dry">
+        <div class="luvit-step__media">
+          <img decoding="async" width="800" height="1000"
+               src="https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-1-bottle.webp" alt="تونر البشرة الجافة والحساسة">
+        </div>
+        <span class="luvit-step__num">٢</span>
+        <div class="luvit-step__body">
+          <h3 class="luvit-step__title">تحضير البشرة</h3>
+          <p class="luvit-step__text">
+            <a href="/product/8d-hyaluronic-acid-toner/">تونر البشرة الجافة والحساسة</a> · يرطّب ويهيّئ البشرة للخطوة اللي بعدها.
+          </p>
+          <p class="luvit-card__spec"><b>2% حمض الهيالورونيك 8D</b> · ترطيب متعدد الطبقات<span class="luvit-card__vol">200ml</span></p>
+          <p class="luvit-step__buy">
+            <span class="luvit-card__price"><span dir="ltr">13.00</span> د.أ</span>
+            <a href="/?add-to-cart=202" rel="nofollow"
+               class="luvit-btn add_to_cart_button ajax_add_to_cart"
+               data-product_id="202" data-quantity="1"
+               aria-label="أضيفي تونر البشرة الجافة والحساسة إلى السلة">أضيفي إلى السلة</a>
           </p>
         </div>
       </div>
@@ -288,7 +348,7 @@
     </div>
 
     <div class="luvit-ing" data-luvit="stagger">
-      <div class="luvit-ing__row">
+      <div class="luvit-ing__row" data-rt-variant="oily">
         <span class="luvit-ing__pct">14.00</span>
         <div class="luvit-ing__body">
           <p class="luvit-ing__name"><a href="/product/sebum-balancing-gel-cleanser/">غسول البشرة الدهنية</a></p>
@@ -296,10 +356,26 @@
         </div>
       </div>
 
-      <div class="luvit-ing__row">
+      <div class="luvit-ing__row" data-rt-variant="dry">
+        <span class="luvit-ing__pct">14.00</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name"><a href="/product/hydrating-gel-cleanser/">غسول البشرة الجافة والحساسة</a></p>
+          <p class="luvit-ing__note">200ml · عبوة كاملة</p>
+        </div>
+      </div>
+
+      <div class="luvit-ing__row" data-rt-variant="oily">
         <span class="luvit-ing__pct">13.00</span>
         <div class="luvit-ing__body">
           <p class="luvit-ing__name"><a href="/product/clarifying-pore-tightening-toner/">تونر تضييق المسامات</a></p>
+          <p class="luvit-ing__note">200ml · عبوة كاملة</p>
+        </div>
+      </div>
+
+      <div class="luvit-ing__row" data-rt-variant="dry">
+        <span class="luvit-ing__pct">13.00</span>
+        <div class="luvit-ing__body">
+          <p class="luvit-ing__name"><a href="/product/8d-hyaluronic-acid-toner/">تونر البشرة الجافة والحساسة</a></p>
           <p class="luvit-ing__note">200ml · عبوة كاملة</p>
         </div>
       </div>
@@ -341,8 +417,11 @@
 
     <div class="luvit-section__foot">
       <a class="luvit-btn luvit-btn--arrow add_to_cart_button ajax_add_to_cart"
-         href="/?add-to-cart=367" data-quantity="1"
+         href="/?add-to-cart=367" data-quantity="1" data-rt-variant="oily"
          data-product_id="367" rel="nofollow">أضيفي البكج للسلة · 70.70 د.أ</a>
+      <a class="luvit-btn luvit-btn--arrow add_to_cart_button ajax_add_to_cart"
+         href="/?add-to-cart=527" data-quantity="1" data-rt-variant="dry"
+         data-product_id="527" rel="nofollow">أضيفي البكج للسلة · 70.70 د.أ</a>
       <a class="luvit-btn luvit-btn--ghost" href="/product/even-tone-routine/">تفاصيل البكج</a>
     </div>
 

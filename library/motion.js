@@ -2408,3 +2408,74 @@ if (document.readyState === 'loading') {
 }
 
 window.LUVIT.quiz = { init: luvitQuiz };
+
+
+/* ==========================================================================
+   مبدّل نوع البشرة · صفحة روتين توحيد اللون · ٤ أيلول
+   ==========================================================================
+   ريّان قسّم الروتين لنسختين بمنتجين منفصلين، وطلب الاختيار يكون
+   «بين خيارات» · والنمط المستلهَم Segmented Control من 21st.dev
+   (الفكرة لا الكود · الستايل بـtokens.css تحت RT-SWAP).
+
+   🔴 وبيفشل مفتوحاً · بلا هالكود ما في كلاس على body، والـCSS بتعرض
+      النسخة الأولى وبتخفي التانية. يعني الصفحة **كاملة وقابلة للشراء**
+      حتى لو الجافاسكربت ما اشتغل.
+
+   ⚠️ والحالة على `body` لأن العناصر المتأثّرة (الصورة · الخطوات · شو
+      جوّا البكج · الزر) **موزّعة على أقسام إخوة** ولا في غلاف واحد.
+   ========================================================================== */
+function luvitRoutineSwap() {
+  var bar = document.querySelector(".rt-swap");
+  if (!bar) return;
+
+  var opts = bar.querySelectorAll("[data-rt-set]");
+  if (!opts.length) return;
+
+  var keys = [];
+  for (var i = 0; i < opts.length; i++) { keys.push(opts[i].getAttribute("data-rt-set")); }
+
+  var KEY = "luvit-rt-skin";
+
+  function pick(key, remember) {
+    if (keys.indexOf(key) === -1) return;
+    bar.setAttribute("data-rt-pick", key);
+    for (var j = 0; j < opts.length; j++) {
+      opts[j].setAttribute("aria-checked", opts[j].getAttribute("data-rt-set") === key ? "true" : "false");
+    }
+    /* أول مفتاح هو الافتراضي · فالكلاس بينحط للتاني وبس */
+    document.body.classList.toggle("rt-dry", key !== keys[0]);
+    if (remember) { try { localStorage.setItem(KEY, key); } catch (e) {} }
+  }
+
+  bar.addEventListener("click", function (ev) {
+    var b = (ev.target && ev.target.closest) ? ev.target.closest("[data-rt-set]") : null;
+    if (b) { pick(b.getAttribute("data-rt-set"), true); }
+  });
+
+  /* مجموعة راديو · الأسهم بتنقّل بينها، وهاد سلوك متوقَّع بلوحة المفاتيح */
+  bar.addEventListener("keydown", function (ev) {
+    if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight" &&
+        ev.key !== "ArrowUp" && ev.key !== "ArrowDown") { return; }
+    ev.preventDefault();
+    var cur = bar.getAttribute("data-rt-pick");
+    var next = keys[(keys.indexOf(cur) + 1) % keys.length];
+    pick(next, true);
+    for (var k = 0; k < opts.length; k++) {
+      if (opts[k].getAttribute("data-rt-set") === next) { opts[k].focus(); }
+    }
+  });
+
+  /* ⚠️ بيتذكّر الاختيار · مين بشرتها جافة ما بدها تعيد الاختيار كل زيارة.
+     وبينتجاهل بصمت لو القيمة المخزَّنة مش من الخيارات (نسخة قديمة مثلاً). */
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  if (saved) { pick(saved, false); }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", luvitRoutineSwap);
+} else {
+  luvitRoutineSwap();
+}
+
+window.LUVIT.routineSwap = { init: luvitRoutineSwap };

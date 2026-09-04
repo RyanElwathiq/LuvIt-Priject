@@ -186,6 +186,62 @@ function تسعير(r, total) {
   };
 }
 
+/**
+ * صفوف الخطوات · وحدة لكل خطوة، أو **اثنتان** لو الخطوة بتختلف بين النسختين.
+ *
+ * روتين توحيد اللون صار نسختين بنوع البشرة (٤ أيلول)، و**تلات خطوات من
+ * خمس متطابقة**. فبدل ما نرسم الصفحة مرتين ونضاعف حجمها، بترسم كل خطوة
+ * مشتركة **مرة وحدة**، والمختلفة بترسم مرتين بسمة `data-rt-variant`.
+ *
+ * ⚠️ والمقارنة على **رمز المنتج** لا على العنوان · العنوان ممكن يتشابه
+ *    («تحضير البشرة» بالنسختين) والمنتج مختلف، والعكس. الرمز هو اللي
+ *    بيحدّد شو رح ينشحن.
+ */
+function صفوف_الخطوات(r) {
+  if (!r.variants || r.variants.length !== 2) {
+    return r.steps.map((s, i) => ({ s, i, v: null }));
+  }
+  const [a, b] = r.variants;
+  const out = [];
+  for (let i = 0; i < a.steps.length; i++) {
+    if (a.steps[i][0] === b.steps[i][0]) {
+      out.push({ s: a.steps[i], i, v: null });
+    } else {
+      out.push({ s: a.steps[i], i, v: a.key });
+      out.push({ s: b.steps[i], i, v: b.key });
+    }
+  }
+  return out;
+}
+
+/** سمة النسخة · فاضية للخطوات المشتركة فما بينحشى الماركب بسمات بلا داعي */
+function سمة(v) { return v ? ` data-rt-variant="${v}"` : ""; }
+
+/**
+ * المبدّل · شريط بخيارين وإبهام بينزلق تحت المختار.
+ *
+ * الإلهام من نمط «Segmented Control» بـ21st.dev · **الفكرة لا الكود**:
+ * مجموعة راديو بمسار واحد وإبهام متحرّك بدل زرّين منفصلين. قاعدة المشروع
+ * إنّ 21st.dev إلهام وممنوع النسخ كما هو، وكودهم React/shadcn وموقعنا
+ * HTML عادي، فانبنى من الصفر بلغتنا.
+ *
+ * 🔴 وبيفشل مفتوحاً · بلا جافاسكربت الشريط بيبيّن والخيار الأول ظاهر
+ *    والتاني مخفي بالـCSS، فالصفحة بتضل كاملة ومفهومة وقابلة للشراء.
+ *
+ * ⚠️ ولا بينرسم إلا لما يكون في نسختان فعلاً.
+ */
+function مبدّل(r) {
+  if (!r.variants || r.variants.length !== 2) return "";
+  const [a, b] = r.variants;
+  return [
+    '    <div class="rt-swap" role="radiogroup" aria-label="نوع بشرتك" data-rt-pick="' + a.key + '">',
+    '      <span class="rt-swap__thumb" aria-hidden="true"></span>',
+    '      <button type="button" class="rt-swap__opt" role="radio" aria-checked="true" data-rt-set="' + a.key + '">' + a.label + '</button>',
+    '      <button type="button" class="rt-swap__opt" role="radio" aria-checked="false" data-rt-set="' + b.key + '">' + b.label + '</button>',
+    '    </div>',
+  ].join("\n");
+}
+
 function page(r) {
   const total  = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
   const سعر    = تسعير(r, total);
@@ -298,7 +354,7 @@ function page(r) {
              بحالها بـ:has() زي ما هي معرَّفة بـtokens.css سطر ١٢٥٦٦،
              وأضفنا لها فرع الخمسة. -->
         <ol class="rt-flow" data-luvit="stagger">
-${r.steps.map(([, title], i) => `          <li class="rt-flow__item">
+${صفوف_الخطوات(r).map(({ s: [, title], i, v }) => `          <li class="rt-flow__item"${سمة(v)}>
             <span class="rt-flow__dot">${AR[i + 1]}</span>
             <span class="rt-flow__label">${title}</span>
           </li>`).join('\n')}
@@ -319,8 +375,15 @@ ${r.steps.map(([, title], i) => `          <li class="rt-flow__item">
               نفس حيلة .luvit-steps--compact__media المقيسة بصفحة المتجر.
            · بأول شاشة فبلا loading="lazy" بقصد. -->
       <figure class="rt-shallow__media" data-luvit="reveal">
-        <img src="${pack.images[0].src}" alt="بكج ${r.ar}"
-             width="1000" height="1000" decoding="async">
+${r.variants
+  ? r.variants.map((v) => {
+      const vp = woo.منتجات.find((x) => x.id === v.wooId);
+      const src = (vp && vp.images[0]) ? vp.images[0].src : pack.images[0].src;
+      return `        <img src="${src}" alt="بكج ${r.ar} · ${v.label}"
+             width="1000" height="1000" decoding="async" data-rt-variant="${v.key}">`;
+    }).join('\n')
+  : `        <img src="${pack.images[0].src}" alt="بكج ${r.ar}"
+             width="1000" height="1000" decoding="async">`}
       </figure>
 
     </div>
@@ -352,14 +415,16 @@ ${featureCards(r.who, '◇')}
       <p class="luvit-section__eyebrow">${({ 4: 'Four', 5: 'Five' })[r.steps.length] || r.steps.length} steps</p>
       <h2 class="luvit-section__title">الخطوات ال${منطوق(r.steps.length)}</h2>
       <p class="luvit-section__sub">
-        نفس الترتيب صباحاً ومساءً · زي ما مكتوب على ظهر كل عبوة.
+        نفس الترتيب صباحاً ومساءً · زي ما مكتوب على ظهر كل عبوة.${r.variants ? '<br>واللي بيتغيّر بين النوعين خطوتان بس · الغسول والتونر.' : ''}
       </p>
     </div>
 
+${مبدّل(r)}
+
     <div class="luvit-steps" data-luvit="stagger">
-${r.steps.map(([k, title, role], i) => {
+${صفوف_الخطوات(r).map(({ s: [k, title, role], i, v }) => {
   const p = P[k];
-  return `      <div class="luvit-step">
+  return `      <div class="luvit-step"${سمة(v)}>
         <div class="luvit-step__media">
           <img decoding="async" width="800" height="1000"
                src="${p.img}" alt="${p.ar}">
@@ -396,9 +461,9 @@ ${r.steps.map(([k, title, role], i) => {
     </div>
 
     <div class="luvit-ing" data-luvit="stagger">
-${r.steps.map(([k]) => {
+${صفوف_الخطوات(r).map(({ s: [k], v }) => {
   const p = P[k];
-  return `      <div class="luvit-ing__row">
+  return `      <div class="luvit-ing__row"${سمة(v)}>
         <span class="luvit-ing__pct">${p.price}</span>
         <div class="luvit-ing__body">
           <p class="luvit-ing__name"><a href="/product/${p.slug}/">${p.ar}</a></p>
@@ -421,9 +486,13 @@ ${r.steps.map(([k]) => {
     </div>
 
     <div class="luvit-section__foot">
-      <a class="luvit-btn luvit-btn--arrow add_to_cart_button ajax_add_to_cart"
+${r.variants
+  ? r.variants.map((v) => `      <a class="luvit-btn luvit-btn--arrow add_to_cart_button ajax_add_to_cart"
+         href="/?add-to-cart=${v.wooId}" data-quantity="1" data-rt-variant="${v.key}"
+         data-product_id="${v.wooId}" rel="nofollow">أضيفي البكج للسلة · ${سعر.now.toFixed(2)} د.أ</a>`).join('\n')
+  : `      <a class="luvit-btn luvit-btn--arrow add_to_cart_button ajax_add_to_cart"
          href="/?add-to-cart=${r.wooId}" data-quantity="1"
-         data-product_id="${r.wooId}" rel="nofollow">أضيفي البكج للسلة · ${سعر.now.toFixed(2)} د.أ</a>
+         data-product_id="${r.wooId}" rel="nofollow">أضيفي البكج للسلة · ${سعر.now.toFixed(2)} د.أ</a>`}
       <a class="luvit-btn luvit-btn--ghost" href="/product/${r.slug}/">تفاصيل البكج</a>
     </div>
 
