@@ -807,6 +807,27 @@ function luvitNavTheme() {
   var bar = nav && nav.querySelector('.luvit-nav__bar');
   if (!nav || !bar || !('IntersectionObserver' in window)) return;
 
+  /* 🔴 صفحات القالب · ٤ أيلول
+     ريّان: «المقالات فيها خلل بالناف بار».
+     القياس على `/why-results-take-time/`: الصفحة فيها **علامتان بس وكلاهما
+     `dark`** (الرأس والفوتر)، وجسم المقالة `main.site-main` (٢٩٧٧px من
+     الأبيض) **بلا أي علامة**. وقاعدة «غير المعلَّم = غامق» المكتوبة فوق
+     بتخلّي `--nav-fg` يضل `rgba(255,255,255,.86)`، فالروابط **بتختفي**
+     على الأبيض. مقيس: `linkColor` أبيض و`barBg` فاتح بنفس اللحظة.
+
+     ⤷ فأي جسم قالب **ما إله علامات جوّاه ولا فوقه** بينحسب فاتحاً.
+     ⚠️ والشرط ثلاثي بقصد: لو حطّينا العلامة على `main` وجوّاه سكاشن
+        معلَّمة، بيصير عندنا صندوقان متداخلان بيتقاطعوا مع نفس الخط
+        والنتيجة بتعتمد على ترتيب نداءات المراقب. صفحاتنا المولَّدة
+        معلَّمة جوّا `main`، فهاد الشرط بيستثنيها كلها. */
+  var themeMain = document.querySelector('main.site-main');
+  if (themeMain &&
+      !themeMain.hasAttribute('data-nav-bg') &&
+      !themeMain.querySelector('[data-nav-bg]') &&
+      !themeMain.closest('[data-nav-bg]')) {
+    themeMain.setAttribute('data-nav-bg', 'light');
+  }
+
   var sections = document.querySelectorAll('[data-nav-bg]');
   if (!sections.length) return;
 
@@ -824,11 +845,29 @@ function luvitNavTheme() {
     var line = Math.round(r.top + r.height / 2);   /* bar's centre line */
     var below = Math.max(0, window.innerHeight - line - 1);
 
-    io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) apply(en.target.getAttribute('data-nav-bg'));
+    /* 🔴 قرار واحد بينادوه الاثنان · ٤ أيلول
+       كان المراقب بيطبّق قيمة **العنصر اللي طلق**، والمسح اليدوي بياخد
+       **أول عنصر بالترتيب** بيقطع الخط. الاثنان بينكسروا لما تتداخل
+       الصناديق: جسم القالب `main` بيغطّي الصفحة كلها، فهو أول واحد
+       بالترتيب و«بيربح» دايماً، والمراقب بيصير مين يطلق آخر مرة.
+       ⤷ مقيس على مقالة: النافبار ضلّ `is-on-light` **حتى فوق الفوتر
+         الغامق**، والقياس أثبت إنّ الفوتر بيقطع الخط فعلاً.
+
+       فالقرار صار **للأصغر ارتفاعاً** من كل اللي بيقطعوا الخط · وهو
+       الأقرب لواقع اللي ورا الشريط، وحاسم مهما كان ترتيب النداءات. */
+    function decide() {
+      var best = null, bestH = Infinity;
+      Array.prototype.forEach.call(sections, function (s) {
+        var b = s.getBoundingClientRect();
+        if (b.top <= line && b.bottom >= line && b.height < bestH) {
+          best = s;
+          bestH = b.height;
+        }
       });
-    }, {
+      if (best) apply(best.getAttribute('data-nav-bg'));
+    }
+
+    io = new IntersectionObserver(function () { decide(); }, {
       rootMargin: '-' + line + 'px 0px -' + below + 'px 0px',
       threshold: 0
     });
@@ -848,13 +887,7 @@ function luvitNavTheme() {
        So after wiring the observer, read the current state directly and apply
        it. Cheap (one getBoundingClientRect per marked section, and inner pages
        have 2 to 10) and it runs once per build. */
-    var hit = null;
-    Array.prototype.forEach.call(sections, function (s) {
-      if (hit) return;
-      var b = s.getBoundingClientRect();
-      if (b.top <= line && b.bottom >= line) hit = s;
-    });
-    if (hit) apply(hit.getAttribute('data-nav-bg'));
+    decide();
   }
 
   build();
