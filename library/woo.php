@@ -991,3 +991,110 @@ add_action( 'init', function () {
 		'sanitize_callback' => 'sanitize_text_field',
 	) );
 } );
+
+/* ==========================================================================
+   LUVIT_FREE_SHIP · التوصيل المجاني · ٤ أيلول
+   ==========================================================================
+   🔴 **ليش انبنى:** كل صفحة بالموقع بتوعد بـ«مجاني مع أي روتين جاهز»،
+      وووكومرس ما كان عنده **ولا آلية** تنفّذها: منطقة الأردن فيها طريقة
+      وحيدة `flat_rate = 2.50`، ولا `free_shipping`، ولا حد أدنى، ولا
+      كوبون بيعطي شحناً مجانياً. يعني الزبونة بتقرا الوعد وبتندفع ٢٫٥٠.
+      **الموقع كان بيقول إشي وبيعمل غيره** · وهاد خط ريّان الأحمر.
+
+   وريّان ٤ أيلول: «الشحن الطبيعي بدينارين والنص والحالة الشاذة بمجاناً
+      سواء ببكج أو لويالتي بروجرام · **فانتبه من إنه الآلية شغّالة**».
+
+   ── التصميم · وليش هيك بالذات ──────────────────────────────────────
+   ما انضافت طريقة `free_shipping` بمنطقة الشحن · **بقصد**. لأن الطريقة
+   لازم «تتولّد» عشان أي فلتر يقدر يرقّيها، ولو انولدت بلا شرط بتصير
+   ظاهرة للكل، ولو الكتلة هاي انطفت لأي سبب **بيصير الشحن مجانياً للكل**.
+   ⤷ فالفلتر **بيخلق** التعرفة المجانية بنفسه لما يتحقّق الشرط، وبيرجّعها
+     وحدها. ولو انطفت الكتلة: بترجع `flat_rate = 2.50` وبس.
+     **بيفشل على جهة الأمان · بنحاسب، ما بنوزّع مجاناً.**
+
+   ⚠️ **وبيقرا التصنيف لا أرقام المنتجات.** `packages` (id 38) فيه
+      الروتينات الأربعة. أي روتين جديد بينضاف عليه بياخد الشحن المجاني
+      لحاله · ولا سطر بينتعدّل. [[duplicated-data-always-drifts]]
+
+   ── الولاء · كل N طلبات ────────────────────────────────────────────
+   ريّان: «كل خمس مرات طلب التوصيل حيكون مجاني حتى لو ما طلبت روتين».
+   ⤷ فالطلب رقم ٥ و١٠ و١٥ توصيله مجاني. العدد بخيار `luvit_free_ship_every`
+     عشان ينتغيّر بلا كود (ريّان قال البرنامج لساه بالدراسة).
+     صفر = الولاء مطفي، والبكج بيضل شغّال.
+   ⚠️ **وما بيشتغل للزائرة غير المسجّلة** · ما في طريقة نعدّ طلباتها.
+      وهاد مقبول: ريّان قاعد يبني التسجيل بنفس الدفعة.
+   ========================================================================== */
+add_action( 'init', function () {  // luvit_free_ship_settings
+	register_setting( 'options', 'luvit_free_ship_every', array(
+		'type'         => 'integer',
+		'default'      => 5,
+		'show_in_rest' => true,
+	) );
+} );
+
+/**
+ * ليش التوصيل مجاني · بترجّع سبباً أو نصاً فاضي.
+ * السبب بينستعمل بالماركب كمان عشان الزبونة تعرف ليش، لا تشوف صفراً بلا تفسير.
+ */
+function luvit_free_ship_reason( $package = null ) {
+	static $cache = null;
+	if ( $cache !== null ) {
+		return $cache;
+	}
+
+	/* ١ · بكج بالسلة · بالتصنيف لا بالمعرّف */
+	$contents = ( is_array( $package ) && ! empty( $package['contents'] ) )
+		? $package['contents']
+		: ( ( WC()->cart ) ? WC()->cart->get_cart() : array() );
+
+	foreach ( (array) $contents as $item ) {
+		$pid = isset( $item['product_id'] ) ? (int) $item['product_id'] : 0;
+		if ( $pid && has_term( 'packages', 'product_cat', $pid ) ) {
+			$cache = 'routine';
+			return $cache;
+		}
+	}
+
+	/* ٢ · الولاء · الطلب رقم N */
+	$every = (int) get_option( 'luvit_free_ship_every', 5 );
+	if ( $every > 0 && is_user_logged_in() ) {
+		$done = (int) count( (array) wc_get_orders( array(
+			'customer_id' => get_current_user_id(),
+			'status'      => array( 'wc-processing', 'wc-completed', 'wc-on-hold' ),
+			'limit'       => 500,
+			'return'      => 'ids',
+		) ) );
+		if ( ( $done + 1 ) % $every === 0 ) {
+			$cache = 'loyalty';
+			return $cache;
+		}
+	}
+
+	$cache = '';
+	return $cache;
+}
+
+/* الفلتر · بيخلق التعرفة المجانية وبيرجّعها وحدها لما يتحقّق الشرط.
+   أولوية 20 عشان يمرق بعد أي إضافة تانية بتعدّل التعرفات. */
+add_filter( 'woocommerce_package_rates', function ( $rates, $package ) {  // LUVIT_FREE_SHIP
+	$reason = luvit_free_ship_reason( $package );
+	if ( $reason === '' ) {
+		return $rates;
+	}
+
+	$label = ( $reason === 'routine' ) ? 'توصيل مجاني مع الروتين' : 'توصيل مجاني · طلبك المميّز';
+
+	$rate = new WC_Shipping_Rate( 'luvit_free_ship', $label, 0.0, array(), 'free_shipping' );
+
+	return array( 'luvit_free_ship' => $rate );
+}, 20, 2 );
+
+/* ⚠️ والتخزين المؤقّت للشحن بيحفظ التعرفات حسب محتوى السلة **وبس** ·
+   فقاعدة الولاء (اللي بتعتمد على المستخدم لا على السلة) ممكن تنخزّن
+   لمستخدم وتنعرض لغيره. الحل: نضيف السبب لمفتاح التخزين. */
+add_filter( 'woocommerce_shipping_packages', function ( $packages ) {
+	foreach ( $packages as $i => $p ) {
+		$packages[ $i ]['luvit_free'] = luvit_free_ship_reason( $p );
+	}
+	return $packages;
+}, 5 );
