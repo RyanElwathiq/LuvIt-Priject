@@ -76,6 +76,9 @@
     var empty = document.getElementById('luvit-wish-empty');
     var n = wrap.querySelectorAll('[data-wish-card]').length;
     if (empty) empty.hidden = n !== 0;
+    /* شريط المجموع بيمشي مع الشبكة · فاضية = مخفي */
+    var sum = document.getElementById('luvit-wish-sum');
+    if (sum) sum.hidden = n === 0;
   }
 
   /* ── الضغط ───────────────────────────────────────────────────────────
@@ -91,15 +94,65 @@
     var added = toggle(id);
     btn.setAttribute('aria-pressed', added ? 'true' : 'false');
     paintCount();
+
+    /* ⚠️ الاسم والسعر بينقروا من البطاقة اللي الزر جوّاها · مش من نداء
+       شبكة. لو الزر برّا بطاقة (ما بيصير حالياً) بينبعت المعرّف وحده،
+       والحدث بيضل صالحاً لإعادة الاستهداف. */
+    if (added) {
+      var host = btn.closest('[data-wish-card]') || btn.closest('.luvit-card') || btn.closest('article');
+      var nameEl = host && host.querySelector('.luvit-card__title');
+      var priceEl = host && host.querySelector('.luvit-card__price');
+      var num = priceEl ? parseFloat((priceEl.textContent || '').replace(/[^0-9.]/g, '')) : NaN;
+      track('add_to_wishlist', {
+        currency: 'JOD',
+        value: isFinite(num) ? num : undefined,
+        items: [{
+          item_id: String(id),
+          item_name: nameEl ? nameEl.textContent.trim() : undefined,
+          price: isFinite(num) ? num : undefined
+        }]
+      });
+    }
+
     /* لو إحنا بصفحة المفضّلة، الشيل لازم يشيل البطاقة كمان */
     var card = btn.closest('[data-wish-card]');
-    if (card && !added) { card.remove(); renderEmptyIfNeeded(); }
+    if (card && !added) { card.remove(); renderEmptyIfNeeded(); renderList(); }
   }, false);
 
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ── التتبّع ─────────────────────────────────────────────────────────
+     🔴 ريّان ٤ أيلول: «ما عندي آلية إني أعرف إيش اللي انضاف عالـwishlist
+        لأنها مهمة بإعلانات الـretargeting».
+     المفضّلة كانت **ما بتطلق ولا حدث لحدا** · مقيس: صفر مطابقة لـgtag
+     أو dataLayer بهالملف.
+
+     ⚠️ **وصراحة عن حدود هالشغل:** GA4 وكلاريتي بيستقبلوا فوراً من هون.
+        بس **بناء جمهور إعادة استهداف على جوجل بده حساب Google Ads
+        مربوط بـGA4** · والحدث لحاله ما بيعمل جمهوراً.
+        و**ما في بكسل ميتا على الموقع أصلاً** (مقيس: صفر `fbq`)، فإعلانات
+        إنستغرام وفيسبوك **بدها البكسل ينركّب أول**. بلاه الحدث بيروح
+        لجوجل وبس.
+
+     وبيفشل صامتاً بقصد · مانع إعلانات أو غياب gtag ما بيوقف المفضّلة. */
+  function track(name, params) {
+    try {
+      if (typeof window.gtag === "function") { window.gtag("event", name, params || {}); }
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign({ event: name }, params || {}));
+    } catch (e) {}
+  }
+
+  /* السعر بالـStore API بأصغر وحدة · والمنازل بتيجي بالرد لا بتنفترض */
+  function priceOf(p) {
+    var pr = (p && p.prices) || {};
+    var minor = typeof pr.currency_minor_unit === "number" ? pr.currency_minor_unit : 2;
+    if (pr.price == null) return null;
+    return parseInt(pr.price, 10) / Math.pow(10, minor);
   }
 
   /* ── صفحة المفضّلة ───────────────────────────────────────────────────
@@ -144,9 +197,35 @@
         if (alive.length !== ids.length) write(alive);
 
         wrap.innerHTML = html.join('');
+
+        /* ── المجموع ────────────────────────────────────────────────
+           🔴 بينحسب من **نفس الاستجابة** اللي رسمت البطاقات · فما في
+              احتمال يختلف عن الأرقام اللي شايفتها الزبونة، ولا نداء
+              زيادة على الشبكة. */
+        var total = 0, tracked = [];
+        for (var k = 0; k < alive.length; k++) {
+          var it = byId[alive[k]];
+          var v = priceOf(it);
+          if (v != null) total += v;
+          tracked.push({ item_id: String(alive[k]), item_name: it.name, price: v == null ? undefined : v });
+        }
+        var tEl = document.getElementById('luvit-wish-total');
+        if (tEl) tEl.innerHTML = '<span dir="ltr">' + total.toFixed(2) + '</span> د.أ';
+
         paintButtons(wrap);
         paintCount();
         renderEmptyIfNeeded();
+
+        /* حدث عرض القائمة · بيعطينا محتوى المفضّلة كاملاً مرة وحدة */
+        if (tracked.length) {
+          track('view_item_list', {
+            item_list_id: 'wishlist',
+            item_list_name: 'المفضّلة',
+            currency: 'JOD',
+            value: Number(total.toFixed(2)),
+            items: tracked
+          });
+        }
       })
       .catch(function () {
         if (status) {
@@ -188,6 +267,58 @@
     out.push('</article>');
     return out.join('');
   }
+
+  /* ── أضيفي الكل للسلة ────────────────────────────────────────────────
+     بيستعمل **نقطة أجاكس ووكومرس نفسها** اللي بتستعملها أزرار الإضافة
+     على كل بطاقة (`wc_add_to_cart_params.wc_ajax_url`)، فما في نونس ولا
+     مسار خاص فينا ينكسر مع أي تحديث.
+
+     ⚠️ **بالتتابع لا بالتوازي بقصد** · جلسة السلة بووكومرس ملف واحد،
+        وطلبات متوازية عليها بتتسابق وبتضيع أغراض. البطء مقبول: عشر
+        قطع = عشر نداءات قصيرة.
+
+     🔴 وبيرجّع الزر لحالته ويعرض شو صار · ولا مرة بيدّعي نجاحاً ما صار. */
+  function addAll(btn) {
+    var ids = read();
+    if (!ids.length) return;
+    var base = (window.wc_add_to_cart_params && wc_add_to_cart_params.wc_ajax_url)
+      ? wc_add_to_cart_params.wc_ajax_url.replace("%%endpoint%%", "add_to_cart") : null;
+    if (!base) { window.location.href = "/cart/"; return; }
+
+    var label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "لحظة…";
+
+    var done = 0, failed = 0, i = 0;
+    function step() {
+      if (i >= ids.length) {
+        btn.disabled = false;
+        btn.textContent = failed ? ("انضاف " + done + " من " + ids.length) : label;
+        try { if (window.jQuery) window.jQuery(document.body).trigger("wc_fragment_refresh"); } catch (e) {}
+        if (done) { window.location.href = "/cart/"; }
+        return;
+      }
+      var id = ids[i++];
+      fetch(base, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "product_id=" + encodeURIComponent(id) + "&quantity=1"
+      })
+        .then(function (r) { if (r.ok) { done++; } else { failed++; } })
+        .catch(function () { failed++; })
+        .then(step);
+    }
+    step();
+  }
+
+  document.addEventListener("click", function (ev) {
+    var t = ev.target;
+    var b = (t && t.closest) ? t.closest("#luvit-wish-addall") : null;
+    if (!b) return;
+    ev.preventDefault();
+    addAll(b);
+  }, false);
 
   function boot() { paintCount(); paintButtons(); renderList(); }
 

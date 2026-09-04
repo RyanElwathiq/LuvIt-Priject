@@ -139,6 +139,20 @@
     <!-- الشبكة · بتنعبّى بالـJS -->
     <div class="luvit-card-grid" id="luvit-wish-list"></div>
 
+    <!-- 🔴 المجموع وأضيفي الكل · ٤ أيلول · طلب ريّان
+         «ما فيه مكان يورجيني مجموع كامل قيم المنتجات اللي صفتها بالـwishlist
+          وإضافتها عالسلة».
+         بينعبّى بالـJS من **نفس استجابة الـAPI** اللي رسمت البطاقات، فما في
+         احتمال يختلف عن الأرقام الظاهرة. ومخفي لحد ما تصير القائمة غير فاضية،
+         عشان ما يبيّن شريط بمجموع صفر. -->
+    <div class="luvit-wish-sum" id="luvit-wish-sum" hidden>
+      <p class="luvit-wish-sum__figures">
+        <span class="luvit-wish-sum__label">مجموع مفضّلتك</span>
+        <span class="luvit-wish-sum__value" id="luvit-wish-total"></span>
+      </p>
+      <button type="button" class="luvit-btn" id="luvit-wish-addall">أضيفي الكل للسلة</button>
+    </div>
+
     <!-- الحالة الفاضية · مخفية أول ما تكون في مفضّلة -->
     <div class="luvit-empty" id="luvit-wish-empty" hidden>
       <span class="luvit-empty__mark" aria-hidden="true">

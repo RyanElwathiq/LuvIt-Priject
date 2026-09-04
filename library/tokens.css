@@ -799,6 +799,54 @@ h1, h2, h3, h4, .luvit-heading {
   stroke-linejoin: round;
   transition: fill var(--duration-instant) var(--ease-out-soft);
 }
+/* ---- WISH-SUM · ٤ أيلول · شريط مجموع المفضّلة ------------------------
+   بينزل تحت الشبكة · ما بيزاحم البطاقات، وبيصير عموداً على الموبايل
+   عشان الزر يضل بعرض كامل وسهل اللمس.
+
+   ⚠️ الرقم لاتيني بسياق عربي · فبده عزلاً ومحاذاة صريحة وإلا بينقلب.
+      فخّ مسجّل وانضرب فيه اسم العلامة قبل. */
+.luvit-wish-sum {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block-start: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--aqua-50, #EAFAFD);
+  border: 1px solid var(--aqua-100, #D0F3F9);
+}
+.luvit-wish-sum__figures {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0;
+  min-inline-size: 0;
+}
+.luvit-wish-sum__label {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--aqua-700, #196B7D);
+}
+.luvit-wish-sum__value {
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--aqua-800, #124D5A);
+  text-align: end;
+  unicode-bidi: isolate;
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .luvit-wish-sum { flex-direction: column; align-items: stretch; }
+  .luvit-wish-sum__figures { justify-content: space-between; }
+  .luvit-wish-sum .luvit-btn { inline-size: 100%; text-align: center; }
+}
+
 /* ---- WISH-HOVER
    Ryan, 4 Sept: "if you click the red heart the ring does not go away until
    you click somewhere else."
