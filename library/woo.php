@@ -112,12 +112,12 @@ add_filter( 'woocommerce_currency_symbol', function ( $symbol, $currency ) {
 add_filter( 'woocommerce_account_menu_items', function ( $items ) {
 	unset( $items['downloads'] );
 
-	/* «قطراتك» بينحط **قبل** تفاصيل الحساب · مش بالآخر، عشان يقرا كميزة
-	   لا كإعداد. والترتيب بينبنى بحلقة لأن PHP ما بتدعم إدخالاً بمكان. */
+	/* «نادي Luv it» بينحط **قبل** تفاصيل الحساب · مش بالآخر، عشان يقرا
+	   كميزة لا كإعداد. والترتيب بينبنى بحلقة لأن PHP ما بتدعم إدخالاً بمكان. */
 	$out = array();
 	foreach ( $items as $key => $label ) {
 		if ( 'edit-account' === $key ) {
-			$out['drops'] = 'قطراتك';
+			$out['club'] = 'نادي Luv it';
 		}
 		$out[ $key ] = $label;
 	}
@@ -126,31 +126,73 @@ add_filter( 'woocommerce_account_menu_items', function ( $items ) {
 
 
 /**
- * LUV IT · نقطة نهاية «قطراتك».
+ * LUV IT · نقطة نهاية «نادي Luv it» · برنامج الولاء.
  *
- * ريّان، ١ أيلول: «منبدّل ومنبني البنية · الموقع ما تم إطلاقه أصلاً».
- * فالتبويب بينبنى هلأ والمحتوى بيتعبّى لما يجهز البرنامج.
+ * ── ٤ أيلول · الاسم والآلية انحسموا ──────────────────────────────────
+ * ريّان نقل عن صاحب العلامة: «تغيير اسمه من قطراتي إلى إشي ثاني · كل خمس
+ * مرات طلب التوصيل حيكون مجاني». والاسم اختاره ريّان من ثلاث بدائل.
+ *   ⤷ **«قطراتي» انشال** لأنه بيقرا قطرات عيون قبل ما يقرا نقاط ولاء.
+ *   ⤷ وصيغة الاسم `Luv it` (مسافة · بلا علامة تعجّب) هي المعتمدة بالنصوص
+ *     [[brand-name-rtl-bug]] · الشعار بس بيضل `Luv it!` لأنه صورة.
+ *
+ * 🔴 **والصفحة صارت تعرض حالة حقيقية لا «قيد التجهيز»** · الآلية مركّبة
+ *    فعلاً بـ`luvit_free_ship_loyalty()` تحت، والعدّ من `luvit_loyalty_state()`
+ *    وحدها · فاللي بتشوفه الزبونة هو اللي بينحاسب عليه بالسلة حرفياً.
+ *
+ * ⚠️ **والسلَّة القديمة اسمها `drops`** · الاسم انبدّل لـ`club` عشان الرابط
+ *    اللي بتشوفه الزبونة (`/my-account/club/`) يطابق اسم البرنامج. كلاسات
+ *    الـCSS `.luvit-drops__*` ضلّت زي ما هي **عن قصد** · داخلية وغير مرئية،
+ *    وتبديلها بيلمس `tokens.css` بلا أي مكسب للزبونة.
  *
  * 🔴 وفخّ نقاط النهاية بووكومرس: بلا `flush_rewrite_rules` بترجّع **404**.
  *    والمسح غالي، فبينعمل **مرة وحدة** ومحروس بخيار.
- *    ⚠️ لو غيّرت اسم النقطة، **بدّل رقم النسخة** بالخيار تحت وإلا
- *       بيضل الرابط القديم شغّالاً والجديد ٤٠٤.
+ *    ⚠️ لو غيّرت اسم النقطة، **بدّل اسم الخيار** تحت وإلا بيضل الرابط
+ *       القديم شغّالاً والجديد ٤٠٤. (وهاد بالضبط اللي صار هلق: `_flushed`
+ *       صار `_club_flushed` عشان المسح يشتغل مرة تانية.)
  */
 add_action( 'init', function () {
-	add_rewrite_endpoint( 'drops', EP_ROOT | EP_PAGES );
+	add_rewrite_endpoint( 'club', EP_ROOT | EP_PAGES );
 
-	if ( '1' !== get_option( 'luvit_drops_flushed' ) ) {
+	if ( '1' !== get_option( 'luvit_club_flushed' ) ) {
 		flush_rewrite_rules();
-		update_option( 'luvit_drops_flushed', '1' );
+		update_option( 'luvit_club_flushed', '1' );
 	}
 } );
 
-add_action( 'woocommerce_account_drops_endpoint', function () {
-	echo '<div class="luvit-drops">'
-		. '<h2 class="luvit-drops__title">قطراتك</h2>'
-		. '<p class="luvit-drops__sub">كل طلبية بتجمّعلك قطرات · وشو بتعمل فيهن منقولك أول ما يجهز البرنامج.</p>'
-		. '<p class="luvit-drops__soon">البرنامج قيد التجهيز · وأول ما يشتغل بتلاقي رصيدك هون.</p>'
-		. '</div>';
+add_action( 'woocommerce_account_club_endpoint', function () {
+	$s     = luvit_loyalty_state();
+	$every = (int) $s['every'];
+
+	echo '<div class="luvit-drops">';
+	echo '<h2 class="luvit-drops__title">نادي <span dir="ltr">Luv it</span></h2>';
+
+	if ( $every < 1 ) {
+		/* الخيار مطفي · ما منوعد بإشي ما بيصير. */
+		echo '<p class="luvit-drops__sub">البرنامج موقوف مؤقتاً.</p>';
+		echo '</div>';
+		return;
+	}
+
+	echo '<p class="luvit-drops__sub">'
+		. 'ما في نقاط ولا رصيد بدك تتابعيه · كل ' . esc_html( luvit_orders_word( $every ) )
+		. '، وحدة فيهن توصيلها علينا.'
+		. '</p>';
+
+	if ( $s['due'] ) {
+		echo '<p class="luvit-drops__soon"><strong>وطلبيتك الجاي توصيلها مجاني.</strong> '
+			. 'بيتحسب لحاله بالسلة · ما بدك كوبون.</p>';
+	} else {
+		echo '<p class="luvit-drops__soon">'
+			. 'عملتِ <strong>' . esc_html( luvit_orders_word( $s['done'] ) ) . '</strong> لهلق · '
+			. 'وتوصيل الطلبية رقم <strong>' . esc_html( (string) $s['next'] ) . '</strong> علينا.'
+			. '</p>';
+	}
+
+	echo '<p class="luvit-drops__sub">'
+		. 'وبتنعدّ الطلبات اللي وصلتك أو اللي قيد التجهيز · '
+		. 'والملغية ما بتنعدّ.'
+		. '</p>';
+	echo '</div>';
 } );
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -589,16 +631,21 @@ add_filter( 'woocommerce_account_menu_items', function ( $items ) {
 		$items['coupon-affiliate'] = 'شراكتك';
 	}
 
-	/* ترتيب: «شراكتك» بتقعد بعد «قطراتك» · الاتنان امتيازات لا إعدادات،
-	   و«تفاصيل الحساب» و«تسجيل الخروج» بيضلّوا آخر شي. */
-	if ( isset( $items['coupon-affiliate'], $items['drops'] ) ) {
+	/* ترتيب: «شراكتك» بتقعد بعد «نادي Luv it» · الاتنان امتيازات لا إعدادات،
+	   و«تفاصيل الحساب» و«تسجيل الخروج» بيضلّوا آخر شي.
+
+	   ⚠️ **وهالكتلة بتقرا مفتاح النادي** · لما انبدّل من `drops` لـ`club`
+	      بـ٤ أيلول كانت رح **تسكت بلا خطأ** و«شراكتك» تضل بمحلها الأصلي.
+	      نفس فئة [[moving-truth-breaks-its-readers]] · فأي تبديل لمفتاح
+	      النادي بينفتّش عليه هون كمان. */
+	if ( isset( $items['coupon-affiliate'], $items['club'] ) ) {
 		$out = array();
 		foreach ( $items as $k => $v ) {
 			if ( $k === 'coupon-affiliate' ) {
 				continue;
 			}
 			$out[ $k ] = $v;
-			if ( $k === 'drops' ) {
+			if ( $k === 'club' ) {
 				$out['coupon-affiliate'] = 'شراكتك';
 			}
 		}
@@ -1092,17 +1139,27 @@ add_action( 'init', function () {  // luvit_free_ship_settings
 } );
 
 /**
- * الطلب رقم N للزبونة المسجَّلة · بترجّع true لو هالطلب مستحقّ.
- * العدد بخيار `luvit_free_ship_every` · صفر = الولاء مطفي.
+ * حالة الولاء للزبونة المسجَّلة · مصدر حقيقة واحد.
+ *
+ * بترجّع: every (كل كم طلب) · done (طلبات مكتملة) · due (هالطلب مجاني؟) ·
+ *          next (**رقم** الطلبية اللي توصيلها مجاني).
+ *
+ * ⚠️ و`next` رقم طلبية لا عدّاد تنازلي · «باقي ٤ طلبات» بتخلّي الزبونة
+ *    تسأل هل الرابعة هي المجانية ولا اللي بعدها. «الطلبية رقم ٥» ما بتحتمل
+ *    قراءتين.
+ *
+ * 🔴 **العدّ هون بس** · صفحة النادي وفلتر الشحن الاتنان بيقرأوا من هون،
+ *    وإلا بيصير الرقم المعروض للزبونة غير الرقم اللي بينحاسب عليه.
+ *    [[duplicated-data-always-drifts]]
  */
-function luvit_free_ship_loyalty() {
+function luvit_loyalty_state() {
 	static $cache = null;
 	if ( $cache !== null ) {
 		return $cache;
 	}
 	$every = (int) get_option( 'luvit_free_ship_every', 5 );
 	if ( $every < 1 || ! is_user_logged_in() ) {
-		$cache = false;
+		$cache = array( 'every' => $every, 'done' => 0, 'due' => false, 'next' => 0 );
 		return $cache;
 	}
 	$done = (int) count( (array) wc_get_orders( array(
@@ -1111,8 +1168,46 @@ function luvit_free_ship_loyalty() {
 		'limit'       => 500,
 		'return'      => 'ids',
 	) ) );
-	$cache = ( ( $done + 1 ) % $every === 0 );
+	$due = ( ( $done + 1 ) % $every === 0 );
+	/* رقم أول طلبية مستحقّة بعد اللي انعملت · ولمّا تكون مستحقّة هلق
+	   بترجع `done + 1` نفسها، فالرقم صحيح بالحالتين. */
+	$next  = $every * ( (int) floor( $done / $every ) + 1 );
+	$cache = array( 'every' => $every, 'done' => $done, 'due' => $due, 'next' => $next );
 	return $cache;
+}
+
+/**
+ * عدد + كلمة «طلبية» بالصيغة الصح · العربي بيميّز المفرد والمثنّى والجمع.
+ *
+ * 🔴 **وهاد مش تجميل** · أول نسخة كتبت «عملتِ 2 طلبات» وهاي غلط صريح
+ *    بيقرا كترجمة آلية. القاعدة:
+ *      ٠      ولا طلبية      ١  طلبية وحدة     ٢  طلبيتين
+ *      ٣ ـ ١٠  N طلبات        ١١+ N طلبية
+ */
+function luvit_orders_word( $n ) {
+	$n = (int) $n;
+	if ( $n === 0 ) {
+		return 'ولا طلبية';
+	}
+	if ( $n === 1 ) {
+		return 'طلبية وحدة';
+	}
+	if ( $n === 2 ) {
+		return 'طلبيتين';
+	}
+	if ( $n <= 10 ) {
+		return $n . ' طلبات';
+	}
+	return $n . ' طلبية';
+}
+
+/**
+ * الطلب رقم N للزبونة المسجَّلة · بترجّع true لو هالطلب مستحقّ.
+ * العدد بخيار `luvit_free_ship_every` · صفر = الولاء مطفي.
+ */
+function luvit_free_ship_loyalty() {
+	$s = luvit_loyalty_state();
+	return (bool) $s['due'];
 }
 
 /* أولوية 20 · بعد 314، فلو الاثنان انطبقوا الولاء بيغلب وبيعطي نفس
@@ -1127,8 +1222,18 @@ add_filter( 'woocommerce_package_rates', function ( $rates, $package ) {  // LUV
 
 /* ⚠️ التخزين المؤقّت للشحن بيحفظ التعرفات حسب محتوى السلة **وبس** · وقاعدة
    الولاء بتعتمد على المستخدم لا على السلة، فبتنخزّن لواحد وبتنعرض لغيره.
-   الحل: نضيف الحالة لمفتاح التخزين. */
-add_filter( 'woocommerce_shipping_packages', function ( $packages ) {
+   الحل: نضيف الحالة لمفتاح التخزين.
+
+   🔴 **وكان على الخطّاف الغلط لحد ٤ أيلول** · `woocommerce_shipping_packages`
+      بيشتغل **بعد** ما ووكومرس بيحسب هاش الطرد، فالمفتاح ما كان يتغيّر أبداً
+      والتعرفة المخزّنة بتضل ٢٫٥٠ حتى بعد ما تصير الزبونة مستحقّة.
+      الصح `woocommerce_cart_shipping_packages` · بيشتغل وقت **بناء** الطرد.
+
+   ⚠️ **وما انكشف إلا بالفحص الحيّ** · الكود كان مكتوباً صح والتعليق كان
+      بيوصف نيّة صحيحة، والفلتر نفسه شغّال ١٠٠٪: أول ما غيّرت محتوى السلة
+      رجّعت التعرفة `luvit_free_ship` بصفر. يعني **قراءة الكود كانت بتعدّي
+      الباغ**، والفرق الوحيد كان قياس السلة قبل وبعد قلب الاستحقاق. */
+add_filter( 'woocommerce_cart_shipping_packages', function ( $packages ) {
 	foreach ( $packages as $i => $p ) {
 		$packages[ $i ]['luvit_loyalty'] = luvit_free_ship_loyalty() ? 1 : 0;
 	}

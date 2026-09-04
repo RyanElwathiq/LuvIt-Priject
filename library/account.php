@@ -231,7 +231,7 @@ add_action( 'woocommerce_before_account_navigation', function () {
 	echo '<header class="luvit-acct-head">'
 		. '<p class="luvit-acct-head__eyebrow">حسابك على <span dir="ltr">Luv it</span></p>'
 		. '<h1 class="luvit-acct-head__title">' . $hi . '</h1>'
-		. '<p class="luvit-acct-head__sub">طلباتك وعناوينك وقطراتك · كلها هون بمكان واحد.</p>'
+		. '<p class="luvit-acct-head__sub">طلباتك وعناوينك ونادي التوصيل · كلها هون بمكان واحد.</p>'
 		. '</header>';
 }, 5 );
 
@@ -283,7 +283,9 @@ add_action( 'woocommerce_account_dashboard', function () {
 
 	$u_orders = esc_url( wc_get_account_endpoint_url( 'orders' ) );
 	$u_addr   = esc_url( wc_get_account_endpoint_url( 'edit-address' ) );
-	$u_drops  = esc_url( wc_get_account_endpoint_url( 'drops' ) );
+	/* ⚠️ مفتاح النقطة `club` من ٤ أيلول (كان `drops`) · اسم المتغيّر ضلّ
+	   زي ما هو عشان ما نلمس أسطراً ما إلها علاقة. */
+	$u_drops  = esc_url( wc_get_account_endpoint_url( 'club' ) );
 	$u_shop   = esc_url( home_url( '/products/' ) );
 
 	echo '<div class="luvit-acct-grid">';
@@ -321,11 +323,31 @@ add_action( 'woocommerce_account_dashboard', function () {
 	}
 	echo '</article>';
 
-	/* ── قطراتك ── */
+	/* ── نادي Luv it ──────────────────────────────────────────────────
+	   🔴 **الأرقام من `luvit_loyalty_state()` لا من حساب محلي** · نفس
+	      الدالة اللي بيقرا منها فلتر الشحن، فاللي بتشوفه الزبونة هون هو
+	      اللي بينحاسب عليه بالسلة حرفياً. [[duplicated-data-always-drifts]] */
+	$club = function_exists( 'luvit_loyalty_state' ) ? luvit_loyalty_state() : null;
 	echo '<article class="luvit-acct-card luvit-acct-card--drops">';
-	echo '<p class="luvit-acct-card__eyebrow">قطراتك</p>';
-	echo '<h3 class="luvit-acct-card__title">قيد التجهيز</h3>';
-	echo '<p class="luvit-acct-card__line">كل طلبية بتجمّعلك قطرات · وشو بتعمل فيهن منقولك أول ما يجهز البرنامج.</p>';
+	echo '<p class="luvit-acct-card__eyebrow">نادي <span dir="ltr">Luv it</span></p>';
+	if ( is_array( $club ) && (int) $club['every'] > 0 ) {
+		if ( $club['due'] ) {
+			echo '<h3 class="luvit-acct-card__title">توصيلك الجاي مجاني</h3>';
+			echo '<p class="luvit-acct-card__line">بينحسب لحاله بالسلة · ما بدك كوبون.</p>';
+		} else {
+			/* ⚠️ الصيغة من `luvit_orders_word()` بـwoo.php · «2 طلبات» غلط عربي.
+			   والحارس لأنّ السنيبتين ممكن ينحفظوا بترتيب مختلف. */
+			$word = function_exists( 'luvit_orders_word' )
+				? luvit_orders_word( $club['done'] )
+				: (string) $club['done'] . ' طلبات';
+			echo '<h3 class="luvit-acct-card__title">' . esc_html( $word ) . '</h3>';
+			echo '<p class="luvit-acct-card__line">وتوصيل الطلبية رقم '
+				. esc_html( (string) $club['next'] ) . ' علينا.</p>';
+		}
+	} else {
+		echo '<h3 class="luvit-acct-card__title">موقوف مؤقتاً</h3>';
+		echo '<p class="luvit-acct-card__line">منرجّعه قريباً.</p>';
+	}
 	echo '<a class="luvit-acct-card__link" href="' . $u_drops . '">شو القصة</a>';
 	echo '</article>';
 
