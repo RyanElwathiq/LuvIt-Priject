@@ -633,13 +633,25 @@ add_filter( 'woocommerce_account_menu_items', function ( $items ) {
    ========================================================================== */
 /* الخيار بينتسجّل بالـREST عشان ينتغيّر من برّا بلا ما ينلمس كود ·
    `manage_options` مطلوبة، فما بيقدر يوصله إلا أدمن. */
-add_action( 'init', function () {  // luvit_topbar_coupon_setting
-	register_setting( 'options', 'luvit_topbar_coupon', array(
-		'type'              => 'string',
-		'default'           => '',
-		'show_in_rest'      => true,
-		'sanitize_callback' => 'sanitize_text_field',
-	) );
+add_action( 'init', function () {  // luvit_topbar_settings
+	$strings = array(
+		/* كود كوبون · الوضع القديم · بيضل شغّالاً لو ما في نصّ إعلان */
+		'luvit_topbar_coupon' => '',
+		/* 🔴 وضع الإعلان · ٤ أيلول · وهو الوضع المستعمل حالياً.
+		   ريّان: «خصم الأسبوعين **يطبّق بشكل تلقائي** عالمنتجات بدون كوبون».
+		   ⤷ فالشريط ما عاد يعلن كوداً · بيعلن العرض نفسه. */
+		'luvit_topbar_text'   => '',
+		'luvit_topbar_cta'    => '',
+		'luvit_topbar_link'   => '',
+	);
+	foreach ( $strings as $key => $default ) {
+		register_setting( 'options', $key, array(
+			'type'              => 'string',
+			'default'           => $default,
+			'show_in_rest'      => true,
+			'sanitize_callback' => 'sanitize_text_field',
+		) );
+	}
 } );
 
 add_action( 'wp_body_open', function () {
@@ -647,6 +659,51 @@ add_action( 'wp_body_open', function () {
 		return;
 	}
 	if ( ! function_exists( 'wc_get_coupon_id_by_code' ) ) {
+		return;
+	}
+
+	/* ── وضع الإعلان · بلا كوبون ──────────────────────────────────────
+	   لما يكون في نصّ إعلان، هو اللي بينرسم والكوبون بينتجاهل. لأن العرض
+	   الحقيقي (خصم الروتينات) **بينطبّق لحاله**، فشريط بيطلب كوداً بيوهم
+	   الزبونة إنّ الخصم مشروط بكود، وهو مش مشروط.
+
+	   🔴 **ولا رقم بينكتب هون.** أعلى خصم فعلي ٢١٫٦٧٪، فـ«حتى ٢٢٪» تدوير
+	      لفوق و«حتى ٢١٪» تقليل للعرض. اختار ريّان (٤ أيلول) صيغة **بلا
+	      رقم**، والنسبة الدقيقة بتبيّن على كرت كل روتين محسوبة من سعره.
+	   ------------------------------------------------------------------ */
+	$text = trim( (string) get_option( 'luvit_topbar_text', '' ) );
+	if ( $text !== '' ) {
+		$cta  = trim( (string) get_option( 'luvit_topbar_cta', '' ) );
+		$link = trim( (string) get_option( 'luvit_topbar_link', '' ) );
+
+		/* مفتاح الإخفاء مشتقّ من المحتوى · فلو تغيّر العرض بيرجع يبيّن
+		   لمين سكّره. رقم ثابت بيخلّي عرضاً جديداً مخفياً عن نص الزبونات. */
+		$key = 'luvit-topbar-dismissed:t' . substr( md5( $text . '|' . $cta . '|' . $link ), 0, 8 );
+
+		echo '<div class="luvit-topbar" id="luvit-topbar" role="region" aria-label="عرض الإطلاق">'
+			. '<div class="luvit-topbar__inner">'
+			. '<span class="luvit-topbar__offer">' . esc_html( $text ) . '</span>';
+
+		if ( $cta !== '' && $link !== '' ) {
+			echo '<a class="luvit-topbar__cta" href="' . esc_url( $link ) . '">' . esc_html( $cta ) . '</a>';
+		}
+
+		echo '</div>'
+			. '<button type="button" class="luvit-topbar__close" aria-label="إغلاق الشريط">'
+			. '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+			. '</button>'
+			. '</div>';
+
+		echo '<script>(function(){try{'
+			. 'var b=document.getElementById("luvit-topbar");'
+			. 'if(!b)return;'
+			. 'var k=' . wp_json_encode( $key ) . ';'
+			. 'if(localStorage.getItem(k)){b.remove();return;}'
+			. 'document.body.classList.add("has-topbar");'
+			. 'b.querySelector(".luvit-topbar__close").addEventListener("click",function(){'
+			. 'try{localStorage.setItem(k,"1")}catch(e){}'
+			. 'document.body.classList.remove("has-topbar");b.remove();});'
+			. '}catch(e){}})();</script>';
 		return;
 	}
 
@@ -1098,3 +1155,102 @@ add_filter( 'woocommerce_shipping_packages', function ( $packages ) {
 	}
 	return $packages;
 }, 5 );
+
+/* ==========================================================================
+   LUVIT_SAVINGS · سطر «وفّرتِ» بآخر ملخّص الطلب · ٤ أيلول
+   ==========================================================================
+   ريّان: «حط آخر إشي عند السعر النهائي **كم وفرت**».
+
+   ── ليش سلوت لا حقن DOM ────────────────────────────────────────────
+   سلة ووكومرس عندنا **بلوكات** (React)، وأي صفّ بينحقن بالـDOM مباشرة
+   بينمسح أول ما تتغيّر الكمية أو ينتحدّث الشحن. فبنستعمل نقطة التمديد
+   الرسمية `ExperimentalOrderMeta` · بترسم تحت ملخّص الطلب وبتعيد الرسم
+   مع البلوك نفسه.
+
+   ⚠️ **وبيطلع بالسلة والشيك أوت الاثنين** لأن السلوت مشترك · وهاد مقصود.
+
+   ── الحساب · ولا رقم بينكتب بالإيد ─────────────────────────────────
+     التوفير = Σ (السعر الأصلي − السعر الحالي) × الكمية  +  خصم الكوبونات
+
+   🔴 **وأجرة الشحن ما بتنحسب هون بقصد.** لما تكون مجانية بيكون سطرها
+      ظاهر لحاله فوق، ولو جمعناها بالرقم بيصير الرقم **مش قابلاً للتحقّق**
+      من الصفوف اللي شايفتها الزبونة. رقم بتقدر تتأكد منه بنفسها أقوى من
+      رقم أكبر ما بتعرف من وين إجا.
+
+   ⚠️ وبيختفي لما يكون التوفير صفراً · ما منعرض «وفّرتِ 0.00».
+   ========================================================================== */
+add_action( 'wp_footer', function () {  // LUVIT_SAVINGS
+	if ( is_admin() ) {
+		return;
+	}
+	if ( ! function_exists( 'is_cart' ) || ( ! is_cart() && ! is_checkout() ) ) {
+		return;
+	}
+	echo <<<'JS'
+<script>
+(function () {
+  var tries = 0;
+  function boot() {
+    if (tries++ > 60) { return; }
+    if (!window.wp || !wp.plugins || !wp.element || !wp.data ||
+        !window.wc || !wc.blocksCheckout || !wc.blocksCheckout.ExperimentalOrderMeta) {
+      setTimeout(boot, 250);
+      return;
+    }
+    if (window.__luvitSavings) { return; }
+    window.__luvitSavings = true;
+
+    var el = wp.element.createElement;
+    var OrderMeta = wc.blocksCheckout.ExperimentalOrderMeta;
+
+    function money(minorAmount, minorUnit, symbol) {
+      var v = (Number(minorAmount) / Math.pow(10, minorUnit)).toFixed(minorUnit);
+      return v + " " + symbol;
+    }
+
+    function Savings() {
+      var cart = wp.data.useSelect(function (select) {
+        var s = select("wc/store/cart");
+        return s ? s.getCartData() : null;
+      }, []);
+
+      if (!cart || !cart.items || !cart.items.length) { return null; }
+
+      var unit = 2, symbol = "\u062F.\u0623";
+      if (cart.totals) {
+        if (typeof cart.totals.currency_minor_unit === "number") { unit = cart.totals.currency_minor_unit; }
+        if (cart.totals.currency_symbol) { symbol = cart.totals.currency_symbol; }
+      }
+
+      var saved = 0;
+      cart.items.forEach(function (i) {
+        if (!i.prices) { return; }
+        var reg = Number(i.prices.regular_price);
+        var now = Number(i.prices.price);
+        if (isFinite(reg) && isFinite(now) && reg > now) {
+          saved += (reg - now) * Number(i.quantity || 1);
+        }
+      });
+      if (cart.totals && cart.totals.total_discount) {
+        var d = Number(cart.totals.total_discount);
+        if (isFinite(d)) { saved += d; }
+      }
+
+      if (!(saved > 0)) { return null; }
+
+      return el("div", { className: "luvit-savings" },
+        el("span", { className: "luvit-savings__label" }, "\u0648\u0641\u0651\u0631\u062A\u0650"),
+        el("span", { className: "luvit-savings__value" }, money(saved, unit, symbol))
+      );
+    }
+
+    wp.plugins.registerPlugin("luvit-savings", {
+      render: function () { return el(OrderMeta, null, el(Savings)); },
+      scope: "woocommerce-checkout"
+    });
+  }
+  boot();
+})();
+</script>
+JS;
+}, 30 );

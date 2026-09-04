@@ -8624,6 +8624,69 @@ body.woocommerce-checkout .wc-block-components-product-badge.wc-block-components
   border-color: var(--aqua-100, #D0F3F9);
   color: var(--aqua-700, #196B7D);
 }
+
+/* ---- SAVINGS-ROW · ٤ أيلول ---------------------------------------------
+   ريّان: «خلي بدل كلمة **حفظ** توفير، وحط آخر إشي عند السعر النهائي
+   **كم وفرت**».
+
+   ١) الكلمة · وليش CSS لا ترجمة
+      بلوكات ووكومرس بترسم الشارة **بعقدة نصّية مكشوفة** وبعدها span فيه
+      المبلغ:  <div class="...sale-badge">حفظ <span>13.00 د.أ</span></div>
+      والعقدة المكشوفة **ما بينوصلها بمُحدِّد CSS**. فالشارة بتنحط
+      `font-size: 0` (وهاد بيطوي العقدة)، والكلمة المطلوبة بترجع بـ::before
+      والمبلغ بيرجع حجمه.
+      🔴 والبديل (`wp.i18n.setLocaleData`) **سباق بنخسره أحياناً** · لازم
+         سكربتنا يسبق سكربت البلوك للبيانات المحلية، ولو تأخّر بتظهر «حفظ»
+         للحظة أو بتضل. وهاد الحل **ما بيعتمد على ترتيب تحميل أبداً**.
+
+   ٢) الصفّ · بينرسمه LUVIT_SAVINGS بـwoo.php عبر السلوت الرسمي
+      `ExperimentalOrderMeta` · فبيعيد الرسم مع البلوك بدل ما ينمسح كل ما
+      تتغيّر الكمية أو الشحن.
+   ---------------------------------------------------------------------- */
+body.woocommerce-cart .wc-block-components-product-badge.wc-block-components-sale-badge,
+body.woocommerce-checkout .wc-block-components-product-badge.wc-block-components-sale-badge {
+  font-size: 0;
+}
+body.woocommerce-cart .wc-block-components-product-badge.wc-block-components-sale-badge::before,
+body.woocommerce-checkout .wc-block-components-product-badge.wc-block-components-sale-badge::before {
+  content: "توفير\00A0";
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+}
+body.woocommerce-cart .wc-block-components-product-badge.wc-block-components-sale-badge > span,
+body.woocommerce-checkout .wc-block-components-product-badge.wc-block-components-sale-badge > span {
+  font-size: var(--text-body-sm, 0.875rem);
+}
+
+/* صفّ «وفّرتِ» · آخر شي بملخّص الطلب */
+.luvit-savings {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-start: var(--space-3);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--aqua-50, #EAFAFD);
+  border: 1px solid var(--aqua-100, #D0F3F9);
+}
+.luvit-savings__label {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--aqua-700, #196B7D);
+}
+/* ⚠️ الرقم لاتيني بسياق عربي · فبده عزلاً ومحاذاة صريحة، وإلا بينقلب.
+      فخّ مسجَّل وانضرب فيه اسم العلامة قبل. */
+.luvit-savings__value {
+  font-family: var(--font-body);
+  font-size: var(--text-body, 1rem);
+  font-weight: 700;
+  color: var(--aqua-800, #124D5A);
+  direction: ltr;
+  text-align: end;
+  unicode-bidi: isolate;
+}
 /* the coupon disclosure is an ACTION, not a title: 5149 was written for the
    mobile summary toggle and caught .wc-block-components-totals-coupon too, so
    it renders at 18px El Messiri in ink — typographically identical to the H2s.
@@ -18593,6 +18656,34 @@ body.has-topbar { --topbar-h: 40px; }
 .luvit-topbar__label { color: rgba(255, 255, 255, .78); }
 
 /* شريحة الكود · ورق أبيض ونصّ غامق عشان تقرا «انسخيني» */
+/* ---- TOPBAR-CTA · ٤ أيلول · وضع الإعلان بلا كوبون ----------------------
+   لما صار الشريط يعلن العرض بدل ما يعطي كوداً، صار بده **فعلاً** لا زرّ
+   نسخ. الرابط بياخد نفس شكل حبّة الكود عشان الشريط يضل شريطاً واحداً،
+   بس بلا direction: ltr ولا letter-spacing لأنّ نصّه **عربي**
+   (والتباعد على العربي بيفكّ الحروف · قاعدة مسجَّلة).
+   ------------------------------------------------------------------------ */
+.luvit-topbar__cta {
+  flex: 0 0 auto;
+  border-radius: var(--radius-pill, 999px);
+  padding: 5px 14px;
+  background: #FFFFFF;
+  color: var(--aqua-800, #124D5A);
+  font-family: var(--font-body);
+  font-size: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 160ms var(--ease-out-soft, ease),
+              background 160ms var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-topbar__cta:hover { transform: translateY(-1px); background: var(--aqua-50, #EAFAFD); }
+}
+.luvit-topbar__cta:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
 .luvit-topbar__code {
   appearance: none;
   border: 0;
