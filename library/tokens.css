@@ -19287,3 +19287,65 @@ html.auth-js body.woocommerce-account .luvit-acct-first { display: none; }
 .auth-swap__btn.auth-swap__btn:hover { color: var(--aqua-800, #124D5A); background: none; }
 .auth-swap__btn:focus-visible { outline: 2px solid var(--aqua-600, #29A9C0); outline-offset: 3px; border-radius: 4px; }
 /* AUTH-SPLIT:END */
+/* ═══════════════════════════════════════════════════════════════════════
+   PROFILE-GAP:START · نداء إكمال البيانات وشاشته · ٤ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   البطاقة بتبيّن باللوحة **بس لو في نقص فعلي** (`luvit_profile_gaps()`)
+   وبتختفي لحالها لما يكتمل · فما بدها لا زرّ إغلاق ولا تخزين محلي.
+
+   ⚠️ ولونها **مش أحمر ولا فوشيا** · هاي دعوة لطيفة لا خطأ. الفوشيا
+      `#D02D86` ممنوعة كخلفية أصلاً بقاعدة العلامة، والأحمر بيقول
+      «في مشكلة» وما في مشكلة.
+   ═══════════════════════════════════════════════════════════════════════ */
+.luvit-gap-call {
+  margin-block-end: var(--space-5, 1.25rem);
+  padding: var(--space-5, 1.25rem);
+  border-radius: var(--card-radius, 22px);
+  background: linear-gradient(150deg, var(--aqua-50, #EAFAFD) 0%, #FFFFFF 100%);
+  border: 1px solid var(--aqua-200, #BDEDF6);
+}
+.luvit-gap-call__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--text-h5, 1.15rem);
+  color: var(--color-ink, #1A2529);
+}
+.luvit-gap-call__line {
+  margin: var(--space-2, .5rem) 0 var(--space-4, 1rem);
+  font-size: var(--text-body-sm, .875rem);
+  color: var(--color-ink-soft, #47555B);
+}
+.luvit-gap-call__btn {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 42px;
+  padding-inline: var(--space-5, 1.25rem);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--aqua-700, #196B7D);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: var(--text-body-sm, .875rem);
+  text-decoration: none;
+}
+/* 🔴 القالب بيلوّن كل زرّ `#CC3366` على الهوفر بنفس خصوصيّتنا ·
+   مضاعفة الكلاس بتغلبه بلا `!important` · فخّ مسجَّل. */
+.luvit-gap-call__btn.luvit-gap-call__btn:hover {
+  background: var(--aqua-800, #124D5A);
+  color: #FFFFFF;
+}
+
+/* ---- الشاشة نفسها · بتاخد نفس اللوح الجانبي تبع الدخول -------------- */
+.luvit-complete { max-inline-size: 520px; }
+.luvit-complete__form { margin-block-start: var(--space-5, 1.25rem); }
+.luvit-complete__hint {
+  display: block;
+  margin-block-start: var(--space-2, .5rem);
+  font-size: var(--text-body-xs, .8rem);
+  color: var(--color-ink-soft, #47555B);
+  line-height: 1.6;
+}
+.luvit-complete__done {
+  margin-block-end: var(--space-4, 1rem);
+  color: var(--color-ink-soft, #47555B);
+}
+/* PROFILE-GAP:END */

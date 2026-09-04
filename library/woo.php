@@ -1459,6 +1459,25 @@ add_action( 'woocommerce_register_form', function () {  // LUVIT_REGISTER
 		. '</p>';
 }, 20 );
 
+/**
+ * تطبيع رقم موبايل أردني · مصدر حقيقة واحد.
+ *
+ * بيشيل أي مسافة أو شرطة أو قوس، وبيحوّل الصيغة الدولية `+9627…` أو
+ * `9627…` للمحلي `07…`. بيرجّع '' لو ما طلع رقماً أردنياً صحيحاً.
+ *
+ * 🔴 **كان مكتوباً مرتين حرفياً** (التحقّق والحفظ) وأنا رح أستعمله ثالثة
+ *    بشاشة إكمال البيانات · وثلاث نسخ لنفس المنطق **بتنحرف حتماً**.
+ *    [[duplicated-data-always-drifts]]
+ *
+ * ⚠️ وبيرجّع فاضياً بدل ما يرمي · القارئ الوحيد اللي بيهمّه الفرق هو
+ *    التحقّق، وهو بيفحص الفاضي صراحةً.
+ */
+function luvit_norm_phone( $raw ) {
+	$p = preg_replace( '/[^0-9+]/', '', (string) $raw );
+	$p = preg_replace( '/^(\+?962)/', '0', $p );
+	return preg_match( '/^07[0-9]{8}$/', $p ) ? $p : '';
+}
+
 /* 🔴 التحقّق · بالخادم · وبيرجّع رسائل عربية واضحة بدل رفض عام */
 add_action( 'woocommerce_register_post', function ( $username, $email, $errors ) {  // LUVIT_REGISTER
 	$name = isset( $_POST['luvit_reg_name'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['luvit_reg_name'] ) ) ) : '';
@@ -1466,10 +1485,9 @@ add_action( 'woocommerce_register_post', function ( $username, $email, $errors )
 		$errors->add( 'luvit_name', 'اكتبي اسمك من فضلك.' );
 	}
 
-	$raw = isset( $_POST['luvit_reg_phone'] ) ? wp_unslash( $_POST['luvit_reg_phone'] ) : '';
-	$phone = preg_replace( '/[^0-9+]/', '', (string) $raw );
-	$phone = preg_replace( '/^(\+?962)/', '0', $phone );
-	if ( ! preg_match( '/^07[0-9]{8}$/', $phone ) ) {
+	$raw   = isset( $_POST['luvit_reg_phone'] ) ? wp_unslash( $_POST['luvit_reg_phone'] ) : '';
+	$phone = luvit_norm_phone( $raw );
+	if ( $phone === '' ) {
 		$errors->add( 'luvit_phone', 'رقم الموبايل لازم يبدأ بـ07 ويكون عشر أرقام.' );
 	}
 
@@ -1491,9 +1509,8 @@ add_action( 'woocommerce_created_customer', function ( $customer_id ) {  // LUVI
 		wp_update_user( array( 'ID' => $customer_id, 'display_name' => $name ) );
 	}
 
-	$raw = isset( $_POST['luvit_reg_phone'] ) ? wp_unslash( $_POST['luvit_reg_phone'] ) : '';
-	$phone = preg_replace( '/[^0-9+]/', '', (string) $raw );
-	$phone = preg_replace( '/^(\+?962)/', '0', $phone );
+	$raw   = isset( $_POST['luvit_reg_phone'] ) ? wp_unslash( $_POST['luvit_reg_phone'] ) : '';
+	$phone = luvit_norm_phone( $raw );
 	if ( $phone !== '' ) {
 		update_user_meta( $customer_id, 'billing_phone', $phone );
 	}

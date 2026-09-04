@@ -523,3 +523,212 @@ add_action( 'woocommerce_before_reset_password_form', function () {
    بتنربط بحسابها (woocommerce_customer_email_verified →
    wc_update_new_customer_past_orders). النصوص من ترجمة ووكومرس العربية. */
 
+/* ══════════════════════════════════════════════════════════════════════
+   ٦ · شاشة إكمال البيانات · /my-account/complete/ · ٤ أيلول
+   ══════════════════════════════════════════════════════════════════════
+   ريّان طلبها لما شرحت إنّ الدخول بجوجل بيجيب **الاسم والإيميل بس**،
+   و**رقم الموبايل وتاريخ الميلاد ما بيجوا منه** · والموبايل هو الحقل
+   التشغيلي عنّا لأن الدفع عند الاستلام بيمشي عليه.
+
+   ── 🔴 وانبنت مستقلّة عن جوجل بقصد ──────────────────────────────────
+   الشرط مش «سجّلت بجوجل» · هو **«حسابها ناقصه بيانات»**. فبتشتغل
+   من هلق على:
+     · حسابات انعملت من الشيك أوت (ووكومرس بيعملها بلا موبايل أحياناً)
+     · الحسابات القديمة اللي سبقت حقول التسجيل الجديدة
+     · وبكرا الداخلات بجوجل، بلا ولا سطر جديد
+   ⤷ يعني ما بتقعد كود ميت بانتظار إضافة لسا ما انركّبت ·
+     [[build-it-before-there-is-data]] · ريّان صحّحني بنفس النقطة قبل.
+
+   ── ⚠️ وليش نداء مش حجز ────────────────────────────────────────────
+   ما بتقفل الحساب ولا بتحوّل إجبارياً · بتحطّ بطاقة واضحة باللوحة
+   وبتفتح الشاشة لمّا تضغط. الحجز الكامل بيحبس زبونة عندها طلب شغّال
+   برّا حسابها، والشيك أوت أصلاً بيطلب الموبايل فما في خطر تشغيلي.
+
+   🔴 وفخّ نقاط النهاية: بلا `flush_rewrite_rules` بترجّع 404 · محروس
+      بخيار مرّة وحدة، ونفس القاعدة: بدّلت الاسم؟ بدّل اسم الخيار.
+   ══════════════════════════════════════════════════════════════════════ */
+add_action( 'init', function () {
+	add_rewrite_endpoint( 'complete', EP_ROOT | EP_PAGES );
+
+	if ( '1' !== get_option( 'luvit_complete_flushed' ) ) {
+		flush_rewrite_rules();
+		update_option( 'luvit_complete_flushed', '1' );
+	}
+} );
+
+/** شو ناقص بحساب المستخدمة الحالية · بترجّع مصفوفة فاضية لو كامل. */
+function luvit_profile_gaps() {
+	if ( ! is_user_logged_in() ) {
+		return array();
+	}
+	$uid  = get_current_user_id();
+	$gaps = array();
+	$name = trim( get_user_meta( $uid, 'first_name', true ) . ' ' . get_user_meta( $uid, 'last_name', true ) );
+	if ( $name === '' ) {
+		$gaps[] = 'name';
+	}
+	if ( trim( (string) get_user_meta( $uid, 'billing_phone', true ) ) === '' ) {
+		$gaps[] = 'phone';
+	}
+	if ( trim( (string) get_user_meta( $uid, 'luvit_dob', true ) ) === '' ) {
+		$gaps[] = 'dob';
+	}
+	return $gaps;
+}
+
+/* الحفظ · على `template_redirect` عشان الرسالة تبيّن بنفس الطلب */
+add_action( 'template_redirect', function () {
+	if ( ! isset( $_POST['luvit_complete_nonce'] ) || ! is_user_logged_in() ) {
+		return;
+	}
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['luvit_complete_nonce'] ) ), 'luvit_complete' ) ) {
+		wc_add_notice( 'انتهت الجلسة · جرّبي كمان مرة.', 'error' );
+		return;
+	}
+	$uid  = get_current_user_id();
+	$errs = 0;
+	$gaps = luvit_profile_gaps();
+
+	$name = isset( $_POST['luvit_c_name'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['luvit_c_name'] ) ) ) : '';
+	if ( $name !== '' ) {
+		$parts = preg_split( '/\s+/', $name, 2 );
+		update_user_meta( $uid, 'first_name', $parts[0] );
+		update_user_meta( $uid, 'last_name', isset( $parts[1] ) ? $parts[1] : '' );
+		update_user_meta( $uid, 'billing_first_name', $parts[0] );
+		update_user_meta( $uid, 'billing_last_name', isset( $parts[1] ) ? $parts[1] : '' );
+		wp_update_user( array( 'ID' => $uid, 'display_name' => $name ) );
+	} elseif ( in_array( 'name', $gaps, true ) ) {
+		wc_add_notice( 'اكتبي اسمك من فضلك.', 'error' );
+		$errs++;
+	}
+
+	/* 🔴 نفس دالة التطبيع تبعت التسجيل · مصدر واحد لا نسخة ثالثة */
+	$raw   = isset( $_POST['luvit_c_phone'] ) ? wp_unslash( $_POST['luvit_c_phone'] ) : '';
+	$phone = function_exists( 'luvit_norm_phone' ) ? luvit_norm_phone( $raw ) : '';
+	if ( $phone !== '' ) {
+		update_user_meta( $uid, 'billing_phone', $phone );
+	} elseif ( trim( (string) $raw ) !== '' ) {
+		wc_add_notice( 'رقم الموبايل لازم يبدأ بـ07 ويكون عشر أرقام.', 'error' );
+		$errs++;
+	} elseif ( in_array( 'phone', $gaps, true ) ) {
+		wc_add_notice( 'رقم الموبايل مطلوب · عليه منتواصل معك بالطلب.', 'error' );
+		$errs++;
+	}
+
+	$dob = isset( $_POST['luvit_c_dob'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['luvit_c_dob'] ) ) ) : '';
+	if ( $dob !== '' && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $dob ) && strtotime( $dob ) <= time() ) {
+		update_user_meta( $uid, 'luvit_dob', $dob );
+	} elseif ( $dob !== '' ) {
+		wc_add_notice( 'اختاري تاريخ ميلادك.', 'error' );
+		$errs++;
+	} elseif ( in_array( 'dob', $gaps, true ) ) {
+		wc_add_notice( 'اختاري تاريخ ميلادك.', 'error' );
+		$errs++;
+	}
+
+	if ( $errs === 0 ) {
+		wc_add_notice( 'تمام · بياناتك انحفظت.', 'success' );
+		wp_safe_redirect( wc_get_account_endpoint_url( 'dashboard' ) );
+		exit;
+	}
+}, 5 );
+
+add_action( 'woocommerce_account_complete_endpoint', function () {
+	$uid  = get_current_user_id();
+	$gaps = luvit_profile_gaps();
+	$name = trim( get_user_meta( $uid, 'first_name', true ) . ' ' . get_user_meta( $uid, 'last_name', true ) );
+
+	/* ⚠️ العنوان بينعدّ · أول نسخة كتبت «بضل معلومتين» ثابتة، وحساب
+	   الأدمن ناقصه **اثنتان** فطلعت صح بالصدفة. لو الناقص وحدة بتصير
+	   الصفحة بتكذب برقم صغير · وهاد بيكفي. */
+	$n     = count( $gaps );
+	$count = $n === 1 ? 'معلومة وحدة' : ( $n === 2 ? 'معلومتين' : $n . ' معلومات' );
+
+	/* ⚠️ والرأس نفسه بيتغيّر لمّا ما يكون في نقص · وإلا الصفحة بتقول
+	   «بضل ٠ معلومات · خطوة أخيرة» وتحتها «بياناتك كاملة». */
+	$eyebrow = $n ? 'خطوة أخيرة' : 'حسابك';
+	$title   = $n ? 'بضل ' . $count : 'كلّه تمام';
+	$sub     = $n
+		? 'عشان نقدر نوصّلك الطلب ونحكي معك لو احتجنا · <strong>ما بتتنشر ولا بتنشارك مع حدا</strong>.'
+		: 'ما في إشي ناقص بحسابك.';
+
+	/* 🔴 **`h2` وكلاسات النادي · لا `luvit-acct-head` ولا `h1`.**
+	   غلاف الحساب بيطبع تحيته على **كل** صفحة داخلية، فأول نسخة طلّعت
+	   ترويستين فوق بعض و**ثلاث `h1` بصفحة وحدة** (مقيس: «حسابي» ·
+	   «أهلاً، Luv it» · «بضل معلومتين»). وهاد كسر تخطيط وكسر دلالة سوا.
+	   ⤷ والكلاسات هي نفسها تبعت `/my-account/club/` بقصد · صفحتان
+	     جارتان بنفس السياق لازم يقرأوا نفس القراءة، وبلا ولا سطر CSS
+	     جديد. [[one-template-across-pages-reads-as-default]] بالمقلوب:
+	     التناسق هون مطلوب لأنّ السياق **فعلاً** واحد. */
+	echo '<div class="luvit-complete luvit-drops">';
+	echo '<p class="luvit-acct-card__eyebrow">' . esc_html( $eyebrow ) . '</p>'
+		. '<h2 class="luvit-drops__title">' . esc_html( $title ) . '</h2>'
+		. '<p class="luvit-drops__sub">' . $sub . '</p>';
+
+	if ( ! $gaps ) {
+		echo '<p class="luvit-complete__done">بياناتك كاملة · ما في إشي ناقص.</p>';
+		echo '<a class="luvit-btn luvit-btn--arrow" href="' . esc_url( wc_get_account_endpoint_url( 'dashboard' ) ) . '">رجوع للوحة</a>';
+		echo '</div>';
+		return;
+	}
+
+	echo '<form class="woocommerce-form luvit-complete__form" method="post">';
+	wp_nonce_field( 'luvit_complete', 'luvit_complete_nonce' );
+
+	if ( in_array( 'name', $gaps, true ) ) {
+		echo '<p class="woocommerce-form-row form-row form-row-wide">'
+			. '<label for="luvit_c_name">الاسم&nbsp;<span class="required">*</span></label>'
+			. '<input type="text" class="woocommerce-Input woocommerce-Input--text input-text"'
+			. ' name="luvit_c_name" id="luvit_c_name" autocomplete="name"'
+			. ' value="' . esc_attr( $name ) . '" required>'
+			. '</p>';
+	}
+	if ( in_array( 'phone', $gaps, true ) ) {
+		echo '<p class="woocommerce-form-row form-row form-row-wide">'
+			. '<label for="luvit_c_phone">رقم الموبايل&nbsp;<span class="required">*</span></label>'
+			. '<input type="tel" class="woocommerce-Input woocommerce-Input--text input-text"'
+			. ' name="luvit_c_phone" id="luvit_c_phone" autocomplete="tel"'
+			. ' inputmode="numeric" placeholder="07XXXXXXXX" required>'
+			. '<span class="luvit-complete__hint">عليه منتواصل معك وقت التوصيل.</span>'
+			. '</p>';
+	}
+	if ( in_array( 'dob', $gaps, true ) ) {
+		$privacy = esc_url( home_url( '/privacy/' ) );
+		echo '<p class="woocommerce-form-row form-row form-row-wide">'
+			. '<label for="luvit_c_dob">تاريخ الميلاد&nbsp;<span class="required">*</span></label>'
+			. '<input type="date" class="woocommerce-Input woocommerce-Input--text input-text"'
+			. ' name="luvit_c_dob" id="luvit_c_dob" autocomplete="bday"'
+			. ' max="' . esc_attr( gmdate( 'Y-m-d' ) ) . '" required>'
+			. '<span class="luvit-complete__hint">منستعمله عشان التوصيات تناسب عمر بشرتك · '
+			. '<a href="' . $privacy . '">سياسة الخصوصية</a>.</span>'
+			. '</p>';
+	}
+
+	echo '<p class="form-row"><button type="submit" class="woocommerce-Button button luvit-btn">احفظي</button></p>';
+	echo '</form>';
+	echo '</div>';
+} );
+
+/* النداء باللوحة · بطاقة بتبيّن بس لو في نقص · وبتختفي لحالها لما يكتمل */
+add_action( 'woocommerce_account_dashboard', function () {
+	$gaps = luvit_profile_gaps();
+	if ( ! $gaps ) {
+		return;
+	}
+	$what = array();
+	if ( in_array( 'name', $gaps, true ) ) {
+		$what[] = 'اسمك';
+	}
+	if ( in_array( 'phone', $gaps, true ) ) {
+		$what[] = 'رقم موبايلك';
+	}
+	if ( in_array( 'dob', $gaps, true ) ) {
+		$what[] = 'تاريخ ميلادك';
+	}
+
+	echo '<div class="luvit-gap-call">'
+		. '<p class="luvit-gap-call__title">بضل ' . esc_html( implode( ' و', $what ) ) . '</p>'
+		. '<p class="luvit-gap-call__line">دقيقة وبتخلص · وبعدها طلباتك بتمشي بلا ما نسألك كل مرة.</p>'
+		. '<a class="luvit-gap-call__btn" href="' . esc_url( wc_get_account_endpoint_url( 'complete' ) ) . '">كمّلي بياناتك</a>'
+		. '</div>';
+}, 4 );
