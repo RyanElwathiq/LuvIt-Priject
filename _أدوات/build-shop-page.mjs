@@ -227,6 +227,26 @@ function productCard(p) {
   parts.push('          </button>');
   parts.push(`          <img decoding="async" width="800" height="1000"`);
   parts.push(`               src="${esc(img.src)}" alt="${esc(p.name)}">`);
+
+  /* 🔴 صورة الهوفر = بطاقة الفوائد · ٤ أيلول
+     من جرد موقع الوكالة: الصورة الثانية على كرت المنتج بالشبكة عندهم
+     **هي بطاقة الفوائد لا لقطة موديل**، والإنفوجرافيك بيغلب اللايف ستايل
+     ٤:١ (٨١ مقابل ٢٠ صورة). يعني اللي بيبيع بالشبكة هو **الشرح المصوَّر**.
+
+     ⚠️ وبتنضاف **بس لما يكون الملف موجود فعلاً** · منتجان (سنتيلا وواقي
+        الشمس) لساهم برّا الكتالوج فما إلهم مكوّنات فما إلهم بطاقة.
+        وحطّ رابطاً لملف مش موجود بيعطي 404 صامتاً بالهوفر.
+
+     والنصّ البديل بيسمّي **الدور** لا الشكل · نفس منهجهم، وبيخدم بحث
+     الصور: «صورة معلوماتية بتشرح مكوّنات X» بتلتقط بحثاً ما بتلتقطه
+     صورة اسمها serum.jpg. */
+  const flip = path.join(REPO, 'library', 'img', 'benefits', `luvit-${p.slug}-benefits.webp`);
+  if (fs.existsSync(flip)) {
+    parts.push(`          <img class="luvit-card__flip" decoding="async" loading="lazy"`);
+    parts.push(`               width="1200" height="1200"`);
+    parts.push(`               src="https://plasmajo.com/wp-content/uploads/2026/09/luvit-${p.slug}-benefits.webp"`);
+    parts.push(`               alt="صورة معلوماتية بتشرح مكوّنات ${esc(p.name)} ونِسَبها">`);
+  }
   parts.push('        </div>');
   parts.push('        <div class="luvit-card__body">');
   parts.push('          <div class="luvit-card__head">');

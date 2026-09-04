@@ -799,6 +799,37 @@ h1, h2, h3, h4, .luvit-heading {
   stroke-linejoin: round;
   transition: fill var(--duration-instant) var(--ease-out-soft);
 }
+/* ---- CARD-FLIP · ٤ أيلول · بطاقة الفوائد على هوفر كرت المنتج -------
+   من جرد موقع الوكالة: الصورة الثانية على الكرت عندهم **بطاقة الفوائد**
+   لا لقطة موديل، والإنفوجرافيك بيغلب اللايف ستايل ٤:١. يعني اللي بيبيع
+   بالشبكة هو الشرح المصوَّر.
+
+   🔴 **وهوفر فقط بمؤشّر حقيقي** · على اللمس الهوفر بيعلق بعد الضغطة
+      لحد ما تضغطي مكاناً تانياً · نفس الفخّ اللي مسكه ريّان بالقلب.
+      ⤷ فعلى الموبايل البطاقة ما بتظهر هون · بتظهر **بمعرض صفحة المنتج**
+        وهي صورة حقيقية بالمعرض لا حيلة CSS، فبتشتغل بكل جهاز.
+
+   ⚠️ و`pointer-events: none` إلزامية · الصورة بتغطّي الكرت كامل، وبلاها
+      بتبلع الضغطة وبتكسر رابط المنتج والقلب سوا. */
+.luvit-card__media { position: relative; }
+.luvit-card__flip {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .38s var(--ease-out-soft, ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-card:hover .luvit-card__flip,
+  .luvit-card:focus-within .luvit-card__flip { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .luvit-card__flip { transition: none; }
+}
+
 /* ---- RT-SWAP · ٤ أيلول · مبدّل نوع البشرة بروتين توحيد اللون --------
    ريّان: «الروتين ينقسم لنوعين ولازم نفصل بينهم ونحطهم بين خيارات ·
    وهاي لعبتك بالـUX». وبعدها: «استلهم من 21st.dev».
