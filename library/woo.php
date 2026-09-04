@@ -1271,3 +1271,128 @@ add_action( 'init', function () {  // LUVIT_SEO_META
 		}
 	}
 } );
+
+/* ==========================================================================
+   LUVIT_REGISTER · حقول التسجيل · ٤ أيلول
+   ==========================================================================
+   ريّان: «المعلومات اللي بدنا إياها بالتسجيل وضرورية: رقم التلفون والاسم
+   والباسوورد والإيميل وتاريخ الميلاد · وحذف اسم العرض. والترتيب اللي
+   أعطيتك إياه عشوائي رتّبه إنت».
+
+   ── الترتيب · وليش هيك ──────────────────────────────────────────────
+     ١ الاسم        · أول سؤال بشري لا تقني
+     ٢ رقم الموبايل · **الحقل التشغيلي** · الدفع عند الاستلام بيمشي عليه،
+                      وعليه بيمشي مسار الواتساب اللي ريّان جهّز رقمه
+     ٣ البريد       · ووكومرس بيطلبه إلزامياً · وعليه بتروح إيميلات الطلب
+     ٤ تاريخ الميلاد
+     ٥ كلمة السر    · آخر إشي · العُرف إنّ الأمان بيجي بالنهاية
+
+   🔴 **وكانت الصفحة فيها الإيميل وحده** · مقيس بجلب مجهول لصفحة الحساب:
+      حقل واحد `email` وبس، بلا كلمة سر أصلاً (ووكومرس كان بيولّدها).
+
+   ⚠️ **والتحقّق بالخادم لا بالمتصفّح وحده** · `required` بالماركب بتتشال
+      من أدوات المطوّر بثانية. الفحص تحت بـ`woocommerce_register_post`.
+
+   ⚠️ ورقم الموبايل الأردني: يبدأ بـ07 وطوله ١٠، أو بصيغة دولية 9627xxxxxxxx.
+      بنقبل الاثنين وبنخزّن المحلي، وبنشيل أي مسافات أو شرطات قبل الفحص
+      عشان ما نرفض رقماً صحيحاً مكتوباً بشكل تاني.
+
+   🔴 **وتاريخ الميلاد بيانات شخصية** تحت قانون حماية البيانات الأردني
+      ٢٤/٢٠٢٣ · وصفحة الخصوصية **لازم تذكره صراحة** قبل ما نجمعه فعلياً.
+      مسجّل كبند مفتوح · [[دفعة-صاحب-العلامة]].
+   ========================================================================== */
+add_action( 'woocommerce_register_form_start', function () {  // LUVIT_REGISTER
+	$v = function ( $k ) { return isset( $_POST[ $k ] ) ? esc_attr( wp_unslash( $_POST[ $k ] ) ) : ''; };
+	$row = 'woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide';
+	$cls = 'woocommerce-Input woocommerce-Input--text input-text';
+
+	echo '<p class="' . $row . '">'
+		. '<label for="luvit_reg_name">الاسم&nbsp;<span class="required">*</span></label>'
+		. '<input type="text" class="' . $cls . '" name="luvit_reg_name" id="luvit_reg_name"'
+		. ' autocomplete="name" value="' . $v( 'luvit_reg_name' ) . '" required>'
+		. '</p>';
+
+	echo '<p class="' . $row . '">'
+		. '<label for="luvit_reg_phone">رقم الموبايل&nbsp;<span class="required">*</span></label>'
+		. '<input type="tel" class="' . $cls . '" name="luvit_reg_phone" id="luvit_reg_phone"'
+		. ' autocomplete="tel" inputmode="numeric" placeholder="07XXXXXXXX"'
+		. ' value="' . $v( 'luvit_reg_phone' ) . '" required>'
+		. '</p>';
+}, 5 );
+
+/* تاريخ الميلاد · بينزل بعد البريد وقبل كلمة السر */
+add_action( 'woocommerce_register_form', function () {  // LUVIT_REGISTER
+	$dob = isset( $_POST['luvit_reg_dob'] ) ? esc_attr( wp_unslash( $_POST['luvit_reg_dob'] ) ) : '';
+	echo '<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">'
+		. '<label for="luvit_reg_dob">تاريخ الميلاد&nbsp;<span class="required">*</span></label>'
+		. '<input type="date" class="woocommerce-Input woocommerce-Input--text input-text"'
+		. ' name="luvit_reg_dob" id="luvit_reg_dob" autocomplete="bday"'
+		. ' max="' . esc_attr( gmdate( 'Y-m-d' ) ) . '" value="' . $dob . '" required>'
+		. '</p>';
+}, 20 );
+
+/* 🔴 التحقّق · بالخادم · وبيرجّع رسائل عربية واضحة بدل رفض عام */
+add_action( 'woocommerce_register_post', function ( $username, $email, $errors ) {  // LUVIT_REGISTER
+	$name = isset( $_POST['luvit_reg_name'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['luvit_reg_name'] ) ) ) : '';
+	if ( $name === '' ) {
+		$errors->add( 'luvit_name', 'اكتبي اسمك من فضلك.' );
+	}
+
+	$raw = isset( $_POST['luvit_reg_phone'] ) ? wp_unslash( $_POST['luvit_reg_phone'] ) : '';
+	$phone = preg_replace( '/[^0-9+]/', '', (string) $raw );
+	$phone = preg_replace( '/^(\+?962)/', '0', $phone );
+	if ( ! preg_match( '/^07[0-9]{8}$/', $phone ) ) {
+		$errors->add( 'luvit_phone', 'رقم الموبايل لازم يبدأ بـ07 ويكون عشر أرقام.' );
+	}
+
+	$dob = isset( $_POST['luvit_reg_dob'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['luvit_reg_dob'] ) ) ) : '';
+	if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $dob ) || strtotime( $dob ) > time() ) {
+		$errors->add( 'luvit_dob', 'اختاري تاريخ ميلادك.' );
+	}
+}, 10, 3 );
+
+/* الحفظ · الاسم بيروح لحقول ووكومرس الحقيقية عشان الشيك أوت يعبّيها لحاله */
+add_action( 'woocommerce_created_customer', function ( $customer_id ) {  // LUVIT_REGISTER
+	$name = isset( $_POST['luvit_reg_name'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['luvit_reg_name'] ) ) ) : '';
+	if ( $name !== '' ) {
+		$parts = preg_split( '/\s+/', $name, 2 );
+		update_user_meta( $customer_id, 'first_name', $parts[0] );
+		update_user_meta( $customer_id, 'last_name', isset( $parts[1] ) ? $parts[1] : '' );
+		update_user_meta( $customer_id, 'billing_first_name', $parts[0] );
+		update_user_meta( $customer_id, 'billing_last_name', isset( $parts[1] ) ? $parts[1] : '' );
+		wp_update_user( array( 'ID' => $customer_id, 'display_name' => $name ) );
+	}
+
+	$raw = isset( $_POST['luvit_reg_phone'] ) ? wp_unslash( $_POST['luvit_reg_phone'] ) : '';
+	$phone = preg_replace( '/[^0-9+]/', '', (string) $raw );
+	$phone = preg_replace( '/^(\+?962)/', '0', $phone );
+	if ( $phone !== '' ) {
+		update_user_meta( $customer_id, 'billing_phone', $phone );
+	}
+
+	$dob = isset( $_POST['luvit_reg_dob'] ) ? sanitize_text_field( wp_unslash( $_POST['luvit_reg_dob'] ) ) : '';
+	if ( $dob !== '' ) {
+		update_user_meta( $customer_id, 'luvit_dob', $dob );
+	}
+} );
+
+/* ── حذف «اسم العرض» من صفحة تفاصيل الحساب ──────────────────────────
+   ريّان: «وحذف اسم العرض».
+   🔴 ووكومرس ما بيعطي فلتراً لشيل الحقل من `form-edit-account.php`،
+      فبينخفى بالـCSS **وبينضبط من الخادم** على الاسم الكامل. الاخفاء
+      لحاله ما بيكفي: الحقل بيضل ينبعت ولو انبعت فاضياً ووردبريس بيرفض
+      الحفظ برسالة عن حقل الزبونة ما بتشوفه أصلاً. */
+add_filter( 'woocommerce_save_account_details_required_fields', function ( $fields ) {  // LUVIT_REGISTER
+	unset( $fields['account_display_name'] );
+	return $fields;
+} );
+add_action( 'woocommerce_save_account_details', function ( $user_id ) {  // LUVIT_REGISTER
+	$u = get_userdata( $user_id );
+	if ( ! $u ) {
+		return;
+	}
+	$full = trim( get_user_meta( $user_id, 'first_name', true ) . ' ' . get_user_meta( $user_id, 'last_name', true ) );
+	if ( $full !== '' && $full !== $u->display_name ) {
+		wp_update_user( array( 'ID' => $user_id, 'display_name' => $full ) );
+	}
+} );
