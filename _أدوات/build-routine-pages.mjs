@@ -160,8 +160,35 @@ function assertClasses(html, file) {
   return used.size;
 }
 
+/**
+ * تسعير الروتين · **مجموع القطع** مقابل **السعر الفعلي** بووكومرس.
+ *
+ * 🔴 لحد ٣ أيلول كان الاثنان متطابقين، وكان مكتوباً بالصفحة إن سعر البكج
+ *    «مجموع قطعه بالضبط · مش خصماً» · وكان صحيحاً وقتها.
+ *    بـ٤ أيلول حطّ ريّان سياسة جديدة (١٠٪ دائم + ١٣ د.أ عرض إطلاق)،
+ *    فصار السعران مختلفين **والنصّ القديم صار كذباً**. الدالة هاي هي
+ *    اللي بتخلّي كل موضع بالصفحة يقرا الحقيقة بدل ما يفترضها.
+ *
+ * ⚠️ والسعر بيجي من **لقطة ووكومرس** لا من حساب محلي · فلو ريّان غيّر
+ *    السعر من اللوحة، الصفحة بتتغيّر بعد `sync-woo-snapshot.mjs` بلا ما
+ *    ينلمس ولا سطر هون. رقم مكتوب بالإيد كان بينحرف حتماً.
+ */
+function تسعير(r, total) {
+  const pack = woo.منتجات.find((x) => x.id === r.wooId);
+  const now  = pack && pack.price ? Number(pack.price) : total;
+  const round = (n) => Math.round(n * 100) / 100;
+  const saves = round(total - now);
+  return {
+    now,
+    saves,
+    pct: saves > 0 ? Math.round((saves / total) * 100) : 0,
+    onSale: saves > 0,
+  };
+}
+
 function page(r) {
   const total  = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
+  const سعر    = تسعير(r, total);
   const others = ROUTINES.filter((x) => x.key !== r.key);
   /* 🔴 صورة البكج للرأس · نفس حارس hub() حرفياً · قيمة فاضية
      بتوصل الصفحة نصّاً (فخّ مسجّل) فالوقوف أحسن من صفحة مكسورة. */
@@ -255,8 +282,12 @@ function page(r) {
 
           <li class="rt-shallow__fact">
             <span class="rt-shallow__label">السعر</span>
-            <span class="rt-shallow__value"><span dir="ltr">${total.toFixed(2)}</span> د.أ</span>
-            <span class="rt-shallow__note">مجموع قطعه بالضبط</span>
+            <span class="rt-shallow__value">${سعر.onSale
+              ? `<s class="rt-shallow__was"><span dir="ltr">${total.toFixed(2)}</span> د.أ</s> <span dir="ltr">${سعر.now.toFixed(2)}</span> د.أ`
+              : `<span dir="ltr">${total.toFixed(2)}</span> د.أ`}</span>
+            <span class="rt-shallow__note">${سعر.onSale
+              ? `وفّرتِ ${سعر.saves.toFixed(2)} د.أ`
+              : 'مجموع قطعه بالضبط'}</span>
           </li>
 
         </ul>
@@ -377,12 +408,13 @@ ${r.steps.map(([k]) => {
 }).join('\n\n')}
 
       <div class="luvit-ing__row">
-        <span class="luvit-ing__pct">${total}</span>
+        <span class="luvit-ing__pct">${سعر.onSale ? سعر.now : total}</span>
         <div class="luvit-ing__body">
-          <p class="luvit-ing__name">المجموع</p>
+          <p class="luvit-ing__name">${سعر.onSale ? 'سعر الروتين' : 'المجموع'}</p>
           <p class="luvit-ing__note">
-            سعر البكج هو مجموع المنتجات ${معرَّف(r.steps.length)} بالضبط · البكج بيسهّل عليك
-            الاختيار والترتيب، مش خصماً.
+            ${سعر.onSale
+              ? `المنتجات ${معرَّف(r.steps.length)} لحالهن بـ${total.toFixed(2)} د.أ · وبعرض الإطلاق الروتين بـ${سعر.now.toFixed(2)}، يعني وفّرتِ ${سعر.saves.toFixed(2)} د.أ. والرقم المشطوب مش رقماً منرفعه عشان ننزّله · كل قطعة معروضة بسعرها بالمتجر وبتقدري تجمعيهن وتتأكدي.`
+              : `سعر البكج هو مجموع المنتجات ${معرَّف(r.steps.length)} بالضبط · البكج بيسهّل عليك الاختيار والترتيب، مش خصماً.`}
           </p>
         </div>
       </div>
@@ -391,7 +423,7 @@ ${r.steps.map(([k]) => {
     <div class="luvit-section__foot">
       <a class="luvit-btn luvit-btn--arrow add_to_cart_button ajax_add_to_cart"
          href="/?add-to-cart=${r.wooId}" data-quantity="1"
-         data-product_id="${r.wooId}" rel="nofollow">أضيفي البكج للسلة · ${total.toFixed(2)} د.أ</a>
+         data-product_id="${r.wooId}" rel="nofollow">أضيفي البكج للسلة · ${سعر.now.toFixed(2)} د.أ</a>
       <a class="luvit-btn luvit-btn--ghost" href="/product/${r.slug}/">تفاصيل البكج</a>
     </div>
 
@@ -537,6 +569,7 @@ function hub() {
 
 ${ROUTINES.map((r, ri) => {
   const total = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
+  const سعر = تسعير(r, total);
   const pack = woo.منتجات.find((x) => x.id === r.wooId);
   if (!pack || !pack.images.length) {
     console.error(String.fromCharCode(0x1F534) + " ما لقيت صورة بكج " + r.key);
@@ -563,7 +596,9 @@ ${bottles(r)}
 
         <div class="luvit-card__footer">
           <span class="luvit-card__pricewrap">
-            <span class="luvit-card__price"><span dir="ltr">${total.toFixed(2)}</span> د.أ</span>
+            ${سعر.onSale ? `<s class="luvit-card__was"><span dir="ltr">${total.toFixed(2)}</span> د.أ</s>` : ''}
+            <span class="luvit-card__price"><span dir="ltr">${(سعر.onSale ? سعر.now : total).toFixed(2)}</span> د.أ</span>
+            ${سعر.onSale ? `<span class="luvit-card__save">وفّرتِ ${سعر.saves.toFixed(2)} د.أ</span>` : ''}
             <span class="luvit-card__ship">والتوصيل مجاني</span>
           </span>
           <a class="luvit-btn luvit-btn--arrow" href="/routines/${r.key}">شوفي الروتين</a>
@@ -664,7 +699,8 @@ let n = 0;for (const r of ROUTINES) {
   assertNoEmpty(html, r.file);
   fs.writeFileSync(path.join(OUT, r.file), html, 'utf8');
   const total = r.steps.reduce((s, [k]) => s + Number(P[k].price), 0);
-  console.log(`✅ ${r.file.padEnd(22)} ${String(total).padStart(2)} د.أ · ${nClasses} كلاس كلهم معرّفين · ${html.length} حرف`);
+  const سعر = تسعير(r, total);
+  console.log(`✅ ${r.file.padEnd(22)} ${String(سعر.onSale ? سعر.now : total).padStart(2)} د.أ · ${nClasses} كلاس كلهم معرّفين · ${html.length} حرف`);
   n++;
 }
 /* الهَب */
