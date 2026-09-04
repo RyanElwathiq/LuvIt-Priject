@@ -19096,3 +19096,43 @@ body.has-topbar { --topbar-h: 40px; }
   }
 }
 /* MOBILE-4SEP:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PT-TERMS:START · شروط عمولة الشركاء · ٤ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   بتنطبع من `LUVIT_AFFILIATE_HEAD` على صفحتَي الشركاء (480 · 481) جوّا
+   رأس غامق · فألوانها كلها على أساس أرضية غامقة.
+
+   ⚠️ ومش بطاقات · قائمة. البطاقة بتعمل شبكة وبتتصارع مع `.rt-flow` اللي
+      فوقها بصفحة الانضمام · والقائمة بتقرا كشروط لا كمزايا، وهاد المقصود.
+   ═══════════════════════════════════════════════════════════════════════ */
+.pt-terms {
+  list-style: none;
+  margin: var(--space-5, 1.25rem) 0 0;
+  padding: var(--space-4, 1rem) var(--space-5, 1.25rem);
+  border-radius: var(--radius-lg, 18px);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: grid;
+  gap: var(--space-3, .75rem);
+}
+.pt-terms__item {
+  position: relative;
+  padding-inline-start: var(--space-5, 1.25rem);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: var(--text-body-sm, .875rem);
+  line-height: 1.7;
+}
+/* النقطة · `inset-inline-start` عشان تنقلب لحالها بالـRTL بلا كشف اتجاه */
+.pt-terms__item::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: .62em;
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background: var(--aqua-300, #7FD9EA);
+}
+.pt-terms__item strong { color: #FFFFFF; font-weight: 700; }
+/* PT-TERMS:END */

@@ -466,6 +466,28 @@ add_filter( 'the_content', function ( $content ) {
 			. '</div>';
 	}
 
+	/* ── شروط العمولة · على الصفحتين · ٤ أيلول ──────────────────────────
+	   ريّان: «شغلة مهمة كثير · وضّح إنه نهاية كل شهر بيتم إيداع الأموال
+	   للمؤثرات بالداشبورد تبعهم».
+
+	   🔴 **والأرقام هون مربوطة بإعدادات حقيقية مقيسة، مش كلاماً:**
+	     ١٠٪ خصم    = كوبون `luvit-partner-template` (percent · 10)
+	     ١٠٪ عمولة  = `wcusage_field_affiliate` بإضافة Coupon Affiliates
+	     «مكتمل»    = `wcusage_payout_status` = `wc-completed`
+
+	   ⚠️ وصياغة الاستحقاق **دقيقة بقصد**: الطلب بيبيّن باللوحة فوراً،
+	      بس العمولة ما بتصير قابلة للصرف إلا لما الطلب يتسجّل «مكتمل» ·
+	      وهاد إعداد الإضافة لا رأيي. كتابة «بتوصلك فوراً» بتكون وعداً
+	      بإشي النظام ما بيعمله. */
+	$terms = '<ul class="pt-terms" data-luvit="stagger">'
+		. '<li class="pt-terms__item"><strong>١٠٪ خصم</strong> للزبونة اللي بتستعمل كودك ·'
+		. ' وبينضاف <strong>فوق</strong> عروضنا الشغّالة مش بدلها.</li>'
+		. '<li class="pt-terms__item"><strong>١٠٪ إلك</strong> من قيمة الطلب ·'
+		. ' والطلب بيبيّن بلوحتك فوراً، والعمولة بتصير مستحقّة لما يتسجّل «مكتمل».</li>'
+		. '<li class="pt-terms__item"><strong>والتحويل آخر كل شهر</strong> ·'
+		. ' منجمّع أرباح الشهر ومنودّيها، وكل حركة مكتوبة بلوحتك.</li>'
+		. '</ul>';
+
 	/* ── الشريحة · فاضية بتنتظر على صفحة الانضمام، وباسمها باللوحة ──
 	   🔴 والكود **ما بينطبع هون بقصد**: الإضافة بتطبعه أصلاً على بعد
 	      ~100px تحت بـ`.wcu-coupon-title`، ونسخة تانية بتضمن الانحراف
@@ -516,6 +538,7 @@ add_filter( 'the_content', function ( $content ) {
 	$head .= '<h1 class="luvit-section__title">' . esc_html( $title ) . '</h1>';
 	$head .= '<p class="luvit-section__sub">' . esc_html( $sub ) . '</p>';
 	$head .= $flow;
+	$head .= $terms;
 	$head .= '</div>';
 	$head .= '<div class="pt-mark">' . $rings . $chip . '</div>';
 	$head .= '</div></div></section>';
