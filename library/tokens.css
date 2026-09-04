@@ -3758,6 +3758,83 @@ body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-error {
   list-style: none;
 }
 
+/* ---- NOTICE-LAYOUT · ٤ أيلول · الصح كان راكباً على النص ----------------
+   ريّان وريّاني الباغ مرتين بصورتين: «الصح الأخضر داخل جوّا الكلام وزر
+   عرض السلة مش على الهوية تبعتنا».
+
+   🔴 والسبب مقيس لا مخمَّن · قراءة القيم المحسوبة على العنصر الحي:
+     · `::before` عليها `position: absolute` و`inset-inline-start: 24px`
+     · وحشوة الصندوق `16px`، يعني النص بيبدأ عند ١٦ والصح عند ٢٤
+     ⤷ **فحتمي يتراكبوا** · مش مسألة شاشة ولا متصفّح.
+
+   ⚠️ ومحتواها **\e015** من خطّ `WooCommerce` (مفحوص: الخط محمّل وطول
+      المحتوى ٣ رموز). قراءتي الأولى رجّعت «فاضي» لأن رمز المنطقة الخاصة
+      بيضيع بالتسلسل · **لو صدّقتها كنت شلت الصح كله وأنا بحسبه ميتاً.**
+
+   ── الحل ────────────────────────────────────────────────────────────
+   الصندوق بيصير `flex`، والصح بيصير **عنصر flex حقيقي** بدل ما يكون
+   عائماً فوق النص. ولا حاجة لحشوة تعويضية ولا تخمين مسافات.
+
+   🔴 و`::after` **لازم تنطفي** · هي clearfix (`display: table`)، وبصندوق
+      flex بتصير **عنصراً ثالثاً** بياخد مساحة ويكسر المحاذاة. وهاي نفس
+      فئة الباغ اللي أكلت خانة بشبكة المتجر · القاعدة اتعلّمناها وهاي أول
+      مرة بتنطبّق قبل ما تصير المشكلة لا بعدها.
+   ------------------------------------------------------------------- */
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-message,
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* الصح · من عائم فوق النص لعنصر له مكانه · وبلون العلامة لا أخضر ووكومرس */
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-message::before,
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-info::before {
+  position: static;
+  inset: auto;
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--aqua-600, #29A9C0);
+}
+
+/* 🔴 clearfix بصندوق flex بيصير عنصراً · بينطفي */
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-message::after,
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-info::after {
+  display: none;
+}
+
+/* النص بياخد المساحة الباقية، والزر بينزاح لآخر السطر */
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-message > .button,
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-info > .button {
+  margin-inline-start: auto;
+  float: none;
+
+  /* زرّ ثانوي بهويّتنا · مطابق لـ.luvit-btn--ghost بس أصغر، لأنه تأكيد
+     مش نداء رئيسي · والنداء الرئيسي بالصفحة بيضل «أضيفي إلى السلة». */
+  background: transparent;
+  color: var(--aqua-600);
+  border: 1.5px solid var(--aqua-300);
+  border-radius: var(--radius-pill);
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-small, 0.9rem);
+  padding: 8px 20px;
+  transition: background var(--duration-instant) var(--ease-out-soft),
+              border-color var(--duration-instant) var(--ease-out-soft);
+}
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-message > .button:hover,
+body.woocommerce-page .woocommerce-notices-wrapper .woocommerce-info > .button:hover {
+  background: var(--color-paper, #FFFFFF);
+  border-color: var(--aqua-400);
+  color: var(--aqua-700);
+}
+
 /* ==========================================================================
    5.1 · SHOP  (/shop · classic loop · selectors from live capture)
    ========================================================================== */
