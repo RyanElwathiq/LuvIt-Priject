@@ -19176,7 +19176,15 @@ body.has-topbar { --topbar-h: 40px; }
     /* اللوح بيلزق مع التمرير · الفورم أطول منه بكثير بوضع التسجيل */
     position: sticky;
     inset-block-start: calc(var(--nav-h, 64px) + var(--nav-inset, 12px) * 2 + var(--topbar-h, 0px) + var(--space-4, 1rem));
-    min-block-size: 520px;
+
+    /* 🔴 كان `min-block-size: 520px` **ثابتة** · ريّان: «ما تعملها طويلة
+       لدرجة إنه نحتاج نعمل سكرول إلها».
+       المقيس على 1280×720: أعلى اللوح عند 142 وارتفاعه 520 فآخره 662 ·
+       داخل الإطار بالكاد. وعلى لابتوب إطاره ~600 بيطلع **برّا**.
+       ⤷ فالارتفاع صار يتبع الشاشة: أدنى معقول، وسقف بيضمن إنه بيبان
+         كامل بلا تمرير مهما قصرت الشاشة. */
+    min-block-size: min(420px, calc(100dvh - 200px));
+    max-block-size: calc(100dvh - 180px);
   }
 }
 
@@ -19209,13 +19217,19 @@ body.has-topbar { --topbar-h: 40px; }
   inset: 0;
   background: linear-gradient(to top, rgba(6, 34, 40, .82) 0%, rgba(6, 34, 40, .30) 46%, rgba(6, 34, 40, 0) 72%);
 }
+/* 🔴 `position: absolute; inset: 0` **لا** `block-size: 100%`.
+   النسبة المئوية بدها أباً بارتفاع **محدَّد**، و`.auth-side` ارتفاعه
+   جاي من `min-block-size` جوّا شبكة لاصقة · فما بتنحلّ.
+   المقيس قبل الإصلاح: اللوح 420 والجسم 209 · يعني **211 بكسل فاضية
+   تحت النصّ**، والحجاب (متدرّج من تحت) بيحمي مكاناً ما فيه كلام.
+   والعين شافتها قبل ما أقيسها · [[layout-breaks-that-no-gate-can-see]]. */
 .auth-side__body {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  block-size: 100%;
   padding: var(--space-7, 2rem);
 }
 .auth-side__eyebrow {
@@ -19226,11 +19240,15 @@ body.has-topbar { --topbar-h: 40px; }
   color: var(--aqua-300, #7FD9EA);
   letter-spacing: 0;               /* عربي · صفر تباعد */
 }
+/* ⚠️ الأبيات بتنكتب سطراً سطراً · `<br>` لا التفاف تلقائي، عشان الشطر
+   ما ينكسر بمكان عشوائي لمّا يضيق اللوح. و`text-wrap: balance` بتوزّع
+   أي التفاف اضطراري بالتساوي بدل ما تترك كلمة يتيمة بسطر. */
 .auth-side__quote {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
-  line-height: 1.65;
+  font-size: clamp(1.2rem, 1.5vw, 1.65rem);
+  line-height: 1.9;
+  text-wrap: balance;
   color: #FFFFFF;
 }
 .auth-side__by {
