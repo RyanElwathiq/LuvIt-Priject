@@ -578,6 +578,13 @@ ${ROUTINES.map((r, ri) => {
   return `    <article class="luvit-card luvit-card--feature luvit-card--routine" data-goal="${r.key}" data-luvit="reveal">
 
       <div class="luvit-card__media">
+        <!-- 🔴 المفضّلة · ٤ أيلول · نفس زر المنتج المفرد حرفياً.
+             المعرّف هو معرّف ووكومرس، وهو الجسر الوحيد لصفحة المفضّلة.
+             والضغطة مفوَّضة على document فما بده تسجيل. -->
+        <button class="luvit-wish" type="button" data-wish="${r.wooId}"
+                aria-pressed="false" aria-label="أضيفي ${r.ar} للمفضّلة">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.6 13a4.7 4.7 0 0 1 0-6.7 4.7 4.7 0 0 1 6.7 0l.7.7.7-.7a4.7 4.7 0 0 1 6.7 0 4.7 4.7 0 0 1 0 6.7z"/></svg>
+        </button>
         <img src="${pack.images[0].src}" alt="${r.ar}"
              width="1000" height="1000" loading="${ri === 0 ? "eager" : "lazy"}" decoding="async">
       </div>

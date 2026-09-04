@@ -279,6 +279,15 @@ function packageCard(p) {
   return [
     `      <article class="luvit-card luvit-card--feature"${meta.goal ? ` data-goal="${meta.goal}"` : ''}>`,
     '        <div class="luvit-card__media">',
+    /* 🔴 المفضّلة على البكجات · ٤ أيلول
+       ريّان: «ما فيه wishlist على الروتينات». والبكجات **منتجات ووكومرس
+       حقيقية** بمعرّفات (203 · 204 · 205 · 367)، وضغطة المفضّلة **مفوَّضة
+       على document** بـwishlist.js، فما بدها ولا سطر جافاسكربت جديد ·
+       بدها الزر بالماركب وبس. ونفس المعرّف اللي بيروح للسلة. */
+    `          <button class="luvit-wish" type="button" data-wish="${p.id}"`,
+    `                  aria-pressed="false" aria-label="أضيفي ${esc(p.name)} للمفضّلة">`,
+    '            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.6 13a4.7 4.7 0 0 1 0-6.7 4.7 4.7 0 0 1 6.7 0l.7.7.7-.7a4.7 4.7 0 0 1 6.7 0 4.7 4.7 0 0 1 0 6.7z"/></svg>',
+    '          </button>',
     `          <img decoding="async" width="800" height="800"`,
     `               src="${esc(img.src)}" alt="${esc(p.name)}">`,
     '        </div>',

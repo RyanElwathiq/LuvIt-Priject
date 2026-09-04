@@ -799,7 +799,33 @@ h1, h2, h3, h4, .luvit-heading {
   stroke-linejoin: round;
   transition: fill var(--duration-instant) var(--ease-out-soft);
 }
-.luvit-wish:hover { background: #fff; transform: scale(1.06); }
+/* ---- WISH-HOVER
+   Ryan, 4 Sept: "if you click the red heart the ring does not go away until
+   you click somewhere else."
+
+   Measured on the live page, and it is NOT a focus ring:
+     :focus-visible  is at line 276, specificity (0,1,0)
+     .luvit-wish     is at line 782, specificity (0,1,0) and later in the file
+   so the heart keeps its own box-shadow and its own 50% radius, and the
+   global rule contributes only outline:none. Nothing draws a focus ring here.
+
+   What is left is :hover. On a touch screen the hover state sticks after a tap
+   until you tap elsewhere, which is exactly the reported behaviour: a white
+   halo with a 1.06 scale that will not let go.
+
+   The guard below is the same one this stylesheet already uses on
+   .luvit-topbar__code:hover. :active is left outside it on purpose, because it
+   lasts only while the finger is down and gives the press its feedback.
+
+   NOT PROVEN: I could not reproduce the state itself. Programmatic focus and
+   clicks in a hidden tab do not set focus, and IntersectionObserver and
+   computed styles are unreliable there. Ryan needs to say whether he saw it on
+   the phone or on the computer; on a mouse the halo should already clear when
+   the pointer moves away, without any click.
+   ---------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .luvit-wish:hover { background: #fff; transform: scale(1.06); }
+}
 .luvit-wish:active { transform: scale(0.92); }
 
 /* مضافة · القلب بينتعبّى */
