@@ -52,9 +52,9 @@ const live = await fetchAll();
 if (!live.length) { console.error('🔴 ما رجّع ولا منتج'); process.exit(1); }
 
 /* 🔴 السعر من الوحدات الصغرى · والمنازل من الرد لا مفترضة */
-const money = (p) => {
+const money = (p, key = 'price') => {
   const minor = Number(p?.currency_minor_unit ?? 2);
-  const raw = Number(p?.price ?? 0);
+  const raw = Number(p?.[key] ?? 0);
   return (raw / Math.pow(10, minor)).toFixed(2);
 };
 
@@ -72,6 +72,12 @@ const منتجات = live
     slug: p.slug,
     name: (p.name || '').trim(),
     price: money(p.prices),
+    /* 🔴 السعر الأصلي · انضاف ٤ أيلول مع أول تخفيض بتاريخ الموقع.
+       بدونه كان كل مولّد **بيحسب مجموع القطع بنفسه** عشان يعرف المشطوب،
+       وهاي بالضبط البيانات المنسوخة اللي بتنحرف. هلق المصدر واحد.
+       ⚠️ ولما ما يكون في تخفيض، ووكومرس بيرجّع الأصلي = الحالي، فـ
+          `onSale` بتطلع false لحالها بلا أي حالة خاصة. */
+    regular: money(p.prices, 'regular_price'),
     permalink: p.permalink,
     stock: p.is_in_stock ? 'instock' : 'outofstock',
     cats: (p.categories || []).map((c) => c.name),
@@ -97,7 +103,7 @@ const added = منتجات.filter((p) => !prevIds.has(p.id));
 const removed = (prev.منتجات || []).filter((p) => !nextIds.has(p.id));
 const priced = منتجات.filter((p) => {
   const o = (prev.منتجات || []).find((x) => x.id === p.id);
-  return o && o.price !== p.price;
+  return o && (o.price !== p.price || o.regular !== p.regular);
 });
 
 console.log(`الموقع: ${منتجات.length} منتجاً  ·  اللقطة كانت: ${(prev.منتجات || []).length}`);
@@ -105,7 +111,8 @@ added.forEach((p) => console.log(`  + ${p.id}  ${p.name}  ${p.price}`));
 removed.forEach((p) => console.log(`  - ${p.id}  ${p.name}`));
 priced.forEach((p) => {
   const o = prev.منتجات.find((x) => x.id === p.id);
-  console.log(`  ~ ${p.id}  ${p.name}  ${o.price} → ${p.price}`);
+  const was = o.regular !== p.regular ? ` (الأصلي ${o.regular} → ${p.regular})` : '';
+  console.log(`  ~ ${p.id}  ${p.name}  ${o.price} → ${p.price}${was}`);
 });
 
 /* 🔴 المقارنة كانت **بثلاث إشارات بس** (مضاف · محذوف · تغيّر سعر)، فأي

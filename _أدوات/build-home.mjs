@@ -119,8 +119,12 @@ const AR = ['', '١', '٢', '٣', '٤', '٥'];
    ووكومرس فبيعرض أربعة · فالرئيسية كانت بتخبّي روتيناً موجوداً للبيع.
    ⚠️ و`steps` هون كانت لستة SKU مسطّحة، وبالمصدر ثلاثيّات
       [SKU, عنوان, وصف] · فبنسحب العمود الأول. */
+/* ⚠️ `wooId` كان مسقوطاً من هالإعادة · انضاف ٤ أيلول.
+   بدونه `تخفيض()` ما بتلاقي المنتج باللقطة وبترجع «مش عليه عرض» **بصمت**،
+   فالرئيسية بتطبع مجموع القطع والسلة بتحاسب سعر الإطلاق. ولا خطأ بيطلع ·
+   بس رقمان مختلفان بصفحتين. */
 const ROUTINES = ROUTINES_SRC.map((r) => ({
-  key: r.key, en: r.en, ar: r.ar, who: r.tag,
+  key: r.key, en: r.en, ar: r.ar, who: r.tag, wooId: r.wooId,
   steps: r.steps.map((x) => x[0]),
 }));
 
@@ -134,6 +138,29 @@ for (const r of ROUTINES) {
 
 const money = (n) => Number(n).toFixed(2);
 const total = (r) => money(r.steps.reduce((s, k) => s + Number(P[k].price), 0));
+
+/**
+ * تخفيض الروتين · بيقرا **سعر ووكومرس الفعلي** من اللقطة.
+ *
+ * 🔴 `total()` فوق بتحسب **مجموع القطع** · وكانت هي السعر لحد ٣ أيلول لأن
+ *    البكج كان بيتباع بمجموع قطعه بالضبط. بـ٤ أيلول صار عليه عرض إطلاق،
+ *    فصار المجموع هو **المشطوب** والسعر الفعلي إجا من ووكومرس.
+ *    ⤷ ولو ضلّينا نطبع `total(r)` كانت الرئيسية بتقول ٦١ والسلة بتحاسب ٤٨.
+ *
+ * ⚠️ وبيرجّع فاضياً لما ما يكون في عرض · فالماركب ما بينحشى بعناصر فاضية.
+ */
+const تخفيض = (r) => {
+  const pack = woo.منتجات.find((x) => x.id === r.wooId);
+  const now = pack && pack.price ? Number(pack.price) : Number(total(r));
+  const was = pack && pack.regular ? Number(pack.regular) : Number(total(r));
+  if (!(was > now)) { return { onSale: false, now: money(now) }; }
+  return {
+    onSale: true,
+    now: money(now),
+    was: money(was),
+    saves: money(Math.round((was - now) * 100) / 100),
+  };
+};
 
 /* ═══════════════════════════════════════════════════════════════════════
    الآراء · **كلها حقيقية ومستخرَجة من لقطات بعتها ريّان ٣١ آب**
@@ -247,7 +274,13 @@ ${ROUTINES.map((r, i) => `
           <p class="luvit-home-rt__who">${r.who}</p>
         </div>
         <div class="luvit-home-rt__buy">
-          <span class="luvit-home-rt__price"><span dir="ltr">${total(r)}</span> د.أ</span>
+          ${(() => { const خ = تخفيض(r); return خ.onSale
+            ? `<s class="luvit-card__was"><span dir="ltr">${خ.was}</span> د.أ</s>`
+            : ''; })()}
+          <span class="luvit-home-rt__price"><span dir="ltr">${تخفيض(r).now}</span> د.أ</span>
+          ${(() => { const خ = تخفيض(r); return خ.onSale
+            ? `<span class="luvit-card__save">وفّرتِ ${خ.saves} د.أ</span>`
+            : ''; })()}
           <a class="luvit-btn luvit-btn--arrow" href="/routines/${r.key}">شوفي الروتين</a>
         </div>
       </div>

@@ -13,6 +13,7 @@
    "slug": "vitamin-c-serum",
    "name": "سيروم فيتامين سي",
    "price": "19.00",
+   "regular": "19.00",
    "permalink": "https://plasmajo.com/product/vitamin-c-serum/",
    "stock": "instock",
    "cats": [
@@ -44,6 +45,7 @@
    "slug": "hydrating-gel-cleanser",
    "name": "غسول البشرة الجافة والحساسة",
    "price": "14.00",
+   "regular": "14.00",
    "permalink": "https://plasmajo.com/product/hydrating-gel-cleanser/",
    "stock": "instock",
    "cats": [
@@ -75,6 +77,7 @@
    "slug": "8d-hyaluronic-acid-toner",
    "name": "تونر البشرة الجافة والحساسة",
    "price": "13.00",
+   "regular": "13.00",
    "permalink": "https://plasmajo.com/product/8d-hyaluronic-acid-toner/",
    "stock": "instock",
    "cats": [
@@ -106,6 +109,7 @@
    "slug": "brighten-glow-routine",
    "name": "روتين الإشراقة",
    "price": "48.00",
+   "regular": "61.00",
    "permalink": "https://plasmajo.com/product/brighten-glow-routine/",
    "stock": "instock",
    "cats": [
@@ -125,6 +129,7 @@
    "slug": "clarify-balance-routine",
    "name": "روتين التنقية والتوازن",
    "price": "48.00",
+   "regular": "61.00",
    "permalink": "https://plasmajo.com/product/clarify-balance-routine/",
    "stock": "instock",
    "cats": [
@@ -144,6 +149,7 @@
    "slug": "hydration-support-routine",
    "name": "روتين الترطيب والدعم اليومي",
    "price": "47.00",
+   "regular": "60.00",
    "permalink": "https://plasmajo.com/product/hydration-support-routine/",
    "stock": "instock",
    "cats": [
@@ -163,6 +169,7 @@
    "slug": "intensive-hydrating-serum",
    "name": "سيروم الترطيب المكثّف",
    "price": "18.00",
+   "regular": "18.00",
    "permalink": "https://plasmajo.com/product/intensive-hydrating-serum/",
    "stock": "instock",
    "cats": [
@@ -194,6 +201,7 @@
    "slug": "centella-blemish-cream",
    "name": "كريم سنتيلا للبقع",
    "price": "18.00",
+   "regular": "18.00",
    "permalink": "https://plasmajo.com/product/centella-blemish-cream/",
    "stock": "instock",
    "cats": [
@@ -225,6 +233,7 @@
    "slug": "pore-tightening-brightening-serum",
    "name": "سيروم تضييق المسامات",
    "price": "16.00",
+   "regular": "16.00",
    "permalink": "https://plasmajo.com/product/pore-tightening-brightening-serum/",
    "stock": "instock",
    "cats": [
@@ -256,6 +265,7 @@
    "slug": "clarifying-pore-tightening-toner",
    "name": "تونر تضييق المسامات",
    "price": "13.00",
+   "regular": "13.00",
    "permalink": "https://plasmajo.com/product/clarifying-pore-tightening-toner/",
    "stock": "instock",
    "cats": [
@@ -287,6 +297,7 @@
    "slug": "aha-bha-peeling-serum",
    "name": "سيروم التقشير",
    "price": "16.00",
+   "regular": "16.00",
    "permalink": "https://plasmajo.com/product/aha-bha-peeling-serum/",
    "stock": "instock",
    "cats": [
@@ -318,6 +329,7 @@
    "slug": "sebum-balancing-gel-cleanser",
    "name": "غسول البشرة الدهنية",
    "price": "14.00",
+   "regular": "14.00",
    "permalink": "https://plasmajo.com/product/sebum-balancing-gel-cleanser/",
    "stock": "instock",
    "cats": [
@@ -349,6 +361,7 @@
    "slug": "moisturizing-repairing-cream",
    "name": "كريم الترطيب والترميم",
    "price": "15.00",
+   "regular": "15.00",
    "permalink": "https://plasmajo.com/product/moisturizing-repairing-cream/",
    "stock": "instock",
    "cats": [
@@ -380,6 +393,7 @@
    "slug": "alpha-arbutin-complex-serum",
    "name": "سيروم ألفا أربوتين المركّب",
    "price": "23.75",
+   "regular": "23.75",
    "permalink": "https://plasmajo.com/product/alpha-arbutin-complex-serum/",
    "stock": "instock",
    "cats": [
@@ -407,6 +421,7 @@
    "slug": "daily-sunscreen-spf50",
    "name": "واقي الشمس اليومي · SPF50+‎",
    "price": "17.95",
+   "regular": "17.95",
    "permalink": "https://plasmajo.com/product/daily-sunscreen-spf50/",
    "stock": "instock",
    "cats": [
@@ -438,6 +453,7 @@
    "slug": "even-tone-routine",
    "name": "روتين توحيد اللون",
    "price": "70.70",
+   "regular": "83.70",
    "permalink": "https://plasmajo.com/product/even-tone-routine/",
    "stock": "instock",
    "cats": [

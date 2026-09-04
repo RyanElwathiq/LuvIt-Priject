@@ -178,6 +178,29 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
  *  ⚠️ نفس فخ اسم العلامة اللي ظهر مقلوباً بكل صفحة لأشهر (٩ آب). */
 const ltr = (s) => `<span dir="ltr">${esc(s)}</span>`;
 
+/**
+ * تخفيض · بيرجّع المشطوب والشارة لو المنتج عليه عرض، وإلا سطراً فاضياً.
+ *
+ * 🔴 المصدر **لقطة ووكومرس** (`price` و`regular`) لا حساب محلي · فلو
+ *    ريّان غيّر السعر أو شال العرض من اللوحة، الصفحة بتتغيّر بعد
+ *    `sync-woo-snapshot.mjs` بلا ما ينلمس ولا سطر هون.
+ *
+ * ⚠️ ولما ما يكون في عرض بيرجّع فاضي · فالماركب ما بينحشى بعناصر فاضية.
+ */
+function تخفيض(p) {
+  const was = Number(p.regular);
+  const now = Number(p.price);
+  if (!isFinite(was) || !isFinite(now) || was <= now) {
+    return { onSale: false, مشطوب: '', شارة: '' };
+  }
+  const saves = Math.round((was - now) * 100) / 100;
+  return {
+    onSale: true,
+    مشطوب: `<s class="luvit-card__was">${ltr(was.toFixed(2))} د.أ</s>`,
+    شارة: `<span class="luvit-card__save">وفّرتِ ${ltr(saves.toFixed(2))} د.أ</span>`,
+  };
+}
+
 function productCard(p) {
   const img = p.images[0];
   const parts = [];
@@ -215,7 +238,10 @@ function productCard(p) {
   parts.push('          <div class="luvit-card__footer">');
   /* 🔴 السعر من ووكومرس · ممنوع يتكتب رقم بالإيد. لو تغيّر بالوحة وما
      انعاد التوليد، الصفحة بتقول رقماً والسلة بتقول تاني. */
+  const خ = تخفيض(p);
+  if (خ.onSale) { parts.push(`            ${خ.مشطوب}`); }
   parts.push(`            <span class="luvit-card__price">${ltr(p.price)} د.أ</span>`);
+  if (خ.onSale) { parts.push(`            ${خ.شارة}`); }
   parts.push(`            <a href="/?add-to-cart=${p.id}" rel="nofollow"`);
   parts.push('               class="luvit-btn add_to_cart_button ajax_add_to_cart"');
   parts.push(`               data-product_id="${p.id}" data-quantity="1"`);
@@ -263,7 +289,9 @@ function packageCard(p) {
     '          </ol>',
     '          <div class="luvit-card__footer">',
     '            <span class="luvit-card__pricewrap">',
+    تخفيض(p).onSale ? `              ${تخفيض(p).مشطوب}` : '',
     `              <span class="luvit-card__price">${ltr(p.price)} د.أ</span>`,
+    تخفيض(p).onSale ? `              ${تخفيض(p).شارة}` : '',
     '              <span class="luvit-card__ship">والتوصيل مجاني</span>',
     '            </span>',
     `            <a href="/?add-to-cart=${p.id}" rel="nofollow"`,
