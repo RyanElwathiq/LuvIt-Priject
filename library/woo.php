@@ -1130,6 +1130,22 @@ add_action( 'wp_head', function () {  // LUVIT_GA4
 		return;
 	}
 
+
+	/* 🔴 راية الإيقاف · **لازم تسبق `gtag/js`** لأن جوجل بتقرا
+	   `window['ga-disable-<ID>']` وقت الإقلاع · لو انحطّت بعده بتكون
+	   الزيارة انبعتت أصلاً.
+
+	   ⚠️ **والقراءة من `localStorage` لا من حالة الدخول بقصد.**
+	      لو شِلنا الوسم من الخادم لمّا يكون الأدمن داخلاً، بتنبني صفحة
+	      **بلا وسم** وبتتخزّن بالكاش، وبعدين بتنعطى للزبونات · فبنخسر
+	      التتبّع كله **بصمت**. هون الماركب **واحد للكل** فما في شي
+	      يتخزّن غلط · والاستثناء قاعد بمتصفّح ريّان لا بالصفحة.
+	      [[wp-caches-swallow-direct-writes]]
+
+	   ⚠️ وهي **لكل متصفّح** · لو فتح من تلفونه أو متصفّح تاني بينعدّ
+	      زائراً. الحلّ: يفتح `?luvit-ga=off` مرة من كل جهاز.
+	   ⤷ و`?luvit-ga=on` بترجّع العدّ · للفحص أو بعد الإطلاق. */
+	echo '<script>try{var q=location.search;if(q.indexOf("luvit-ga=off")>-1){localStorage.setItem("luvit-no-ga","1");}if(q.indexOf("luvit-ga=on")>-1){localStorage.removeItem("luvit-no-ga");}if(localStorage.getItem("luvit-no-ga")==="1"){window["ga-disable-' . esc_js( $id ) . '"]=true;}}catch(e){}</script>' . "\n";
 	echo '<script async src="https://www.googletagmanager.com/gtag/js?id=' . rawurlencode( $id ) . '"></script>' . "\n";
 	echo '<script>'
 		. 'window.dataLayer = window.dataLayer || [];'
@@ -1568,4 +1584,26 @@ add_action( 'woocommerce_save_account_details', function ( $user_id ) {  // LUVI
 	if ( $full !== '' && $full !== $u->display_name ) {
 		wp_update_user( array( 'ID' => $user_id, 'display_name' => $full ) );
 	}
+} );
+
+/* ==========================================================================
+   LUVIT_GA4_ADMIN · استثناء متصفّح الأدمن · ٥ أيلول
+   ==========================================================================
+   ريّان: «استثنِ الأدمن لأنه فيه حفلة حتصير قبل الإطلاق».
+
+   الفكرة: **لوحة ووردبريس ما بتنخزّن بالكاش ولا بيوصلها إلا أدمن.**
+   فمنحطّ الراية بمتصفّحه من هناك، والواجهة بتقراها. والواجهة نفسها
+   بتضل ماركباً واحداً للكل · فما في نسخة «بلا وسم» ممكن تتخزّن.
+
+   ⚠️ و`manage_options` لا `is_user_logged_in` · الزبونات بيسجّلوا دخول
+      كمان، وهدول **بدنا نعدّهم**. الاستثناء للإدارة بس.
+
+   ⚠️ ومدير المتجر (`manage_woocommerce`) مستثنى كمان · هو كمان بيتصفّح
+      المتجر للفحص لا للشراء.
+   ========================================================================== */
+add_action( 'admin_footer', function () {  // LUVIT_GA4_ADMIN
+	if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_woocommerce' ) ) {
+		return;
+	}
+	echo '<script>try{localStorage.setItem("luvit-no-ga","1");}catch(e){}</script>';
 } );
