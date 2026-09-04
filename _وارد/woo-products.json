@@ -1,7 +1,7 @@
 {
  "_مصدر": "https://plasmajo.com/wp-json/wc/store/v1/products",
  "_ملاحظة": "مولَّدة بـ_أدوات/sync-woo-snapshot.mjs · لا تعدّلها بالإيد · شغّل الأداة.",
- "_تاريخ": "2026-09-02",
+ "_تاريخ": "2026-09-04",
  "فئات": [
   "بكجات",
   "منتجات مفردة"
@@ -18,7 +18,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "10% فيتامين سي · 2% نياسيناميد · 2% حمض هيالورونيك · 2% بانثينول · 30ml",
+   "short": "لإشراقة صحية وبشرة موحّدة اللون · 10% فيتامين سي · 2% نياسيناميد · 2% حمض هيالورونيك · 2% بانثينول · 30ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-vitamin-c-serum-1-bottle.webp",
@@ -49,7 +49,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "0.5% حمض هيالورونيك · 0.5% سكوالان · 0.5% بانثينول · 0.5% بيتا جلوكان · 200ml",
+   "short": "تنظيف لطيف بيحافظ على رطوبة البشرة · 0.5% حمض هيالورونيك · 0.5% سكوالان · 0.5% بانثينول · 0.5% بيتا جلوكان · 200ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-hydrating-gel-cleanser-1-bottle.webp",
@@ -80,7 +80,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "2% حمض الهيالورونيك 8D · 1% حمض الأسبارتيك · 1.5% يوريا · 200ml",
+   "short": "ترطيب متعدد الطبقات للبشرة الجافة والحساسة · 2% حمض الهيالورونيك 8D · 1% حمض الأسبارتيك · 1.5% يوريا · 200ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-8d-hyaluronic-acid-toner-1-bottle.webp",
@@ -105,7 +105,7 @@
    "sku": "BRIGHTEN_GLOW_ROUTINE",
    "slug": "brighten-glow-routine",
    "name": "روتين الإشراقة",
-   "price": "61.00",
+   "price": "48.00",
    "permalink": "https://plasmajo.com/product/brighten-glow-routine/",
    "stock": "instock",
    "cats": [
@@ -124,7 +124,7 @@
    "sku": "CLARIFY_BALANCE_ROUTINE",
    "slug": "clarify-balance-routine",
    "name": "روتين التنقية والتوازن",
-   "price": "61.00",
+   "price": "48.00",
    "permalink": "https://plasmajo.com/product/clarify-balance-routine/",
    "stock": "instock",
    "cats": [
@@ -143,7 +143,7 @@
    "sku": "HYDRATION_SUPPORT_ROUTINE",
    "slug": "hydration-support-routine",
    "name": "روتين الترطيب والدعم اليومي",
-   "price": "60.00",
+   "price": "47.00",
    "permalink": "https://plasmajo.com/product/hydration-support-routine/",
    "stock": "instock",
    "cats": [
@@ -168,7 +168,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "2% حمض هيالورونيك · 2% كولاجين ذائب · 5% بانثينول · 2% نياسيناميد · 30ml",
+   "short": "ترطيب مكثّف يدوم طول اليوم ونعومة أكثر · 2% حمض هيالورونيك · 2% كولاجين ذائب · 5% بانثينول · 2% نياسيناميد · 30ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-intensive-hydrating-serum-1-bottle.webp",
@@ -199,7 +199,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "5% سنتيلا · 5% نياسيناميد · 2% حمض هيالورونيك · 2% بانثينول · 50ml",
+   "short": "عناية بمظهر البقع مع ترطيب وتوحيد للون · 5% سنتيلا · 5% نياسيناميد · 2% حمض هيالورونيك · 2% بانثينول · 50ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-centella-blemish-cream-1-bottle.webp",
@@ -230,7 +230,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "10% نياسيناميد · 1% زنك · 1% ويتش هازل · 1% حمض هيالورونيك · 30ml",
+   "short": "تضييق مظهر المسام وتقليل الدهون مع ترطيب · 10% نياسيناميد · 1% زنك · 1% ويتش هازل · 1% حمض هيالورونيك · 30ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-pore-tightening-brightening-serum-1-bottle.webp",
@@ -261,7 +261,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "5% + 0.5% AHA + BHA · 5% خلاصة أوراق شجرة الشاي · 1% بانثينول · 5% جلسرين · 200ml",
+   "short": "تنقية عميقة وتقليل مظهر المسام · 5% + 0.5% AHA + BHA · 5% خلاصة أوراق شجرة الشاي · 1% بانثينول · 5% جلسرين · 200ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-clarifying-pore-tightening-toner-1-bottle.webp",
@@ -292,7 +292,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "10% + 2% AHA + BHA · 2% بانثينول · 1% جلسرين · 30ml",
+   "short": "تنظيف عميق للمسام بتقشير مش يومي · 10% + 2% AHA + BHA · 2% بانثينول · 1% جلسرين · 30ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-aha-bha-peeling-serum-1-bottle.webp",
@@ -323,7 +323,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "0.5% حمض الساليسيليك · 1% خلاصة الشاي الأخضر · 0.5% نياسيناميد · 0.5% حمض اللاكتيك · 200ml",
+   "short": "تنظيف لطيف يشيل الزيوت الزائدة ويقلّل اللمعان · 0.5% حمض الساليسيليك · 1% خلاصة الشاي الأخضر · 0.5% نياسيناميد · 0.5% حمض اللاكتيك · 200ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-sebum-balancing-gel-cleanser-1-bottle.webp",
@@ -354,7 +354,7 @@
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "10% بانثينول · 2% حمض هيالورونيك · 1% سيراميد · 1% مركّب ببتيدات · 75ml",
+   "short": "ترطيب يدوم وترميم لحاجز البشرة · 10% بانثينول · 2% حمض هيالورونيك · 1% سيراميد · 1% مركّب ببتيدات · 75ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-moisturizing-repairing-cream-1-bottle.webp",
@@ -379,13 +379,13 @@
    "sku": "L119",
    "slug": "alpha-arbutin-complex-serum",
    "name": "سيروم ألفا أربوتين المركّب",
-   "price": "22.00",
+   "price": "23.75",
    "permalink": "https://plasmajo.com/product/alpha-arbutin-complex-serum/",
    "stock": "instock",
    "cats": [
     "منتجات مفردة"
    ],
-   "short": "2% ألفا أربوتين · 3% حمض ترانيكساميك · 2% جلوتاثيون · 5% نياسيناميد · 30ml",
+   "short": "لتوحيد مظهر لون البشرة وتقليل مظهر البقع · 2% ألفا أربوتين · 3% حمض ترانيكساميك · 2% جلوتاثيون · 5% نياسيناميد · 30ml",
    "images": [
     {
      "src": "https://plasmajo.com/wp-content/uploads/2026/08/luvit-alpha-arbutin-complex-serum-2-box-front.webp",
@@ -437,7 +437,7 @@
    "sku": "EVEN_TONE_ROUTINE",
    "slug": "even-tone-routine",
    "name": "روتين توحيد اللون",
-   "price": "81.95",
+   "price": "70.70",
    "permalink": "https://plasmajo.com/product/even-tone-routine/",
    "stock": "instock",
    "cats": [
