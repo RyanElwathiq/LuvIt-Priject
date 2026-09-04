@@ -370,7 +370,110 @@ add_action( 'woocommerce_before_customer_login_form', function () {
 		. '<h1 class="luvit-acct-head__title">أهلاً فيكِ</h1>'
 		. '<p class="luvit-acct-head__sub">سجّلي دخولك، أو اعملي حساباً بدقيقة · عشان تتابعي طلباتك وتحفظي عنوانك.</p>'
 		. '</header>';
+
+	/* ══════════════════════════════════════════════════════════════════
+	   اللوح الجانبي · شاشة مقسومة · ٤ أيلول
+	   ══════════════════════════════════════════════════════════════════
+	   ريّان بعت ثلاثة مراجع من 21st.dev وقال «صفحة تسجيل الدخول وإنشاء
+	   حساب غلط، تكون هيك».
+
+	   🔴 **والمراجع كلها React + Tailwind + shadcn · وموقعنا ووردبريس.**
+	      فما بينلصقوا. المشترك بينهم **النمط** لا الكود: شاشة مقسومة ·
+	      فورم واحد بمرة · ولوح فيه صورة واقتباس. وهاد اللي انبنى هون
+	      بتوكناتنا · [[our-own-rules-are-the-enemy]] بتقول التقليد
+	      بيتكسر، والقاعدة الأولى بالمشروع «21st.dev إلهام بس».
+
+	   🔴 **والاقتباس حقيقي** · من `library/sections/h7-quotes.html`،
+	      رسالة زبونة نشرتها Luv it على إنستجرام. ولا كلمة مخترَعة ·
+	      [[real-social-proof-lives-in-the-transcript]].
+
+	   ⚠️ والصورة `luvit-about-ripple.webp` مولَّدة عنا ومرفوعة للمكتبة ·
+	      مجرّدة وبلا وجوه · قاعدة ريّان على الصور.
+	   ══════════════════════════════════════════════════════════════════ */
+	echo '<aside class="auth-side" aria-hidden="true">'
+		. '<img class="auth-side__img" loading="lazy" decoding="async" alt=""'
+		. ' src="https://plasmajo.com/wp-content/uploads/2026/09/luvit-about-ripple.webp"'
+		. ' width="1000" height="1000">'
+		. '<span class="auth-side__veil"></span>'
+		. '<div class="auth-side__body">'
+		. '<p class="auth-side__eyebrow">من رسائل زبوناتنا</p>'
+		. '<blockquote class="auth-side__quote">انا مبسوطة كتير ع الغسول و المرطب لطيفين جدا و بتحسي الوجه بينظف بحق الله. اختي وجهها فرق كتير ماشالله الحبوب خفت و مفتتح الحمدلله</blockquote>'
+		. '<cite class="auth-side__by">زبونة · رسالة خاصة نشرتها <span dir="ltr">Luv it</span> على إنستجرام</cite>'
+		. '</div>'
+		. '</aside>';
 }, 5 );
+
+/* ══════════════════════════════════════════════════════════════════════
+   ٣ب · مبدّل «دخول / حساب جديد» · ٤ أيلول
+   ══════════════════════════════════════════════════════════════════════
+   ووكومرس بيطبع الفورمين **جنب بعض دايماً** وما بيعطي خطافاً يخفي وحدة.
+   المراجع كلها بتعرض **فورماً واحداً** ورابط بيبدّل · وهاد أهدأ، خصوصاً
+   على الموبايل حيث الفورمان بيصيروا عمودين طوال.
+
+   ⚠️ والتبديل **بكلاس على `<body>` لا بحذف من الـDOM** · لأن ووكومرس
+      بيرجّع رسائل الخطأ للفورم اللي انبعت، ولو كان محذوفاً الزبونة بتشوف
+      خطأً بلا حقول. والكلاس بينحطّ **قبل أول رسم** من سكربت بالرأس عشان
+      ما تقفز الصفحة.
+
+   🔴 ولو الجافاسكربت وقف لأي سبب، **الفورمان بيضلّوا ظاهرين الاثنان** ·
+      الإخفاء معلَّق على `body.auth-js` اللي بيحطّه السكربت نفسه. فشل
+      السكربت بيرجّعنا للسلوك القديم لا لصفحة بلا فورم.
+   ══════════════════════════════════════════════════════════════════════ */
+add_action( 'woocommerce_login_form_end', function () {
+	echo '<p class="auth-swap"><span>ما عندك حساب؟</span>'
+		. '<button type="button" class="auth-swap__btn" data-auth-go="register">اعملي حساب</button></p>';
+} );
+
+add_action( 'woocommerce_register_form_end', function () {
+	echo '<p class="auth-swap"><span>عندك حساب أصلاً؟</span>'
+		. '<button type="button" class="auth-swap__btn" data-auth-go="login">سجّلي دخولك</button></p>';
+} );
+
+add_action( 'wp_head', function () {
+	if ( ! function_exists( 'is_account_page' ) || ! is_account_page() || is_user_logged_in() ) {
+		return;
+	}
+	/* 🔴 بالرأس لا بالتذييل · الكلاس لازم يكون موجوداً قبل أول رسم وإلا
+	   الفورمان بيبيّنوا لحظة وبعدين وحدة بتختفي · قفزة مرئية. */
+	echo "<script>(function(){var b=document.documentElement;b.classList.add('auth-js');"
+		. "try{if(location.hash==='#register')b.classList.add('auth-register');}catch(e){}})();</script>";
+}, 1 );
+
+add_action( 'wp_footer', function () {
+	if ( ! function_exists( 'is_account_page' ) || ! is_account_page() || is_user_logged_in() ) {
+		return;
+	}
+	echo <<<'JS'
+<script>
+(function () {
+  var root = document.documentElement;
+  function go(which) {
+    root.classList.toggle('auth-register', which === 'register');
+    /* التركيز بينتقل لأول حقل بالفورم الجديد · بلاه قارئة الشاشة
+       بتضل واقفة على زرّ اختفى. */
+    var sel = which === 'register' ? '.register' : '.login';
+    var f = document.querySelector(sel);
+    if (f) {
+      var first = f.querySelector('input:not([type=hidden])');
+      if (first) { first.focus({ preventScroll: true }); }
+    }
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-auth-go]') : null;
+    if (!b) { return; }
+    e.preventDefault();
+    go(b.getAttribute('data-auth-go'));
+  });
+  /* لو ووكومرس رجّع خطأ تسجيل، بنفتح فورم التسجيل لا الدخول · وإلا
+     الزبونة بتشوف رسالة خطأ فوق فورم ما بعتته. */
+  var err = document.querySelector('.woocommerce-error');
+  if (err && /كلمة السر|الموبايل|تاريخ ميلادك|اسمك/.test(err.textContent)) {
+    root.classList.add('auth-register');
+  }
+})();
+</script>
+JS;
+}, 99 );
 
 /* ══════════════════════════════════════════════════════════════════════
    ٣ب · سطر صغير فوق عنوان التسجيل · «أول مرة هون؟»

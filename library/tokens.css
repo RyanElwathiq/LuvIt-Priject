@@ -19136,3 +19136,154 @@ body.has-topbar { --topbar-h: 40px; }
 }
 .pt-terms__item strong { color: #FFFFFF; font-weight: 700; }
 /* PT-TERMS:END */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AUTH-SPLIT:START · شاشة الدخول المقسومة · ٤ أيلول
+   ═══════════════════════════════════════════════════════════════════════
+   ريّان بعت ثلاثة مراجع من 21st.dev وقال «صفحة تسجيل الدخول وإنشاء حساب
+   غلط، تكون هيك».
+
+   🔴 **والمراجع React + Tailwind + shadcn · وموقعنا ووردبريس** · فالكود
+      ما بينلصق. المشترك بينهم **النمط**: شاشة مقسومة · فورم واحد بمرة ·
+      لوح فيه صورة واقتباس. والنمط انبنى هون بتوكناتنا · لا نسخ.
+
+   ── البنية ────────────────────────────────────────────────────────────
+   ووكومرس بيطبع أربعة أبناء بـ`.woocommerce`: الرأس · صندوق الإشعارات ·
+   `#customer_login` · واللوح اللي منحقنه. ما في غلاف نلفّ فيه الثلاثة
+   الأوّل، **فبنحطّهم بالشبكة صراحةً** بدل ما نضيف حاوية بجافاسكربت.
+
+     العمود ١ (اليمين بالـRTL) · الرأس ثم الإشعارات ثم الفورم
+     العمود ٢ (اليسار)        · اللوح · ممتدّ على الصفوف كلها
+
+   ⚠️ وترتيب الـDOM **ما إله علاقة** · التموضع صريح بـ`grid-row`/`column`،
+      واللوح منحقون قبل الإشعارات ومع هيك بينرسم بمحله.
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+  body.woocommerce-account:not(.logged-in) .woocommerce {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-rows: auto auto 1fr;
+    gap: var(--space-7, 2rem);
+    align-items: start;
+  }
+  body.woocommerce-account:not(.logged-in) .luvit-acct-head--login { grid-column: 1; grid-row: 1; margin-bottom: 0; }
+  body.woocommerce-account:not(.logged-in) .woocommerce-notices-wrapper { grid-column: 1; grid-row: 2; }
+  body.woocommerce-account:not(.logged-in) #customer_login { grid-column: 1; grid-row: 3; }
+  body.woocommerce-account:not(.logged-in) .auth-side {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    display: block;
+    /* اللوح بيلزق مع التمرير · الفورم أطول منه بكثير بوضع التسجيل */
+    position: sticky;
+    inset-block-start: calc(var(--nav-h, 64px) + var(--nav-inset, 12px) * 2 + var(--topbar-h, 0px) + var(--space-4, 1rem));
+    min-block-size: 520px;
+  }
+}
+
+/* اللوح · مخفي على الموبايل · الشاشة الصغيرة بدها الفورم لا الديكور */
+.auth-side { display: none; }
+
+.auth-side {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--card-radius, 22px);
+  /* نفس عمق سكاشن الماء الغامقة · مش تدرّجاً جديداً */
+  background: linear-gradient(168deg, #0C333C 0%, #124D5A 52%, #196B7D 100%);
+  isolation: isolate;
+}
+.auth-side__img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  /* الصورة فاتحة والأرضية غامقة · `soft-light` بتخلّيها نسيج ماء
+     بدل ما تصير مستطيلاً أبيض فوق التدرّج. */
+  mix-blend-mode: soft-light;
+  opacity: .85;
+}
+/* حجاب بيضمن التباين على النصّ مهما كانت الصورة · النصّ أبيض وما منراهن
+   على بكسلات الصورة. */
+.auth-side__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(6, 34, 40, .82) 0%, rgba(6, 34, 40, .30) 46%, rgba(6, 34, 40, 0) 72%);
+}
+.auth-side__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  block-size: 100%;
+  padding: var(--space-7, 2rem);
+}
+.auth-side__eyebrow {
+  margin: 0 0 var(--space-3, .75rem);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-weight: 600;
+  color: var(--aqua-300, #7FD9EA);
+  letter-spacing: 0;               /* عربي · صفر تباعد */
+}
+.auth-side__quote {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+  line-height: 1.65;
+  color: #FFFFFF;
+}
+.auth-side__by {
+  display: block;
+  margin-block-start: var(--space-4, 1rem);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm, .875rem);
+  font-style: normal;
+  color: rgba(255, 255, 255, .72);
+}
+
+/* ---- فورم واحد بمرّة ---------------------------------------------------
+   🔴 معلّقة على `html.auth-js` · السكربت هو اللي بيحطّها. لو وقف الجافا
+      سكربت **الفورمان بيضلّوا ظاهرين** زي ما كانوا، لا صفحة بلا فورم.
+   ------------------------------------------------------------------------ */
+html.auth-js body.woocommerce-account #customer_login {
+  grid-template-columns: minmax(0, 1fr);
+}
+html.auth-js:not(.auth-register) body.woocommerce-account #customer_login .u-column2 { display: none; }
+html.auth-register body.woocommerce-account #customer_login .u-column1 { display: none; }
+/* «أول مرة هون؟» كانت بتشرح عموداً جنب عمود · وهلق ما في عمودان */
+html.auth-js body.woocommerce-account .luvit-acct-first { display: none; }
+
+@media (min-width: 760px) {
+  html.auth-js body.woocommerce-account #customer_login.u-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- سطر التبديل ------------------------------------------------------- */
+.auth-swap {
+  margin: var(--space-5, 1.25rem) 0 0;
+  padding-block-start: var(--space-4, 1rem);
+  border-block-start: 1px solid var(--card-border, rgba(12, 51, 60, .10));
+  text-align: center;
+  font-size: var(--text-body-sm, .875rem);
+  color: var(--color-ink-soft, #47555B);
+}
+.auth-swap__btn {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin-inline-start: .4em;
+  font: inherit;
+  font-weight: 700;
+  color: var(--aqua-700, #196B7D);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* 🔴 القالب بيلوّن كل زرّ `#CC3366` على الهوفر بنفس خصوصيّتنا · مضاعفة
+   الكلاس بتغلبه بلا `!important` · فخّ مسجَّل صار قبل بهالمشروع. */
+.auth-swap__btn.auth-swap__btn:hover { color: var(--aqua-800, #124D5A); background: none; }
+.auth-swap__btn:focus-visible { outline: 2px solid var(--aqua-600, #29A9C0); outline-offset: 3px; border-radius: 4px; }
+/* AUTH-SPLIT:END */
