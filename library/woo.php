@@ -1659,6 +1659,31 @@ add_action( 'admin_footer', function () {  // LUVIT_GA4_ADMIN
    بيوقّف الموقع. [[silent-refusals-hide-in-the-response]]
    ========================================================================== */
 
+/* ══════════════════════════════════════════════════════════════════════
+   🔴 **حجز قبل الإرسال · لا علامة بعده.**
+   ══════════════════════════════════════════════════════════════════════
+   الحماية الوحيدة كانت `luvit_d_projected` وبتنكتب **مرة وحدة بعد
+   الحلقة كلها**. يعني أي انقطاع بالنص، أو تداخل الكرون مع زيارة
+   عادية، **بيعيد إرسال كل الدفعة** للزبونة.
+
+   والحل حجز **على الطلب نفسه وقبل الإرسال**: لو الحجز موجود منرجع،
+   ولو انحجز بنبعت. فأسوأ حالة انقطاع = **إيميل ناقص**، وهاد أرحم
+   بكثير من أربع نسخ بصندوق الزبونة.
+
+   ⚠️ ومفتاح واحد بمصفوفة لا مفتاح لكل مرحلة · مرحلة خامسة بالمستقبل
+      بتزيد نصّاً بالمصفوفة بلا ما تلمس بنية البيانات.
+   ══════════════════════════════════════════════════════════════════════ */
+function luvit_d_claim_notice( $order, $key ) {  // LUVIT_D_PROJECT
+	$done = (array) $order->get_meta( '_luvit_d_notified' );
+	if ( in_array( $key, $done, true ) ) {
+		return false;
+	}
+	$done[] = $key;
+	$order->update_meta_data( '_luvit_d_notified', $done );
+	$order->save();
+	return true;
+}
+
 function luvit_d_project() {  // LUVIT_D_PROJECT
 
 	if ( ! function_exists( 'luvit_d_table' ) || ! function_exists( 'wc_get_order' ) ) {
@@ -1704,8 +1729,10 @@ function luvit_d_project() {  // LUVIT_D_PROJECT
 		   التجهيز فعلياً) · بس **بتبعت للزبونة**، وهاي أول لحظة بتحسّ
 		   فيها إنّ طلبها اتحرّك. */
 		if ( 'received' === $stage ) {
-			$order->add_order_note( 'شركة التوصيل استلمت البضاعة.' );
-			luvit_d_mail_customer( $order, 'received' );
+			if ( luvit_d_claim_notice( $order, 'received' ) ) {
+				$order->add_order_note( 'شركة التوصيل استلمت البضاعة.' );
+				luvit_d_mail_customer( $order, 'received' );
+			}
 			continue;
 		}
 
@@ -1720,8 +1747,12 @@ function luvit_d_project() {  // LUVIT_D_PROJECT
 		if ( $order->get_status() === $target ) {
 			continue;
 		}
-		if ( in_array( $order->get_status(), array( 'completed', 'cancelled', 'refunded' ), true )
-			&& 'delivered' !== $stage && 'refused' !== $stage ) {
+		/* 🔴 ولا تراجع عن حالة نهائية · ولا حتى لنهائية تانية.
+		   طلب صار `completed` ما بيرجع `cancelled` من سطر متأخر بالسجلّ ·
+		   بدفع عند الاستلام هاي طلبية اتحصّلت مصاريها بتنقلب لملغية.
+		   ⤷ والسطر بينتسجّل كملاحظة عشان التاريخ يضل مقروءاً. */
+		if ( in_array( $order->get_status(), array( 'completed', 'cancelled', 'refunded' ), true ) ) {
+			$order->add_order_note( 'تجاهلنا مرحلة «' . $stage . '» من رابط التسليم · الطلب مسكّر أصلاً.' );
 			continue;
 		}
 
@@ -1730,7 +1761,7 @@ function luvit_d_project() {  // LUVIT_D_PROJECT
 		/* ⚠️ ووكومرس ما بيبعت إيميلاً لحالة **مخصّصة** · فـ«بالطريق»
 		   بدها إيميلنا. أما «مكتمل» و«ملغي» فعندهم إيميلات جاهزة
 		   وبتنطلق من `update_status` نفسها · فما بنكرّر. */
-		if ( 'answered' === $stage ) {
+		if ( 'answered' === $stage && luvit_d_claim_notice( $order, 'answered' ) ) {
 			luvit_d_mail_customer( $order, 'answered' );
 		}
 	}

@@ -214,7 +214,13 @@ function luvit_d_maybe_install() {
 			UNIQUE KEY request_id (request_id)
 		) {$charset}"
 	);
-	update_option( 'luvit_d_ver', LUVIT_D_TABLE_VER, false );
+	/* ⚠️ **الختم بينتحط بعد نجاح الإنشاء بس.**
+	   كان بينتحط بأي حال · يعني `CREATE TABLE` فاشل بيتسجّل كنجاح
+	   وما بينعاد أبداً، والجدول بيضل مفقوداً بصمت.
+	   [[human-readable-warnings-dont-stop-scripts]] */
+	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $t ) ) === $t ) {
+		update_option( 'luvit_d_ver', LUVIT_D_TABLE_VER, false );
+	}
 }
 
 /* ⚠️ `request_id` فريد · فإعادة إرسال نفس الضغطة (شبكة رجّعت، ضغط
@@ -250,16 +256,54 @@ function luvit_d_write( $order_id, $stage, $source, $request_id = null, $amount 
 	return $ok;
 }
 
+/* رتبة المرحلة · للمقارنة لا للعرض */
+function luvit_d_stage_rank( $stage ) {
+	$s = luvit_d_stages();
+	return isset( $s[ $stage ] ) ? (int) $s[ $stage ]['n'] : -1;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   🔴 **أبعد مرحلة وُصلت · لا آخر سطر انكتب.**
+   ══════════════════════════════════════════════════════════════════════
+   كانت بترجّع آخر سطر (`ORDER BY id DESC LIMIT 1`) · يعني تبويب قديم
+   بيضغط «بالطريق» بعد «تسلّمت» بيكتب مرحلة **أدنى**، والعاكس بـ`woo.php`
+   بيرجّع الطلب المكتمل لـ«بالطريق».
+   ⤷ وبمتجر **دفع عند الاستلام** معناها طلبية اتحصّلت مصاريها بتنقلب
+     لغير مسلّمة · وبتدخل التنبيه اليومي كعالقة.
+
+   ⚠️ **وأول نهائية بتفوز، مش أعلى رتبة.** «تسلّمت» و«رفضت» رتبتهن
+      **نفسها (٣)**، فمقارنة `>=` ما بتفرّق بينهن · ولو انضغطت «رفضت»
+      بعد «تسلّمت» بتقدر تدهسها. الحقيقة هي **اللي صار أول**.
+
+   ⚠️ والسجلّ نفسه **ما بينلمس** · بيضل كامل بكل سطوره. اللي بينتصفّى
+      هو **قراءته** لا محتواه · التاريخ بيضل للتسوية.
+   ══════════════════════════════════════════════════════════════════════ */
 function luvit_d_current_stage( $order_id ) {
 	global $wpdb;
 	$t = luvit_d_table();
-	$row = $wpdb->get_var(
+	$rows = $wpdb->get_col(
 		$wpdb->prepare(
-			"SELECT stage FROM {$t} WHERE order_id = %d AND stage <> 'view' ORDER BY id DESC LIMIT 1",
+			"SELECT stage FROM {$t} WHERE order_id = %d AND stage <> 'view' ORDER BY id ASC",
 			(int) $order_id
 		)
 	);
-	return $row ? $row : 'new';
+
+	$best = 'new';
+	$rank = 0;
+	foreach ( (array) $rows as $s ) {
+		$r = luvit_d_stage_rank( $s );
+		if ( $r < 0 ) {
+			continue;
+		}
+		if ( 3 === $r ) {
+			return $s;  /* أول نهائية · وما بعدها ما بيغيّر */
+		}
+		if ( $r > $rank ) {
+			$rank = $r;
+			$best = $s;
+		}
+	}
+	return $best;
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -547,11 +591,35 @@ function luvit_d_router() {
 
 		$amount = ( 'delivered' === $stage ) ? number_format( (float) $order['total'], 3, '.', '' ) : null;
 
+		/* الجدول لازم يكون موجوداً · وهو بينتعمل على `admin_init` وهاد
+		   المسار ما بيوصلها أبداً. بلاها، أول ضغطة على نشر جديد بتفشل
+		   بصمت لحد ما حدا يفتح اللوحة.
+		   ⤷ **وبعد التحقّق من التوقيع** عشان طلب مجهول ما يقدر يشغّل
+		     `CREATE TABLE`. */
+		luvit_d_maybe_install();
+
 		/* بترجّع false لو `request_id` مكرّر · وهاي **نجاح** لا فشل:
 		   يعني الضغطة وصلت قبل والشبكة بس ما رجّعت الجواب. */
 		luvit_d_write( $order_id, $stage, 'link', $rid, $amount );
 
+		/* 🔴 **الإيصال بينقرا من السجلّ، ما بينفترض.**
+		   كانت الكتابة بتنرمى بلا فحص والإيصال بيطلع «اتسجّلت» بأي حال ·
+		   يعني المندوب بيقدر يصوّر تأكيداً **لسطر ما انكتب**. وهاد سجلّ
+		   التسوية المالية، فتأكيد كاذب أسوأ من فشل واضح.
+
+		   ⚠️ والفحص على **المرحلة الموصولة** لا على قيمة `luvit_d_write` ·
+		      الرجوع `false` بيصير كمان لمّا يكون `request_id` مكرّراً،
+		      وهاي إعادة إرسال مشروعة والسطر الأول موجود أصلاً. */
 		$now = luvit_d_current_stage( $order_id );
+
+		if ( luvit_d_stage_rank( $now ) < luvit_d_stage_rank( $stage ) ) {
+			luvit_d_page(
+				'ما اتسجّلت',
+				'<h1>ما اتسجّلت</h1><p class="r">اضغط الزر كمان مرة · وإذا ضلّ نفس الإشي تواصل مع المتجر.</p>',
+				500
+			);
+		}
+
 		luvit_d_receipt( $order_id, $now, $order, $stages );
 	}
 
