@@ -1231,7 +1231,13 @@ function luvit_loyalty_state() {
 	}
 	$done = (int) count( (array) wc_get_orders( array(
 		'customer_id' => get_current_user_id(),
-		'status'      => array( 'wc-processing', 'wc-completed', 'wc-on-hold' ),
+		/* 🔴 و`wc-luvit-shipped` **إلزامية هون** · هي حالة أضفناها إحنا،
+		   وووكومرس ما بيعرفها. بدونها الزبونة بتشوف عدد طلباتها **بينقص
+		   واحد** لما يطلع طلبها مع المندوب، وبيرجع لما يتسلّم · وهاي
+		   بتقرا كخلل بالنظام لا كتحديث.
+		   ⤷ **وأي حالة جديدة بتنضاف مستقبلاً لازم تمرّ من هون.**
+		   [[moving-truth-breaks-its-readers]] */
+		'status'      => array( 'wc-processing', 'wc-luvit-shipped', 'wc-completed', 'wc-on-hold' ),
 		'limit'       => 500,
 		'return'      => 'ids',
 	) ) );
