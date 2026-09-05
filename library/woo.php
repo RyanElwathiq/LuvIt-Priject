@@ -1839,14 +1839,14 @@ function luvit_d_mail_customer( $order, $stage ) {  // LUVIT_D_MAIL
 		$body    = '<p>' . $hi . '</p>'
 			. '<p>طلبك رقم <strong>' . esc_html( $num ) . '</strong> صار عند شركة التوصيل، '
 			. 'وحيتواصلوا معك على تلفونك بأقرب وقت عشان تتفقوا على وقت يناسبك.</p>'
-			. '<p>وجهّزي معك <strong>' . $total . '</strong> · الدفع عند الاستلام.</p>';
+			. '<p>سعر الطلب <strong>' . $total . '</strong> · الدفع عند الاستلام.</p>';
 	} elseif ( 'answered' === $stage ) {
 		$subject = 'اتفقنا على الموعد · طلبك بالطريق · ' . $num;
 		$heading = 'طلبك بالطريق';
 		$body    = '<p>' . $hi . '</p>'
 			. '<p>تمّ التواصل معك واتفقنا على الموعد، وطلبك رقم '
 			. '<strong>' . esc_html( $num ) . '</strong> بالطريق إلك.</p>'
-			. '<p>المبلغ المطلوب عند الاستلام <strong>' . $total . '</strong>.</p>';
+			. '<p>سعر الطلب <strong>' . $total . '</strong> · الدفع عند الاستلام.</p>';
 	} else {
 		return;
 	}
@@ -1962,4 +1962,43 @@ add_action(
 		}
 	},
 	22
+);
+
+/* ==========================================================================
+   LUVIT_D_ADMINLINK · رابط التسليم على صفحة الطلب · ٥ أيلول
+   ==========================================================================
+   الرابط بينحط بإيميل الطلب أصلاً · بس الإيميل بينضاع بصندوق الوارد،
+   وصاحب العلامة بيفتح الطلب باللوحة لمّا بيبعت التفاصيل للشركة.
+   فبيلاقيه قدامه بنفس الشاشة اللي بينسخ منها العنوان والرقم.
+
+   ⚠️ **والرمز النصّي جنبه** · هو اللي بيشيل حجّة «الرابط خربان».
+   ⚠️ و`manage_woocommerce` لا `is_admin` وحدها · الشاشة إدارية بس
+      **الصلاحية** هي اللي بتحمي لا المكان.
+   ========================================================================== */
+add_action(
+	'woocommerce_admin_order_data_after_order_details',
+	function ( $order ) {  // LUVIT_D_ADMINLINK
+
+		if ( ! function_exists( 'luvit_d_token' ) || ! current_user_can( 'manage_woocommerce' ) ) {
+			return;
+		}
+
+		$token = luvit_d_token( $order->get_id() );
+		if ( '' === $token ) {
+			echo '<p style="color:#B24B3C">رابط التسليم مش جاهز · الختم مش مضبوط بالإعدادات.</p>';
+			return;
+		}
+
+		$url = home_url( '/d/' . $token );
+
+		echo '<div class="form-field form-field-wide" style="margin-top:14px;padding:12px;'
+			. 'border:1px solid #dcdcde;border-radius:6px;background:#f6f7f7">'
+			. '<p style="margin:0 0 6px"><strong>رابط تأكيد التسليم</strong></p>'
+			. '<p style="margin:0 0 6px"><input type="text" readonly onclick="this.select()" '
+			. 'style="width:100%;direction:ltr;text-align:left" value="' . esc_attr( $url ) . '"></p>'
+			. '<p style="margin:0;font-size:12px;color:#50575e">'
+			. 'وإذا ما اشتغل الرابط: <strong>plasmajo.com/d</strong> والرمز '
+			. '<strong style="letter-spacing:.06em">' . esc_html( $token ) . '</strong></p>'
+			. '</div>';
+	}
 );

@@ -575,20 +575,31 @@ function luvit_d_router() {
 		. 'function rid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,10)}'
 		. 'f.addEventListener("click",function(e){'
 		. 'var b=e.target.closest("button[data-s]");if(!b||busy)return;e.preventDefault();'
+
+		/* 🔴 **تأكيد بضغطتين · على الزرّين النهائيين بس.**
+		   ريّان: «بدي أتأكد... ويكون ضاغطه بالعمد». «تسلّمت» بتقفل
+		   الطلب وبتبعت إيميل وبتدخل بالتسوية المالية · وضغطة بالغلط
+		   عليها **ما إلها تراجع نظيف**.
+
+		   ⚠️ ومحصورة بالنهائيين بقصد · لو حطّيناها على الكل بتصير
+		      عادة بتنضغط بلا قراءة، والحماية بتموت.
+		   ⤷ وبترجع لحالها بعد ٤ ثواني عشان ما يضل الزرّ محذّراً. */
+		. 'if(/^(delivered|refused)$/.test(b.dataset.s)&&b.dataset.confirm2!=="1"){'
+		. 'var old=b.textContent;b.dataset.confirm2="1";'
+		. 'b.textContent="متأكد؟ اضغط كمان مرة";'
+		. 'setTimeout(function(){b.dataset.confirm2="";b.textContent=old},4000);return}'
 		. 'busy=1;document.getElementById("st").value=b.dataset.s;'
 		. 'var r=rid();document.getElementById("rid").value=r;'
-		. 'try{localStorage.setItem("luvit_d_pending",r)}catch(x){}'
-		. 's.className="w";s.textContent="بتبعت...";'
+				. 's.className="w";s.textContent="بتبعت...";'
 		. '[].forEach.call(f.querySelectorAll("button"),function(x){x.disabled=true});'
 		. 'var n=0;(function go(){n++;'
 		. 'var d=new FormData(f);'
 		. 'fetch(location.pathname,{method:"POST",body:d,credentials:"omit"})'
 		. '.then(function(res){return res.text()})'
-		. '.then(function(html){document.open();document.write(html);document.close();'
-		. 'try{localStorage.removeItem("luvit_d_pending")}catch(x){}})'
+		. '.then(function(html){document.open();document.write(html);document.close();'})'
 		. '.catch(function(){if(n<3){s.textContent="الشبكة ضعيفة · بنعيد المحاولة...";'
 		. 'setTimeout(go,n*4000)}else{s.className="e";'
-		. 's.textContent="ما انحفظت · اضغط الزر كمان مرة لمّا ترجع الشبكة";busy=0;'
+		. 's.textContent="ما اتسجّلت · اضغط الزر كمان مرة لمّا ترجع الشبكة";busy=0;'
 		. '[].forEach.call(f.querySelectorAll("button"),function(x){x.disabled=false})}});'
 		. '})();});'
 		. '})();</script>';
@@ -606,7 +617,7 @@ function luvit_d_router() {
 function luvit_d_receipt( $order_id, $stage, $order, $stages ) {
 	$label = isset( $stages[ $stage ] ) ? $stages[ $stage ]['label'] : $stage;
 	$ok    = ( 'delivered' === $stage );
-	$b = '<h1>' . ( $ok ? 'انحفظت' : 'انسجّلت' ) . '</h1>'
+	$b = '<h1>' . 'اتسجّلت' . '</h1>'
 		. '<p class="r">طلب رقم <strong>' . (int) $order_id . '</strong></p>'
 		. '<p class="r">' . luvit_d_esc( $label ) . '</p>';
 	if ( $ok ) {
@@ -614,7 +625,7 @@ function luvit_d_receipt( $order_id, $stage, $order, $stages ) {
 	}
 	$b .= '<p class="r">' . luvit_d_esc( luvit_d_now() ) . '</p>'
 		. '<p class="r">صوّر هالشاشة · هي إثبات إنك أكّدت.</p>';
-	luvit_d_page( 'انحفظت', $b );
+	luvit_d_page( 'اتسجّلت', $b );
 }
 
 /* ⚠️ `date_i18n()` بـ`wp-includes/functions.php` بس بتعتمد على إعدادات
