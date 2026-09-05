@@ -50,6 +50,48 @@ function luvit_pk_norm( $s ) {
 	return trim( $s );
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   🔴 **شرط الشحن المجاني · مصدر الحقيقة الوحيد**
+   ══════════════════════════════════════════════════════════════════════
+   قرار ريّان ٥ أيلول ٢٠٢٦: «الشحن المجاني بس بالروتينات الكبيرة اللي من
+   أربع قطع وأكثر.»
+
+   ⚠️ **والقاعدة القديمة كانت بالفئة** (`has_term('packages')`)، وهاد كان
+      صحيحاً لمّا الفئة كانت روتينات وبس. بعد ما انضافت ١٣ ثنائية لنفس
+      الفئة صار ثنائي بـ٢٤٫٢٥ ياخد شحناً بـ٢٫٥٠ فوق خصم ١٠٪ · يعني
+      **~١٩٪ فعلي** مكان ١٠٪.
+
+   🔴 **وسنيبت الشحن بينده هالدالة بالذات، والبطاقة كمان.** سطر واحد
+      بيقرأه الاتنين · فما بيصير الصفحة تقول «مجاني» والسلة تحاسب.
+      [[shipping-cache-key-hook-order]]
+
+   ⚠️ **والعدّ من النصّ لا من الربط.** لو انتغيّر اسم منتج وما عاد يطابق،
+      الربط بيفشل بس **العدّ بيضل صح** · فروتين ما بيخسر شحنه المجاني
+      بسبب حرف بالاسم. الربط لازم للتوفير وحده.
+   ══════════════════════════════════════════════════════════════════════ */
+if ( ! defined( 'LUVIT_PK_SHIP_MIN' ) ) {
+	define( 'LUVIT_PK_SHIP_MIN', 4 );
+}
+
+/* قطع الباقة كأسماء · القصّ على **مسافة-زائد-مسافة** لأنّ «SPF50+» فيه
+   زائد ملزوقة، والقصّ على «+» لحاله بيسرق منتجاً من أربع باقات بصمت. */
+function luvit_pk_parts( $text ) {
+	$t = luvit_pk_norm( wp_strip_all_tags( (string) $text ) );
+	return ( '' === $t ) ? array() : preg_split( '/\s\+\s/u', $t );
+}
+
+function luvit_pk_ship_free( $product_id ) {
+	$product_id = (int) $product_id;
+	if ( ! $product_id || ! has_term( 'packages', 'product_cat', $product_id ) ) {
+		return false;
+	}
+	$p = function_exists( 'wc_get_product' ) ? wc_get_product( $product_id ) : null;
+	if ( ! $p ) {
+		return false;
+	}
+	return count( luvit_pk_parts( $p->get_short_description() ) ) >= LUVIT_PK_SHIP_MIN;
+}
+
 /* خريطة الباقات · بتنبنى مرة بكل طلب وبتتخزّن بترانزيينت */
 function luvit_pk_map() {
 	static $map = null;
@@ -57,7 +99,7 @@ function luvit_pk_map() {
 		return $map;
 	}
 
-	$cached = get_transient( 'luvit_pk_map' );
+	$cached = get_transient( 'luvit_pk_map_v2' );
 	if ( is_array( $cached ) ) {
 		$map = $cached;
 		return $map;
@@ -98,8 +140,7 @@ function luvit_pk_map() {
 	$duos     = array();
 
 	foreach ( $bundles as $b ) {
-		$raw   = luvit_pk_norm( wp_strip_all_tags( $b->get_short_description() ) );
-		$parts = ( '' === $raw ) ? array() : preg_split( '/\s\+\s/u', $raw );
+		$parts = luvit_pk_parts( $b->get_short_description() );
 
 		$ids      = array();
 		$resolved = ! empty( $parts );
@@ -135,7 +176,7 @@ function luvit_pk_map() {
 			'sum'      => $resolved ? $sum : 0.0,
 			'sku'      => (string) $b->get_sku(),
 			'thumb'    => (int) $b->get_image_id(),
-			'freeship' => has_term( 'packages', 'product_cat', $b->get_id() ),
+			'freeship' => luvit_pk_ship_free( $b->get_id() ),
 		);
 
 		/* 🔴 التقسيم بعدد القطع · **مش بقائمة معرّفات**. باقة جديدة من
@@ -162,14 +203,14 @@ function luvit_pk_map() {
 	}
 
 	$map = array( 'routines' => $routines, 'duos' => $duos, 'shared' => array_values( $shared ) );
-	set_transient( 'luvit_pk_map', $map, DAY_IN_SECONDS );
+	set_transient( 'luvit_pk_map_v2', $map, DAY_IN_SECONDS );
 	return $map;
 }
 
 /* أي تعديل على منتج بيرمي الخريطة · السعر بيتغيّر والتوفير لازم يلحق */
-add_action( 'woocommerce_update_product', function () { delete_transient( 'luvit_pk_map' ); } );
-add_action( 'woocommerce_new_product',    function () { delete_transient( 'luvit_pk_map' ); } );
-add_action( 'woocommerce_delete_product', function () { delete_transient( 'luvit_pk_map' ); } );
+add_action( 'woocommerce_update_product', function () { delete_transient( 'luvit_pk_map_v2' ); } );
+add_action( 'woocommerce_new_product',    function () { delete_transient( 'luvit_pk_map_v2' ); } );
+add_action( 'woocommerce_delete_product', function () { delete_transient( 'luvit_pk_map_v2' ); } );
 
 /* سعر بصيغة البطاقة · اللاتيني معزول بـdir عشان ما ينقلب بالعربي */
 function luvit_pk_price( $v ) {

@@ -24,8 +24,10 @@
  * والقاعدة هون **على مستوى الطلبية**: بالسلة روتين جاهز؟ الشحن صفر.
  * وهاي بتنحكى بجملة وحدة على الصفحة، والفئة لأ.
  *
- * ⚠️ والثغرة مقبولة بقصد: الروتين ٦٠ ديناراً، فمين بيضيفه عشان يوفّر
- *    دينارين ونص شحن يكون اشترى بستين. الثغرة **بصالحنا**.
+ * ⚠️ والثغرة مقبولة بقصد **على الروتينات وحدها**: الروتين ٤٧ لـ٧١ ديناراً،
+ *    فمين بيضيفه عشان يوفّر دينارين ونص شحن يكون اشترى بسبعين.
+ *    🔴 **وما عادت مقبولة على الثنائيات** (٢٤ لـ٣٧٫٥) · لهيك انتغيّر الشرط
+ *       من الفئة لعدد القطع · ٥ أيلول ٢٠٢٦.
  *
  * 🔴 والتعرّف على البكج **بالفئة مش بالمعرّفات**. كتابة 203 و204 و205
  *    بالكود بتنكسر بصمت أول ما ينضاف روتين رابع، والصفحة بتقول «مجاني»
@@ -39,10 +41,29 @@ add_filter( 'woocommerce_package_rates', function ( $rates, $package ) {
 		return $rates;
 	}
 
+	/* 🔴 **الشرط بينقرا من `luvit_pk_ship_free()` · سنيبت ٥٧٧.**
+	   قرار ريّان ٥ أيلول ٢٠٢٦: الشحن المجاني **للروتينات من أربع قطع
+	   وأكثر وبس** · الثنائيات بتدفع الشحن.
+
+	   ⚠️ **والاحتياطي بيرجع للفئة، ما بيمنع.** لو سنيبت ٥٧٧ انطفى أو
+	      انحذف، منع الشحن المجاني بيحاسب زبونة اشترت روتيناً كاملاً ·
+	      وهاد أسوأ من إعطائه لثنائية. فالاحتياطي **بيعطي** وبيسجّل.
+	      [[absent-setting-is-not-absent-feature]] */
+	$has_rule = function_exists( 'luvit_pk_ship_free' );
+	if ( ! $has_rule && function_exists( 'wc_get_logger' ) ) {
+		wc_get_logger()->warning( 'luvit: luvit_pk_ship_free مفقودة · رجعنا لقاعدة الفئة', array( 'source' => 'luvit-shipping' ) );
+	}
+
 	$has_routine = false;
 	foreach ( $package['contents'] as $item ) {
-		$product_id = ! empty( $item['product_id'] ) ? $item['product_id'] : 0;
-		if ( $product_id && has_term( 'packages', 'product_cat', $product_id ) ) {
+		$product_id = ! empty( $item['product_id'] ) ? (int) $item['product_id'] : 0;
+		if ( ! $product_id ) {
+			continue;
+		}
+		$free = $has_rule
+			? luvit_pk_ship_free( $product_id )
+			: has_term( 'packages', 'product_cat', $product_id );
+		if ( $free ) {
 			$has_routine = true;
 			break;
 		}
