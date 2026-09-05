@@ -22,7 +22,28 @@
      luvitSignatureHero, luvitPressFeedback (backward compatible)
    ========================================================================== */
 
-gsap.registerPlugin(ScrollTrigger);
+/* 🔴 **حارس GSAP · وهاد بيحمي نصف الموقع لا الحركة.**
+
+   GSAP بتتحمّل من CDN خارجي بسنيبت WPCode **منفصل**، وأولويته (٥ تحت
+   العشرة) محفوظة **بالإيد بلوحة الإدارة** وما في إشي بيفرضها.
+
+   ولو تأخّرت أو انحجبت أو حدا غيّر الأولوية، السطر التالي بيرمي خطأ
+   و**التنفيذ العلوي للملف بيوقف عند هون** · يعني كل ما بعده ما بينسجّل:
+   قائمة الموبايل (JS صافي **بلا بديل CSS**) · نقطة السلة · فحص الفورمات
+   · الكويز · المسارات. الحركة بتوقف وهاد مقبول · **القائمة ما بتفتح**
+   وهاد مش مقبول.
+
+   ⚠️ والحارس على **الاستدعاءات العلوية الثلاثة وحدها** (٢٥ · ٥٣ · ٤٠١)
+      لا على ٣٤ استدعاء · الدوال بتنرمي وقت النداء فبتكسر حركتها هي،
+      والتنفيذ العلوي بيكمّل. حراسة كل استدعاء تعقيد بلا ربح.
+
+   ⤷ و`shop-bundle.js` محروس أصلاً بـ`if (window.gsap && ...)` · مفحوص. */
+var LUVIT_GSAP = !!(window.gsap && window.ScrollTrigger);
+if (LUVIT_GSAP) {
+  gsap.registerPlugin(ScrollTrigger);
+} else if (window.console && console.warn) {
+  console.warn('LUVIT: GSAP مش محمّلة · الحركة مطفية والواجهة شغّالة.');
+}
 
 /* NOTE — read the RESOLVED direction, not the dir attribute.
    This used to be `document.documentElement.getAttribute('dir') === 'rtl'`.
@@ -50,7 +71,8 @@ var LUVIT_RTL = (function () {
   return !!(document.body && getComputedStyle(document.body).direction === 'rtl');
 })();
 var LUVIT_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-var LUVIT_MM = gsap.matchMedia();
+/* `LUVIT_MM` انشال · كان معرّفاً وما بينستعمل ولا مرة، وهو استدعاء
+   علوي تاني لـGSAP · يعني كود ميت بيقدر يوقف الموقع. */
 
 /* --------------------------------------------------------------------------
    Small helpers
@@ -398,7 +420,7 @@ if (document.readyState === 'loading') {
 }
 
 /* Recalculate triggers after full load (images shift layout) */
-window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+window.addEventListener('load', function () { if (LUVIT_GSAP) { ScrollTrigger.refresh(); } });
 
 /* ==========================================================================
    LIQUID GLASS v1  —  BUBBLE-POP press ripple
