@@ -19492,3 +19492,201 @@ body.woocommerce-account:not(.logged-in) .auth-swap {
 }
 
 /* AUTH-FIT:END */
+
+/* ==========================================================================
+   SOCIAL-AUTH · زرّ «تابعي بحساب جوجل» · ٥ أيلول
+   ==========================================================================
+   الزرّ بيجي من Nextend بماركب خاص فيها، وإحنا بنكسيه بهويتنا:
+   الرابط الخارجي بياخد `.luvit-btn--ghost` فبيصير **حبّة** بحدّ مائي
+   وبفقاعة ضغط، و`.nsl-button` جوّاه بينشال بصرياً لصندوق محتوى فاضي.
+
+   🔴 **وليش شبح لا أساسي؟** الأساسي (التدرّج الغامق) محجوز لـ«دخول».
+      زرّان أساسيان بنفس الكرت بيتصارعوا وما بيبقى في فعل أول واضح.
+
+   ⚠️ و`background-color:#fff` مكتوب **inline** على `.nsl-button` من
+      الإضافة · فالإزالة **لازم `!important`**، الخصوصية وحدها بتخسر.
+      [[important-beats-specificity]]
+
+   ⚠️ والأيقونة بتضل بألوان جوجل الأصلية بقصد · هاي شرط علامتها التجارية
+      وبنفس الوقت هي اللي بتخلّي الزرّ ينعرف من نص متر.
+   ========================================================================== */
+.luvit-social {
+  margin-block-end: var(--space-4);
+}
+
+/* حاويات الإضافة · بتنشال من حساب التخطيط تماماً */
+.luvit-social .nsl-container,
+.luvit-social .nsl-container-block,
+.luvit-social .nsl-container-buttons {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  width: 100%;
+}
+
+/* الرابط هو الحبّة · عرض كامل لأنه فعل أول لا خيار جانبي */
+.luvit-social__btn.luvit-social__btn {
+  display: flex !important;
+  width: 100%;
+  min-height: var(--btn-min-height);
+  padding: var(--space-3) var(--space-5) !important;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+/* وصندوق الإضافة جوّاه بينشال بصرياً · بيضل بس ماسكاً الأيقونة والنصّ */
+.luvit-social__btn .nsl-button {
+  background: none !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+  font: inherit !important;
+  color: inherit !important;
+}
+
+.luvit-social__btn .nsl-button-svg-container {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.luvit-social__btn .nsl-button-svg-container svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.luvit-social__btn .nsl-button-label-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
+  font-size: var(--text-body) !important;
+  line-height: 1.2 !important;
+  color: var(--aqua-700) !important;
+  text-align: center;
+  text-transform: none !important;
+}
+/* واسم جوجل لاتيني · بيتعزل بخطّه واتجاهه وإلا بينقلب بالسطر العربي.
+   [[brand-name-rtl-bug]] */
+.luvit-social__btn .nsl-button-label-container b {
+  font-family: var(--font-latin);
+  font-weight: 600;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ── الفاصل «أو بالبريد» ─────────────────────────────────────────────── */
+.luvit-social__or {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  color: var(--color-ink-faint);
+}
+.luvit-social__or::before,
+.luvit-social__or::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--color-line);
+}
+
+/* ==========================================================================
+   SOCIAL-FIT · حدّ زرّ جوجل · وكبس الفراغ الميت · ٥ أيلول
+   ==========================================================================
+   ── ١ · الحدّ ────────────────────────────────────────────────────────────
+   `.luvit-btn--ghost` بيحطّ حدّاً مائياً، و**Nextend بتصفّره**:
+     div.nsl-container div.nsl-container-buttons a[data-plugin="nsl"]
+   خصوصيتها (0,3,3) وكلاسنا (0,1,0) · فالزرّ طلع بلا إطار أصلاً (مقيس:
+   `border-top-width: 0px`).
+
+   🔴 **والمضاعفة لازم توصل (0,4,0)** · التلاتية (0,3,0) بتتعادل معها
+      بعدد الكلاسات وبتخسر بعدد العناصر. حسبناها لا خمّنّاها.
+      [[specificity-id-beats-classes]]
+
+   ── ٢ · الفراغ الميت ────────────────────────────────────────────────────
+   ووكومرس بيحطّ `.woocommerce form.login { padding: 20px }` · **جوّا كرت
+   حاطط حشوته أصلاً**. يعني ٤٠ بكسل عمودياً وأربعين أفقياً بلا أي فايدة
+   بصرية · وهي نفس الفئة اللي كبسناها بـAUTH-FIT (الهامش الميت)، بس هاي
+   حشوة لا هامش فما مسكها الإصلاح الأول.
+
+   ── المقيس · 1440×800 ──────────────────────────────────────────────────
+     الكرت قبل      ٧٣٥ · قاعه ٨٧١ · **٧١ برّا الشاشة**
+     حشوة الفورم    -٤٠
+     التمهيد المكرّر -٢٩
+     شدّ المسافات    -٢٦
+   ========================================================================== */
+
+/* ---- ١ · الحدّ · (0,4,0) بيغلب (0,3,3) ------------------------------- */
+.luvit-social__btn.luvit-social__btn.luvit-social__btn.luvit-social__btn {
+  border: 1.5px solid var(--aqua-300);
+}
+@media (hover: hover) and (pointer: fine) {
+  .luvit-social__btn.luvit-social__btn.luvit-social__btn.luvit-social__btn:hover {
+    border-color: var(--aqua-400);
+    background-color: var(--aqua-50);
+  }
+}
+.luvit-social__btn.luvit-social__btn.luvit-social__btn.luvit-social__btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ---- ٢ · حشوة ووكومرس الميتة جوّا الكرت ------------------------------ */
+body.woocommerce-account:not(.logged-in) #customer_login form.woocommerce-form {
+  padding: 0;
+}
+
+/* ---- ٣ · شدّ مسافات كتلة جوجل --------------------------------------- */
+.luvit-social { margin-block-end: var(--space-3); }
+.luvit-social__or { margin-block-start: var(--space-3); }
+
+/* ==========================================================================
+   SOCIAL-GRID · مكان كتلة جوجل بشبكة التسجيل · ٥ أيلول
+   ==========================================================================
+   🔴 **الباغ:** شبكة التسجيل بتعيّن صفوفاً **صريحة** للحقول (١·٢·٣)،
+      وكتلة جوجل ورثت `grid-column: 1 / -1` بلا صفّ · فالتموضع التلقائي
+      حطّها **بعد** آخر صفّ مشغول. المقيس على 1440×800: الكتلة عند
+      `top: 679` وأول حقل عند `197` · يعني الزرّ **تحت كل الحقول**،
+      و«أو بالبريد» بتصير بمكان بلا معنى (بعد البريد لا قبله).
+
+   ⚠️ وما بتبيّن بالمعاينة الضيّقة ولا بفورم الدخول · العمودان بيشتغلوا
+      من 900px وفوق، وفورم الدخول عمود واحد أصلاً. لولا القياس على عرض
+      حقيقي كانت مرقت. [[layout-breaks-that-no-gate-can-see]]
+
+   والإصلاح إزاحة: جوجل صفّ ١، والحقول بتنزل ٢·٣·٤.
+   ⤷ ونفس المحدِّدات بالضبط · متأخّرة بالملف فبتفوز بالتعادل.
+   ========================================================================== */
+@media (min-width: 900px) {
+
+  /* كتلة جوجل · الصفّ الأول وبعرض الفورم كامل */
+  body.woocommerce-account:not(.logged-in) form.register:has(#luvit_reg_dob) > .luvit-social {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  body.woocommerce-account:not(.logged-in) form.register > p:has(#luvit_reg_name)  { grid-row: 2; }
+  body.woocommerce-account:not(.logged-in) form.register > p:has(#luvit_reg_phone) { grid-row: 2; }
+  body.woocommerce-account:not(.logged-in) form.register > p:has(#reg_email)       { grid-row: 3; }
+  body.woocommerce-account:not(.logged-in) form.register > p:has(#reg_password)    { grid-row: 3; }
+  body.woocommerce-account:not(.logged-in) form.register > p:has(#luvit_reg_dob)   { grid-row: 4; }
+  body.woocommerce-account:not(.logged-in) form.register > .woocommerce-privacy-policy-text {
+    grid-row: 4;
+  }
+}
