@@ -2008,3 +2008,95 @@ add_action(
 			. '</div>';
 	}
 );
+
+/* ==========================================================================
+   LUVIT_TR_REVIEWS · آراء عملائنا بتركيا · ٥ أيلول
+   ==========================================================================
+   ١٣ من ١٧ منتجاً عندنا بلا ولا رأي، والوكالة عندها **٢٣٤ تقييماً على نفس
+   المنتجات بالضبط** · نفس القنينة، وصفحاتنا نفسها مكتوب عليها «صناعة تركيا».
+   فهاي آراء عن **نفس الغرض** لا آراء مستعارة.
+
+   ── 🔴 القاعدة الوحيدة اللي لو انكسرت بيصير الموضوع تزويراً ─────────
+   **ولا وحدة منهن بتنزل كتعليق ووكومرس.** لو نزلت، بتدخل عدّاد المراجعات
+   ومتوسّط النجوم و`aggregateRating` اللي بتقراه جوجل · يعني بنقول لجوجل
+   **بلغة الآلة** إنّ زبونة تركية هي زبونة أردنية.
+   ⤷ فهي مطبوعة كماركب ساكن، وما بتلمس أي عدّاد.
+
+   ── ⚠️ ولا تبرير ولا حشو · ريّان ٥ أيلول ─────────────────────────────
+   كان اقتراحي عنواناً وتحته سطر شرح وسطر نفي («مش آراء زبونات
+   plasmajo.com»). وريّان رفضه: «بس آراء من عملائنا بتركيا وبس».
+   ⤷ **والعنوان لحاله بيقول كل شي**: مين كتبها ووين. والنفي كان بيدافع
+     عن تهمة ما وُجّهت [[promising-the-baseline-signals-past-failure]].
+
+   ── 🔴 وفيها رأي سلبي بقصد ──────────────────────────────────────────
+   توزيع نجوم فيتامين سي عند الوكالة: ٤٧ خمسة · ٩ أربعة · **١ نجمة وحدة**.
+   والوحدة نصّها «ما كنت مبسوطة». **محطوطة معهن.**
+   جدار كله خمس نجوم بيقرا مفلتراً · ورأي سلبي واحد بينقل الكتلة من دعاية
+   لدليل، وما بيكلّف ولا إشي.
+
+   ⚠️ والنصّ التركي الأصلي محفوظ بالماركب (`lang="tr"` مخفي) · مش للعرض،
+      للتحقّق · أي ادعاء بينراجع على مصدره بلا ما نطلع من الصفحة.
+
+   ☐ **وشرط انتهاء:** أول ما منتج يجمع `LUVIT_TR_HIDE_AT` رأياً من زبوناتنا،
+      البلوك بينشال من صفحته · وإلا بيصير أثاثاً دائماً بيوحي إننا لساتنا
+      بلا آراء.
+   ========================================================================== */
+
+const LUVIT_TR_HIDE_AT = 3;  // LUVIT_TR_REVIEWS
+
+function luvit_tr_reviews() {
+	return array(
+		191 => array(
+			array( 5, 'Gizem A.', 'من أول ما نزل وأنا بستعمله وبحبّه. صرلي فترة بجرّب ماركات ثانية، بس هاد أحسن وأقوى سيروم فيتامين سي استعملته لهلأ.', 'İlk çıktığından beri severek kullanıyorum. Bir süredir başka markaları deniyordum ancak bu zamana kadar kullandığım en iyi en etkili C vitamini serumu.' ),
+			array( 1, 'زبونة', 'ما كنت مبسوطة.', 'memnun kalmadım' ),
+		),
+		275 => array( array( 5, 'Büşra Ç.', 'بيخلّي الوجه مرطّب وممتلئ وناعم كتير. أنا مبسوطة منه.', 'yüze oldukça nemli ve dolgun ve yumuşaklık sağlıyor çok memnunum' ) ),
+		202 => array( array( 5, 'Sadegül T.', 'صرلي سنين بستعمله. لحدا بشرتها ناشفة مثلي، هاد التونر بينقذ الوضع. ما بضل محتاجة أستعمل سيروم. منتج ممتاز.', 'Yıllardır kullanıyorum. Benim gibi kuru ciltli biri için hayat kurtarıcı bir tonik. Serum kullanmama gerek kalmıyor. Mükemmel bir ürün' ) ),
+		278 => array( array( 5, 'Esra S.', 'بنستعمل هالمنتج ضمن روتين بنتي اللي عندها حبوب المراهقة. مبسوطين منه كتير.', 'Bu ürünü ergenlik sivilceleri olan kızımın cilt bakım rutini için kullanıyoruz. Oldukça memnunuz.' ) ),
+		281 => array( array( 5, 'Esra Ç.', 'بيرطّب بشرتي الناشفة بشكل كتير حلو.', 'kuru cildimi çok güzel nemlendiriyor' ) ),
+		201 => array( array( 5, 'S E.', 'إجا كتير منيح لبشرتي الناشفة. بعد ما بستعمله ما بيسيب إحساس الشدّ المزعج.', 'Kuru cildime çok iyi geldi. Ürünü kullandıktan sonra rahatsız edici bir gerginlik bırakmadı.' ) ),
+		280 => array( array( 5, 'Rumeysa G.', 'غسول خفيف. لا بينشّف ولا بيشدّ، وبما إنه فيه حمض ساليسيليك إجا منيح للحبوب والرؤوس السودا عندي. قبل استعملت اللي فيه حمض هيالورونيك وكنت مبسوطة، وهلأ أخذت هاد. بنصح فيه.', 'Hafif bir temizleme jeli. Hem kurutma germe yapmıyor hem de salisilik asitli olduğu için sivilce ve komedonlarıma iyi geldi. Daha önce hyaluronik asitlisini kullanmış ve memnun kalmıştım. Şimdi de bunu aldım. Tavsiye ederim' ) ),
+		276 => array( array( 5, 'Hilal K.', 'حبّيت كتير قوامه الناعم. ماركة حلوة وبنصح فيها.', 'Yumuşak yapısını çok sevdim güzel bir marka tavsiye ederim' ) ),
+		318 => array( array( 5, 'Merve B.', 'قوامه كتير حلو وما بيسيب أثر أبيض.', 'Yapısı çok güzel beyazlık bırakmıyor' ) ),
+		279 => array( array( 5, 'T T.', 'صرلي فترة طويلة بستعمله بانتظام وأنا مبسوطة منه كتير.', 'Uzun süredir düzenli kullanıyorum çok memnunum' ) ),
+	);
+}
+
+add_action(
+	'woocommerce_after_single_product_summary',
+	function () {  // LUVIT_TR_REVIEWS
+
+		global $product;
+		if ( ! $product instanceof WC_Product ) {
+			return;
+		}
+
+		$all  = luvit_tr_reviews();
+		$id   = $product->get_id();
+		if ( empty( $all[ $id ] ) ) {
+			return;
+		}
+
+		/* شرط الانتهاء · لمّا يكفي عندنا آراء، بلوك تركيا بينشال */
+		if ( (int) $product->get_rating_count() >= LUVIT_TR_HIDE_AT ) {
+			return;
+		}
+
+		echo '<section class="luvit-trrev"><h2 class="luvit-trrev__title">آراء من عملائنا بتركيا</h2><div class="luvit-trrev__grid">';
+
+		foreach ( $all[ $id ] as $r ) {
+			list( $stars, $name, $ar, $tr ) = $r;
+			echo '<article class="luvit-trrev__card">';
+			echo '<p class="luvit-trrev__stars" aria-label="' . (int) $stars . ' من 5">'
+				. str_repeat( '★', (int) $stars ) . str_repeat( '☆', 5 - (int) $stars ) . '</p>';
+			echo '<p class="luvit-trrev__text">' . esc_html( $ar ) . '</p>';
+			echo '<p class="luvit-trrev__by">' . esc_html( $name ) . '</p>';
+			/* الأصل التركي · للتحقّق لا للعرض */
+			echo '<p lang="tr" dir="ltr" hidden>' . esc_html( $tr ) . '</p>';
+			echo '</article>';
+		}
+
+		echo '</div></section>';
+	},
+	25
+);

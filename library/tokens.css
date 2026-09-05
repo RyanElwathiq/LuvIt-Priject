@@ -19696,3 +19696,80 @@ body.woocommerce-account:not(.logged-in) #customer_login form.woocommerce-form {
     grid-row: 4;
   }
 }
+
+/* ==========================================================================
+   TR-REVIEWS · آراء عملائنا بتركيا · ٥ أيلول
+   ==========================================================================
+   كتلة **منفصلة بصرياً** عن مراجعاتنا وتحتها · وهاد الفصل هو اللي بيخلّي
+   النسبة صادقة بالعين لا بالنصّ وحده. لو انمزجت مع مراجعاتنا بتصير
+   القارئة تحسبهن واحد.
+
+   ⚠️ ولا سطر شرح تحت العنوان · ريّان: «بس آراء من عملائنا بتركيا وبس».
+      العنوان بيحمل المعنى كامل.
+
+   ⚠️ والنجوم **نصّ لا صور** · بترث اللون وبتكبر مع حجم الخط، وقارئ الشاشة
+      بيقرا «aria-label« بدلها.
+   ========================================================================== */
+.luvit-trrev {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-6) var(--container-gutter);
+  border-block-start: 1px solid var(--color-line);
+}
+
+.luvit-trrev__title {
+  margin: 0 0 var(--space-5);
+  font-family: var(--font-heading);
+  font-size: var(--text-h3);
+  line-height: var(--leading-heading);
+  color: var(--color-ink);
+}
+
+.luvit-trrev__grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.luvit-trrev__card {
+  /* 🔴 border-box إلزامي · بطاقة الآراء القديمة انكسرت بالضبط من غيابه
+     ورسمت أوسع من صندوقها بـ٦٦px. [[layout-breaks-that-no-gate-can-see]] */
+  box-sizing: border-box;
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+}
+
+.luvit-trrev__stars {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-body);
+  line-height: 1;
+  color: var(--aqua-500);
+  letter-spacing: 2px;
+  /* ⚠️ النجوم رموز لاتينية الاتجاه · بلا عزل بتنقلب بالسطر العربي.
+     [[brand-name-rtl-bug]] */
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+}
+
+.luvit-trrev__text {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
+  color: var(--color-ink);
+}
+
+.luvit-trrev__by {
+  margin: 0;
+  font-family: var(--font-latin);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  color: var(--color-ink-faint);
+  /* الاسم لاتيني بآخر بطاقة عربية · نفس فخّ الانقلاب */
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+}
