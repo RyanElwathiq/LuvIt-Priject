@@ -1627,3 +1627,173 @@ add_action( 'admin_footer', function () {  // LUVIT_GA4_ADMIN
 	}
 	echo '<script>try{localStorage.setItem("luvit-no-ga","1");}catch(e){}</script>';
 } );
+
+/* ==========================================================================
+   LUVIT_D_PROJECT · من السجلّ لحالة الطلب · ٥ أيلول
+   ==========================================================================
+   صفحة المندوب (`library/luvit-delivery.php`) بتشتغل **قبل ما ووكومرس
+   ينتحمّل**، عشان توصل بجولة وحدة على شبكة ضعيفة. وثمن هالسرعة إنها
+   **ما بتقدر تستدعي ولا دالة من ووكومرس** · فهي بتكتب سطراً بالسجلّ وبس.
+
+   وهاد الجزء بيشتغل **بطلب عادي**، بياخد السطور الجديدة وبيعكسها على
+   حالة الطلب · وووكومرس وقتها بيطلق إيميلاته لحاله.
+
+   ── 🔴 والاتجاه مقصود ────────────────────────────────────────────────
+   **السجلّ هو المصدر، وحالة الطلب انعكاس.** حالة الطلب أي أدمن بيقدر
+   يغيّرها والبلجنز بتكتب عليها · فما بتصلح أساس تسوية مالية.
+   ولو غيّر حدا الحالة من اللوحة، السجلّ بيضل يقول الحقيقة.
+
+   ── ⚠️ وما بينكتب «تمّت المعالجة» على السطر ──────────────────────────
+   الجدول **بينكتب فيه وبس** · فلو أشّرنا على السطور بتصير عندنا
+   `UPDATE` وبتنكسر الفكرة. بدلها منخزّن **آخر رقم انعالج** بخيار،
+   ومنعالج اللي بعده. أبسط وأأمن وبيحافظ على التاريخ كامل.
+
+   ── ⚠️ والحارس `function_exists` إلزامي ─────────────────────────────
+   لو الإضافة انعطّلت أو انحذفت، استدعاء دوالها من هون **خطأ قاتل**
+   بيوقّف الموقع. [[silent-refusals-hide-in-the-response]]
+   ========================================================================== */
+
+function luvit_d_project() {  // LUVIT_D_PROJECT
+
+	if ( ! function_exists( 'luvit_d_table' ) || ! function_exists( 'wc_get_order' ) ) {
+		return;
+	}
+
+	global $wpdb;
+	$table = luvit_d_table();
+	$last  = (int) get_option( 'luvit_d_projected', 0 );
+
+	$rows = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT id, order_id, stage FROM {$table}
+			 WHERE id > %d AND stage <> 'view'
+			 ORDER BY id ASC LIMIT 100",
+			$last
+		),
+		ARRAY_A
+	);
+
+	if ( ! $rows ) {
+		return;
+	}
+
+	$map = array(
+		'shipped'   => 'luvit-shipped',
+		'delivered' => 'completed',
+		'refused'   => 'cancelled',
+	);
+
+	foreach ( $rows as $row ) {
+
+		$last  = (int) $row['id'];
+		$order = wc_get_order( (int) $row['order_id'] );
+
+		if ( ! $order ) {
+			continue;
+		}
+
+		$stage = (string) $row['stage'];
+
+		/* الملاحظات · مش تغيير حالة، بس بتخلي التاريخ مقروءاً باللوحة */
+		if ( 'contacted' === $stage ) {
+			$order->add_order_note( 'شركة التوصيل: اتواصلنا مع الزبونة وتحدّد الموعد.' );
+			continue;
+		}
+		if ( 'noanswer' === $stage ) {
+			$order->add_order_note( 'شركة التوصيل: الزبونة ما ردّت على التلفون.' );
+			continue;
+		}
+
+		if ( ! isset( $map[ $stage ] ) ) {
+			continue;
+		}
+
+		$target = $map[ $stage ];
+
+		/* ⚠️ ولا تتراجع للورا · لو حدا سكّر الطلب من اللوحة قبل ما
+		   ينعالج السطر، ما بنرجّعه. */
+		if ( $order->get_status() === $target ) {
+			continue;
+		}
+		if ( in_array( $order->get_status(), array( 'completed', 'cancelled', 'refunded' ), true )
+			&& 'delivered' !== $stage && 'refused' !== $stage ) {
+			continue;
+		}
+
+		$order->update_status( $target, 'تأكيد من شركة التوصيل عبر رابط التسليم.' );
+	}
+
+	update_option( 'luvit_d_projected', $last, false );
+}
+
+/* ⚠️ **ولا استعلام على كل طلب صفحة.** الصفحة السريعة بترفع راية بخيار
+   مُحمَّل مسبقاً، فالقراءة هون **من الكاش وببلاش**، والشغل بيصير بس لما
+   يكون في جديد فعلاً. */
+add_action(
+	'init',
+	function () {
+		if ( ! get_option( 'luvit_d_dirty' ) ) {
+			return;
+		}
+		update_option( 'luvit_d_dirty', 0 );
+		luvit_d_project();
+	},
+	20
+);
+
+/* وشبكة أمان · لو ما حدا زار الموقع، الكرون بيمسكها */
+add_action( 'luvit_d_cron', 'luvit_d_project' );
+add_action(
+	'init',
+	function () {
+		if ( ! wp_next_scheduled( 'luvit_d_cron' ) ) {
+			wp_schedule_event( time() + 300, 'hourly', 'luvit_d_cron' );
+		}
+	},
+	21
+);
+
+/* ==========================================================================
+   LUVIT_D_LINK · رابط التسليم جوّا إيميل الطلب الإداري · ٥ أيلول
+   ==========================================================================
+   ما في ورقة بتروح مع الكرتونة · فالرابط بيوصل **بإيميل الطلب اللي
+   بيوصل ريّان وصاحب العلامة**، وصاحب العلامة بيمرّره لشركة التوصيل مع
+   العنوان والرقم بنفس رسالته المعتادة.
+
+   ⚠️ **والرمز النصّي جنبه إلزامي** · الرابط بينكسر بالواتساب وبفلاتر
+      البريد وبالأسطر المقطوعة · ونصّ ما بينكسر. وهو اللي بيشيل حجّة
+      «الرابط خربان» كفئة كاملة.
+
+   🔴 **وللإداري بس** · `$sent_to_admin` · وإلا الزبونة بيوصلها رابط
+      بتقدر تأكّد فيه استلامها بنفسها.
+   ========================================================================== */
+add_action(
+	'woocommerce_email_order_meta',
+	function ( $order, $sent_to_admin ) {
+
+		if ( ! $sent_to_admin || ! function_exists( 'luvit_d_token' ) ) {
+			return;
+		}
+
+		$token = luvit_d_token( $order->get_id() );
+		if ( '' === $token ) {
+			return;
+		}
+
+		$url = home_url( '/d/' . $token );
+
+		echo '<div style="margin:18px 0;padding:14px;border:1px solid #E1E9EC;'
+			. 'border-radius:10px;background:#F2F7F9;direction:rtl;text-align:right">'
+			. '<p style="margin:0 0 8px;font-weight:700;color:#1A2529">رابط تأكيد التسليم</p>'
+			. '<p style="margin:0 0 8px;font-size:13px;color:#47555B">'
+			. 'ابعته لشركة التوصيل مع تفاصيل الطلب.</p>'
+			. '<p style="margin:0 0 6px"><a href="' . esc_url( $url ) . '" '
+			. 'style="color:#196B7D;word-break:break-all">' . esc_html( $url ) . '</a></p>'
+			. '<p style="margin:0;font-size:13px;color:#47555B">وإذا الرابط ما اشتغل، '
+			. 'افتحوا <strong>plasmajo.com/d</strong> واكتبوا الرمز: '
+			. '<strong style="letter-spacing:.06em">' . esc_html( $token ) . '</strong></p>'
+			. '</div>';
+	},
+	10,
+	2
+);
