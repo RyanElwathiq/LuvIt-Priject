@@ -1678,7 +1678,7 @@ function luvit_d_project() {  // LUVIT_D_PROJECT
 	}
 
 	$map = array(
-		'shipped'   => 'luvit-shipped',
+		'answered'  => 'luvit-shipped',
 		'delivered' => 'completed',
 		'refused'   => 'cancelled',
 	);
@@ -1694,13 +1694,12 @@ function luvit_d_project() {  // LUVIT_D_PROJECT
 
 		$stage = (string) $row['stage'];
 
-		/* الملاحظات · مش تغيير حالة، بس بتخلي التاريخ مقروءاً باللوحة */
-		if ( 'contacted' === $stage ) {
-			$order->add_order_note( 'شركة التوصيل: اتواصلنا مع الزبونة وتحدّد الموعد.' );
-			continue;
-		}
-		if ( 'noanswer' === $stage ) {
-			$order->add_order_note( 'شركة التوصيل: الزبونة ما ردّت على التلفون.' );
+		/* «استلمنا البضاعة» · ما بتغيّر حالة ووكومرس (الطلب لساه قيد
+		   التجهيز فعلياً) · بس **بتبعت للزبونة**، وهاي أول لحظة بتحسّ
+		   فيها إنّ طلبها اتحرّك. */
+		if ( 'received' === $stage ) {
+			$order->add_order_note( 'شركة التوصيل استلمت البضاعة.' );
+			luvit_d_mail_customer( $order, 'received' );
 			continue;
 		}
 
@@ -1721,6 +1720,13 @@ function luvit_d_project() {  // LUVIT_D_PROJECT
 		}
 
 		$order->update_status( $target, 'تأكيد من شركة التوصيل عبر رابط التسليم.' );
+
+		/* ⚠️ ووكومرس ما بيبعت إيميلاً لحالة **مخصّصة** · فـ«بالطريق»
+		   بدها إيميلنا. أما «مكتمل» و«ملغي» فعندهم إيميلات جاهزة
+		   وبتنطلق من `update_status` نفسها · فما بنكرّر. */
+		if ( 'answered' === $stage ) {
+			luvit_d_mail_customer( $order, 'answered' );
+		}
 	}
 
 	update_option( 'luvit_d_projected', $last, false );
@@ -1796,4 +1802,164 @@ add_action(
 	},
 	10,
 	2
+);
+
+/* ==========================================================================
+   LUVIT_D_MAIL · إيميلات الزبونة بمحطّات التوصيل · ٥ أيلول
+   ==========================================================================
+   محطّتان ما عند ووكومرس إيميل إلهن، لأنهن **مش حالات ووكومرس**:
+
+     «استلمنا البضاعة» ← أول لحظة بتحسّ فيها إنّ طلبها اتحرّك
+     «ردّت واتفقنا»    ← تثبيت مكتوب لموعد حكت فيه بالتلفون توّها
+
+   و«تسلّمت» و«رفضت» عندهم إيميلات ووكومرس الجاهزة، فما بنكرّر.
+
+   ⚠️ و`wrap_message` بتلفّ النصّ بقالب إيميلات المتجر · يعني بيرث
+      ترويستنا وألواننا واتجاهنا من `email-rtl.php` بلا ما نعيد بناء
+      قالب. [[color-does-not-inherit-into-svg]]
+
+   🔴 **والصيغة مؤنّثة** · هاي الزبونة لا ريّان.
+   ========================================================================== */
+
+function luvit_d_mail_customer( $order, $stage ) {  // LUVIT_D_MAIL
+
+	$to = $order->get_billing_email();
+	if ( ! $to || ! function_exists( 'WC' ) || ! WC()->mailer() ) {
+		return;
+	}
+
+	$name  = $order->get_billing_first_name();
+	$hi    = $name ? 'أهلين ' . esc_html( $name ) . '،' : 'أهلين،';
+	$num   = $order->get_order_number();
+	$total = wc_price( $order->get_total() );
+
+	if ( 'received' === $stage ) {
+		$subject = 'طلبك صار عند المندوب · ' . $num;
+		$heading = 'طلبك بطريقه إلك';
+		$body    = '<p>' . $hi . '</p>'
+			. '<p>طلبك رقم <strong>' . esc_html( $num ) . '</strong> صار عند شركة التوصيل، '
+			. 'وحيتواصلوا معك على تلفونك بأقرب وقت عشان تتفقوا على وقت يناسبك.</p>'
+			. '<p>وجهّزي معك <strong>' . $total . '</strong> · الدفع عند الاستلام.</p>';
+	} elseif ( 'answered' === $stage ) {
+		$subject = 'اتفقنا على الموعد · طلبك بالطريق · ' . $num;
+		$heading = 'طلبك بالطريق';
+		$body    = '<p>' . $hi . '</p>'
+			. '<p>تمّ التواصل معك واتفقنا على الموعد، وطلبك رقم '
+			. '<strong>' . esc_html( $num ) . '</strong> بالطريق إلك.</p>'
+			. '<p>المبلغ المطلوب عند الاستلام <strong>' . $total . '</strong>.</p>';
+	} else {
+		return;
+	}
+
+	$body .= '<p style="color:#47555B;font-size:13px">'
+		. 'وإذا احتجتِ أي إشي، ردّي على هالرسالة ومنكون معك.</p>';
+
+	$msg = WC()->mailer()->wrap_message( $heading, $body );
+
+	WC()->mailer()->send(
+		$to,
+		$subject,
+		$msg,
+		'Content-Type: text/html' . "\r\n",
+		''
+	);
+}
+
+/* ==========================================================================
+   LUVIT_D_DIGEST · التنبيه اليومي · ٥ أيلول
+   ==========================================================================
+   🔴 **بيوصل كل يوم حتى لو ما في ولا طلبية عالقة.**
+   تنبيه بيوصل بس وقت المشكلة **ما بتقدر تفرّق بينه وبين تنبيه ميت** ·
+   وأول ما يسكت أسبوعاً بتفترض إنّ الدنيا تمام وهو أصلاً معطّل.
+
+   ── وشو بيمسك ──────────────────────────────────────────────────────
+   الطلبيات اللي **وقفت بمحطّة** أطول من اللازم · وأهمهن اللي استلمتها
+   الشركة وما ضغطت «ردّت»، لأنّ **هاي معناها الزبونة ما بترد** ·
+   وريّان شال زرّ «ما ردّت» بقصد عشان الغياب يصير هو الإشارة.
+
+   ⚠️ **والعتبات تخمين مؤقّت** · بتنضبط لمّا نعرف كم بتاخد الشركة فعلاً.
+   ========================================================================== */
+
+const LUVIT_D_LATE_NEW      = 24;  /* ساعة · طلب جديد وما استلمته الشركة */
+const LUVIT_D_LATE_RECEIVED = 24;  /* ساعة · استلمته وما ردّت الزبونة */
+const LUVIT_D_LATE_SHIPPED  = 48;  /* ساعة · بالطريق وما تسلّمت */
+
+function luvit_d_digest() {  // LUVIT_D_DIGEST
+
+	if ( ! function_exists( 'luvit_d_table' ) || ! function_exists( 'wc_get_orders' ) ) {
+		return;
+	}
+
+	global $wpdb;
+	$table = luvit_d_table();
+
+	$stuck = array(
+		'ما استلمتها الشركة'      => array( 'processing', LUVIT_D_LATE_NEW, 'received' ),
+		'استلمتها وما ردّت الزبونة' => array( 'processing', LUVIT_D_LATE_RECEIVED, 'answered' ),
+		'بالطريق وما تسلّمت'       => array( 'luvit-shipped', LUVIT_D_LATE_SHIPPED, 'delivered' ),
+	);
+
+	$lines = '';
+	$total = 0;
+
+	foreach ( $stuck as $label => $rule ) {
+		list( $status, $hours, $missing ) = $rule;
+
+		$orders = wc_get_orders(
+			array(
+				'status'       => array( $status ),
+				'date_created' => '<' . ( time() - $hours * HOUR_IN_SECONDS ),
+				'limit'        => 50,
+				'return'       => 'ids',
+			)
+		);
+
+		$hit = array();
+		foreach ( (array) $orders as $oid ) {
+			$has = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$table} WHERE order_id = %d AND stage = %s",
+					(int) $oid,
+					$missing
+				)
+			);
+			if ( ! $has ) {
+				$hit[] = (int) $oid;
+			}
+		}
+
+		if ( $hit ) {
+			$total  += count( $hit );
+			$lines  .= '<p><strong>' . esc_html( $label ) . '</strong> (' . count( $hit ) . '): '
+				. esc_html( implode( '، ', $hit ) ) . '</p>';
+		}
+	}
+
+	$subject = $total
+		? 'LUV IT · ' . $total . ' طلبية مستنية'
+		: 'LUV IT · ما في شي مستني';
+
+	$body = $lines ? $lines : '<p>كل الطلبيات ماشية · ما في ولا وحدة عالقة.</p>';
+	$body .= '<p style="color:#47555B;font-size:13px">هالرسالة بتوصل كل يوم، '
+		. 'حتى لو ما في شي · غيابها معناه في خلل بالنظام لا إنّ الدنيا تمام.</p>';
+
+	wp_mail(
+		get_option( 'admin_email' ),
+		$subject,
+		$body,
+		array( 'Content-Type: text/html; charset=UTF-8' )
+	);
+}
+
+add_action( 'luvit_d_digest_cron', 'luvit_d_digest' );
+add_action(
+	'init',
+	function () {
+		if ( ! wp_next_scheduled( 'luvit_d_digest_cron' ) ) {
+			/* ٧ صباحاً بتوقيت عمّان · قبل ما يبلّش يوم الشغل */
+			$next = strtotime( 'tomorrow 07:00', current_time( 'timestamp' ) );
+			wp_schedule_event( $next - ( (int) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ), 'daily', 'luvit_d_digest_cron' );
+		}
+	},
+	22
 );

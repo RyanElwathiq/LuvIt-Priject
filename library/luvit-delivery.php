@@ -55,13 +55,21 @@ const LUVIT_D_TABLE_VER = '1';
    وحرف ملتبس بيخلق فشلاً بيبيّن كأنه عطل بالنظام. */
 const LUVIT_D_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
 
-/* المراحل · بالترتيب. الرقم بيمنع الرجوع للورا. */
+/* المراحل · بالترتيب. الرقم بيمنع الرجوع للورا.
+
+   🔴 **وما في زرّ «ما ردّت» · بقصد، وريّان هو اللي شالها.**
+   السبب إنّ «ما ردّت» **حالة عابرة**: المندوب بيرنّ وما بترد، وبعد
+   ساعة بيرنّ وبترد. فتسجيلها بتخلق ضجيجاً وحالة ميتة بالسجلّ.
+
+   ⤷ **والغياب هو الإشارة.** طلبية قاعدة على `received` وما انضغط
+     عليها `answered` معناها الزبونة ما بترد · بلا ما يعمل المندوب
+     أي إشي. التنبيه اليومي بيمسكها، وكل ضغطة بنشيلها من على المندوب
+     هي ضغطة أقل معرّضة إنها ما تنعمل. */
 function luvit_d_stages() {
 	return array(
 		'new'       => array( 'n' => 0, 'label' => 'طلب جديد' ),
-		'contacted' => array( 'n' => 1, 'label' => 'اتواصلنا وتحدّد الموعد' ),
-		'noanswer'  => array( 'n' => 1, 'label' => 'ما ردّت على التلفون' ),
-		'shipped'   => array( 'n' => 2, 'label' => 'بالطريق إلها' ),
+		'received'  => array( 'n' => 1, 'label' => 'استلمنا البضاعة' ),
+		'answered'  => array( 'n' => 2, 'label' => 'ردّت واتفقنا على الموعد' ),
 		'delivered' => array( 'n' => 3, 'label' => 'تسلّمت والمبلغ محصّل' ),
 		'refused'   => array( 'n' => 3, 'label' => 'رفضت الاستلام' ),
 	);
@@ -547,13 +555,14 @@ function luvit_d_router() {
 		. '<form method="post" id="f">'
 		. '<input type="hidden" name="stage" id="st"><input type="hidden" name="rid" id="rid">';
 
-	/* الأزرار اللي إلها معنى بس · حسب المرحلة */
+	/* الأزرار اللي إلها معنى بس · حسب المرحلة.
+	   ⚠️ وكل ضغطة بترسل إيميلاً للزبونة · فالترتيب هو قصّتها هي، لا
+	      تصنيفاً داخلياً إلنا. */
 	if ( $n < 1 ) {
-		$b .= '<button class="o" data-s="contacted">اتواصلنا وتحدّد الموعد</button>'
-			. '<button class="o" data-s="noanswer">ما ردّت على التلفون</button>';
+		$b .= '<button data-s="received">استلمنا البضاعة</button>';
 	}
 	if ( $n < 2 ) {
-		$b .= '<button data-s="shipped">بالطريق إلها</button>';
+		$b .= '<button data-s="answered">ردّت واتفقنا على الموعد</button>';
 	}
 	$b .= '<button class="g" data-s="delivered">تسلّمت والمبلغ محصّل</button>'
 		. '<button class="b" data-s="refused">رفضت الاستلام</button>'
