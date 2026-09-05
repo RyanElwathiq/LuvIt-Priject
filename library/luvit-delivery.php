@@ -596,7 +596,7 @@ function luvit_d_router() {
 		. 'var d=new FormData(f);'
 		. 'fetch(location.pathname,{method:"POST",body:d,credentials:"omit"})'
 		. '.then(function(res){return res.text()})'
-		. '.then(function(html){document.open();document.write(html);document.close();'})'
+		. '.then(function(html){document.open();document.write(html);document.close();})'
 		. '.catch(function(){if(n<3){s.textContent="الشبكة ضعيفة · بنعيد المحاولة...";'
 		. 'setTimeout(go,n*4000)}else{s.className="e";'
 		. 's.textContent="ما اتسجّلت · اضغط الزر كمان مرة لمّا ترجع الشبكة";busy=0;'
