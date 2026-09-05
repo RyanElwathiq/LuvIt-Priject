@@ -461,7 +461,7 @@ var GROUPS = [
           '<div class="pk__row"><span>مجموع القطع</span><b>' + AR(parts) + ' د.أ</b></div>' +
           '<div class="pk__row pk__row--free"><span>التوصيل</span><b>مجاني</b></div>' +
           '<div class="pk__row pk__row--total"><span>الإجمالي</span><b>' + AR(parts) + ' د.أ</b></div>' +
-          '<p class="pk__note">سعر الروتين مجموع قطعه بالضبط · ما منرفع السعر عشان ننزّله.</p>' +
+          '<p class="pk__note">بتوفّري ١٣ دينار عن شراء الخطوات وحدة وحدة.</p>' +
         '</div>' +
         '<div class="pk__buy">' +
           (p.id
