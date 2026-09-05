@@ -11597,8 +11597,8 @@ body.admin-bar #hero-seq .hero-story__cue {
 
 /* ---- الإزاحة العمودية · تكسر استقامة الصف ------------------------ */
 @media (min-width: 1000px) {
-  #packages .luvit-card-grid--wide > :nth-child(2) { margin-block-start: var(--space-7); }
-  #packages .luvit-card-grid--wide > :nth-child(3) { margin-block-start: calc(var(--space-7) * 2); }
+  #packages .luvit-card-grid--wide > :nth-child(3n + 2) { margin-block-start: var(--space-7); }
+  #packages .luvit-card-grid--wide > :nth-child(3n + 3) { margin-block-start: calc(var(--space-7) * 2); }
 }
 
 /* ==========================================================================
@@ -19773,3 +19773,40 @@ body.woocommerce-account:not(.logged-in) #customer_login form.woocommerce-form {
   unicode-bidi: isolate;
   text-align: start;
 }
+
+
+/* ==========================================================================
+   5.53 · بطاقات البكجات المولّدة · وصورتا الثنائي            (5 أيلول)
+   --------------------------------------------------------------------------
+   البكجات صارت **بتنرسم من قاعدة البيانات** لا من HTML مكتوب بالإيد
+   (شورتكود `[luvit_packages]` · سنيبت ٥٧٧ · مصدره `library/packages.php`).
+   والسبب مقيس: الصفحة كانت بترسم ١٦ بطاقة والمتجر فيه ٣٠ منتجاً.
+
+   🔴 **والثنائيات ما عندها ولا صورة** · مفحوص: ٥ روتينات عندها صورة باقة،
+      والـ١٣ ثنائية صفر. فبدل عنصر نائب بيتكرّر ١٣ مرة (وهاد بيخلّي الشبكة
+      تبيّن أفرغ من نصّ صافي)، البطاقة بتعرض **صورتَي منتجيها الحقيقيتين**.
+      مفحوص إنّ الـ١٣ كلهن بينحلّوا لمنتجين وكل منتج عنده صورة.
+
+   ⚠️ **و`contain` مش `cover`** · العبوة طولية والخانة صارت **نصف** العرض،
+      فـ`cover` بتقصّ العبوة من جنابها وبتوكل الملصق. و`--card-media-bg`
+      (الضباب) بيقعد ورا الحشوة فبتقرا مقصودة لا ناقصة.
+
+   ⚠️ و`::before` و`::after` تبع الميديا **الاتنين `absolute`** · مفحوص،
+      عشان ما يصيروا خانتين بالشبكة زي ما صار بـ`ul.products`.
+      [[clearfix-pseudo-eats-grid-cells]]
+   ========================================================================== */
+.luvit-card--duo { --card-media-ratio: 16 / 9; }
+
+.luvit-card__media--pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+.luvit-card__media--pair img {
+  object-fit: contain;
+  padding: var(--space-2);
+}
+
+/* ترويسة مجموعة تانية جوّا نفس السكشن · بدها تنفّس فوقها لأنّ شبكة
+   قبلها بتنتهي بحافة بطاقة لا بمسافة. */
+.luvit-section__head--tier { margin-block-start: var(--space-8); }
