@@ -406,6 +406,18 @@ function luvit_pk_tier_price( $product_id, $qty ) {
 	return round( $base * ( 100 - $pct ) / 100, $dec );
 }
 
+/* 🔴 **نسبة واحدة للسطر، مش خصمين فوق بعض.**
+   سطر إجا من عرض الشيك أوت (٥٪) وبعدين رفعت كميته لتلاتة (١٠٪) لازم
+   ياخد **الأعلى** لا المجموع · الجمع بيوصل ١٥٪ على منتج مفرد وهاد أعلى
+   من الثنائي، فبينقلب السلّم اللي بيوجّه على الباقات. */
+function luvit_pk_line_pct( $item ) {
+	$pct = luvit_pk_tier_pct( $item['product_id'], $item['quantity'] );
+	if ( ! empty( $item['luvit_bump'] ) ) {
+		$pct = max( $pct, LUVIT_PK_BUMP_PCT );
+	}
+	return (int) $pct;
+}
+
 add_action( 'woocommerce_before_calculate_totals', function ( $cart ) {
 	if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
 		return;
@@ -417,19 +429,29 @@ add_action( 'woocommerce_before_calculate_totals', function ( $cart ) {
 		if ( empty( $item['data'] ) || empty( $item['product_id'] ) ) {
 			continue;
 		}
-		if ( ! luvit_pk_tier_pct( $item['product_id'], $item['quantity'] ) ) {
+		$pct = luvit_pk_line_pct( $item );
+		if ( ! $pct ) {
 			continue;
 		}
-		$price = luvit_pk_tier_price( $item['product_id'], $item['quantity'] );
-		if ( null !== $price ) {
-			$item['data']->set_price( $price );
+		$p = wc_get_product( $item['product_id'] );
+		if ( ! $p ) {
+			continue;
 		}
+		$dec = function_exists( 'wc_get_price_decimals' ) ? wc_get_price_decimals() : 2;
+		$item['data']->set_price( round( (float) $p->get_price() * ( 100 - $pct ) / 100, $dec ) );
 	}
 }, 20 );
 
 /* سطر بالسلة بيقول ليش السعر نزل · بلاه بتبيّن غلطة لا هدية */
 add_filter( 'woocommerce_get_item_data', function ( $data, $item ) {
 	if ( empty( $item['product_id'] ) ) {
+		return $data;
+	}
+	if ( ! empty( $item['luvit_bump'] ) ) {
+		$data[] = array(
+			'name'  => 'عرض الشيك أوت',
+			'value' => LUVIT_PK_BUMP_PCT . '٪',
+		);
 		return $data;
 	}
 	$pct = luvit_pk_tier_pct( $item['product_id'], $item['quantity'] );
@@ -740,6 +762,240 @@ function luvit_pk_suggest_js() {
      ⤷ فبنحاول كل ٤٠٠ملّي لحد ما نشترك، وبنوقف أول ما ننجح.
      [[computed-style-goes-stale]] · نفس عائلة «الوقت مش مضمون».
      ⚠️ وسقف ٤٠ محاولة (١٦ ثانية) عشان ما يضل مؤقّت شغّال للأبد. */
+  var subscribed = false;
+  function ensure() {
+    tick();
+    if (!subscribed && window.wp && window.wp.data && window.wp.data.subscribe) {
+      window.wp.data.subscribe(tick);
+      subscribed = true;
+    }
+  }
+  var tries = 0;
+  var iv = setInterval(function () {
+    ensure();
+    if (subscribed || ++tries > 40) { clearInterval(iv); }
+  }, 400);
+  ensure();
+})();
+JS;
+}
+
+
+/* ==========================================================================
+   عرض الشيك أوت · اقتراح واحد بخصم خفيف
+   ==========================================================================
+   ريّان: «لما تيجي تعمل شيك أوت نقترح عليها كمان منتجات بخصومات معينة
+   خفيفة زي خمسة بالمية · وطبعاً بطريقة تبيّن كنصيحة مش إشي مزعج يخرب
+   الاستخدام».
+
+   ── ثلاث قرارات بتنفّذ «مش مزعج» ────────────────────────────────────
+     · **واحد لا ثلاثة.** الشيك أوت لحظة قرار، وثلاث خيارات بترجّعها
+       للتصفّح. اللي بالسلة اقتراحاته تلاتة، وهون **الأقوى وبس**.
+     · **مربّع اختيار لا زرّ.** الزرّ بيعمل فعلاً ما بينلغى بسهولة ·
+       المربّع بينشال بنفس الضغطة، والقرار بيضل بإيدها.
+     · **بلا عدّاد ولا «لفترة محدودة».** الاستعجال بيصنع بالضبط الطلبية
+       اللي بتنرفض عالباب، وبالدفع عند الاستلام منّا بندفع الشحن مرّتين.
+
+   ── ليش Store API callback مش زرّ عادي ──────────────────────────────
+   الشيك أوت **بلوك**، والسطر لازم ينكتب **بعلامة** عشان الخصم يعرف حاله.
+   `add-item` العادي ما بياخد بيانات سطر مخصّصة · فالمسار الرسمي هو
+   `woocommerce_store_api_register_update_callback` · بينده بالسيرفر
+   والسلة محمّلة، وبيرجّع السلة كاملة فالمجاميع بتتحدّث لحالها.
+
+   🔴 **والعلامة على السطر لا على المنتج** · نفس المنتج ممكن يكون بالسلة
+      مرتين، وحدة عادية ووحدة من العرض، والخصم لازم يفرّق.
+   ========================================================================== */
+
+if ( ! defined( 'LUVIT_PK_BUMP_PCT' ) ) {
+	define( 'LUVIT_PK_BUMP_PCT', 5 );
+}
+
+/* ملاحظة: ما في داعي لفلتر `woocommerce_add_cart_item_data` · ووكومرس
+   بيبني مفتاح السطر من هاش بيانات السطر، فتمرير `luvit_bump` كوسيط
+   خامس لـ`add_to_cart` بيعمل سطراً منفصلاً لحاله. */
+
+add_action( 'woocommerce_blocks_loaded', function () {
+	if ( ! function_exists( 'woocommerce_store_api_register_update_callback' ) ) {
+		return;
+	}
+	woocommerce_store_api_register_update_callback( array(
+		'namespace' => 'luvit-bump',
+		'callback'  => function ( $data ) {
+			$id = isset( $data['id'] ) ? absint( $data['id'] ) : 0;
+			$on = ! empty( $data['on'] );
+			if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+				return;
+			}
+			$cart = WC()->cart;
+
+			/* أي سطر عرض قديم بينشال أول · فما بيصير سطران من العرض */
+			foreach ( $cart->get_cart() as $key => $item ) {
+				if ( ! empty( $item['luvit_bump'] ) ) {
+					$cart->remove_cart_item( $key );
+				}
+			}
+			if ( ! $on || ! $id || ! luvit_pk_is_single( $id ) ) {
+				return;
+			}
+			$cart->add_to_cart( $id, 1, 0, array(), array( 'luvit_bump' => 1 ) );
+		},
+	) );
+} );
+
+add_shortcode( 'luvit_checkout_bump', function () {  // LUVIT_BUMP
+	if ( is_admin() ) {
+		return '';
+	}
+	$d = luvit_pk_suggest_payload();
+	if ( count( $d['products'] ) < 8 || count( $d['bundles'] ) < 10 ) {
+		return '';
+	}
+	$json = wp_json_encode( $d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+
+	$o  = '<aside class="luvit-bump" id="luvit-bump" hidden data-pct="' . esc_attr( LUVIT_PK_BUMP_PCT ) . '"></aside>';
+	$o .= '<script type="application/json" id="luvit-bump-data">' . $json . '</script>';
+	$o .= '<script>' . luvit_pk_bump_js() . '</script>';
+	return $o;
+} );
+
+function luvit_pk_bump_js() {
+	return <<<'JS'
+(function () {
+  var root = document.getElementById('luvit-bump');
+  var dataEl = document.getElementById('luvit-bump-data');
+  if (!root || !dataEl) { return; }
+  var D;
+  try { D = JSON.parse(dataEl.textContent); } catch (e) { return; }
+  if (!D || !D.products || !D.bundles) { return; }
+  var PCT = parseInt(root.getAttribute('data-pct'), 10) || 5;
+
+  var _n = null;
+  function grabNonce(r) { var v = r.headers.get('Nonce'); if (v) { _n = v; } return r; }
+  function withNonce() {
+    if (_n) { return Promise.resolve(_n); }
+    return fetch('/wp-json/wc/store/v1/cart', { credentials: 'include' })
+      .then(grabNonce).then(function () { return _n || ''; });
+  }
+
+  function cartItems() {
+    try { return window.wp.data.select('wc/store/cart').getCartData().items || []; }
+    catch (e) { return null; }
+  }
+
+  /* أقوى مرشّح واحد · نفس منطق السلة بالضبط */
+  function best(items) {
+    var ids = items.map(function (i) { return i.id; });
+    var owned = {}, anchors = [];
+    ids.forEach(function (id) {
+      owned[id] = 1; anchors.push(id);
+      D.bundles.forEach(function (b) {
+        if (b.id === id) { b.ids.forEach(function (m) { owned[m] = 1; anchors.push(m); }); }
+      });
+    });
+    var cand = {};
+    anchors.forEach(function (a) {
+      D.bundles.forEach(function (b) {
+        if (b.ids.indexOf(a) < 0) { return; }
+        b.ids.forEach(function (m) {
+          if (owned[m] || !D.products[m]) { return; }
+          if (!cand[m]) { cand[m] = { id: m, score: 0, why: null }; }
+          cand[m].score++;
+          if (!cand[m].why && D.products[a]) {
+            cand[m].why = { bundle: b.name, withName: D.products[a].name };
+          }
+        });
+      });
+    });
+    var out = Object.keys(cand).map(function (k) { return cand[k]; })
+      .filter(function (c) { return c.why; });
+    out.sort(function (x, y) { return y.score - x.score || D.products[x.id].price - D.products[y.id].price; });
+    return out.length ? out[0] : null;
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function money(v) { return '<span dir="ltr">' + v.toFixed(2) + '</span> د.أ'; }
+
+  var current = null;
+
+  function draw(c, checked) {
+    var p = D.products[c.id];
+    var was = p.price;
+    var now = Math.round(was * (100 - PCT)) / 100;
+    root.innerHTML =
+      '<label class="luvit-bump__row">'
+      + '<input type="checkbox" class="luvit-bump__cb"' + (checked ? ' checked' : '') + '>'
+      + '<span class="luvit-bump__box">'
+      + (p.img ? '<img class="luvit-bump__img" src="' + esc(p.img) + '" alt="" loading="lazy">' : '')
+      + '<span class="luvit-bump__body">'
+      + '<span class="luvit-bump__name">' + esc(p.name) + '</span>'
+      + '<span class="luvit-bump__why">مع ' + esc(c.why.withName) + ' · ' + esc(c.why.bundle) + '</span>'
+      + '</span>'
+      + '<span class="luvit-bump__price">'
+      + '<s>' + money(was) + '</s>'
+      + '<b>' + money(now) + '</b>'
+      + '<small>خصم ' + PCT + '٪</small>'
+      + '</span></span></label>';
+    root.hidden = false;
+  }
+
+  function toggle(id, on, cb) {
+    cb.disabled = true;
+    withNonce().then(function (nv) {
+      return fetch('/wp-json/wc/store/v1/cart/extensions', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'Nonce': nv },
+        body: JSON.stringify({ namespace: 'luvit-bump', data: { id: id, on: on } })
+      });
+    }).then(grabNonce).then(function (r) {
+      if (!r.ok) { throw new Error(r.status); }
+      return r.json();
+    }).then(function (j) {
+      try { window.wp.data.dispatch('wc/store/cart').receiveCart(j); }
+      catch (e) { window.location.reload(); return; }
+      cb.disabled = false;
+    }).catch(function () {
+      cb.checked = !on;
+      cb.disabled = false;
+    });
+  }
+
+  root.addEventListener('change', function (ev) {
+    var cb = ev.target.closest('.luvit-bump__cb');
+    if (!cb || !current) { return; }
+    toggle(current.id, cb.checked, cb);
+  });
+
+  var lastKey = null;
+  function tick() {
+    var items = cartItems();
+    if (items === null) { return; }
+    var bumped = items.filter(function (i) {
+      return (i.item_data || []).some(function (d) { return d.name === 'عرض الشيك أوت'; });
+    })[0];
+    var key = items.map(function (i) { return i.id + 'x' + i.quantity; }).join(',');
+    if (key === lastKey) { return; }
+    lastKey = key;
+
+    if (!items.length) { root.hidden = true; return; }
+    if (bumped) {
+      /* العرض مقبول · منعرضه معلّماً بدل ما نخفيه، عشان تقدر تشيله */
+      current = { id: bumped.id, why: null };
+      var w = best(items.filter(function (i) { return i.id !== bumped.id; }));
+      current.why = (w && w.id === bumped.id) ? w.why : { bundle: '', withName: '' };
+      if (D.products[bumped.id]) { draw({ id: bumped.id, why: current.why }, true); }
+      return;
+    }
+    var c = best(items);
+    if (!c) { root.hidden = true; current = null; return; }
+    current = c;
+    draw(c, false);
+  }
+
   var subscribed = false;
   function ensure() {
     tick();

@@ -19996,3 +19996,106 @@ body.single-product div.product form.cart:has(.luvit-qty) .quantity { display: n
     inline-size: 100%;
   }
 }
+
+
+/* ==========================================================================
+   5.56 · عرض الشيك أوت                                       (5 أيلول)
+   --------------------------------------------------------------------------
+   صفّ واحد بمربّع اختيار · بيقعد تحت بلوك الشيك أوت.
+
+   ⚠️ **بلا لون تنبيه ولا إطار عريض ولا عدّاد.** ريّان طلبها «تبيّن كنصيحة
+      مش إشي مزعج يخرب الاستخدام» · فالخلفية ضباب خفيف وحدّ رفيع، ونفس
+      إيقاع بطاقات السلة. اللي بيميّزها هو **مربّع الاختيار** لا الصراخ.
+
+   ⚠️ **المربّع الحقيقي مخفي بصرياً ومرسوم بـ ::before**
+      السبب مش تجميل: المربّع الأصلي جوّا الـ label وأخ للصندوق، فما بيقدر
+      يصير خانة بشبكة الصندوق. فبنخفيه (مع بقائه للكيبورد وقارئ الشاشة)
+      وبنرسم مكانه أول خانة بالشبكة، والضغطة بأي مكان بالصفّ بتشتغل لأنّ
+      الكل جوّا label.
+      ⤷ و clip-path مش display:none · المخفي بـnone بينشال من ترتيب
+        التنقّل وما بيوصله الكيبورد.
+   ========================================================================== */
+.luvit-bump {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  margin-block: var(--space-5);
+  padding-inline: var(--container-gutter);
+}
+.luvit-bump__row { position: relative; display: block; cursor: pointer; }
+.luvit-bump__box {
+  display: grid;
+  grid-template-columns: auto 52px minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-mist);
+  transition: border-color 180ms var(--ease-out-soft), background 180ms var(--ease-out-soft);
+}
+.luvit-bump__cb:checked + .luvit-bump__box {
+  border-color: var(--aqua-600);
+  background: var(--aqua-50);
+}
+.luvit-bump__cb:focus-visible + .luvit-bump__box {
+  outline: 2px solid var(--aqua-600);
+  outline-offset: 2px;
+}
+.luvit-bump__img {
+  inline-size: 52px;
+  block-size: 52px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: var(--color-paper);
+  padding: 4px;
+}
+.luvit-bump__body { display: grid; gap: 2px; min-inline-size: 0; }
+.luvit-bump__name { font-weight: 600; color: var(--color-ink); }
+.luvit-bump__why { font-size: var(--text-caption); color: var(--color-ink-soft); }
+.luvit-bump__price {
+  display: grid;
+  justify-items: end;
+  gap: 1px;
+  white-space: nowrap;
+}
+.luvit-bump__price s { font-size: var(--text-caption); color: var(--color-ink-faint); }
+.luvit-bump__price b { color: var(--color-ink); }
+.luvit-bump__price small { font-size: var(--text-caption); color: var(--aqua-700); }
+
+.luvit-bump__cb {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.luvit-bump__box::before {
+  content: "";
+  inline-size: 20px;
+  block-size: 20px;
+  border: 2px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-paper);
+}
+.luvit-bump__cb:checked + .luvit-bump__box::before {
+  border-color: var(--aqua-600);
+  background: var(--aqua-600);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");
+  background-size: 14px 14px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 560px) {
+  .luvit-bump__box { grid-template-columns: auto 44px minmax(0, 1fr); }
+  .luvit-bump__img { inline-size: 44px; block-size: 44px; }
+  .luvit-bump__price {
+    grid-column: 2 / -1;
+    grid-auto-flow: column;
+    justify-items: start;
+    justify-content: start;
+    gap: var(--space-2);
+    align-items: baseline;
+  }
+}
