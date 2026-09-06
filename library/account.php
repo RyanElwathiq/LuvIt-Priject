@@ -332,8 +332,8 @@ add_action( 'woocommerce_account_dashboard', function () {
 	echo '<p class="luvit-acct-card__eyebrow">نادي <span dir="ltr">Luv it</span></p>';
 	if ( is_array( $club ) && (int) $club['every'] > 0 ) {
 		if ( $club['due'] ) {
-			echo '<h3 class="luvit-acct-card__title">توصيلك الجاي مجاني</h3>';
-			echo '<p class="luvit-acct-card__line">بينحسب لحاله بالسلة · ما بدك كوبون.</p>';
+			echo '<h3 class="luvit-acct-card__title">طلبيتك الجاي فيها هديتك</h3>';
+			echo '<p class="luvit-acct-card__line">بتيجي بنفس الكرتونة · ما بدك تعملي إشي.</p>';
 		} else {
 			/* ⚠️ الصيغة من `luvit_orders_word()` بـwoo.php · «2 طلبات» غلط عربي.
 			   والحارس لأنّ السنيبتين ممكن ينحفظوا بترتيب مختلف. */
@@ -341,8 +341,8 @@ add_action( 'woocommerce_account_dashboard', function () {
 				? luvit_orders_word( $club['done'] )
 				: (string) $club['done'] . ' طلبات';
 			echo '<h3 class="luvit-acct-card__title">' . esc_html( $word ) . '</h3>';
-			echo '<p class="luvit-acct-card__line">وتوصيل الطلبية رقم '
-				. esc_html( (string) $club['next'] ) . ' علينا.</p>';
+			echo '<p class="luvit-acct-card__line">وهديتك مع الطلبية رقم '
+				. esc_html( (string) $club['next'] ) . '.</p>';
 		}
 	} else {
 		echo '<h3 class="luvit-acct-card__title">موقوف مؤقتاً</h3>';

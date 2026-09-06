@@ -55,7 +55,12 @@ http.createServer((req, res) => {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
+      'Access-Control-Allow-Headers': 'Content-Type',
+      /* 🔴 **Private Network Access** · كروم بيمنع صفحة HTTPS عامة
+         (لوحة ووردبريس) من جلب عنوان لوب‌باك إلا لما يرد السيرفر
+         بهالترويسة على الـpreflight. بلاها fetch بترمي
+         "Failed to fetch" **بلا أي رسالة تشرح السبب**. */
+      'Access-Control-Allow-Private-Network': 'true'
     }).end();
     return;
   }
@@ -106,7 +111,8 @@ http.createServer((req, res) => {
     res.writeHead(200, {
       'Content-Type': TYPES[path.extname(full).toLowerCase()] || 'application/octet-stream',
       'Cache-Control': 'no-cache',
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Private-Network': 'true'
     });
     res.end(data);
   });
