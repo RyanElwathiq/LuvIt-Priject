@@ -182,8 +182,20 @@ add_action( 'woocommerce_account_club_endpoint', function () {
 		echo '<p class="luvit-drops__soon"><strong>وطلبيتك الجاي فيها هديتك.</strong> '
 			. 'بتيجي بنفس الكرتونة · ما بدك تعملي إشي.</p>';
 	} else {
+		/* 🔴 **النفي بالعربي بده «ما» قبل الفعل.**
+		   `luvit_orders_word( 0 )` بترجّع «ولا طلبية»، والقالب كان بيركّبها
+		   على «عملتِ» فبتطلع **«عملتِ ولا طلبية لهلق»** وهي غلط صريح
+		   وبتقرا كترجمة آلية. بلّغ عنها ريّان من الموقع الحيّ ٧ أيلول.
+
+		   ⤷ والحل **ما بيكرّر الكلمة**: الدالة تضل مصدر الصيغة الوحيد،
+		     ومنزيد «ما» بس لما يكون العدد صفراً. [[duplicated-data-always-drifts]]
+
+		   ⚠️ وبطاقة الحساب بـ`account.php` بتعرض الكلمة **لحالها كعنوان**
+		      («ولا طلبية») وهاي سليمة، فما بتتلمس. */
+		$neg = ( 0 === (int) $s['done'] ) ? 'ما ' : '';
+
 		echo '<p class="luvit-drops__soon">'
-			. 'عملتِ <strong>' . esc_html( luvit_orders_word( $s['done'] ) ) . '</strong> لهلق · '
+			. esc_html( $neg ) . 'عملتِ <strong>' . esc_html( luvit_orders_word( $s['done'] ) ) . '</strong> لهلق · '
 			. 'وهديتك مع الطلبية رقم <strong>' . esc_html( (string) $s['next'] ) . '</strong>.'
 			. '</p>';
 	}
