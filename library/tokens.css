@@ -19884,3 +19884,115 @@ body.single-product div.product form.cart:has(.luvit-qty) .quantity { display: n
 /* بطاقة العبوة الوحدة ما إلها توفير · والصندوق الفاضي بيحافظ على الارتفاع
    عشان التلاتة يقعدوا بخطّ واحد بدل ما وحدة تقصر. */
 .luvit-qty__save--none { min-block-size: 1lh; }
+
+
+/* ==========================================================================
+   5.55 · اقتراحات السلة                                      (5 أيلول)
+   --------------------------------------------------------------------------
+   بتقعد **تحت بلوك السلة** لا جوّاه · بلوكات ووكومرس بتترسم بالمتصفّح
+   وما بتقبل حشواً من PHP، فالقسم شقيق للبلوك والجافاسكربت بتوصله.
+
+   ⚠️ **صف مش بطاقة.** البطاقة الكبيرة بتنافس السلة على الانتباه، والسطر
+      بيقرا كنصيحة. وريّان طلبها «بطريقة تبين كنصيحة مش إشي مزعج».
+
+   ⚠️ والصورة `contain` مع حشوة · العبوة طولية والمربّع صغير، و`cover`
+      بتقصّها من جنابها.
+   ========================================================================== */
+.luvit-sug {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  margin-block: var(--space-7);
+  padding-inline: var(--container-gutter);
+}
+.luvit-sug__h {
+  font-family: var(--font-heading);
+  font-size: var(--text-h3);
+  color: var(--color-ink);
+  margin-block-end: var(--space-4);
+}
+.luvit-sug__list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.luvit-sug__item {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+}
+.luvit-sug__media {
+  display: block;
+  inline-size: 64px;
+  block-size: 64px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-mist);
+}
+.luvit-sug__media img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+.luvit-sug__name {
+  display: block;
+  color: var(--color-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.luvit-sug__name:hover { text-decoration: underline; }
+.luvit-sug__why {
+  margin: 2px 0 0;
+  font-size: var(--text-caption);
+  color: var(--color-ink-soft);
+}
+.luvit-sug__buy {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+}
+.luvit-sug__price {
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+.luvit-sug__add {
+  border: 0;
+  border-radius: var(--radius-pill);
+  padding: 8px 18px;
+  background: var(--aqua-600);
+  color: #fff;
+  font-family: inherit;
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 180ms var(--ease-out-soft);
+}
+.luvit-sug__add:hover { background: var(--aqua-700); }
+.luvit-sug__add:disabled { opacity: .6; cursor: default; }
+.luvit-sug__add:focus-visible {
+  outline: 2px solid var(--aqua-600);
+  outline-offset: 2px;
+}
+
+/* تحت 560 الصف بينكسر لسطرين · السعر والزرّ بيروحوا تحت الاسم بدل ما
+   يزنقوه على عمود ضيّق. */
+@media (max-width: 560px) {
+  .luvit-sug__item { grid-template-columns: 56px minmax(0, 1fr); }
+  .luvit-sug__media { inline-size: 56px; block-size: 56px; }
+  .luvit-sug__buy {
+    grid-column: 2;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    justify-items: stretch;
+    align-items: center;
+    inline-size: 100%;
+  }
+}

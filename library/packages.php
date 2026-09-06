@@ -492,3 +492,268 @@ add_filter( 'woocommerce_add_to_cart_quantity', function ( $qty ) {
 	}
 	return $qty;
 }, 10, 1 );
+
+
+/* ==========================================================================
+   اقتراحات السلة · مبنية على تركيب الباقات الحقيقي
+   ==========================================================================
+   ريّان: «لما العميلة تضيف إشي بالسلة وتيجي تفتح السلة تطلعلها منتجات
+   مقترحة زي أمازون» · وبعدها الشرط القاطع: «بدي إياه يكون دايناميك مبني
+   عبيانات حقيقية مش اقتراح عشوائي» و«إذا ما كان إله علاقة أو ممكن يضر
+   بتبين زي كإنه بدنا نبيع أي إشي وبس ومنتخوث».
+
+   ── من وين بتيجي «العلاقة» ──────────────────────────────────────────
+   **من الباقات اللي بناها صاحب العلامة نفسه.** منتجان بينحسبوا مترابطين
+   لمّا يكونوا **بنفس الباقة** · ودرجة الترابط = كم باقة بتجمعهن.
+   يعني الاقتراح بيقول إشي **قابل للتحقّق**: «هدول الاتنين بنفس الروتين».
+
+   🔴 **ولهيك كل بطاقة بتحمل سببها مكتوباً** («مع سيروم فيتامين سي
+      بروتين الإشراقة») · اقتراح بلا سبب هو بالضبط اللي بيبيّن «بدنا نبيع
+      أي إشي». [[benefits-not-ingredient-lists]]
+
+   ── وشو **ما** بينقترح ──────────────────────────────────────────────
+     · إشي موجود بالسلة أصلاً
+     · إشي **جوّا باقة موجودة بالسلة** · هي شارِيته وما بتعرف
+     · باقات · اقتراح باقة على وحدة شارية نصّها بيعني تدفع مرتين
+     · وأي إشي لمّا تكون البيانات ناقصة · **بترجع فاضية أحسن من عشوائية**
+
+   ── ليش جافاسكربت مش PHP ────────────────────────────────────────────
+   صفحة السلة **بلوكات ووكومرس**، والسلة بتتغيّر بلا ما تنعاد الصفحة.
+   اقتراح مرسوم بالسيرفر بيبيت أول ما تشيل منتجاً. فالبيانات بتنبعت مرة
+   وحدة والحساب بيصير بالمتصفّح مع كل تغيّر · والإضافة عبر Store API
+   الرسمي وبعدها `receiveCart` فالمجاميع بتتحدّث لحالها.
+   ========================================================================== */
+
+function luvit_pk_suggest_payload() {
+	$map = luvit_pk_map();
+	$out = array( 'products' => array(), 'bundles' => array() );
+
+	if ( ! function_exists( 'wc_get_products' ) ) {
+		return $out;
+	}
+
+	foreach ( wc_get_products( array( 'status' => 'publish', 'limit' => -1, 'category' => array( 'singles' ) ) ) as $p ) {
+		$img = $p->get_image_id() ? wp_get_attachment_image_url( $p->get_image_id(), 'woocommerce_thumbnail' ) : '';
+		$out['products'][ (string) $p->get_id() ] = array(
+			'name'  => $p->get_name(),
+			'price' => (float) $p->get_price(),
+			'url'   => get_permalink( $p->get_id() ),
+			'img'   => $img ? $img : '',
+		);
+	}
+
+	foreach ( array_merge( $map['routines'], $map['duos'] ) as $b ) {
+		if ( empty( $b['resolved'] ) || count( $b['ids'] ) < 2 ) {
+			continue;
+		}
+		$out['bundles'][] = array(
+			'id'   => (int) $b['id'],
+			'name' => $b['name'],
+			'ids'  => array_map( 'intval', $b['ids'] ),
+		);
+	}
+
+	return $out;
+}
+
+add_shortcode( 'luvit_cart_suggest', function () {  // LUVIT_SUGGEST
+	if ( is_admin() ) {
+		return '';
+	}
+	$d = luvit_pk_suggest_payload();
+
+	/* 🔴 بوابة البيانات · أقلّ من هيك يعني الاشتقاق انكسر، والاقتراح
+	   وقتها بيصير تخميناً. **بترجع فاضية.** */
+	if ( count( $d['products'] ) < 8 || count( $d['bundles'] ) < 10 ) {
+		return '';
+	}
+
+	$json = wp_json_encode( $d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+
+	$o  = '<section class="luvit-sug" id="luvit-suggest" hidden>';
+	$o .= '<h2 class="luvit-sug__h">بيتكمّلوا مع اللي بسلّتك</h2>';
+	$o .= '<ul class="luvit-sug__list"></ul>';
+	$o .= '</section>';
+	$o .= '<script type="application/json" id="luvit-suggest-data">' . $json . '</script>';
+	$o .= '<script>' . luvit_pk_suggest_js() . '</script>';
+
+	return $o;
+} );
+
+function luvit_pk_suggest_js() {
+	/* nowdoc · ولا تفسير لأي `$` جوّا الجافاسكربت */
+	return <<<'JS'
+(function () {
+  var root = document.getElementById('luvit-suggest');
+  var dataEl = document.getElementById('luvit-suggest-data');
+  if (!root || !dataEl) { return; }
+  var D;
+  try { D = JSON.parse(dataEl.textContent); } catch (e) { return; }
+  if (!D || !D.products || !D.bundles) { return; }
+
+  var MAX = 3;
+  var list = root.querySelector('.luvit-sug__list');
+  var money = function (v) {
+    return '<span dir="ltr">' + v.toFixed(2) + '</span> د.أ';
+  };
+
+  function cartIds() {
+    try {
+      var c = window.wp.data.select('wc/store/cart').getCartData();
+      return (c && c.items ? c.items : []).map(function (i) { return i.id; });
+    } catch (e) { return null; }
+  }
+
+  /* الأساسات = اللي بالسلة **زائد** قطع أي باقة بالسلة · لأنّ الباقة
+     بتعني إنها بتملك قطعها، فما منقترحها عليها ومنقترح جيرانها. */
+  function anchorsAndOwned(ids) {
+    var owned = {}, anchors = [];
+    ids.forEach(function (id) {
+      owned[id] = 1;
+      anchors.push(id);
+      D.bundles.forEach(function (b) {
+        if (b.id === id) {
+          b.ids.forEach(function (m) { owned[m] = 1; anchors.push(m); });
+        }
+      });
+    });
+    return { owned: owned, anchors: anchors };
+  }
+
+  function pick(ids) {
+    var ao = anchorsAndOwned(ids), cand = {};
+    ao.anchors.forEach(function (a) {
+      D.bundles.forEach(function (b) {
+        if (b.ids.indexOf(a) < 0) { return; }
+        b.ids.forEach(function (m) {
+          if (ao.owned[m] || !D.products[m]) { return; }
+          if (!cand[m]) { cand[m] = { id: m, score: 0, why: null }; }
+          cand[m].score++;
+          if (!cand[m].why && D.products[a]) {
+            cand[m].why = { bundle: b.name, withName: D.products[a].name };
+          }
+        });
+      });
+    });
+    var out = Object.keys(cand).map(function (k) { return cand[k]; })
+      .filter(function (c) { return c.why; });
+    out.sort(function (x, y) {
+      return y.score - x.score || D.products[x.id].price - D.products[y.id].price;
+    });
+    return out.slice(0, MAX);
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function card(c) {
+    var p = D.products[c.id];
+    var img = p.img
+      ? '<img src="' + esc(p.img) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async">'
+      : '';
+    return '<li class="luvit-sug__item">'
+      + '<a class="luvit-sug__media" href="' + esc(p.url) + '" tabindex="-1" aria-hidden="true">' + img + '</a>'
+      + '<div class="luvit-sug__body">'
+      + '<a class="luvit-sug__name" href="' + esc(p.url) + '">' + esc(p.name) + '</a>'
+      + '<p class="luvit-sug__why">مع ' + esc(c.why.withName) + ' · ' + esc(c.why.bundle) + '</p>'
+      + '</div>'
+      + '<div class="luvit-sug__buy">'
+      + '<span class="luvit-sug__price">' + money(p.price) + '</span>'
+      + '<button type="button" class="luvit-sug__add" data-add="' + esc(c.id) + '">أضيفي</button>'
+      + '</div></li>';
+  }
+
+  function render() {
+    var ids = cartIds();
+    if (ids === null || !ids.length) { root.hidden = true; return; }
+    var picks = pick(ids);
+    if (!picks.length) { root.hidden = true; return; }
+    list.innerHTML = picks.map(card).join('');
+    root.hidden = false;
+  }
+
+  /* 🔴 **النونس بيجي بترويسة الرد، مش من `wcSettings`.**
+     `wcSettings.storeApiNonce` **مش موجود** على هالتركيب · مفحوص، ولا
+     مفتاح بـ`wcSettings` فيه كلمة nonce. والطلب بلا نونس **بيرجّع 201**
+     بس بيشتغل على جلسة تانية، فالسلة ما بتتغيّر ولا بيطلع خطأ · فشل
+     صامت بالضبط. [[silent-refusals-hide-in-the-response]]
+     ⤷ فبنسحبه من `GET /cart` وبنحدّثه من ترويسة كل رد. */
+  var _n = null;
+  function grabNonce(r) {
+    var v = r.headers.get('Nonce');
+    if (v) { _n = v; }
+    return r;
+  }
+  function withNonce() {
+    if (_n) { return Promise.resolve(_n); }
+    return fetch('/wp-json/wc/store/v1/cart', { credentials: 'include' })
+      .then(grabNonce).then(function () { return _n || ''; });
+  }
+
+  list.addEventListener('click', function (ev) {
+    var btn = ev.target.closest('[data-add]');
+    if (!btn) { return; }
+    var id = parseInt(btn.getAttribute('data-add'), 10);
+    var old = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'لحظة...';
+    withNonce().then(function (nv) {
+      return fetch('/wp-json/wc/store/v1/cart/add-item', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'Nonce': nv },
+        body: JSON.stringify({ id: id, quantity: 1 })
+      });
+    }).then(grabNonce).then(function (r) {
+      if (!r.ok) { throw new Error(r.status); }
+      return r.json();
+    }).then(function (j) {
+      try { window.wp.data.dispatch('wc/store/cart').receiveCart(j); }
+      catch (e) { window.location.reload(); return; }
+      render();
+    }).catch(function () {
+      btn.disabled = false;
+      btn.textContent = 'ما زبطت · جرّبي كمان مرة';
+      setTimeout(function () { btn.textContent = old; }, 3000);
+    });
+  });
+
+  /* wp.data بترنّ كثير · المفتاح بيمنع إعادة الرسم بلا داعي */
+  var last = null;
+  function tick() {
+    var ids = cartIds();
+    if (ids === null) { return; }
+    var key = ids.join(',');
+    if (key === last) { return; }
+    last = key;
+    render();
+  }
+  /* 🔴 **السكربت بيشتغل قبل ما `wp.data` تتحمّل.**
+     هو مضمّن بمتن الصفحة، وسكربتات بلوكات ووكومرس بتتحمّل بالتذييل ·
+     يعني وقت تشغيلنا `window.wp.data` **لساها مش موجودة**، فالاشتراك
+     ما بينعمل. وبعدها السلة بتوصل من الشبكة ولا حدا بيعيد الرسم،
+     فالقسم بيضل مخفي **وكل إشي بيبيّن شغّال**: البيانات موجودة،
+     الخوارزمية بترجّع مرشّحين، وما في خطأ بالكونسول.
+     ⤷ فبنحاول كل ٤٠٠ملّي لحد ما نشترك، وبنوقف أول ما ننجح.
+     [[computed-style-goes-stale]] · نفس عائلة «الوقت مش مضمون».
+     ⚠️ وسقف ٤٠ محاولة (١٦ ثانية) عشان ما يضل مؤقّت شغّال للأبد. */
+  var subscribed = false;
+  function ensure() {
+    tick();
+    if (!subscribed && window.wp && window.wp.data && window.wp.data.subscribe) {
+      window.wp.data.subscribe(tick);
+      subscribed = true;
+    }
+  }
+  var tries = 0;
+  var iv = setInterval(function () {
+    ensure();
+    if (subscribed || ++tries > 40) { clearInterval(iv); }
+  }, 400);
+  ensure();
+})();
+JS;
+}
