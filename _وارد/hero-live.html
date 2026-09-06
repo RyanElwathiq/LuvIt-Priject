@@ -67,7 +67,7 @@
       </article>
 
       <article class="hero-story__ch hero-story__ch--final" data-i="4" aria-hidden="true">
-        <p class="hero-story__line hero-story__line--big">بشرتك مستنّية مِــنِّك خطوة.</p>
+        <p class="hero-story__line hero-story__line--big">بشرتك مستنّية مِنِّك خطوة.</p>
         <!-- TODO: the routine section in Elementor must be given the CSS ID
              "routine" (Advanced -> CSS ID) so this link scrolls to it.
              The arrow is supplied by CSS (.luvit-btn--arrow) — do NOT type an
@@ -1046,31 +1046,6 @@
     render();
   }
 
-  /* 🔴 **مراقب حجم، مش حدث نافذة.**
-
-     `resize()` كانت بتنستدعى من مكانين بس: `ScrollTrigger refreshInit`،
-     و`window resize` **وبتأخير ١٥٠ms**. فأي تغيّر بارتفاع الحاوية من
-     مصدر تاني ما كان يوصلها **أبداً**:
-       · شريط العرض بينتسكّر (تغيّر DOM لا تغيّر نافذة)
-       · شريط أدمن ووردبريس بيظهر للمسجّلين
-       · خط بيخلص تحميل بعد أول رسم فبيزيح التخطيط
-
-     ⤷ ووقتها الكانفاس بيضل بالطول القديم و**بيبين شريط من السكشن اللي
-       وراه**. مقيس: الشاشة ٧٣٨ والكانفاس ٦٨٢ = **ناقص ٥٦px**.
-
-     ⚠️ وريّان وصفها بالضبط: «بيطلع الشريط الأزرق تحت بدون ما أعمل سكرول»
-        و«أحياناً بتصير وأحياناً بزبط إذا عملت ريفرش» · وهاي بصمة **سباق
-        وقت التحميل الأول** لا باغ ثابت، ولهيك الريفرش بيصادف التوقيت.
-
-     ⤷ والمراقب بيلقط كل المصادر وبلا تأخير · وما بيعمل حلقة لأنّ
-       `resize()` بتغيّر مقاس **الكانفاس** لا الحاوية. */
-  var pinRO = null;
-  function observePin() {
-    if (pinRO || !window.ResizeObserver || !pin) { return; }
-    pinRO = new ResizeObserver(function () { resize(); });
-    pinRO.observe(pin);
-  }
-
   function ensureVariant(key) {
     var v = cache[key];
     if (v && v.promise) return v.promise;
@@ -1182,7 +1157,6 @@
     });
 
     ScrollTriggerRef.addEventListener("refreshInit", resize);
-    observePin();
 
     var t;
     window.addEventListener("resize", function () {
@@ -1210,7 +1184,6 @@
     applyStoryLayout();
     updateChapters(state.p);
     if (loader) loader.classList.add("is-hidden");
-    observePin();
     window.addEventListener("resize", function () {
       var want = pickKey();
       if (want !== activeKey) switchTo(want);
