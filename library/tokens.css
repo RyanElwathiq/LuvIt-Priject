@@ -19810,3 +19810,77 @@ body.woocommerce-account:not(.logged-in) #customer_login form.woocommerce-form {
 /* ترويسة مجموعة تانية جوّا نفس السكشن · بدها تنفّس فوقها لأنّ شبكة
    قبلها بتنتهي بحافة بطاقة لا بمسافة. */
 .luvit-section__head--tier { margin-block-start: var(--space-8); }
+
+
+/* ==========================================================================
+   5.54 · بطاقات الكمية على صفحة المنتج                       (5 أيلول)
+   --------------------------------------------------------------------------
+   ثلاث بطاقات (عبوة · عبوتين · ثلاثة) بتحلّ محلّ خانة الرقم.
+
+   ⚠️ **الراديو هو المدخل الحقيقي، مش زينة.** مخفي بالشفافية وممدود فوق
+      البطاقة كلها · فالضغطة بأي مكان بتشتغل، والكيبورد بيوصله، وبلا
+      جافاسكربت السيرفر بيقرا `luvit_qty` عادي.
+
+   ⚠️ و`form.cart` عندها `display:flex; flex-wrap:wrap` (قاعدة قديمة
+      بهالملف) · فبلا `flex-basis:100%` البطاقات بتقعد جنب الزرّ وبتنضغط.
+      [[our-own-rules-are-the-enemy]]
+
+   ⚠️ وخانة الرقم بتنخفى **بس لمّا تكون البطاقات موجودة** (`:has`) · لو
+      المتصفّح ما بيدعم `:has` بتضل الخانة باينة وبتشتغل، والتدهور آمن.
+   ========================================================================== */
+body.single-product div.product form.cart:has(.luvit-qty) .quantity { display: none; }
+
+.luvit-qty {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-block-end: var(--space-2);
+}
+.luvit-qty__opt {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+.luvit-qty__opt input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.luvit-qty__box {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-3) var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+  text-align: center;
+  transition: border-color 180ms var(--ease-out-soft), background 180ms var(--ease-out-soft);
+}
+.luvit-qty__opt input:checked + .luvit-qty__box {
+  border-color: var(--aqua-600);
+  background: var(--aqua-50);
+}
+.luvit-qty__opt input:focus-visible + .luvit-qty__box {
+  outline: 2px solid var(--aqua-600);
+  outline-offset: 2px;
+}
+.luvit-qty__n {
+  font-size: var(--text-caption);
+  color: var(--color-ink-soft);
+}
+.luvit-qty__price {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.luvit-qty__save {
+  font-size: var(--text-caption);
+  color: var(--aqua-700);
+}
+/* بطاقة العبوة الوحدة ما إلها توفير · والصندوق الفاضي بيحافظ على الارتفاع
+   عشان التلاتة يقعدوا بخطّ واحد بدل ما وحدة تقصر. */
+.luvit-qty__save--none { min-block-size: 1lh; }

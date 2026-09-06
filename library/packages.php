@@ -342,3 +342,153 @@ add_shortcode( 'luvit_packages', function () {  // LUVIT_PK
 
 	return $o;
 } );
+
+
+/* ==========================================================================
+   بطاقات الكمية · ١ · ٢ · ٣ · على المفردات وحدها
+   ==========================================================================
+   ريّان طلبها زي الوكالة الأم، وحطّ الشرط: «خصم ما يكون عالي ولا قليل
+   ومنطقي، ويضل يوجّه العميل عالبكجات اللي من أربع بشكل غير مباشر».
+
+   ── السلّم وليش هو هيك ──────────────────────────────────────────────
+     عبوتين  →  ٥٪    ·  **أقلّ من الثنائي (١٠٪)** · الثنائي منتجان
+                         مختلفان بنفس الخصم، فبيضل أوفر منطقياً
+     ثلاثة   →  ١٠٪   ·  بيساوي الثنائي بس بمنتج مكرّر
+     الروتين →  ٢١٫٥٪ + شحن مجاني · وبيضل الأعلى بوضوح
+
+   🔴 **والتوجيه بالترتيب لا بالكلام.** ما في سطر بيقول «الروتين أوفر» ·
+      الأرقام بترتّب نفسها. [[promising-the-baseline-signals-past-failure]]
+
+   ⚠️ وحتى مع كود الإنفلونسر (١٠٪ للعميلة فوق أي خصم) الترتيب ما بينقلب:
+      ٣ عبوات ١٠٪+١٠٪ = ١٩٪ · والروتين ٢١٫٥٪+١٠٪ = ٢٩٪ وشحنه مجاني.
+
+   ── ولا رقم مكتوب مرتين ─────────────────────────────────────────────
+   نفس الدالة بتحسب **سعر البطاقة على الصفحة** و**سعر السطر بالسلة**.
+   البطاقة بتقول ١٧٫١٠ والسلة بتحاسب ١٧٫١٠ · [[shipping-cache-key-hook-order]]
+   ========================================================================== */
+
+function luvit_pk_tiers() {
+	/* الكمية => نسبة الخصم · مرتّبة تصاعدياً */
+	return array( 1 => 0, 2 => 5, 3 => 10 );
+}
+
+function luvit_pk_is_single( $product_id ) {
+	return has_term( 'singles', 'product_cat', (int) $product_id );
+}
+
+/* أعلى شريحة بتنطبق · «٣ فأكثر» بتاخد شريحة الثلاثة */
+function luvit_pk_tier_pct( $product_id, $qty ) {
+	if ( ! luvit_pk_is_single( $product_id ) ) {
+		return 0;
+	}
+	$best = 0;
+	foreach ( luvit_pk_tiers() as $n => $pct ) {
+		if ( (int) $qty >= (int) $n ) {
+			$best = (int) $pct;
+		}
+	}
+	return $best;
+}
+
+/* 🔴 الأساس **من المنتج لا من نسخة السلة**.
+   `woocommerce_before_calculate_totals` بينده أكثر من مرة بالطلب الواحد،
+   ولو حسبنا من السعر الحالي بيصير الخصم بينطبق فوق نفسه وبينزل السعر
+   لكل نداء. القراءة من `wc_get_product()` بتخلّي الحساب **ثابتاً**
+   مهما انعاد. */
+function luvit_pk_tier_price( $product_id, $qty ) {
+	$p = function_exists( 'wc_get_product' ) ? wc_get_product( $product_id ) : null;
+	if ( ! $p ) {
+		return null;
+	}
+	$base = (float) $p->get_price();
+	$pct  = luvit_pk_tier_pct( $product_id, $qty );
+	$dec  = function_exists( 'wc_get_price_decimals' ) ? wc_get_price_decimals() : 2;
+	return round( $base * ( 100 - $pct ) / 100, $dec );
+}
+
+add_action( 'woocommerce_before_calculate_totals', function ( $cart ) {
+	if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+		return;
+	}
+	if ( ! $cart || ! method_exists( $cart, 'get_cart' ) ) {
+		return;
+	}
+	foreach ( $cart->get_cart() as $item ) {
+		if ( empty( $item['data'] ) || empty( $item['product_id'] ) ) {
+			continue;
+		}
+		if ( ! luvit_pk_tier_pct( $item['product_id'], $item['quantity'] ) ) {
+			continue;
+		}
+		$price = luvit_pk_tier_price( $item['product_id'], $item['quantity'] );
+		if ( null !== $price ) {
+			$item['data']->set_price( $price );
+		}
+	}
+}, 20 );
+
+/* سطر بالسلة بيقول ليش السعر نزل · بلاه بتبيّن غلطة لا هدية */
+add_filter( 'woocommerce_get_item_data', function ( $data, $item ) {
+	if ( empty( $item['product_id'] ) ) {
+		return $data;
+	}
+	$pct = luvit_pk_tier_pct( $item['product_id'], $item['quantity'] );
+	if ( $pct ) {
+		$data[] = array(
+			'name'  => 'خصم الكمية',
+			'value' => $pct . '٪ على ' . (int) $item['quantity'] . ' عبوات',
+		);
+	}
+	return $data;
+}, 10, 2 );
+
+/* ── البطاقات على صفحة المنتج ────────────────────────────────────────
+   ⚠️ **الحقل اسمه `luvit_qty` مش `quantity`.** حقلان بنفس الاسم بفورم
+      واحد بيخلّي PHP تاخد الأخير، وترتيب الخطّافات مش عقداً · فحقل مستقل
+      والسيرفر بيقراه صراحةً، والجافاسكربت بتحدّث حقل الكمية الأصلي كمان
+      عشان العدد يبيّن للعين. */
+add_action( 'woocommerce_after_add_to_cart_quantity', function () {
+	global $product;
+	if ( ! $product || ! luvit_pk_is_single( $product->get_id() ) ) {
+		return;
+	}
+	$id   = $product->get_id();
+	$base = (float) $product->get_price();
+	if ( $base <= 0 ) {
+		return;
+	}
+
+	echo '<div class="luvit-qty" role="radiogroup" aria-label="اختاري الكمية">';
+	foreach ( luvit_pk_tiers() as $n => $pct ) {
+		$total = luvit_pk_tier_price( $id, $n ) * $n;
+		$save  = ( $base * $n ) - $total;
+		$label = ( 1 === $n ) ? 'عبوة وحدة' : ( ( 2 === $n ) ? 'عبوتين' : 'ثلاث عبوات' );
+
+		echo '<label class="luvit-qty__opt">';
+		echo '<input type="radio" name="luvit_qty" value="' . esc_attr( $n ) . '"' . ( 1 === $n ? ' checked' : '' ) . '>';
+		echo '<span class="luvit-qty__box">';
+		echo '<span class="luvit-qty__n">' . esc_html( $label ) . '</span>';
+		echo '<span class="luvit-qty__price">' . luvit_pk_price( $total ) . '</span>';
+		echo $save > 0
+			? '<span class="luvit-qty__save">وفّرتِ ' . luvit_pk_price( $save ) . '</span>'
+			: '<span class="luvit-qty__save luvit-qty__save--none" aria-hidden="true"></span>';
+		echo '</span></label>';
+	}
+	echo '</div>';
+
+	echo '<script>(function(){var g=document.currentScript.previousElementSibling;'
+		. 'if(!g)return;var q=document.querySelector("form.cart input.qty");'
+		. 'g.addEventListener("change",function(e){if(e.target.name!=="luvit_qty")return;'
+		. 'if(q){q.value=e.target.value;q.dispatchEvent(new Event("change",{bubbles:true}));}});})();</script>';
+}, 20 );
+
+/* والسيرفر بيقرا الحقل المستقل · فبتشتغل حتى بلا جافاسكربت */
+add_filter( 'woocommerce_add_to_cart_quantity', function ( $qty ) {
+	if ( isset( $_POST['luvit_qty'] ) ) {
+		$n = absint( wp_unslash( $_POST['luvit_qty'] ) );
+		if ( $n > 0 && $n <= 99 ) {
+			return $n;
+		}
+	}
+	return $qty;
+}, 10, 1 );
