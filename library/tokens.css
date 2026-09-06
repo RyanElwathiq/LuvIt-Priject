@@ -20099,3 +20099,112 @@ body.single-product div.product form.cart:has(.luvit-qty) .quantity { display: n
     align-items: baseline;
   }
 }
+
+
+/* ==========================================================================
+   5.57 · عرض ما بعد الطلب · صفحة «تم استلام طلبك»          (6 أيلول)
+   --------------------------------------------------------------------------
+   بيقعد فوق تفاصيل الطلب، وهو **العنصر الوحيد القابل للضغط** بالصفحة ·
+   فبياخد وزناً أكبر من عرض الشيك أوت بقصد: هناك كانت بنص قرار، وهون
+   خلصت وقرارها انتهى.
+
+   ⚠️ **وما في عدّاد ولا «لفترة محدودة»** · النافذة ساعة فعلاً بالكود،
+      بس عرضها كضغط بيصنع الطلبية اللي بتنرفض عالباب، وبالدفع عند
+      الاستلام منّا بندفع الشحن مرّتين.
+
+   ⚠️ وسطر «ولو ما بدك ما في إشي بيتغيّر» مقصود · بيشيل الخوف من إنّ
+      الضغطة تلغي الطلب، وهاد أكثر تردّد بيصير بهالمكان.
+   ========================================================================== */
+.luvit-up {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  margin-block: var(--space-6);
+  padding: var(--space-5) var(--container-gutter);
+  border: 1px solid var(--aqua-200, var(--color-line));
+  border-radius: var(--radius-lg);
+  background: var(--aqua-50);
+}
+.luvit-up__h {
+  font-family: var(--font-heading);
+  font-size: var(--text-h3);
+  color: var(--color-ink);
+  margin: 0 0 var(--space-2);
+}
+.luvit-up__lead {
+  margin: 0 0 var(--space-4);
+  color: var(--color-ink-soft);
+  font-size: var(--text-body-sm);
+}
+.luvit-up__row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+}
+.luvit-up__img {
+  inline-size: 64px;
+  block-size: 64px;
+  object-fit: contain;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--color-mist);
+}
+.luvit-up__name { margin: 0; font-weight: 600; color: var(--color-ink); }
+.luvit-up__why {
+  margin: 2px 0 0;
+  font-size: var(--text-caption);
+  color: var(--color-ink-soft);
+}
+.luvit-up__price {
+  display: grid;
+  justify-items: end;
+  gap: 1px;
+  white-space: nowrap;
+}
+.luvit-up__price s { font-size: var(--text-caption); color: var(--color-ink-faint); }
+.luvit-up__price b { color: var(--color-ink); }
+.luvit-up__price small { font-size: var(--text-caption); color: var(--aqua-700); }
+
+.luvit-up__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-4);
+}
+.luvit-up__btn {
+  border: 0;
+  border-radius: var(--radius-pill);
+  padding: 12px 28px;
+  background: var(--aqua-600);
+  color: #fff;
+  font-family: inherit;
+  font-size: var(--text-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 180ms var(--ease-out-soft);
+}
+.luvit-up__btn:hover { background: var(--aqua-700); }
+.luvit-up__btn:focus-visible { outline: 2px solid var(--aqua-600); outline-offset: 3px; }
+.luvit-up__note { font-size: var(--text-caption); color: var(--color-ink-soft); }
+
+/* بعد القبول · نفس الصندوق بس بلا زرّ */
+.luvit-up--done { border-color: var(--aqua-600); }
+.luvit-up--done p { margin: 0; color: var(--color-ink); }
+
+@media (max-width: 560px) {
+  .luvit-up__row { grid-template-columns: 56px minmax(0, 1fr); }
+  .luvit-up__img { inline-size: 56px; block-size: 56px; }
+  .luvit-up__price {
+    grid-column: 2;
+    grid-auto-flow: column;
+    justify-items: start;
+    justify-content: start;
+    gap: var(--space-2);
+    align-items: baseline;
+  }
+  .luvit-up__btn { inline-size: 100%; }
+}

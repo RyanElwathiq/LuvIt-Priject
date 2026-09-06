@@ -1013,3 +1013,286 @@ function luvit_pk_bump_js() {
 })();
 JS;
 }
+
+
+/* ==========================================================================
+   عرض ما بعد الشراء · على نفس الطلبية · بضغطة وحدة
+   ==========================================================================
+   الرافعة التالتة تبع كارتفلوز، وهي الوحيدة اللي كانت ناقصة عنّا.
+
+   ── ليش بتشتغل عنّا أصلاً ────────────────────────────────────────────
+   بالبطاقات، الأب-سيل بعد الدفع بده البوابة تقدر **تسحب مرة تانية** من
+   بطاقة محفوظة. **وبالدفع عند الاستلام ما في إشي ينسحب** · الصنف
+   بينضاف على الطلبية والمندوب بيحصّل المجموع الجديد. فالميزة اللي
+   بتكلّف اشتراكاً بمتاجر البطاقات **عنّا أبسط، مش أصعب**.
+
+   ── والخصم ١٠٪ مش ٥٪ · وليش ما بيكسر السلّم ─────────────────────────
+   الفرق إنّ **تكلفة التوصيل الحدّية صفر** · الطلبية طالعة أصلاً والمندوب
+   جايي أصلاً، فالصنف بيركب معها بلا شحنة تانية.
+   ⤷ **وما بيشوّه السلّم اللي بيوجّه عالباقات** لأنه ما بينعرض إلا **بعد**
+     ما تكون اشترت · يعني ما بيقدر ينافس الثنائي ولا الروتين وقت القرار.
+
+   ── 🔴 شرطان أمان · والاتنين قاطعان ──────────────────────────────────
+   الطلبية بتتغيّر **بعد** ما انعملت، وهاد بيلمس مصاري ومندوباً:
+
+     ١ · **ولا تعديل بعد ما يلمسها المندوب.** لو فيه أي سطر بسجلّ التسليم
+         لهالطلبية (تواصلنا · بالطريق · تسلّمت) العرض **بيختفي ونهائياً**.
+         بينقرا من `luvit_d_current_stage()` نفسها اللي بيقرأها المندوب ·
+         مش من حالة الطلب اللي أي أدمن بيقدر يغيّرها.
+         [[courier-confirmation-is-the-settlement-basis]]
+
+     ٢ · **نافذة ساعة وبس** · الرابط بينحفظ وبينفتح بعد يومين، والطلبية
+         وقتها ممكن تكون انطبعت أو انحمّلت بسيارة.
+
+   ⤷ وزيادة عليهن: مرة وحدة للطلبية · والحالة لازم `processing` ·
+     والتحقّق بـ`order_key` مش بالرقم وبس.
+
+   ── وإيميل التأكيد إلزامي مش تحسين ──────────────────────────────────
+   إيميل الطلب انبعت **قبل** الإضافة، فصار فيه مجموع أقدم. وبالدفع عند
+   الاستلام الزبونة بتدفع عالباب بالمجموع الجديد · فلو ما وصلها تأكيد
+   بتحسّ إنّ الرقم زاد بلا سبب. **إيميل قصير بيقول شو انضاف وكم صار.**
+   ========================================================================== */
+
+if ( ! defined( 'LUVIT_UP_PCT' ) ) {
+	define( 'LUVIT_UP_PCT', 10 );
+}
+if ( ! defined( 'LUVIT_UP_WINDOW' ) ) {
+	define( 'LUVIT_UP_WINDOW', HOUR_IN_SECONDS );
+}
+
+/* هل الطلبية لساها تقبل إضافة · كل الشروط بمكان واحد */
+function luvit_up_open( $order ) {
+	if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+		return false;
+	}
+	if ( 'processing' !== $order->get_status() ) {
+		return false;
+	}
+	if ( $order->get_meta( '_luvit_up_done' ) ) {
+		return false;
+	}
+	$made = $order->get_date_created();
+	if ( ! $made || ( time() - $made->getTimestamp() ) > LUVIT_UP_WINDOW ) {
+		return false;
+	}
+	/* 🔴 والمندوب · لو لمسها بأي مرحلة، خلص */
+	if ( function_exists( 'luvit_d_current_stage' ) ) {
+		$stage = luvit_d_current_stage( $order->get_id() );
+		if ( $stage && 'new' !== $stage ) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/* أقوى مرشّح · نفس منطق السلة بالضبط، بس بـPHP وعلى أصناف الطلبية */
+function luvit_up_pick( $order ) {
+	$map = luvit_pk_map();
+	$bundles = array_merge( $map['routines'], $map['duos'] );
+
+	$owned = array();
+	$anchors = array();
+	foreach ( $order->get_items() as $item ) {
+		$pid = (int) $item->get_product_id();
+		if ( ! $pid ) {
+			continue;
+		}
+		$owned[ $pid ] = 1;
+		$anchors[] = $pid;
+		foreach ( $bundles as $b ) {
+			if ( (int) $b['id'] === $pid ) {
+				foreach ( $b['ids'] as $m ) {
+					$owned[ (int) $m ] = 1;
+					$anchors[] = (int) $m;
+				}
+			}
+		}
+	}
+	if ( empty( $anchors ) ) {
+		return null;
+	}
+
+	$cand = array();
+	foreach ( array_unique( $anchors ) as $a ) {
+		foreach ( $bundles as $b ) {
+			if ( empty( $b['resolved'] ) || ! in_array( $a, array_map( 'intval', $b['ids'] ), true ) ) {
+				continue;
+			}
+			foreach ( $b['ids'] as $m ) {
+				$m = (int) $m;
+				if ( isset( $owned[ $m ] ) ) {
+					continue;
+				}
+				if ( ! isset( $cand[ $m ] ) ) {
+					$cand[ $m ] = array( 'id' => $m, 'score' => 0, 'bundle' => $b['name'], 'with' => $a );
+				}
+				$cand[ $m ]['score']++;
+			}
+		}
+	}
+	if ( empty( $cand ) ) {
+		return null;
+	}
+
+	uasort( $cand, function ( $x, $y ) {
+		if ( $x['score'] !== $y['score'] ) {
+			return $y['score'] - $x['score'];
+		}
+		$px = wc_get_product( $x['id'] );
+		$py = wc_get_product( $y['id'] );
+		return ( $px && $py ) ? ( (float) $px->get_price() <=> (float) $py->get_price() ) : 0;
+	} );
+	$best = reset( $cand );
+	$p = wc_get_product( $best['id'] );
+	if ( ! $p || ! $p->is_purchasable() || ! $p->is_in_stock() ) {
+		return null;
+	}
+	return $best;
+}
+
+function luvit_up_price( $product_id ) {
+	$p = wc_get_product( $product_id );
+	if ( ! $p ) {
+		return null;
+	}
+	$dec = function_exists( 'wc_get_price_decimals' ) ? wc_get_price_decimals() : 2;
+	return round( (float) $p->get_price() * ( 100 - LUVIT_UP_PCT ) / 100, $dec );
+}
+
+add_action( 'woocommerce_thankyou', function ( $order_id ) {  // LUVIT_UPSELL
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return;
+	}
+
+	/* رسالة النجاح بعد الرجوع من الإضافة */
+	if ( ! empty( $_GET['luvit_up'] ) && 'ok' === $_GET['luvit_up'] ) {
+		echo '<div class="luvit-up luvit-up--done"><p>تمام، أضفناها لطلبك.'
+			. ' المجموع الجديد <b>' . luvit_pk_price( (float) $order->get_total() ) . '</b>'
+			. ' وبتدفعيه عند الاستلام · وبعتنالك إيميل فيه التفاصيل.</p></div>';
+		return;
+	}
+
+	if ( ! luvit_up_open( $order ) ) {
+		return;
+	}
+	$pick = luvit_up_pick( $order );
+	if ( ! $pick ) {
+		return;
+	}
+	$p = wc_get_product( $pick['id'] );
+	$was = (float) $p->get_price();
+	$now = luvit_up_price( $pick['id'] );
+	$anchor   = wc_get_product( $pick['with'] );
+	$withName = $anchor ? $anchor->get_name() : '';
+	$img = $p->get_image_id() ? wp_get_attachment_image_url( $p->get_image_id(), 'woocommerce_thumbnail' ) : '';
+
+	echo '<section class="luvit-up">';
+	echo '<h2 class="luvit-up__h">تحبّي نضيفها لنفس الطلبية؟</h2>';
+	echo '<p class="luvit-up__lead">طلبك لسا ما طلع · فبتوصلك مع نفس الشحنة وبنفس التوصيل.</p>';
+	echo '<div class="luvit-up__row">';
+	if ( $img ) {
+		echo '<img class="luvit-up__img" src="' . esc_url( $img ) . '" alt="" loading="lazy">';
+	}
+	echo '<div class="luvit-up__body">';
+	echo '<p class="luvit-up__name">' . esc_html( $p->get_name() ) . '</p>';
+	if ( $withName ) {
+		echo '<p class="luvit-up__why">مع ' . esc_html( $withName ) . ' · ' . esc_html( $pick['bundle'] ) . '</p>';
+	}
+	echo '</div>';
+	echo '<div class="luvit-up__price"><s>' . luvit_pk_price( $was ) . '</s>'
+		. '<b>' . luvit_pk_price( $now ) . '</b>'
+		. '<small>خصم ' . LUVIT_UP_PCT . '٪</small></div>';
+	echo '</div>';
+
+	echo '<form class="luvit-up__form" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+	echo '<input type="hidden" name="action" value="luvit_up">';
+	echo '<input type="hidden" name="order_id" value="' . esc_attr( $order->get_id() ) . '">';
+	echo '<input type="hidden" name="key" value="' . esc_attr( $order->get_order_key() ) . '">';
+	echo '<input type="hidden" name="pid" value="' . esc_attr( $pick['id'] ) . '">';
+	wp_nonce_field( 'luvit_up_' . $order->get_id(), 'luvit_up_nonce' );
+	echo '<button type="submit" class="luvit-up__btn">أضيفيها لطلبي</button>';
+	echo '<span class="luvit-up__note">ولو ما بدك، ما في إشي بيتغيّر.</span>';
+	echo '</form>';
+	echo '</section>';
+}, 5 );
+
+function luvit_up_bounce( $order, $flag ) {
+	$url = $order ? $order->get_checkout_order_received_url() : home_url( '/' );
+	wp_safe_redirect( add_query_arg( 'luvit_up', $flag, $url ) );
+	exit;
+}
+
+function luvit_up_accept() {
+	$order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+	$key      = isset( $_POST['key'] ) ? sanitize_text_field( wp_unslash( $_POST['key'] ) ) : '';
+	$pid      = isset( $_POST['pid'] ) ? absint( $_POST['pid'] ) : 0;
+	$order    = $order_id ? wc_get_order( $order_id ) : null;
+
+	/* 🔴 التحقّق بالمفتاح مش بالرقم · الأرقام بتنخمّن */
+	if ( ! $order || ! hash_equals( (string) $order->get_order_key(), $key ) ) {
+		wp_die( 'رابط مش صحيح.', 'خطأ', array( 'response' => 403 ) );
+	}
+	if ( ! isset( $_POST['luvit_up_nonce'] )
+		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['luvit_up_nonce'] ) ), 'luvit_up_' . $order_id ) ) {
+		wp_die( 'انتهت صلاحية الصفحة · افتحيها من جديد.', 'خطأ', array( 'response' => 403 ) );
+	}
+	if ( ! luvit_up_open( $order ) ) {
+		luvit_up_bounce( $order, 'closed' );
+	}
+	if ( ! $pid || ! luvit_pk_is_single( $pid ) ) {
+		luvit_up_bounce( $order, 'closed' );
+	}
+	$p = wc_get_product( $pid );
+	if ( ! $p || ! $p->is_purchasable() || ! $p->is_in_stock() ) {
+		luvit_up_bounce( $order, 'closed' );
+	}
+	/* وما بينضاف إشي موجود أصلاً */
+	foreach ( $order->get_items() as $it ) {
+		if ( (int) $it->get_product_id() === $pid ) {
+			luvit_up_bounce( $order, 'closed' );
+		}
+	}
+
+	$price = luvit_up_price( $pid );
+	$item  = new WC_Order_Item_Product();
+	$item->set_product( $p );
+	$item->set_quantity( 1 );
+	$item->set_subtotal( $price );
+	$item->set_total( $price );
+	$item->add_meta_data( 'عرض ما بعد الطلب', LUVIT_UP_PCT . '٪', true );
+	$order->add_item( $item );
+
+	$order->update_meta_data( '_luvit_up_done', $pid );
+	$order->calculate_totals( false );          /* بلا ضرايب · ما انفتحت بالمشروع */
+	$order->add_order_note(
+		'الزبونة قبلت عرض ما بعد الطلب · أضفنا «' . $p->get_name() . '» بخصم '
+		. LUVIT_UP_PCT . '٪ · المجموع الجديد ' . wc_format_decimal( $order->get_total(), 2 ) . ' د.أ'
+	);
+	$order->save();
+
+	luvit_up_mail( $order, $p, $price );
+	luvit_up_bounce( $order, 'ok' );
+}
+add_action( 'admin_post_luvit_up', 'luvit_up_accept' );
+add_action( 'admin_post_nopriv_luvit_up', 'luvit_up_accept' );
+
+/* إيميل قصير · المجموع تغيّر بعد إيميل الطلب، والدفع عند الباب */
+function luvit_up_mail( $order, $product, $price ) {
+	if ( ! function_exists( 'WC' ) || ! WC()->mailer() ) {
+		return;
+	}
+	$to = $order->get_billing_email();
+	if ( ! $to ) {
+		return;
+	}
+	$body  = '<p>أضفنا «' . esc_html( $product->get_name() ) . '» لطلبك رقم '
+		. esc_html( $order->get_order_number() ) . ' بخصم ' . LUVIT_UP_PCT . '٪.</p>';
+	$body .= '<p>سعرها ' . luvit_pk_price( (float) $price ) . ' · و<b>المجموع الجديد '
+		. luvit_pk_price( (float) $order->get_total() ) . '</b> بتدفعيه عند الاستلام.</p>';
+	$body .= '<p>بتوصلك مع نفس الشحنة، ما في توصيل زيادة.</p>';
+
+	$mailer = WC()->mailer();
+	$html   = $mailer->wrap_message( 'أضفناها لطلبك', $body );
+	$mailer->send( $to, 'أضفنا صنفاً لطلبك رقم ' . $order->get_order_number(), $html );
+}
