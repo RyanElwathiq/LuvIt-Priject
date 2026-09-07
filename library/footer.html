@@ -87,3 +87,141 @@
     </span>
   </div>
 </footer>
+<!--
+  ============================================================================
+  سلوك البحث · ب٨ · ٧ أيلول ٢٠٢٦
+  ============================================================================
+  🔴 **بيقرا من Store API لا من بحث ووردبريس.** بحث ووردبريس بيرجّع مقالات
+     وصفحات ومنتجات مخلوطين، وبيوصل لصفحة قالب خام. Store API بيرجّع
+     **منتجات بس** بأسعارها وصورها وروابطها بنداء واحد.
+
+  ⚠️ **والسعر ما بينكتب بالإيد** · بيتركّب من `prices` تبع الـAPI
+     (`price` بوحدات صغرى + `currency_minor_unit`)، فما في رقم ينحرف عن
+     السلة · [[duplicated-data-always-drifts]]
+
+  ⚠️ **والرقم بينلفّ بـ`dir="ltr"`** وإلا بينقلب جوّا الجملة العربية
+     · [[brand-name-rtl-bug]]
+
+  ⤷ وحرفان أقلّ حدّ · بحرف واحد بترجع نص الكتالوج وما بتفيد.
+  ============================================================================
+-->
+<script>
+(function () {
+  var box = document.getElementById('luvit-search');
+  if (!box) { return; }
+
+  var input = box.querySelector('.luvit-search__input');
+  var list  = box.querySelector('.luvit-search__list');
+  var hint  = box.querySelector('.luvit-search__hint');
+  var opener = null;
+  var timer = null;
+  var seq = 0;
+
+  function money(p) {
+    var unit = p.currency_minor_unit == null ? 2 : p.currency_minor_unit;
+    var val = (parseInt(p.price, 10) || 0) / Math.pow(10, unit);
+    return '<span dir="ltr">' + val.toFixed(unit) + '</span> ' + (p.currency_suffix || 'د.أ').trim();
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function open(from) {
+    opener = from || null;
+    box.hidden = false;
+    document.body.classList.add('luvit-locked');
+    if (from && from.setAttribute) { from.setAttribute('aria-expanded', 'true'); }
+    setTimeout(function () { input.focus(); }, 30);
+  }
+
+  function close() {
+    box.hidden = true;
+    document.body.classList.remove('luvit-locked');
+    input.value = '';
+    list.innerHTML = '';
+    hint.textContent = 'اكتبي حرفين وبنبلّش ندوّر.';
+    hint.hidden = false;
+    document.querySelectorAll('.luvit-search-open').forEach(function (b) {
+      b.setAttribute('aria-expanded', 'false');
+    });
+    if (opener && opener.focus) { opener.focus(); }
+    opener = null;
+  }
+
+  document.addEventListener('click', function (e) {
+    var openBtn = e.target.closest ? e.target.closest('.luvit-search-open') : null;
+    if (openBtn) {
+      e.preventDefault();
+      /* القائمة الجانبية بتتسكّر عشان ما تضل تحت الطبقة */
+      var drawer = document.getElementById('luvit-drawer');
+      if (drawer && drawer.classList.contains('is-open')) {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+      }
+      open(openBtn);
+      return;
+    }
+    if (e.target.closest && e.target.closest('[data-search-close]')) { close(); }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !box.hidden) { close(); }
+  });
+
+  function render(items, q) {
+    if (!items.length) {
+      list.innerHTML = '';
+      hint.hidden = false;
+      hint.innerHTML = 'ما لقينا إشي بـ«' + esc(q) + '».<br>'
+        + 'جرّبي كلمة أقصر، أو <a href="/products">شوفي التشكيلة كاملة</a>.';
+      return;
+    }
+    hint.hidden = true;
+    list.innerHTML = items.map(function (p) {
+      var img = (p.images && p.images[0]) ? p.images[0].thumbnail : '';
+      return '<li class="luvit-search__item">'
+        + '<a class="luvit-search__link" href="' + esc(p.permalink) + '">'
+        + (img ? '<img class="luvit-search__thumb" src="' + esc(img) + '" alt="" loading="lazy" decoding="async">' : '<span class="luvit-search__thumb"></span>')
+        + '<span class="luvit-search__name">' + esc(p.name) + '</span>'
+        + '<span class="luvit-search__price">' + money(p.prices || {}) + '</span>'
+        + '</a></li>';
+    }).join('');
+  }
+
+  function run(q) {
+    var mine = ++seq;
+    hint.hidden = false;
+    hint.textContent = 'عم ندوّر…';
+    var url = '/wp-json/wc/store/v1/products?per_page=8&_fields=id,name,permalink,prices,images&search='
+      + encodeURIComponent(q);
+    fetch(url, { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (j) {
+        /* ⚠️ رد قديم وصل متأخر ما بيدهس رد أحدث */
+        if (mine !== seq) { return; }
+        render(Array.isArray(j) ? j : [], q);
+      })
+      .catch(function () {
+        if (mine !== seq) { return; }
+        hint.hidden = false;
+        hint.textContent = 'ما زبطت المحاولة · جرّبي كمان مرة.';
+      });
+  }
+
+  input.addEventListener('input', function () {
+    var q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) {
+      seq++;
+      list.innerHTML = '';
+      hint.hidden = false;
+      hint.textContent = 'اكتبي حرفين وبنبلّش ندوّر.';
+      return;
+    }
+    timer = setTimeout(function () { run(q); }, 250);
+  });
+})();
+</script>

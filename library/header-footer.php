@@ -88,6 +88,14 @@ function luvit_hf_header_html() {
         </svg>
       </a>
 
+      <button class="luvit-nav__icon-btn luvit-search-open" type="button"
+              aria-label="دوّري على منتج" aria-controls="luvit-search" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.4"/><path d="m15.8 15.8 4.2 4.2"/>
+        </svg>
+      </button>
+
       <a class="luvit-nav__icon-btn" href="/cart" aria-label="سلة التسوّق">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -110,6 +118,8 @@ function luvit_hf_header_html() {
   <div class="luvit-drawer__water" aria-hidden="true"></div>
 
   <nav class="luvit-drawer__panel" aria-label="قائمة الجوال">
+    <button class="luvit-drawer__link luvit-search-open" type="button"
+            aria-controls="luvit-search" aria-expanded="false">دوّري على منتج</button>
     <a class="luvit-drawer__link" href="/">الرئيسية</a>
     <a class="luvit-drawer__link" href="/products">المتجر</a>
     <a class="luvit-drawer__link" href="/routines">الروتينات</a>
@@ -126,6 +136,46 @@ function luvit_hf_header_html() {
     <a class="luvit-drawer__link luvit-drawer__small" href="/faq">الأسئلة الشائعة</a>
     <a class="luvit-drawer__link luvit-drawer__small" href="/contact">تواصلي معنا</a>
   </nav>
+</div>
+
+<!--
+  ============================================================================
+  البحث · ب٨ · ٧ أيلول ٢٠٢٦
+  ============================================================================
+  ريّان: «ولا مكان بالموقع كله تقدر الزبونة تدوّر فيه على منتج معيّن · وهاي
+  مصيبة». والكتالوج ٣٠ منتجاً على صفحتين طويلتين، فاللي جاية على منتج
+  بعينه ما كان عندها غير التمرير.
+
+  🔴 **وبتبحث بالمنتجات لا بمقالات ووردبريس.** المصدر Store API
+     (`wc/store/v1/products?search=`) · نفس المصدر اللي بتقرا منه اقتراحات
+     السلة، فما في مصدرَي حقيقة. ومفحوص: «سيروم» بترجّع السيرومات.
+
+  ⚠️ **وصفحة `?s=` تبع ووردبريس ما بتنلمس هون** · هي قالب خام إنجليزي
+     (ع١٨ بالسجل) وبتضل مفتوحة للمحركات. الطبقة هاي هي **المسار الحقيقي**،
+     وتصليح تلك الصفحة بند لحاله.
+  ============================================================================
+-->
+<div class="luvit-search" id="luvit-search" hidden>
+  <div class="luvit-search__scrim" data-search-close aria-hidden="true"></div>
+
+  <div class="luvit-search__panel" role="dialog" aria-modal="true" aria-label="البحث عن منتج">
+    <div class="luvit-search__bar">
+      <svg class="luvit-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="6.4"/><path d="m15.8 15.8 4.2 4.2"/>
+      </svg>
+      <input class="luvit-search__input" type="search" autocomplete="off"
+             enterkeyhint="search" aria-label="اكتبي اسم المنتج"
+             placeholder="اكتبي اسم المنتج · مثلاً سيروم">
+      <button class="luvit-search__close" type="button" data-search-close aria-label="إغلاق البحث">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+
+    <p class="luvit-search__hint" id="luvit-search-hint">اكتبي حرفين وبنبلّش ندوّر.</p>
+    <ul class="luvit-search__list" role="listbox" aria-label="النتائج"></ul>
+  </div>
 </div>
 
 <nav class="luvit-dock" aria-label="التنقل السريع">
@@ -256,6 +306,144 @@ function luvit_hf_footer_html() {
     </span>
   </div>
 </footer>
+<!--
+  ============================================================================
+  سلوك البحث · ب٨ · ٧ أيلول ٢٠٢٦
+  ============================================================================
+  🔴 **بيقرا من Store API لا من بحث ووردبريس.** بحث ووردبريس بيرجّع مقالات
+     وصفحات ومنتجات مخلوطين، وبيوصل لصفحة قالب خام. Store API بيرجّع
+     **منتجات بس** بأسعارها وصورها وروابطها بنداء واحد.
+
+  ⚠️ **والسعر ما بينكتب بالإيد** · بيتركّب من `prices` تبع الـAPI
+     (`price` بوحدات صغرى + `currency_minor_unit`)، فما في رقم ينحرف عن
+     السلة · [[duplicated-data-always-drifts]]
+
+  ⚠️ **والرقم بينلفّ بـ`dir="ltr"`** وإلا بينقلب جوّا الجملة العربية
+     · [[brand-name-rtl-bug]]
+
+  ⤷ وحرفان أقلّ حدّ · بحرف واحد بترجع نص الكتالوج وما بتفيد.
+  ============================================================================
+-->
+<script>
+(function () {
+  var box = document.getElementById('luvit-search');
+  if (!box) { return; }
+
+  var input = box.querySelector('.luvit-search__input');
+  var list  = box.querySelector('.luvit-search__list');
+  var hint  = box.querySelector('.luvit-search__hint');
+  var opener = null;
+  var timer = null;
+  var seq = 0;
+
+  function money(p) {
+    var unit = p.currency_minor_unit == null ? 2 : p.currency_minor_unit;
+    var val = (parseInt(p.price, 10) || 0) / Math.pow(10, unit);
+    return '<span dir="ltr">' + val.toFixed(unit) + '</span> ' + (p.currency_suffix || 'د.أ').trim();
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function open(from) {
+    opener = from || null;
+    box.hidden = false;
+    document.body.classList.add('luvit-locked');
+    if (from && from.setAttribute) { from.setAttribute('aria-expanded', 'true'); }
+    setTimeout(function () { input.focus(); }, 30);
+  }
+
+  function close() {
+    box.hidden = true;
+    document.body.classList.remove('luvit-locked');
+    input.value = '';
+    list.innerHTML = '';
+    hint.textContent = 'اكتبي حرفين وبنبلّش ندوّر.';
+    hint.hidden = false;
+    document.querySelectorAll('.luvit-search-open').forEach(function (b) {
+      b.setAttribute('aria-expanded', 'false');
+    });
+    if (opener && opener.focus) { opener.focus(); }
+    opener = null;
+  }
+
+  document.addEventListener('click', function (e) {
+    var openBtn = e.target.closest ? e.target.closest('.luvit-search-open') : null;
+    if (openBtn) {
+      e.preventDefault();
+      /* القائمة الجانبية بتتسكّر عشان ما تضل تحت الطبقة */
+      var drawer = document.getElementById('luvit-drawer');
+      if (drawer && drawer.classList.contains('is-open')) {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+      }
+      open(openBtn);
+      return;
+    }
+    if (e.target.closest && e.target.closest('[data-search-close]')) { close(); }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !box.hidden) { close(); }
+  });
+
+  function render(items, q) {
+    if (!items.length) {
+      list.innerHTML = '';
+      hint.hidden = false;
+      hint.innerHTML = 'ما لقينا إشي بـ«' + esc(q) + '».<br>'
+        + 'جرّبي كلمة أقصر، أو <a href="/products">شوفي التشكيلة كاملة</a>.';
+      return;
+    }
+    hint.hidden = true;
+    list.innerHTML = items.map(function (p) {
+      var img = (p.images && p.images[0]) ? p.images[0].thumbnail : '';
+      return '<li class="luvit-search__item">'
+        + '<a class="luvit-search__link" href="' + esc(p.permalink) + '">'
+        + (img ? '<img class="luvit-search__thumb" src="' + esc(img) + '" alt="" loading="lazy" decoding="async">' : '<span class="luvit-search__thumb"></span>')
+        + '<span class="luvit-search__name">' + esc(p.name) + '</span>'
+        + '<span class="luvit-search__price">' + money(p.prices || {}) + '</span>'
+        + '</a></li>';
+    }).join('');
+  }
+
+  function run(q) {
+    var mine = ++seq;
+    hint.hidden = false;
+    hint.textContent = 'عم ندوّر…';
+    var url = '/wp-json/wc/store/v1/products?per_page=8&_fields=id,name,permalink,prices,images&search='
+      + encodeURIComponent(q);
+    fetch(url, { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (j) {
+        /* ⚠️ رد قديم وصل متأخر ما بيدهس رد أحدث */
+        if (mine !== seq) { return; }
+        render(Array.isArray(j) ? j : [], q);
+      })
+      .catch(function () {
+        if (mine !== seq) { return; }
+        hint.hidden = false;
+        hint.textContent = 'ما زبطت المحاولة · جرّبي كمان مرة.';
+      });
+  }
+
+  input.addEventListener('input', function () {
+    var q = input.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) {
+      seq++;
+      list.innerHTML = '';
+      hint.hidden = false;
+      hint.textContent = 'اكتبي حرفين وبنبلّش ندوّر.';
+      return;
+    }
+    timer = setTimeout(function () { run(q); }, 250);
+  });
+})();
+</script>
 LUVIT_HF_END;
 }
 

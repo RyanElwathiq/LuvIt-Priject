@@ -31,6 +31,14 @@
         </svg>
       </a>
 
+      <button class="luvit-nav__icon-btn luvit-search-open" type="button"
+              aria-label="دوّري على منتج" aria-controls="luvit-search" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.4"/><path d="m15.8 15.8 4.2 4.2"/>
+        </svg>
+      </button>
+
       <a class="luvit-nav__icon-btn" href="/cart" aria-label="سلة التسوّق">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -53,6 +61,8 @@
   <div class="luvit-drawer__water" aria-hidden="true"></div>
 
   <nav class="luvit-drawer__panel" aria-label="قائمة الجوال">
+    <button class="luvit-drawer__link luvit-search-open" type="button"
+            aria-controls="luvit-search" aria-expanded="false">دوّري على منتج</button>
     <a class="luvit-drawer__link" href="/">الرئيسية</a>
     <a class="luvit-drawer__link" href="/products">المتجر</a>
     <a class="luvit-drawer__link" href="/routines">الروتينات</a>
@@ -69,6 +79,46 @@
     <a class="luvit-drawer__link luvit-drawer__small" href="/faq">الأسئلة الشائعة</a>
     <a class="luvit-drawer__link luvit-drawer__small" href="/contact">تواصلي معنا</a>
   </nav>
+</div>
+
+<!--
+  ============================================================================
+  البحث · ب٨ · ٧ أيلول ٢٠٢٦
+  ============================================================================
+  ريّان: «ولا مكان بالموقع كله تقدر الزبونة تدوّر فيه على منتج معيّن · وهاي
+  مصيبة». والكتالوج ٣٠ منتجاً على صفحتين طويلتين، فاللي جاية على منتج
+  بعينه ما كان عندها غير التمرير.
+
+  🔴 **وبتبحث بالمنتجات لا بمقالات ووردبريس.** المصدر Store API
+     (`wc/store/v1/products?search=`) · نفس المصدر اللي بتقرا منه اقتراحات
+     السلة، فما في مصدرَي حقيقة. ومفحوص: «سيروم» بترجّع السيرومات.
+
+  ⚠️ **وصفحة `?s=` تبع ووردبريس ما بتنلمس هون** · هي قالب خام إنجليزي
+     (ع١٨ بالسجل) وبتضل مفتوحة للمحركات. الطبقة هاي هي **المسار الحقيقي**،
+     وتصليح تلك الصفحة بند لحاله.
+  ============================================================================
+-->
+<div class="luvit-search" id="luvit-search" hidden>
+  <div class="luvit-search__scrim" data-search-close aria-hidden="true"></div>
+
+  <div class="luvit-search__panel" role="dialog" aria-modal="true" aria-label="البحث عن منتج">
+    <div class="luvit-search__bar">
+      <svg class="luvit-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="6.4"/><path d="m15.8 15.8 4.2 4.2"/>
+      </svg>
+      <input class="luvit-search__input" type="search" autocomplete="off"
+             enterkeyhint="search" aria-label="اكتبي اسم المنتج"
+             placeholder="اكتبي اسم المنتج · مثلاً سيروم">
+      <button class="luvit-search__close" type="button" data-search-close aria-label="إغلاق البحث">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+
+    <p class="luvit-search__hint" id="luvit-search-hint">اكتبي حرفين وبنبلّش ندوّر.</p>
+    <ul class="luvit-search__list" role="listbox" aria-label="النتائج"></ul>
+  </div>
 </div>
 
 <nav class="luvit-dock" aria-label="التنقل السريع">

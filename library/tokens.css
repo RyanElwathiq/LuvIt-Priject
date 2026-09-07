@@ -10179,6 +10179,152 @@ body.woocommerce-page .woocommerce-result-count {
 }
 
 /* ==========================================================================
+   5.58 · LUVIT-SEARCH · طبقة البحث عن منتج · ب٨ · ٧ أيلول ٢٠٢٦
+   --------------------------------------------------------------------------
+   ريّان: «ولا مكان بالموقع كله تقدر الزبونة تدوّر فيه على منتج معيّن».
+
+   🔴 **z-index 180 بقصد** · فوق الناف (160) والشريط (170) وتحت لافتة
+      الكوكيز؟ لأ · فوقها كمان. الطبقة **مشروط فتحها بضغطة**، فلمّا تكون
+      مفتوحة لازم تكون فوق كل إشي · وما بتتعارض مع طبقة Power Coupons
+      (999999) لأنّ تلك `pointer-events: none` وهي مسكّرة.
+
+   ⚠️ **والحقل `type="search"`** فسفاري بيحط زرّ مسح خاص فيه، وبنشيله
+      عشان زرّ الإغلاق يضل هو الوحيد.
+   ========================================================================== */
+.luvit-search {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc(var(--nav-inset, 14px) + var(--topbar-h, 0px) + var(--nav-h, 58px) + var(--space-4, 1rem))
+           var(--space-4, 1rem) var(--space-5, 1.5rem);
+}
+
+.luvit-search__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 38, 46, 0.62);
+  backdrop-filter: blur(6px);
+}
+
+.luvit-search__panel {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-lg, 0 24px 48px rgba(12, 51, 60, 0.12));
+  overflow: hidden;
+}
+
+.luvit-search__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  padding: var(--space-4, 1rem);
+  border-block-end: 1px solid var(--color-line, #E1E9EC);
+}
+
+.luvit-search__icon { inline-size: 20px; block-size: 20px; color: var(--color-ink-soft, #47555B); flex: none; }
+
+.luvit-search__input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px; /* أقلّ من 16 بيخلّي iOS يزوّم الصفحة عند التركيز */
+  color: var(--color-ink, #1A2529);
+  padding-block: 6px;
+}
+.luvit-search__input:focus { outline: none; }
+.luvit-search__input::-webkit-search-cancel-button { display: none; }
+
+.luvit-search__close {
+  flex: none;
+  inline-size: 36px;
+  block-size: 36px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--color-line, #E1E9EC);
+  color: var(--color-ink, #1A2529);
+  cursor: pointer;
+}
+.luvit-search__close svg { inline-size: 18px; block-size: 18px; }
+
+.luvit-search__hint {
+  margin: 0;
+  padding: var(--space-5, 1.5rem) var(--space-4, 1rem);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--color-ink-soft, #47555B);
+}
+.luvit-search__hint a { color: var(--color-primary, #29A9C0); }
+
+.luvit-search__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.luvit-search__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  padding: 10px var(--space-4, 1rem);
+  color: inherit;
+  text-decoration: none;
+  border-block-start: 1px solid var(--color-line, #E1E9EC);
+}
+.luvit-search__item:first-child .luvit-search__link { border-block-start: 0; }
+.luvit-search__link:hover,
+.luvit-search__link:focus-visible { background: #F2FAFC; }
+
+.luvit-search__thumb {
+  inline-size: 46px;
+  block-size: 46px;
+  flex: none;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #F2FAFC;
+}
+
+.luvit-search__name {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-ink, #1A2529);
+}
+
+.luvit-search__price {
+  flex: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary, #29A9C0);
+}
+
+/* زرّ البحث بالقائمة الجانبية · بيرث شكل الروابط وبيشيل شكل الزر */
+.luvit-drawer__link.luvit-search-open {
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  inline-size: 100%;
+}
+
+
+/* ==========================================================================
    5.37 · .luvit-option AS A LINK  (21 Aug)
    --------------------------------------------------------------------------
    The skin-type row on المنتجات reuses `.luvit-optiongrid` and `.luvit-option`,
