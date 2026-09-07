@@ -17,7 +17,7 @@
  *
  * THE NUMBER IS DELIBERATELY EMPTY
  *
- * 0797940176 is the brand's published phone, from the schema data Ryan sent on
+ * 0797666883 is the brand's published phone, from the schema data Ryan sent on
  * 1 Sept. It has NOT been confirmed as the WhatsApp number, and a wa.me link
  * built on a number that is not on WhatsApp opens a dead "phone number shared
  * via url is invalid" screen. That is worse than no button, which is exactly
@@ -28,11 +28,25 @@
  * is one string. Nothing else has to change.
  *
  * Format: international, digits only, no «+», no spaces, no leading zero.
- * Jordan mobile 0797940176 becomes 962797940176.
+ * Jordan mobile 0797666883 becomes 962797666883.
  */
 
 /** 🔴 The one line to fill. Empty means every hook below is a no-op. */
-const LUVIT_WA_NUMBER = '';
+/* ✅ **الرقم أكّده ريّان ٧ أيلول ٢٠٢٦: 0797666883** · وهو رقم واتساب
+ * البزنس (للبني آدمين)، وهو نفسه اللي بينعرض بكل مكان بالموقع.
+ *
+ * 🔴 **والرقم القديم 0797940176 كان غلط وكان حيّاً** · بالسكيما على كل
+ *    صفحة وبصفحة التواصل. ريّان: «في مكان بالموقع مش متذكّر وين حطّيت
+ *    رقم صاحب الموقع بشكل مؤقّت · الرقم الشخصي».
+ *
+ * ⚠️ **وهالملف لساه مش منشوراً كسنيبت** · كتابة الرقم هون ما بتشغّل
+ *    ولا إشي لحالها. النشر قرار منفصل، ولازم قبله ريّان يضغط الرابط
+ *    مرة ويتأكّد إنه بيفتح محادثة لا شاشة «رقم غير صالح».
+ *
+ * ⤷ ورقم الـAPI **رقم تاني بينشترى** · ريّان ٧ أيلول: «بكرا رح أشتري
+ *   رقماً ثانياً عادياً وعشوائياً للـAPI، وهاي بدها دراسة معمّقة».
+ *   [[two-numbers-premium-human-plain-api]] */
+const LUVIT_WA_NUMBER = '962797666883';
 
 /**
  * The wa.me URL, with her order number pre-typed into the message box.

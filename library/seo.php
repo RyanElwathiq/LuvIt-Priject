@@ -81,11 +81,11 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 		);
 
 		/* الهاتف · ريّان ١ أيلول · بصيغة E.164 لأن السكيما بتتقرا آلياً
-		   (0797940176 محلي · +962 هو مفتاح الأردن، والصفر بينشال) */
-		$node['telephone']   = '+962797940176';
+		   (0797666883 محلي · +962 هو مفتاح الأردن، والصفر بينشال) */
+		$node['telephone']   = '+962797666883';
 		$node['contactPoint'] = array(
 			'@type'             => 'ContactPoint',
-			'telephone'         => '+962797940176',
+			'telephone'         => '+962797666883',
 			'contactType'       => 'customer service',
 			'areaServed'        => 'JO',
 			'availableLanguage' => array( 'Arabic' ),
