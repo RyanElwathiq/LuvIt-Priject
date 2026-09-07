@@ -3881,10 +3881,34 @@ body.woocommerce-page.woocommerce-page {
    per the wave rules) swallowed the last card row on mobile (Ryan's phone
    screenshots, 21 Aug). Top clears the fixed nav pill; bottom clears the
    wave crest + a luxury gap. ---- */
+/* 🔴 **LUVIT-HEADPAD-FIX · نفس الباغ، ونفس السبب، ومرة تانية.**
+
+   كان مكتوب `padding-top: 112px` · **رقم بالإيد**. والتعليق فوق بيوثّق
+   إنّ نفس الباغ انصلّح مرة قبل («the floating nav buried the page title,
+   48px overlap»)، بس انصلّح **برقم بدل معادلة**، فبات من جديد أول ما
+   انضاف الشريط العلوي.
+
+   المقيس ٧ أيلول: السلة والشيك أوت وصفحة التأكيد **‑4px** ·
+   (112 والناف بتنتهي 116).
+
+   ⤷ **وهاي هي القاعدة**: أي حشوة بتقاصّ عنصراً ثابتاً بتنحسب من
+     متغيّراته، ولا مرة بتنكتب رقماً. الرقم بيصح يوم واحد وبيبيت.
+     [[our-own-rules-are-the-enemy]]
+   ================================================================== */
 body.woocommerce-page main.main,
 body.woocommerce-page main {
-  padding-top: 112px;
+  padding-top: calc(
+    var(--nav-inset, 14px) + var(--topbar-h, 0px) + var(--nav-h, 58px) + var(--space-6, 2rem)
+  );
   padding-bottom: 150px;
+}
+@media (max-width: 767px) {
+  body.woocommerce-page main.main,
+  body.woocommerce-page main {
+    padding-top: calc(
+      var(--nav-inset, 14px) + var(--topbar-h, 0px) + var(--nav-h, 58px) + var(--space-5, 1.5rem)
+    );
+  }
 }
 
 /* ---- 5.0 · NAVBAR FIX — Woo pages have no [data-nav-bg] sections, so
@@ -10125,10 +10149,31 @@ body.woocommerce-page .woocommerce-result-count {
     var(--nav-inset, 14px) + var(--topbar-h, 0px) + var(--nav-h, 76px) + var(--space-6, 2rem)
   );
 }
+/* 🔴 **LUVIT-HEADPAD-FIX · ٧ أيلول ٢٠٢٦ · مصطلح واحد كان ناقص.**
+
+   قاعدة الديسكتوب فوق فيها `var(--topbar-h, 0px)` · **وتجاوز الموبايل
+   كان ناقصها**. فالشريط بيزيد ٤٠px على مكان الناف والحشوة ما بتكبر معه،
+   والنتيجة **فتات الخبز بيقعد خلف الناف بـ20px**.
+
+   ⤷ **ومش تراكب بصري بس:** اختبار نقر على إحداثيات فتات الخبز رجّع
+     `button.luvit-nav__icon-btn` كأعلى عنصر · يعني **مش قابل للنقر**.
+
+   ⤷ ومقيس على **١٤ صفحة**، وكلهن `-20px` بالضبط. إصلاح واحد بيحلّهن كلهن.
+
+   ⚠️ **وليش ما بان قبل:** الحشوة `96px` **صحيحة تماماً لحالة «الشريط
+      مسكّر»** (الناف بتنتهي عند ٧٦). فمين ما سكّر الشريط مرة ما بيشوف
+      الباغ أبداً، وعالديسكتوب ما بيبيّن أصلاً لأنّ القاعدة التانية سليمة.
+
+   ── والحساب بعد الإصلاح · تنفّس ثابت بالحالات الأربع ──────────────
+     موبايل  مع الشريط   14+40+58+24 = 136  والناف تنتهي 116  → +20
+     موبايل  بلا الشريط  14+ 0+58+24 =  96  والناف تنتهي  76  → +20
+     ديسكتوب مع الشريط   14+40+58+32 = 144  والناف تنتهي 116  → +28
+     ديسكتوب بلا الشريط  14+ 0+58+32 = 104  والناف تنتهي  76  → +28
+   ================================================================== */
 @media (max-width: 767px) {
   .luvit-page-top {
     padding-block-start: calc(
-      var(--nav-inset, 14px) + var(--nav-h, 76px) + var(--space-5, 1.5rem)
+      var(--nav-inset, 14px) + var(--topbar-h, 0px) + var(--nav-h, 76px) + var(--space-5, 1.5rem)
     );
   }
 }
